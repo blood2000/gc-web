@@ -13,13 +13,11 @@
           @mouseleave="closeMenu()"
         >
           <a v-if="item.children && item.children.length > 0" class="ly-flex-v ly-flex-pack-center ly-flex-align-center">
-            <!-- :class="'icon-' + item.meta&&item.meta.icon" -->
-            <span class="iconfont icon-nav-setting" />
+            <span class="iconfont" :class="'icon-' + item.meta.icon" />
             <span class="label">{{ item.meta&&item.meta.title }}</span>
           </a>
           <app-link v-else :to="item.path" class="ly-flex-v ly-flex-pack-center ly-flex-align-center">
-            <!-- :class="'icon-' + item.meta&&item.meta.icon" -->
-            <span class="iconfont icon-nav-setting" />
+            <span class="iconfont" :class="'icon-' + item.meta.icon" />
             <span class="label">{{ item.meta&&item.meta.title }}</span>
           </app-link>
           <!-- 展开的菜单 -->
