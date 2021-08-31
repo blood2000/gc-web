@@ -4,10 +4,8 @@ import Cookies from 'js-cookie'
 require('./mock');
 import Element from 'element-ui'
 import './assets/styles/element-variables.scss'
-
-import '@/assets/styles/index.scss' // global css
-import '@/assets/styles/ruoyi.scss' // ruoyi css
-import '@/assets/styles/ddc.scss';
+import '@/assets/styles/index.scss'; // global css
+import '@/assets/styles/ddc.scss'; // ddc css
 import '@/assets/iconfont/iconfont.css'; // 字体图标
 import App from './App'
 import store from './store'
