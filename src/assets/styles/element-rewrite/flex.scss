@@ -1,0 +1,67 @@
+.g-flex{
+  display: flex;
+}
+.g-flexcenter{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.g-flexaround{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.g-directioncenter{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.g-directionbetween{
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+.g-aligncenter{
+  display: flex;
+  align-items: center;
+} 
+.g-alignstart{
+  display: flex;
+  align-items: flex-start;
+}
+.g-alignend{
+  display: flex;
+  align-items: flex-end;
+}
+.g-justifycenter{
+  justify-content: center;
+}
+.g-justifystart{
+  justify-content: flex-start;
+}
+.g-justifyend{
+  justify-content: flex-end;
+}
+.g-justifybetween{
+  justify-content: space-between;
+}
+.g-justifyaround{
+  justify-content: space-around;
+}
+.g-justifyevenly{
+  justify-content: space-evenly;
+}
+.g-flexdirection{
+  flex-direction: column;
+}
+.g-flexwrap{
+  flex-wrap: wrap;
+}
+.g-margin-tb{
+  margin: 5px 0;
+}
+
+.el-picker-panel__icon-btn{
+  font-size: 16px;
+}
+
