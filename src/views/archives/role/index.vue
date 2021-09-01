@@ -1,7 +1,7 @@
 <template>
   <!-- 角色管理 -->
   <div>
-    <div class="app-container app-container--search">
+    <div class="app-container app-container--search" v-show="showSearch">
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
         <el-form-item label="角色名称" prop="roleName">
           <el-input
@@ -28,14 +28,26 @@
             icon="el-icon-plus"
             size="mini"
             @click="handleAdd"
-          >添加角色</el-button>
+          >新增</el-button>
         </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['employee:delete']"
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            :disabled="multiple"
+            @click="handleDeleteMultiple"
+          >删除</el-button>
+        </el-col>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
-      <el-table v-loading="loading" highlight-current-row border :data="dataList">
+      <el-table v-loading="loading" highlight-current-row border :data="dataList" @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="50" align="center" />
         <el-table-column label="序号" type="index" width="50" align="center" />
         <el-table-column label="角色名称" align="center" prop="roleName" :show-overflow-tooltip="true" />
-        <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
-        <el-table-column label="创建时间" align="center" prop="createTime">
+        <el-table-column label="角色描述" align="center" prop="remark" :show-overflow-tooltip="true" />
+        <el-table-column label="创建时间" align="center" prop="createTime" sortable>
           <template slot-scope="scope">
             <span>{{ parseTime(scope.row.createTime) }}</span>
           </template>
@@ -51,6 +63,12 @@
               v-hasPermi="['role:edit']"
               size="mini"
               type="text"
+              @click="handleUpdate(scope.row)"
+            >修改</el-button>
+            <el-button
+              v-hasPermi="['role:edit']"
+              size="mini"
+              type="text"
               @click="handleEmployee(scope.row)"
             >设置职员</el-button>
             <el-button
@@ -59,17 +77,6 @@
               type="text"
               @click="handleResource(scope.row)"
             >设置资源</el-button>
-            <el-button
-              v-hasPermi="['role:edit']"
-              size="mini"
-              type="text"
-              @click="handleUpdate(scope.row)"
-            >编辑</el-button>
-            <el-button
-              size="mini"
-              type="text"
-              @click="handleDisable(scope.row)"
-            >禁用</el-button>
             <el-button
               v-hasPermi="['role:delete']"
               size="mini"
@@ -89,11 +96,11 @@
     </div>
 
     <!-- 新增/编辑 -->
-    <RoleDialog :open.sync="open" :title="title" @refresh="getList" />
+    <RoleDialog ref="RoleDialog" :open.sync="open" :title="title" @refresh="getList" />
     <!-- 设置职员 -->
-    <SettingEmployee :open.sync="employeeOpen" :title="title" @refresh="getList" />
+    <SettingEmployee ref="SettingEmployee" :open.sync="employeeOpen" :title="title" @refresh="getList" />
     <!-- 设置资源 -->
-    <SettingResource :open.sync="resourceOpen" :title="title" @refresh="getList" />
+    <SettingResource ref="SettingResource" :open.sync="resourceOpen" :title="title" @refresh="getList" />
   </div>
 </template>
 
@@ -112,6 +119,15 @@ export default {
   data() {
     return {
       loading: false,
+      // 选中数组
+      ids: [],
+      roleNames: [],
+      // 非单个禁用
+      single: true,
+      // 非多个禁用
+      multiple: true,
+      // 显示搜索条件
+      showSearch: true,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -119,7 +135,7 @@ export default {
         roleName: undefined
       },
       // 角色列表数据
-      dataList: [{}],
+      dataList: [],
       total: 0,
       // 弹窗开关
       open: false,
@@ -130,7 +146,7 @@ export default {
     }
   },
   created() {
-
+    this.getList();
   },
   methods: {
     /** 搜索按钮操作 */
@@ -145,6 +161,7 @@ export default {
     },
     /** 获取角色列表 */
     getList() {
+      this.loading = true;
       const obj = {
         moduleName: 'http_role',
         method: 'post',
@@ -152,56 +169,73 @@ export default {
         data: this.queryParams
       }
       http_request(obj).then(res => {
-        console.log(res)
+        this.loading = false;
+        this.dataList = res.data.rows;
+        this.total = res.data.total;
       });
+    },
+    /** 多选框选中数据 */
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.code);
+      this.roleNames = selection.map(item => item.roleName);
+      this.single = selection.length !== 1;
+      this.multiple = !selection.length;
     },
     /** 添加角色 */
     handleAdd() {
-      // this.$refs.employeeDialog.reset();
+      this.$refs.RoleDialog.reset();
       this.open = true;
       this.title = '添加角色';
     },
     /** 编辑角色 */
     handleUpdate(row) {
-      // this.$refs.employeeDialog.reset();
-      this.open = true;
-      this.title = '编辑角色';
+      this.$refs.RoleDialog.reset();
+      const obj = {
+        moduleName: 'http_role',
+        method: 'get',
+        url_alias: 'infoRole',
+        url_code: [row.code]
+      }
+      http_request(obj).then(res => {
+        this.open = true;
+        this.title = '编辑角色';
+        this.$refs.RoleDialog.setForm(res.data)
+      });
     },
     /** 设置职员 */
     handleEmployee(row) {
+      this.$refs.SettingEmployee.reset();
       this.employeeOpen = true;
       this.title = '设置职员';
     },
     /** 设置资源 */
     handleResource(row) {
+      this.$refs.SettingResource.reset();
       this.resourceOpen = true;
       this.title = '设置资源';
     },
-    /** 禁用 */
-    handleDisable(row) {
-      this.$confirm('是否确认禁用"' + row.nickName + '"角色?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(function() {
-        //
-      }).then(() => {
-        this.getList();
-        this.msgSuccess('禁用成功');
-      });
-    },
     /** 删除 */
     handleDelete(row) {
-      this.$confirm('是否确认删除"' + row.nickName + '"角色?', '警告', {
+      this.$confirm('删除操作不可恢复，确认要删除该角色吗?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        //
+        const obj = {
+          moduleName: 'http_role',
+          method: 'delete',
+          url_alias: 'deleteRole',
+          url_code: [row.code]
+        }
+        return http_request(obj);
       }).then(() => {
         this.getList();
         this.msgSuccess('删除成功');
       });
+    },
+    /** 删除多个 */
+    handleDeleteMultiple() {
+
     }
   }
 }

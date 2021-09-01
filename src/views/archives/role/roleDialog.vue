@@ -5,8 +5,8 @@
       <el-form-item label="角色名称" prop="roleName">
         <el-input v-model="form.roleName" placeholder="请输入角色名称" clearable />
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input v-model="form.remark" type="textarea" class="width90" placeholder="请输入备注" clearable />
+      <el-form-item label="角色描述" prop="remark">
+        <el-input v-model="form.remark" type="textarea" class="width90" placeholder="请输入角色描述" clearable />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -61,12 +61,35 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           this.loading = true;
-          // openInvoice(this.form).then(response => {
-          //   this.loading = false;
-          //   this.msgSuccess('操作成功');
-          //   this.close();
-          //   this.$emit('refresh');
-          // });
+          if (this.form.code) {
+            // 编辑
+            const obj = {
+              moduleName: 'http_role',
+              method: 'put',
+              url_alias: 'editRole',
+              data: this.form
+            }
+            http_request(obj).then(res => {
+              this.loading = false;
+              this.msgSuccess('操作成功');
+              this.close();
+              this.$emit('refresh');
+            });
+          } else {
+            // 新增
+            const obj = {
+              moduleName: 'http_role',
+              method: 'post',
+              url_alias: 'addRole',
+              data: this.form
+            }
+            http_request(obj).then(res => {
+              this.loading = false;
+              this.msgSuccess('操作成功');
+              this.close();
+              this.$emit('refresh');
+            });
+          }
         }
       });
     },
@@ -82,6 +105,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
+        code: null,
         roleName: null,
         remark: null
       };
