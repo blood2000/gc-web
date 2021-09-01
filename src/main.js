@@ -17,6 +17,9 @@ import './permission' // permission control
 import { getDicts } from "@/api/system/dict/data";
 import { getConfigKey } from "@/api/system/config";
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree } from "@/utils/ruoyi";
+// 表单校验
+import { formValidate } from '@/utils/formValidate';
+// 分页组件
 import Pagination from "@/components/Pagination";
 // 自定义表格工具组件
 import RightToolbar from "@/components/RightToolbar"
@@ -41,6 +44,7 @@ Vue.prototype.selectDictLabel = selectDictLabel
 Vue.prototype.selectDictLabels = selectDictLabels
 Vue.prototype.download = download
 Vue.prototype.handleTree = handleTree
+Vue.prototype.formValidate = formValidate
 
 Vue.prototype.msgSuccess = function (msg) {
   this.$message({ showClose: true, message: msg, type: "success" });

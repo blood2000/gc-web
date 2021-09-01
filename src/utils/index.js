@@ -411,3 +411,21 @@ export function DebounceFun(callback, time) {
     }, time);
   };
 }
+
+/**
+ * 比较日期大小
+ * 用于比较时间段，判断结束时间是否大于开始时间
+ * @param {*} beginTime 开始时间
+ * @param {*} endTime 结束时间
+ */
+ export function compareBeginEndTime(beginTime, endTime) {
+  if (endTime === '' || endTime === undefined || endTime === null) return true;
+  const _begin = Date.parse(new Date(beginTime));
+  const _end = Date.parse(new Date(endTime));
+  // 8.64e7 为一天的毫秒数
+  if (_end >= _begin) {
+    return true;
+  } else {
+    return false;
+  }
+}
