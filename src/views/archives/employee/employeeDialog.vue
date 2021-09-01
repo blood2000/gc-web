@@ -2,14 +2,15 @@
   <!-- 新增/修改职员信息 -->
   <el-dialog :title="title" :visible="visible" width="600px" append-to-body destroy-on-close :close-on-click-modal="false" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="90px">
-      <el-form-item label="手机号码" prop="phonenumber">
-        <el-input v-model="form.phonenumber" placeholder="请输入手机号码" clearable />
-      </el-form-item>
       <el-form-item label="用户姓名" prop="nickName">
         <el-input v-model="form.nickName" placeholder="请输入用户姓名" clearable />
       </el-form-item>
+      <el-form-item label="手机号码" prop="phonenumber">
+        <el-input v-model="form.phonenumber" placeholder="请输入手机号码" clearable :disabled="form.employeeCode" />
+      </el-form-item>
       <el-form-item label="登录密码" prop="password">
-        <el-input v-model="form.password" type="password" placeholder="请输入登录密码" clearable />
+        <el-input v-model="form.password" type="password" placeholder="请输入登录密码" clearable style="width: 60%" class="mr10" />
+        <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
       </el-form-item>
       <el-form-item label="所属组织" prop="orgCode">
         <treeselect
@@ -79,19 +80,26 @@ export default {
         nickName: [
           { required: true, message: '用户姓名不能为空', trigger: 'blur' }
         ],
+        orgCode: [
+          { required: true, message: '所属组织不能为空', trigger: 'blur' }
+        ],
+        roleCodeList: [
+          { required: true, message: '所属角色不能为空', trigger: 'blur' }
+        ],
         password: [
-          { required: true, message: '登录密码不能为空', trigger: 'blur' },
           { validator: this.formValidate.passWord, trigger: 'blur' }
         ]
       },
+      // 初始密码
+      initialPassword: 'abcd1234@',
       // 部门树选项
       deptOptions: [],
       // 部门树键值转换
       normalizer(node) {
         return {
           id: node.code, // 键名转换，方法默认是label和children进行树状渲染
-          label: node.label,
-          children: node.children
+          label: node.orgName,
+          children: node.childrenOrgList
         };
       },
       // 角色树选项
@@ -109,8 +117,8 @@ export default {
     }
   },
   created() {
-    // this.getTree();
-    // this.getRoleList();
+    this.getTree();
+    this.getRoleList();
   },
   methods: {
     /** 获取组织树 */
