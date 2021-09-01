@@ -4,7 +4,7 @@
     <el-scrollbar ref="elScroll" :class="settings.sideTheme" style="height: 100%">
       <ul class="s-side-menu">
         <li
-          v-for="(item, index) in sidebarRouters"
+          v-for="(item, index) in sidebarMenu"
           :ref="item.path + index"
           :key="item.path + index"
           :class="{isOpen: isOpen === item.path + index}"
@@ -31,7 +31,7 @@
               <template v-for="(value, vi) in item.children">
                 <li v-if="!value.hidden" :key="value.path + vi" class="panel-item">
                   <a v-if="value.children && value.children.length === 0" class="second-menu">{{ value.meta.title }}</a>
-                  <app-link v-else :to="value.path" :class="{isActive: value.path == activeMenu}" class="panel-item-router">{{ value.meta.title }}</app-link>
+                  <app-link v-else :to="value.path" :class="{isActive: value.path == activeMenu}" class="panel-item-router">{{ value.path }}</app-link>
                 </li>
               </template>
             </ul>
@@ -74,7 +74,7 @@ export default {
     }
   },
   mounted() {
-    //this.setNewMenu();
+    this.setNewMenu();
     this.handleScroll();
   },
   methods: {

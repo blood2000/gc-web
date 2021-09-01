@@ -64,7 +64,7 @@ const permission = {
           rewriteRoutes.push({ path: '*', redirect: '/404', hidden: true })
           commit('SET_ROUTES', rewriteRoutes)
           // test
-          commit('SET_SIDEBAR_ROUTERS', menus)
+          commit('SET_SIDEBAR_ROUTERS', sidebarRoutes)
           commit('SET_DEFAULT_ROUTES', sidebarRoutes)
           commit('SET_TOPBAR_ROUTES', sidebarRoutes)
           return rewriteRoutes
