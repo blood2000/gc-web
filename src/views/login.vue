@@ -159,17 +159,14 @@ export default {
       };
     },
     handleLogin() {
-      console.log('handleLogin')
       this.$refs.loginForm.validate(valid => {
-        console.log('handleLogin valid',valid)
         if (valid) {
           this.loading = true;
           if (this.loginForm.rememberMe) {
             Cookies.set("telephone", this.loginForm.telephone, { expires: 30 });
-            Cookies.set("password", encrypt(this.loginForm.password), {
-              expires: 30
-            });
+            Cookies.set("password", encrypt(this.loginForm.password), {expires: 30});
             Cookies.set("rememberMe", this.loginForm.rememberMe, {
+
               expires: 30
             });
           } else {
@@ -179,10 +176,7 @@ export default {
           }
           this.$store
             .dispatch("Login", this.loginForm)
-            .then(() => {
-              console.log('s123')
-              this.$router.push({ path: this.redirect || "/" }).catch(() => {});
-            })
+            .then(() => { this.$router.push({ path: this.redirect || "/" }).catch(() => {});})
             .catch(() => {
               this.loading = false;
               if (this.captchaOnOff) {
