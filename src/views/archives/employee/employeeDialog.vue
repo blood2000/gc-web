@@ -1,0 +1,212 @@
+<template>
+  <!-- 新增/修改职员信息 -->
+  <el-dialog :title="title" :visible="visible" width="600px" append-to-body destroy-on-close :close-on-click-modal="false" @close="cancel">
+    <el-form ref="form" :model="form" :rules="rules" label-width="90px">
+      <el-form-item label="手机号码" prop="phonenumber">
+        <el-input v-model="form.phonenumber" placeholder="请输入手机号码" clearable />
+      </el-form-item>
+      <el-form-item label="用户姓名" prop="nickName">
+        <el-input v-model="form.nickName" placeholder="请输入用户姓名" clearable />
+      </el-form-item>
+      <el-form-item label="登录密码" prop="password">
+        <el-input v-model="form.password" type="password" placeholder="请输入登录密码" clearable />
+      </el-form-item>
+      <el-form-item label="所属组织" prop="orgCode">
+        <treeselect
+          v-model="form.orgCode"
+          :options="deptOptions"
+          :normalizer="normalizer"
+          :show-count="true"
+          placeholder="请选择所属组织"
+          @select="selectOrgCode"
+        />
+      </el-form-item>
+      <el-form-item label="所属角色" prop="roleCodeList">
+        <el-select v-model="form.roleCodeList" multiple placeholder="请选择" style="width: 100%">
+          <el-option
+            v-for="item in roleOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="备注" prop="remark">
+        <el-input v-model="form.remark" type="textarea" class="width90" placeholder="请输入备注" clearable />
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="submitForm" :loading="loading">提交</el-button>
+      <el-button @click="cancel">取消</el-button>
+    </div>
+  </el-dialog>
+</template>
+
+<script>
+import Treeselect from '@riophae/vue-treeselect';
+import '@riophae/vue-treeselect/dist/vue-treeselect.css';
+import { http_request } from '@/api';
+export default {
+  name: 'EmployeeDialog',
+  components: {
+    Treeselect
+  },
+  props: {
+    title: {
+      type: String,
+      default: ''
+    },
+    open: Boolean
+  },
+  data() {
+    return {
+      loading: false,
+      // 表单参数
+      form: {
+        phonenumber: null,
+        nickName: null,
+        password: null,
+        orgCode: null,
+        roleCodeList: null,
+        remark: null
+      },
+      // 表单校验
+      rules: {
+        phonenumber: [
+          { required: true, message: '手机号码不能为空', trigger: 'blur' },
+          { validator: this.formValidate.telphone, trigger: 'blur' }
+        ],
+        nickName: [
+          { required: true, message: '用户姓名不能为空', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '登录密码不能为空', trigger: 'blur' },
+          { validator: this.formValidate.passWord, trigger: 'blur' }
+        ]
+      },
+      // 部门树选项
+      deptOptions: [],
+      // 部门树键值转换
+      normalizer(node) {
+        return {
+          id: node.code, // 键名转换，方法默认是label和children进行树状渲染
+          label: node.label,
+          children: node.children
+        };
+      },
+      // 角色树选项
+      roleOptions: [],
+    };
+  },
+  computed: {
+    visible: {
+      get() {
+        return this.open;
+      },
+      set(v) {
+        this.$emit('update:open', v);
+      }
+    }
+  },
+  created() {
+    // this.getTree();
+    // this.getRoleList();
+  },
+  methods: {
+    /** 获取组织树 */
+    getTree() {
+      const obj = {
+        moduleName: 'http_org',
+        method: 'get',
+        url_alias: 'orgTree'
+      }
+      http_request(obj).then(res => {
+        this.deptOptions = res.data;
+      });
+    },
+    /** 获取角色列表 */
+    getRoleList() {
+      const obj = {
+        moduleName: 'http_role',
+        method: 'get',
+        url_alias: 'listRoleAll'
+      }
+      http_request(obj).then(res => {
+        this.roleOptions = res.data;
+      });
+    },
+    /** 提交按钮 */
+    submitForm() {
+      this.$refs['form'].validate(valid => {
+        if (valid) {
+          this.loading = true;
+          if (this.form.employeeCode) {
+            // 编辑
+            const obj = {
+              moduleName: 'http_employee',
+              method: 'post',
+              url_alias: 'addEmployee',
+              data: this.form
+            }
+            http_request(obj).then(res => {
+              this.loading = false;
+              this.msgSuccess('操作成功');
+              this.close();
+              this.$emit('refresh');
+            });
+          } else {
+            // 新增
+            const obj = {
+              moduleName: 'http_employee',
+              method: 'put',
+              url_alias: 'editEmployee',
+              data: this.form
+            }
+            http_request(obj).then(res => {
+              this.loading = false;
+              this.msgSuccess('操作成功');
+              this.close();
+              this.$emit('refresh');
+            });
+          }
+        }
+      });
+    },
+    /** 取消按钮 */
+    cancel() {
+      this.close();
+      this.reset();
+    },
+    // 关闭弹窗
+    close() {
+      this.$emit('update:open', false);
+    },
+    // 表单重置
+    reset() {
+      this.form = {
+        phonenumber: null,
+        nickName: null,
+        password: null,
+        orgCode: null,
+        roleCodeList: null,
+        remark: null
+      };
+      this.resetForm('form');
+    },
+    // 表单赋值
+    setForm(data) {
+      this.form = data;
+    },
+    // 手动刷新校验
+    selectOrgCode() {
+      this.$nextTick(() => {
+        this.$refs.form.validateField('orgCode');
+      });
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+
+</style>

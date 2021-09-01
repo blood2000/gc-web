@@ -3,6 +3,10 @@ import http_login from './login'
 import http_menu from './menu'
 import http_vehicle from './vehicle'
 import http_driver from './driver'
+import http_employee from './archives/employee'
+import http_role from './archives/role'
+import http_org from './archives/org'
+
 import Vue from 'vue'
 
 // 还需要修改
@@ -29,7 +33,10 @@ const selModuleName = (name) => {
     http_login,
     http_menu,
     http_vehicle,
-    http_driver
+    http_driver,
+    http_employee,
+    http_role,
+    http_org
   }
   return tmpObj[name]
 }
