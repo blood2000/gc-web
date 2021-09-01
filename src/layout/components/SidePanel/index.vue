@@ -31,7 +31,7 @@
               <template v-for="(value, vi) in item.children">
                 <li v-if="!value.hidden" :key="value.path + vi" class="panel-item">
                   <a v-if="value.children && value.children.length === 0" class="second-menu">{{ value.meta.title }}</a>
-                  <app-link v-else :to="value.path" :class="{isActive: value.path == activeMenu}" class="panel-item-router">{{ value.path }}</app-link>
+                  <app-link v-else :to="value.path" :class="{isActive: value.path == activeMenu}" class="panel-item-router">{{ value.meta.title }}</app-link>
                 </li>
               </template>
             </ul>
