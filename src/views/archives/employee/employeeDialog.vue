@@ -152,8 +152,8 @@ export default {
             // 编辑
             const obj = {
               moduleName: 'http_employee',
-              method: 'post',
-              url_alias: 'addEmployee',
+              method: 'put',
+              url_alias: 'editEmployee',
               data: this.form
             }
             http_request(obj).then(res => {
@@ -166,8 +166,8 @@ export default {
             // 新增
             const obj = {
               moduleName: 'http_employee',
-              method: 'put',
-              url_alias: 'editEmployee',
+              method: 'post',
+              url_alias: 'addEmployee',
               data: this.form
             }
             http_request(obj).then(res => {
@@ -192,6 +192,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
+        employeeCode: null,
         phonenumber: null,
         nickName: null,
         password: null,
