@@ -102,11 +102,11 @@ export default {
       this.close();
       this.reset();
     },
-    // 关闭弹窗
+    /** 关闭弹窗 */
     close() {
       this.$emit('update:open', false);
     },
-    // 表单重置
+    /** 表单重置 */
     reset() {
       this.form = {
         code: null,
@@ -115,7 +115,7 @@ export default {
       };
       this.resetForm('form');
     },
-    // 表单赋值
+    /** 表单赋值 */
     setForm(data) {
       this.form = data;
     }

@@ -130,6 +130,7 @@
                 type="warning"
                 icon="el-icon-download"
                 size="mini"
+                :loading="exportLoading"
                 @click="handleExport"
               >导出</el-button>
             </el-col>
@@ -271,7 +272,9 @@ export default {
       employeeStatusOptions: [
         { dictLabel: '禁用', dictValue: 0 },
         { dictLabel: '启用', dictValue: 1 }
-      ]
+      ],
+      // 导出按钮
+      exportLoading: false
     }
   },
   watch: {
@@ -431,6 +434,7 @@ export default {
       params.pageSize = undefined;
       params.pageNum = undefined;
       this.download('', params, `用户信息`);
+      this.exportLoading = false;
     },
     
   }

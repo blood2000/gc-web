@@ -1,4 +1,5 @@
 <template>
+  <!-- 重置密码 -->
   <el-dialog :title="title" :visible="visible" width="500px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="0px">
       <el-form-item prop="password">
