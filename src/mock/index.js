@@ -15,7 +15,6 @@ files.keys().forEach((key) => {
   configArray = configArray.concat(files(key).default);
 });
 
-console.log('configArray',configArray)
 // 注册所有的mock服务
 configArray.forEach((item) => {
   for (let [path, target] of Object.entries(item)) {

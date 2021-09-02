@@ -33,6 +33,8 @@ import ImageUpload from "@/components/ImageUpload"
 import DictTag from '@/components/DictTag'
 // // 头部标签组件
 // import VueMeta from 'vue-meta'
+// 表头
+import RefactorTable from '@/components/ddc/tin/RefactorTable';
 
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
@@ -69,7 +71,7 @@ Vue.component('RightToolbar', RightToolbar)
 Vue.component('Editor', Editor)
 Vue.component('FileUpload', FileUpload)
 Vue.component('ImageUpload', ImageUpload)
-
+Vue.component('RefactorTable',RefactorTable)
 Vue.use(directive)
 // Vue.use(VueMeta)
 
