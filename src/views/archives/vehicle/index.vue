@@ -8,6 +8,7 @@
         :group-List="groupList"
         :data-status-list="dataStatusList"
         @handleQuery="searchQuery"
+        
       />
     </div>
     <!-- 下 -->
@@ -102,18 +103,19 @@
         @pagination="vehicleHttpReq"
       />
     </div>
-    
+    <VehicleDialog :open="open" :title="title" @colseDialog ="colseDialog"></VehicleDialog>
   </div>
 </template>
 
 <script>
 import vehicleConfig from "./vehicle_config";
 import QueryForm from "./components/queryForm.vue";
+import VehicleDialog from './components/vehicle_dialog.vue'
 import { http_request } from "@/api";
 
 export default {
   name: "vehicle", // 车辆管理
-  components: { QueryForm },
+  components: { QueryForm ,VehicleDialog},
   data() {
     return {
       showSearch: true, //搜索显隐
@@ -121,6 +123,8 @@ export default {
       exportLoading: false, //到处load
       total: 0, //总条数
       multiple: true, //是否激活多选删除按钮
+      open:false, //dialog show
+      title:"", //dialog titile
       queryParams: {
         pageNum: 1,
         pageSize: 10,
@@ -166,12 +170,12 @@ export default {
         data: {
           pageNum: this.queryParams.pageNum,
           pageSize: this.queryParams.pageSize,
-          licenseNumber: this.queryParams.licenseNumber, //车牌号
-          vehicleStatus: this.queryParams.vehicleStatus, //车辆状态
-          group: this.queryParams.group, //分组
+          licenseNumber: this.queryParams.licenseNumber||null, //车牌号
+          vehicleStatus: this.queryParams.vehicleStatus||null, //车辆状态
+          group: this.queryParams.group||null, //分组
           dataStatus: this.queryParams.dataStatus, //是否停用
-          createBeginTime: this.queryParams.dateRange[0],
-          createEndTime: this.queryParams.dateRange[1],
+          createBeginTime: this.queryParams.dateRange[0]||null,
+          createEndTime: this.queryParams.dateRange[1] ||null,
         },
       };
       console.log("所有参数列表", obj);
@@ -182,7 +186,10 @@ export default {
       this.loading = false;
     },
     //新增
-    handleAdd() {},
+    handleAdd() {
+        this.title = '新增车辆弹窗'
+        this.open = true
+    },
     //导入
     handleImport() {},
     //导出
@@ -222,9 +229,16 @@ export default {
           this.msgSuccess("删除成功");
         });
     },
-    handleUpdate(obj) {},
+    handleUpdate(obj) {
+        this.title = '修改车辆弹窗'
+        this.open = true
+    },
     handlePosition(obj) {},
     handleDetail(obj) {},
+    colseDialog(){
+        console.log('关闭。。。')
+        this.open = false
+    }
   },
 };
 </script>

@@ -14,7 +14,7 @@ import Vue from 'vue'
 // const BASE_URL =  'http://10.0.0.75:8080'   //测试服务器
 // BASE_URL: 'http://api.chaohaoyun.cn:8080'  //正式地址
 // BASE_URL: 'http://127.0.0.1:8888'  //正式地址
-const defaultH = {
+export const defaultH = {
   "App-Code": '6d818ca732214b6e889dbf6ac3d25aee', //应用编码
   "App-Type": 0,
   "App-Version": '1.0.0',
