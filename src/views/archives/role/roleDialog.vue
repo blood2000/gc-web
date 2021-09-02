@@ -6,7 +6,7 @@
         <el-input v-model="form.roleName" placeholder="请输入角色名称" clearable />
       </el-form-item>
       <el-form-item label="角色描述" prop="remark">
-        <el-input v-model="form.remark" type="textarea" class="width90" placeholder="请输入角色描述" clearable />
+        <el-input v-model="form.remark" type="textarea" maxlength="20" show-word-limit placeholder="请输入角色描述" clearable />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -38,7 +38,8 @@ export default {
       // 表单校验
       rules: {
         roleName: [
-          { required: true, message: '角色名称不能为空', trigger: 'blur' }
+          { required: true, message: '角色名称不能为空', trigger: 'blur' },
+          { validator: this.formValidate.name, trigger: 'blur' }
         ]
       }
     };
@@ -124,5 +125,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+::v-deep.el-textarea .el-input__count{
+  line-height: 20px;
+}
 </style>

@@ -3,8 +3,8 @@ import { compareBeginEndTime } from '@/utils/index';
 const numberReg = /^\d+$|^\d+[.]?\d+$/;
 // 中文
 const cnReg = /^[\u4e00-\u9fa5]+$/;
-// 检测姓名,必须要有两个汉字
-const nameReg = /^[\u4e00-\u9fa5]{2,}$/;
+// 检测姓名 1-10个中文字符
+const nameReg = /^[\u4e00-\u9fa5]{1,10}$/;
 // 检测姓名,可以是中文/字母/数字
 // const nameReg = /^[\da-zA-Z\u4E00-\u9FA5]{1,10}$/;
 // 邮箱
@@ -70,7 +70,7 @@ export const formValidate = {
       callback();
     }
     if (!nameReg.test(value)) {
-      callback(new Error('请输入正确的姓名'));
+      callback(new Error('请输入正确的格式(1-10个中文字符)'));
     } else {
       callback();
     }

@@ -33,7 +33,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
-        <el-input v-model="form.remark" type="textarea" class="width90" placeholder="请输入备注" clearable />
+        <el-input v-model="form.remark" type="textarea" maxlength="20" show-word-limit placeholder="请输入备注" clearable />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -78,7 +78,8 @@ export default {
           { validator: this.formValidate.telphone, trigger: 'blur' }
         ],
         nickName: [
-          { required: true, message: '用户姓名不能为空', trigger: 'blur' }
+          { required: true, message: '用户姓名不能为空', trigger: 'blur' },
+          { validator: this.formValidate.name, trigger: 'blur' }
         ],
         orgCode: [
           { required: true, message: '所属组织不能为空', trigger: ['change', 'blur'] }
@@ -256,5 +257,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+::v-deep.el-textarea .el-input__count{
+  line-height: 20px;
+}
 </style>
