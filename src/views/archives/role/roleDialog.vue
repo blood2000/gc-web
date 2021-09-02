@@ -74,6 +74,8 @@ export default {
               this.msgSuccess('操作成功');
               this.close();
               this.$emit('refresh');
+            }).catch(e => {
+              this.loading = false;
             });
           } else {
             // 新增
@@ -88,6 +90,8 @@ export default {
               this.msgSuccess('操作成功');
               this.close();
               this.$emit('refresh');
+            }).catch(e => {
+              this.loading = false;
             });
           }
         }

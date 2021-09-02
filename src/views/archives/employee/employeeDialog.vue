@@ -6,7 +6,7 @@
         <el-input v-model="form.nickName" placeholder="请输入用户姓名" clearable />
       </el-form-item>
       <el-form-item label="手机号码" prop="phonenumber">
-        <el-input v-model="form.phonenumber" placeholder="请输入手机号码" clearable :disabled="form.employeeCode" />
+        <el-input v-model="form.phonenumber" placeholder="请输入手机号码" clearable :disabled="!!form.employeeCode" @blur="getUserAlreadyExist" />
       </el-form-item>
       <el-form-item label="登录密码" prop="password">
         <el-input v-model="form.password" type="password" placeholder="请输入登录密码" clearable style="width: 60%" class="mr10" />
@@ -26,9 +26,9 @@
         <el-select v-model="form.roleCodeList" multiple placeholder="请选择" style="width: 100%">
           <el-option
             v-for="item in roleOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            :key="item.code"
+            :label="item.roleName"
+            :value="item.code">
           </el-option>
         </el-select>
       </el-form-item>
@@ -81,10 +81,10 @@ export default {
           { required: true, message: '用户姓名不能为空', trigger: 'blur' }
         ],
         orgCode: [
-          { required: true, message: '所属组织不能为空', trigger: 'blur' }
+          { required: true, message: '所属组织不能为空', trigger: ['change', 'blur'] }
         ],
         roleCodeList: [
-          { required: true, message: '所属角色不能为空', trigger: 'blur' }
+          { required: true, message: '所属角色不能为空', trigger: ['change', 'blur'] }
         ],
         password: [
           { validator: this.formValidate.passWord, trigger: 'blur' }
@@ -104,6 +104,8 @@ export default {
       },
       // 角色树选项
       roleOptions: [],
+      // 手机号是否存在
+      phoneUniq: false
     };
   },
   computed: {
@@ -147,6 +149,10 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          if (this.phoneUniq) {
+            this.msgWarning('该手机号已被使用');
+            return;
+          }
           this.loading = true;
           if (this.form.employeeCode) {
             // 编辑
@@ -161,6 +167,8 @@ export default {
               this.msgSuccess('操作成功');
               this.close();
               this.$emit('refresh');
+            }).catch(e => {
+              this.loading = false;
             });
           } else {
             // 新增
@@ -175,6 +183,8 @@ export default {
               this.msgSuccess('操作成功');
               this.close();
               this.$emit('refresh');
+            }).catch(e => {
+              this.loading = false;
             });
           }
         }
@@ -185,32 +195,61 @@ export default {
       this.close();
       this.reset();
     },
-    // 关闭弹窗
+    /** 关闭弹窗 */
     close() {
       this.$emit('update:open', false);
     },
-    // 表单重置
-    reset() {
+    /** 表单重置 */
+    reset(orgCode) {
       this.form = {
         employeeCode: null,
         phonenumber: null,
         nickName: null,
         password: null,
-        orgCode: null,
+        orgCode: orgCode || null,
         roleCodeList: null,
         remark: null
       };
       this.resetForm('form');
+      this.phoneUniq = false;
     },
-    // 表单赋值
+    /** 表单赋值 */
     setForm(data) {
       this.form = data;
     },
-    // 手动刷新校验
+    /** 手动刷新校验 */
     selectOrgCode() {
       this.$nextTick(() => {
         this.$refs.form.validateField('orgCode');
       });
+    },
+    /** 检查手机号码是否存在 */
+    getUserAlreadyExist() {
+      if (this.form.phonenumber) {
+        const obj = {
+          moduleName: 'http_employee',
+          method: 'get',
+          url_alias: 'checkPhoneExist',
+          data: {
+            phonenumber: this.form.phonenumber
+          }
+        }
+        http_request(obj).then(res => {
+          if (res.data) {
+            // 已存在
+            this.phoneUniq = true;
+            this.msgWarning('该手机号已被使用');
+            this.$nextTick(() => {
+              this.$refs.telphone.focus();
+            });
+          } else {
+            // 不存在
+            this.phoneUniq = false;
+          }
+        }).catch(e => {
+          this.phoneUniq = false;
+        });
+      }
     }
   }
 };

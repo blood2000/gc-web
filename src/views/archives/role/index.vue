@@ -235,7 +235,25 @@ export default {
     },
     /** 删除多个 */
     handleDeleteMultiple() {
-
+      const _this = this;
+      this.$confirm('删除操作不可恢复，确认要删除选中的角色吗?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        const obj = {
+          moduleName: 'http_role',
+          method: 'delete',
+          url_alias: 'deleteRoleList',
+          data: {
+            codeList: _this.ids
+          }
+        }
+        return http_request(obj);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('删除成功');
+      });
     }
   }
 }
