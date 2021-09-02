@@ -60,7 +60,7 @@
                 @keyup.enter.native="handleQuery"
               />
             </el-form-item>
-            <el-form-item label="创建日期" prop="employeeStatus">
+            <el-form-item label="创建日期">
               <el-date-picker
                 v-model="queryParams.startTime"
                 clearable
@@ -130,6 +130,7 @@
                 type="warning"
                 icon="el-icon-download"
                 size="mini"
+                :loading="exportLoading"
                 @click="handleExport"
               >导出</el-button>
             </el-col>
@@ -147,8 +148,8 @@
               <template slot-scope="scope">
                 <el-switch
                   v-model="scope.row.employeeStatus"
-                  active-value="0"
-                  inactive-value="1"
+                  :active-value="1"
+                  :inactive-value="0"
                   @change="handleStatusChange(scope.row)"
                 />
               </template>
@@ -271,7 +272,9 @@ export default {
       employeeStatusOptions: [
         { dictLabel: '禁用', dictValue: 0 },
         { dictLabel: '启用', dictValue: 1 }
-      ]
+      ],
+      // 导出按钮
+      exportLoading: false
     }
   },
   watch: {
@@ -303,6 +306,7 @@ export default {
     },
     /** 节点单击事件 */
     handleNodeClick(data) {
+      this.queryParams.page = 1;
       this.queryParams.orgCode = data.code;
       this.getList();
     },
@@ -343,7 +347,7 @@ export default {
     },
     /** 添加职员 */
     handleAdd() {
-      this.$refs.employeeDialog.reset();
+      this.$refs.employeeDialog.reset(this.queryParams.orgCode);
       this.open = true;
       this.title = '添加职员';
     },
@@ -374,8 +378,8 @@ export default {
     },
     /** 用户状态修改 */
     handleStatusChange(row) {
-      const text = row.employeeStatus === '0' ? '启用' : '停用';
-      this.$confirm('确认要"' + text + '""' + row.nickName + '"用户吗?', '警告', {
+      const text = row.employeeStatus === 1 ? '启用' : '停用';
+      this.$confirm('确认要' + text + '"' + row.nickName + '"用户吗?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -386,14 +390,14 @@ export default {
           url_alias: 'changeEmployeeStatus',
           data: {
             employeeCode: row.employeeCode,
-            employeeStatus: row.employeeStatus === '0' ? '1' : '0'
+            employeeStatus: row.employeeStatus
           }
         }
         return http_request(obj);
       }).then(() => {
         this.msgSuccess(text + '成功');
       }).catch(function() {
-        row.employeeStatus = row.employeeStatus === '0' ? '1' : '0';
+        row.employeeStatus = row.employeeStatus === 1 ? 0 : 1;
       });
     },
     /** 重置密码 */
@@ -430,6 +434,7 @@ export default {
       params.pageSize = undefined;
       params.pageNum = undefined;
       this.download('', params, `用户信息`);
+      this.exportLoading = false;
     },
     
   }
