@@ -26,7 +26,6 @@ const user = {
       state.permissions = permissions;
     },
     SET_MENUS:(state, menus)=>{
-      console.log('menus set',menus)
       state.menus = menus
     },
     SET_NICKNAME: (state, nickName) => {
@@ -62,7 +61,6 @@ const user = {
 
     // 获取用户信息
     GetInfo({ commit, state }) {
-      console.log("获取用户信息");
       return new Promise((resolve, reject) => {
         const obj = {
           moduleName: "http_login",
@@ -72,7 +70,6 @@ const user = {
         http_request(obj)
           .then(res => {
             if (!res) return;
-            console.log("re11s", res);
             const user = res.data.user;
             const avatar =
               user.avatar == ""
@@ -84,7 +81,6 @@ const user = {
             commit("SET_NAME", user.userName);
             commit("SET_NICKNAME", user.nickName);
             commit("SET_AVATAR", avatar);
-            console.log('end res',res)
             resolve(res.data);
           })
           .catch(error => {
