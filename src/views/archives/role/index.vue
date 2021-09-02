@@ -76,7 +76,7 @@
               size="mini"
               type="text"
               @click="handleResource(scope.row)"
-            >设置资源</el-button>
+            >功能分配</el-button>
             <el-button
               v-hasPermi="['role:delete']"
               size="mini"
@@ -99,7 +99,7 @@
     <RoleDialog ref="RoleDialog" :open.sync="open" :title="title" @refresh="getList" />
     <!-- 设置职员 -->
     <SettingEmployee ref="SettingEmployee" :open.sync="employeeOpen" :title="title" @refresh="getList" />
-    <!-- 设置资源 -->
+    <!-- 功能分配 -->
     <SettingResource ref="SettingResource" :open.sync="resourceOpen" :title="title" @refresh="getList" />
   </div>
 </template>
@@ -208,11 +208,12 @@ export default {
       this.employeeOpen = true;
       this.title = '设置职员';
     },
-    /** 设置资源 */
+    /** 功能分配 */
     handleResource(row) {
       this.$refs.SettingResource.reset();
+      this.$refs.SettingResource.setRoleMenuTreeselect(row.code);
       this.resourceOpen = true;
-      this.title = '设置资源';
+      this.title = '功能分配';
     },
     /** 删除 */
     handleDelete(row) {

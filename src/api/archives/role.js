@@ -7,4 +7,6 @@ export default {
   infoRole:(res)=>`/fmsweb/basic/role/v1/detail/${res}`, // 角色详情
   deleteRole:(res)=>`/fmsweb/basic/role/v1/delete/${res}`, // 删除角色
   deleteRoleList:`/fmsweb/basic/role/v1/deleteByCodeList`, // 删除多个角色
+  roleMenuTree:(code)=>`/fmsweb/basic/role/v1/roleMenuTree/${code}`, // 查询角色菜单树
+  roleAssignMenu:'/fmsweb/basic/role/v1/roleAssignMenu' // 角色功能分配
 }
