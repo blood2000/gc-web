@@ -6,13 +6,18 @@
         style="text-align: left; display: inline-block"
         v-model="value"
         filterable
+        :titles="['未分配', '已分配']"
+        :filter-method="filterMethod"
+        :props="{
+          key: 'employeeCode',
+          label: 'nickName'
+        }"
         :format="{
           noChecked: '${total}',
           hasChecked: '${checked}/${total}'
         }"
-        @change="handleChange"
         :data="data">
-        <span slot-scope="{ option }">{{ option.key }} - {{ option.label }}</span>
+        <span slot-scope="{ option }">{{ option.nickName }}</span>
       </el-transfer>
     </div>
     <div slot="footer" class="dialog-footer">
@@ -34,19 +39,13 @@ export default {
     open: Boolean
   },
   data() {
-    const generateData = _ => {
-      const data = [];
-      for (let i = 1; i <= 15; i++) {
-        data.push({
-          key: i,
-          label: `备选项 ${ i }`
-        });
-      }
-      return data;
-    };
     return {
       loading: false,
-      data: generateData(),
+      // 当前角色code
+      roleCode: null,
+      // 全部职员
+      data: [],
+      // 选中的职员
       value: []
     };
   },
@@ -63,15 +62,52 @@ export default {
   created() {
   },
   methods: {
+    filterMethod(query, item) {
+      return item.nickName.indexOf(query) > -1;
+    },
+    /** 根据角色编号获取角色分配职员信息（含未分配） */
+    roleAssignEmployeeInfo(code) {
+      this.roleCode = code;
+      const obj = {
+        moduleName: 'http_role',
+        method: 'get',
+        url_alias: 'roleAssignEmployeeInfo',
+        url_code: [code]
+      }
+      http_request(obj).then(response => {
+        const { allEmployeeList, assignedEmployeeList } = response.data;
+        this.data = allEmployeeList || [];
+        // 构造value值
+        if (assignedEmployeeList && assignedEmployeeList.length > 0) {
+          this.value = allEmployeeList.reduce((total, cur) => {
+            assignedEmployeeList.forEach(el => {
+              if (el.employeeCode === cur.employeeCode) {
+                total.push(el.employeeCode);
+              }
+            });
+            return total;
+          }, []);
+        }
+      });
+    },
     /** 提交按钮 */
     submitForm() {
       this.loading = true;
-      // openInvoice(this.form).then(response => {
-      //   this.loading = false;
-      //   this.msgSuccess('操作成功');
-      //   this.close();
-      //   this.$emit('refresh');
-      // });
+      const obj = {
+        moduleName: 'http_role',
+        method: 'post',
+        url_alias: 'roleAssignEmployee',
+        data: {
+          roleCode: this.roleCode,
+          employeeCodeList: this.value
+        }
+      }
+      http_request(obj).then(response => {
+        this.loading = false;
+        this.msgSuccess('操作成功');
+        this.close();
+        this.$emit('refresh');
+      });
     },
     /** 取消按钮 */
     cancel() {
@@ -85,13 +121,8 @@ export default {
     // 重置
     reset() {
       this.loading = false;
-    },
-    // 赋值
-    setForm(data) {
-      
-    },
-    handleChange(value, direction, movedKeys) {
-      console.log(value, direction, movedKeys);
+      this.data = [];
+      this.value = [];
     }
   }
 };

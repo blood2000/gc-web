@@ -8,5 +8,7 @@ export default {
   deleteRole:(res)=>`/fmsweb/basic/role/v1/delete/${res}`, // 删除角色
   deleteRoleList:`/fmsweb/basic/role/v1/deleteByCodeList`, // 删除多个角色
   roleMenuTree:(code)=>`/fmsweb/basic/role/v1/roleMenuTree/${code}`, // 查询角色菜单树
-  roleAssignMenu:'/fmsweb/basic/role/v1/roleAssignMenu' // 角色功能分配
+  roleAssignMenu:'/fmsweb/basic/role/v1/roleAssignMenu', // 角色功能分配
+  roleAssignEmployeeInfo:(code)=>`/fmsweb/basic/role/v1/roleAssignEmployeeInfo/${code}`, // 根据角色编号获取角色分配职员信息（含未分配）
+  roleAssignEmployee:'/fmsweb/basic/role/v1/roleAssignEmployee' // 角色分配职员
 }

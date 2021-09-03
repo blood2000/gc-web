@@ -205,6 +205,7 @@ export default {
     /** 设置职员 */
     handleEmployee(row) {
       this.$refs.SettingEmployee.reset();
+      this.$refs.SettingEmployee.roleAssignEmployeeInfo(row.code);
       this.employeeOpen = true;
       this.title = '设置职员';
     },
