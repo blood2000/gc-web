@@ -121,7 +121,7 @@
                 icon="el-icon-delete"
                 size="mini"
                 :disabled="multiple"
-                @click="handleDelete"
+                @click="handleDeleteMultiple"
               >删除</el-button>
             </el-col>
             <el-col :span="1.5">
@@ -221,6 +221,8 @@
 import EmployeeDialog from './employeeDialog.vue';
 import ResetPwdDialog from './resetPwdDialog.vue';
 import { http_request } from '@/api';
+import { tansParams, parseTime } from '@/utils/ruoyi';
+import { Message } from 'element-ui'
 export default {
   name: 'Employee',
   components: {
@@ -408,8 +410,6 @@ export default {
     },
     /** 删除 */
     handleDelete(row) {
-      const ids = row.employeeCode || this.ids;
-      const nickNames = row.nickName || this.nickNames;
       this.$confirm('是否确认删除"' + row.nickName + '"的账号?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -427,15 +427,37 @@ export default {
         this.msgSuccess('删除成功');
       });
     },
+    /** 删除多个 */
+    handleDeleteMultiple() {
+      const _this = this;
+      this.$confirm('删除操作不可恢复，确认要删除选中的账号吗?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        const obj = {
+          moduleName: 'http_employee',
+          method: 'delete',
+          url_alias: 'deleteEmployeeList',
+          data: {
+            employeeCodeList: _this.ids
+          }
+        }
+        return http_request(obj);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('删除成功');
+      });
+    },
     /** 导出按钮操作 */
     handleExport() {
       this.exportLoading = true;
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
-      this.download('', params, `用户信息`);
+      this.download('/fmsweb/basic/teamEmployee/v1/export', params, `职员信息`, 'application/json');
       this.exportLoading = false;
-    },
+    }
     
   }
 }
