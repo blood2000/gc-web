@@ -3,7 +3,7 @@
   <el-dialog :title="title" :visible="visible" width="600px" append-to-body destroy-on-close :close-on-click-modal="false" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="90px">
       <el-form-item label="角色名称" prop="roleName">
-        <el-input v-model="form.roleName" placeholder="请输入角色名称" clearable />
+        <el-input v-model="form.roleName" placeholder="请输入角色名称" clearable :disabled="isSystem===1" />
       </el-form-item>
       <el-form-item label="角色描述" prop="remark">
         <el-input v-model="form.remark" type="textarea" maxlength="20" show-word-limit placeholder="请输入角色描述" clearable />
@@ -25,7 +25,11 @@ export default {
       type: String,
       default: ''
     },
-    open: Boolean
+    open: Boolean,
+    isSystem: {
+      type: Number,
+      default: 0
+    }
   },
   data() {
     return {

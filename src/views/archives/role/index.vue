@@ -43,7 +43,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
       <el-table v-loading="loading" highlight-current-row border :data="dataList" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="50" align="center" />
+        <el-table-column type="selection" width="50" align="center" :selectable="checkboxSelectable" />
         <el-table-column label="序号" type="index" width="50" align="center" />
         <el-table-column label="角色名称" align="center" prop="roleName" :show-overflow-tooltip="true" />
         <el-table-column label="角色描述" align="center" prop="remark" :show-overflow-tooltip="true" />
@@ -65,24 +65,27 @@
               type="text"
               @click="handleUpdate(scope.row)"
             >修改</el-button>
-            <el-button
-              v-hasPermi="['role:edit']"
-              size="mini"
-              type="text"
-              @click="handleEmployee(scope.row)"
-            >设置职员</el-button>
-            <el-button
-              v-hasPermi="['role:edit']"
-              size="mini"
-              type="text"
-              @click="handleResource(scope.row)"
-            >功能分配</el-button>
-            <el-button
-              v-hasPermi="['role:delete']"
-              size="mini"
-              type="text"
-              @click="handleDelete(scope.row)"
-            >删除</el-button>
+            <!-- isSystem 1系统角色 0其他 -->
+            <template v-if="scope.row.isSystem !== 1">
+              <el-button
+                v-hasPermi="['role:edit']"
+                size="mini"
+                type="text"
+                @click="handleEmployee(scope.row)"
+              >设置职员</el-button>
+              <el-button
+                v-hasPermi="['role:edit']"
+                size="mini"
+                type="text"
+                @click="handleResource(scope.row)"
+              >功能分配</el-button>
+              <el-button
+                v-hasPermi="['role:delete']"
+                size="mini"
+                type="text"
+                @click="handleDelete(scope.row)"
+              >删除</el-button>
+            </template>
           </template>
         </el-table-column>
       </el-table>
@@ -96,7 +99,7 @@
     </div>
 
     <!-- 新增/编辑 -->
-    <RoleDialog ref="RoleDialog" :open.sync="open" :title="title" @refresh="getList" />
+    <RoleDialog ref="RoleDialog" :open.sync="open" :title="title" :isSystem="isSystem" @refresh="getList" />
     <!-- 设置职员 -->
     <SettingEmployee ref="SettingEmployee" :open.sync="employeeOpen" :title="title" @refresh="getList" />
     <!-- 功能分配 -->
@@ -142,7 +145,9 @@ export default {
       employeeOpen: false,
       resourceOpen: false,
       // 弹窗标题
-      title: ''
+      title: '',
+      // 是否系统角色
+      isSystem: 0
     }
   },
   created() {
@@ -186,10 +191,12 @@ export default {
       this.$refs.RoleDialog.reset();
       this.open = true;
       this.title = '添加角色';
+      this.isSystem = 0;
     },
     /** 编辑角色 */
     handleUpdate(row) {
       this.$refs.RoleDialog.reset();
+      this.isSystem = row.isSystem;
       const obj = {
         moduleName: 'http_role',
         method: 'get',
@@ -256,6 +263,13 @@ export default {
         this.getList();
         this.msgSuccess('删除成功');
       });
+    },
+    /** 系统角色的checkbox不可选 */
+    checkboxSelectable(row) {
+      if (row.isSystem !== 1) {
+        return true;
+      }
+      return false;
     }
   }
 }
