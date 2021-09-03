@@ -65,7 +65,7 @@ export const http_request = async  (obj) =>  {
   //method
   tmp.method = obj.method;
   //data or params
-  if (obj.method === 'get' || obj.method === 'delete') {
+  if (obj.method === 'get') {
     obj.data ? tmp.params = obj.data : null;
   } else {
     obj.data ? tmp.data = obj.data : null;
