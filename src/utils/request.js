@@ -3,6 +3,7 @@ import { Notification, MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import errorCode from '@/utils/errorCode'
+import { tansParams, parseTime } from '@/utils/ruoyi';
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 // 创建axios实例
@@ -102,5 +103,71 @@ service.interceptors.response.use(res => {
     return Promise.reject(error)
   }
 )
+
+// 通用下载方法
+export function download(url, params, filename, headers, type = '.xlsx') {
+  filename = filename + '_' + parseTime(new Date(), '{y}{m}{d}{h}{i}') + type;
+  Message({
+    message: '导出中，请稍候',
+    type: 'info',
+    duration: 3 * 1000,
+    showClose: true
+  });
+  return service.post(url, params, {
+    transformRequest: [(params) => {
+      return tansParams(params);
+    }],
+    headers: {
+      'Content-Type': headers || 'application/x-www-form-urlencoded'
+    },
+    responseType: 'blob',
+    timeout: 10 * 60 * 1000 // 有些表导出数据量太大, 超时时间设为10分钟
+  }).then((data) => {
+    var reader = new FileReader();
+    reader.onload = function(event) {
+      const result = reader.result.length < 100 ? JSON.parse(reader.result) : '';// 内容就在这里
+      if (Object.prototype.toString.call(result) === '[object Object]' && (result.code === 400 || result.code === 404)) {
+        // 400
+        Message({
+          message: result.msg,
+          type: 'error',
+          duration: 3 * 1000,
+          showClose: true
+        });
+      } else {
+        // success
+        Message({
+          message: '导出成功',
+          type: 'success',
+          duration: 3 * 1000,
+          showClose: true
+        });
+        const content = data;
+        const blob = new Blob([content]);
+        if ('download' in document.createElement('a')) {
+          const elink = document.createElement('a');
+          elink.download = filename;
+          elink.style.display = 'none';
+          elink.href = URL.createObjectURL(blob);
+          document.body.appendChild(elink);
+          elink.click();
+          URL.revokeObjectURL(elink.href);
+          document.body.removeChild(elink);
+        } else {
+          navigator.msSaveBlob(blob, filename);
+        }
+      }
+    };
+    reader.readAsText(data);
+  }).catch((r) => {
+    Message({
+      message: '导出失败',
+      type: 'error',
+      duration: 3 * 1000,
+      showClose: true
+    });
+    console.error(r);
+  });
+}
 
 export default service
