@@ -118,7 +118,12 @@ export function download(url, params, filename, headers, type = '.xlsx') {
       return tansParams(params);
     }],
     headers: {
-      'Content-Type': headers || 'application/x-www-form-urlencoded'
+      'Content-Type': headers || 'application/x-www-form-urlencoded',
+      "App-Code": '6d818ca732214b6e889dbf6ac3d25aee', //应用编码
+      "App-Type": 0,
+      "App-Version": '1.0.0',
+      "Produce-Code": '1c3646219beb4c7b978b4600965b2c9f',
+      "Terminal-Type": 'web'
     },
     responseType: 'blob',
     timeout: 10 * 60 * 1000 // 有些表导出数据量太大, 超时时间设为10分钟

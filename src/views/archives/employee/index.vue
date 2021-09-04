@@ -221,8 +221,6 @@
 import EmployeeDialog from './employeeDialog.vue';
 import ResetPwdDialog from './resetPwdDialog.vue';
 import { http_request } from '@/api';
-import { tansParams, parseTime } from '@/utils/ruoyi';
-import { Message } from 'element-ui'
 export default {
   name: 'Employee',
   components: {
@@ -455,7 +453,7 @@ export default {
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
-      this.download('/fmsweb/basic/teamEmployee/v1/export', params, `职员信息`, 'application/json');
+      this.download('/fmsweb/basic/teamEmployee/v1/export', params, `职员信息`);
       this.exportLoading = false;
     }
     
