@@ -221,8 +221,6 @@
 import EmployeeDialog from './employeeDialog.vue';
 import ResetPwdDialog from './resetPwdDialog.vue';
 import { http_request } from '@/api';
-import { tansParams, parseTime } from '@/utils/ruoyi';
-import { Message } from 'element-ui'
 export default {
   name: 'Employee',
   components: {
