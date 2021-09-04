@@ -1,7 +1,7 @@
 import Vue from 'vue'
 
 import Cookies from 'js-cookie'
-require('./mock');
+// require('./mock');
 import Element from 'element-ui'
 import './assets/styles/element-variables.scss'
 import '@/assets/styles/index.scss'; // global css

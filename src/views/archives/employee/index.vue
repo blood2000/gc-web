@@ -455,7 +455,7 @@ export default {
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
-      this.download('/fmsweb/basic/teamEmployee/v1/export', params, `职员信息`, 'application/json');
+      this.download('/fmsweb/basic/teamEmployee/v1/export', params, `职员信息`);
       this.exportLoading = false;
     }
     
