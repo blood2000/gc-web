@@ -8,5 +8,6 @@ export default {
   vehicle_detail:(code)=>{
     return `/fmsweb/basic/vehicle/v1/detail/${code}`
   }, //车辆详情
-  vehicle_list_page:'/fmsweb/basic/vehicle/v1/paging'//获取分页 
+  vehicle_list_page:'/fmsweb/basic/vehicle/v1/paging',//获取分页 
+  vehicle_stopstatus:'/fmsweb/basic/vehicle/v1/updateStopStatus' //修改停用状态
 }
