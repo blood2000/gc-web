@@ -14,7 +14,7 @@ import directive from './directive' //directive
 
 import './assets/icons' // icon
 import './permission' // permission control
-import { getDicts } from "@/api/system/dict/data";
+import { getDicts } from "@/utils/request";
 import { getConfigKey } from "@/api/system/config";
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from "@/utils/ruoyi";
 import { download } from "@/utils/request";

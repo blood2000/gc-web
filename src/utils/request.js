@@ -3,7 +3,8 @@ import { Notification, MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import errorCode from '@/utils/errorCode'
-import { tansParams, parseTime } from '@/utils/ruoyi';
+import { tansParams, parseTime } from '@/utils/ruoyi'
+import { defaultH } from '@/api'
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 // 创建axios实例
@@ -117,14 +118,9 @@ export function download(url, params, filename, headers, type = '.xlsx') {
     transformRequest: [(params) => {
       return tansParams(params);
     }],
-    headers: {
-      'Content-Type': headers || 'application/x-www-form-urlencoded',
-      "App-Code": '6d818ca732214b6e889dbf6ac3d25aee', //应用编码
-      "App-Type": 0,
-      "App-Version": '1.0.0',
-      "Produce-Code": '1c3646219beb4c7b978b4600965b2c9f',
-      "Terminal-Type": 'web'
-    },
+    headers: Object.assign({}, defaultH, {
+      'Content-Type': headers || 'application/x-www-form-urlencoded'
+    }),
     responseType: 'blob',
     timeout: 10 * 60 * 1000 // 有些表导出数据量太大, 超时时间设为10分钟
   }).then((data) => {
@@ -173,6 +169,19 @@ export function download(url, params, filename, headers, type = '.xlsx') {
     });
     console.error(r);
   });
+}
+
+// 通用下载字典方法
+export function getDicts(dictType) {
+  const params = {
+    dictType: dictType,
+    dictPid: 0
+  }
+  return service.post('/fmsweb/system/common/v1/listByDict', params, {
+    headers: Object.assign({}, defaultH, {
+      'Content-Type': 'application/json'
+    })
+  })
 }
 
 export default service
