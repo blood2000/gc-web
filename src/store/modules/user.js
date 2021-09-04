@@ -92,17 +92,21 @@ const user = {
     // 退出系统
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
-        logout(state.token)
-          .then(() => {
-            commit("SET_TOKEN", "");
-            // commit("SET_ROLES", []);
-            commit("SET_PERMISSIONS", []);
-            removeToken();
-            resolve();
-          })
-          .catch(error => {
-            reject(error);
-          });
+        const obj = {
+          moduleName: "http_login",
+          method: "delete",
+          url_alias: "logout"
+        };
+        http_request(state).then(() => {
+          commit("SET_TOKEN", "");
+          // commit("SET_ROLES", []);
+          commit("SET_PERMISSIONS", []);
+          removeToken();
+          resolve();
+        })
+        .catch(error => {
+          reject(error);
+        });
       });
     },
 
