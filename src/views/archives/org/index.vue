@@ -55,18 +55,20 @@
               type="text"
               @click="handleAdd(scope.row)"
             >新增</el-button>
-            <el-button
-              v-hasPermi="['org:edit']"
-              size="mini"
-              type="text"
-              @click="handleUpdate(scope.row)"
-            >修改</el-button>
-            <el-button
-              v-hasPermi="['org:delete']"
-              size="mini"
-              type="text"
-              @click="handleDelete(scope.row)"
-            >删除</el-button>
+            <template v-if="scope.row.parentId !== 0">
+              <el-button
+                v-hasPermi="['org:edit']"
+                size="mini"
+                type="text"
+                @click="handleUpdate(scope.row)"
+              >修改</el-button>
+              <el-button
+                v-hasPermi="['org:delete']"
+                size="mini"
+                type="text"
+                @click="handleDelete(scope.row)"
+              >删除</el-button>
+            </template>
           </template>
         </el-table-column>
       </el-table>
