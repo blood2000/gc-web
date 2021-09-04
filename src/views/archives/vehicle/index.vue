@@ -1,121 +1,198 @@
 <template>
-  <div>
-    <div>
-      <!-- 上：搜索 -->
-      <QueryForm
-        v-model="queryParams"
-        :vehicle-status-list="vehicleStatusList"
-        :group-List="groupList"
-        :data-status-list="dataStatusList"
-        @handleQuery="searchQuery"
-        
-      />
-    </div>
-    <!-- 下 -->
-    <div class="app-container">
-      <!-- 操作栏 -->
-      <el-row :gutter="10" class="mb8">
-        <el-col :span="1.5">
-          <el-button type="primary" size="mini" @click="handleAdd"
-            >新增</el-button
-          >
-        </el-col>
-        <el-col :span="1.5">
-          <el-button
-            type="danger"
-            size="mini"
-            :disabled="multiple"
-            @click="handleDelete"
-            >删除</el-button
-          >
-        </el-col>
-        <el-col :span="1.5">
-          <el-button type="primary" size="mini" @click="handleImport"
-            >导入</el-button
-          >
-        </el-col>
-        <el-col :span="1.5">
-          <el-button
-            type="primary"
-            size="mini"
-            :loading="exportLoading"
-            @click="handleExport"
-            >导出</el-button
-          >
-        </el-col>
-        <el-col :span="1.5">
-          <el-button type="primary" size="mini" @click="handleGroup"
-            >车辆分组管理</el-button
-          >
-        </el-col>
-        <el-col :span="1.5"><a> 下载导入模板</a> </el-col>
-      </el-row>
-      <!-- 表格 -->
-      <RefactorTable
-        is-show-index
-        :loading="loading"
-        :data="vehicleList"
-        row-key="id"
-        :table-columns-config="tableColumnsConfig"
-        @selection-change="handleSelectionChange"
-      >
-        <template #ticket="{ row }">
-          <span>{{ selectDictLabel(assetsTicketType, row.ticket) }}</span>
-        </template>
-        <template #edit="{ row }">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(row)"
-            >修改</el-button
-          >
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            style="color: red"
-            @click="handleDelete(row)"
-            >删除</el-button
-          >
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-position"
-            @click="handlePosition(row)"
-            >定位</el-button
-          >
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-tickets"
-            @click="handleDetail(row)"
-            >详情</el-button
-          >
-        </template>
-      </RefactorTable>
-      <!-- 分页 -->
-      <pagination
-        v-show="total > 0"
-        :total="total"
-        :page.sync="queryParams.pageNum"
-        :limit.sync="queryParams.pageSize"
-        @pagination="vehicleHttpReq"
-      />
-    </div>
-    <VehicleDialog :open="open" :title="title" @colseDialog ="colseDialog"></VehicleDialog>
+  <div class="device-info">
+    <el-row :gutter="15">
+      <el-col :xl="5" :lg="6" :md="8" :sm="9" :xs="24">
+        <div class="device-info-left">
+          <div class="head-container">
+            <el-input
+              v-model="orgName"
+              placeholder="请输入组织名称"
+              clearable
+              size="small"
+              prefix-icon="el-icon-search"
+              class="mb20"
+            />
+          </div>
+          <div class="head-container el-tree-scroll-container">
+            <el-tree
+              ref="tree"
+              :data="orgTreeData"
+              :props="defaultTreeProps"
+              :expand-on-click-node="true"
+              :filter-node-method="filterNode"
+              :indent="0"
+              :highlight-current="true"
+              node-key="code"
+              :current-node-key="orgCode"
+              default-expand-all
+              @node-click="handleNodeClick"
+            >
+              <span slot-scope="{ node, data }">
+                <span class="node-label">
+                  <i class="tree-node-icon" :class="data.icon" />
+                  {{ node.label }}
+                </span>
+              </span>
+            </el-tree>
+          </div>
+        </div>
+      </el-col>
+      <el-col :xl="19" :lg="18" :md="16" :sm="15" :xs="24">
+        <div class="device-info-right">
+          <div class="device-info-right-top">
+            <!-- 上：搜索 -->
+            <QueryForm
+              v-model="queryParams"
+              :vehicle-status-list="vehicleStatusList"
+              :group-List="groupList"
+              :data-status-list="dataStatusList"
+              @handleQuery="searchQuery"
+            />
+          </div>
+          <!-- 下 -->
+          <div class="device-info-right-bottom">
+            <!-- 操作栏 -->
+            <el-row :gutter="10" class="mb8">
+              <el-col :span="1.5">
+                <el-button type="primary" size="mini" @click="handleAdd"
+                  >新增</el-button
+                >
+              </el-col>
+              <el-col :span="1.5">
+                <el-button
+                  type="danger"
+                  size="mini"
+                  :disabled="multiple"
+                  @click="handleDelete"
+                  >删除</el-button
+                >
+              </el-col>
+              <el-col :span="1.5">
+                <el-button type="primary" size="mini" @click="handleImport"
+                  >导入</el-button
+                >
+              </el-col>
+              <el-col :span="1.5">
+                <el-button
+                  type="primary"
+                  size="mini"
+                  :loading="exportLoading"
+                  @click="handleExport"
+                  >导出</el-button
+                >
+              </el-col>
+              <el-col :span="1.5">
+                <el-button type="primary" size="mini" @click="handleGroup"
+                  >车辆分组管理</el-button
+                >
+              </el-col>
+              <el-col :span="1.5"><a> 下载导入模板</a> </el-col>
+              <right-toolbar
+                :show-search.sync="showSearch"
+                @queryTable="searchQuery"
+              />
+            </el-row>
+            <!-- 表格 -->
+            <RefactorTable
+              is-show-index
+              :loading="loading"
+              :data="vehicleList"
+              row-key="id"
+              :table-columns-config="tableColumnsConfig"
+              @selection-change="handleSelectionChange"
+            >
+              <template #dataStatus="{ row }">
+                <el-switch
+                  v-model="row.dataStatus"
+                  :active-value="1"
+                  :inactive-value="0"
+                  @change="handleStatusChange(row)"
+                />
+              </template>
+              <template #deviceInf="{ row }">
+                <div
+                  class="deviceInf-cion"
+                  v-for="item in row.deviceInf"
+                  :key="item.img"
+                >
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="item.name"
+                    placement="top"
+                  >
+                    <img :src="item.img" alt="" />
+                  </el-tooltip>
+                </div>
+              </template>
+
+              <template #edit="{ row }" width="200">
+                <el-button
+                  size="mini"
+                  type="text"
+                  icon="el-icon-edit"
+                  @click="handleUpdate(row)"
+                  >修改</el-button
+                >
+                <el-button
+                  size="mini"
+                  type="text"
+                  icon="el-icon-delete"
+                  style="color: red"
+                  @click="handleDelete(row)"
+                  >删除</el-button
+                >
+                <el-button
+                  size="mini"
+                  type="text"
+                  icon="el-icon-position"
+                  @click="handlePosition(row)"
+                  >定位</el-button
+                >
+                <el-button
+                  size="mini"
+                  type="text"
+                  icon="el-icon-tickets"
+                  @click="handleDetail(row)"
+                  >详情</el-button
+                >
+              </template>
+            </RefactorTable>
+            <!-- 分页 -->
+            <pagination
+              v-show="total > 0"
+              :total="total"
+              :page.sync="queryParams.pageNum"
+              :limit.sync="queryParams.pageSize"
+              @pagination="vehicleHttpReq"
+            />
+          </div>
+        </div>
+      </el-col>
+    </el-row>
+    <VehicleDialog
+      :options="{ editType: editType, code: currCode }"
+      :open="open"
+      :title="title"
+      @colseDialog="colseDialog"
+    ></VehicleDialog>
+    <GroupDialog
+      :group-open="groupOpen"
+      @colseGroupDialog="colseGroupDialog"
+    ></GroupDialog>
   </div>
 </template>
 
 <script>
 import vehicleConfig from "./vehicle_config";
 import QueryForm from "./components/queryForm.vue";
-import VehicleDialog from './components/vehicle_dialog.vue'
+import VehicleDialog from "./components/vehicle_dialog.vue";
+import GroupDialog from "./components/group_dialog.vue";
 import { http_request } from "@/api";
 
 export default {
   name: "vehicle", // 车辆管理
-  components: { QueryForm ,VehicleDialog},
+  components: { QueryForm, VehicleDialog, GroupDialog },
   data() {
     return {
       showSearch: true, //搜索显隐
@@ -123,8 +200,11 @@ export default {
       exportLoading: false, //到处load
       total: 0, //总条数
       multiple: true, //是否激活多选删除按钮
-      open:false, //dialog show
-      title:"", //dialog titile
+      editType: "add", //打开弹窗 执行的操作
+      open: false, //dialog show
+      groupOpen: false, //分组弹窗
+      title: "", //dialog titile
+      currCode: null, //当前选中的currCode
       queryParams: {
         pageNum: 1,
         pageSize: 10,
@@ -141,6 +221,13 @@ export default {
       vehicleList: [], //表格数据
       selection: [], // 被勾选表格数据
       codes: [], //删除选择的codes
+      orgName: "", //组织查询
+      orgCode: null, // 当前选中的类型
+      defaultTreeProps: {
+        children: "childrenOrgList",
+        label: "orgName",
+      },
+      orgTreeData: [],
     };
   },
   created() {
@@ -151,18 +238,78 @@ export default {
     //this.group =
   },
   mounted() {
+    this.getOrgHttp();
     this.searchQuery();
   },
+  watch: {
+    orgName(val) {
+      this.$refs.tree.filter(val);
+    },
+  },
   methods: {
-    //发送搜索请求
+    //停用状态修改
+    handleStatusChange(row) {
+      const text = row.dataStatus === 1 ? "启用" : "停用";
+      this.$confirm("确认要" + text + "吗?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(function () {
+          const obj = {
+            moduleName: "http_vehicle",
+            method: "put",
+            url_alias: "vehicle_stopstatus",
+            data: {
+              code: row.code,
+              stopStatus: row.dataStatus,
+            },
+          };
+          return http_request(obj);
+        })
+        .then(() => {
+          this.msgSuccess(text + "成功");
+        })
+        .catch(function () {
+          row.dataStatus = row.dataStatus === 1 ? 0 : 1;
+        });
+    },
+    //请求组织树数据
+    async getOrgHttp() {
+      const obj = {
+        moduleName: "http_org",
+        method: "get",
+        url_alias: "orgTree",
+      };
+      if (this.orgName) obj.data = { orgName: this.orgName };
+      const orgRes = await http_request(obj);
+      console.log("orgRes res", orgRes);
+      this.orgTreeData =
+        orgRes.data.length > 0 ? orgRes.data[0].childrenOrgList : [];
+      this.currCode = this.orgTreeData[0].code;
+      console.log("当前code", this.currCode);
+      //     this.searchQuery();
+    },
+    //过滤节点
+    filterNode(value, data) {
+      if (!value) return true;
+      return data.orgName.indexOf(value) !== -1;
+    },
+    //点击组织树节点
+    handleNodeClick(data) {
+      console.log("data", data);
+      this.orgCode = data.code;
+      this.queryParams.pageNum = 1;
+      this.vehicleHttpReq();
+    },
+    //初始页数请求
     searchQuery() {
-      this.pageNum = 1;
+      this.queryParams.pageNum = 1;
       this.vehicleHttpReq();
     },
     //请求分页数据
     async vehicleHttpReq() {
       this.loading = true;
-      console.log(this.queryParams);
       const obj = {
         moduleName: "http_vehicle",
         method: "post",
@@ -170,32 +317,40 @@ export default {
         data: {
           pageNum: this.queryParams.pageNum,
           pageSize: this.queryParams.pageSize,
-          licenseNumber: this.queryParams.licenseNumber||null, //车牌号
-          vehicleStatus: this.queryParams.vehicleStatus||null, //车辆状态
-          group: this.queryParams.group||null, //分组
+          licenseNumber: this.queryParams.licenseNumber || null, //车牌号
+          vehicleStatus: this.queryParams.vehicleStatus || null, //车辆状态
+          group: this.queryParams.group || null, //分组
           dataStatus: this.queryParams.dataStatus, //是否停用
-          createBeginTime: this.queryParams.dateRange[0]||null,
-          createEndTime: this.queryParams.dateRange[1] ||null,
+          createBeginTime: this.queryParams.dateRange[0] || null,
+          createEndTime: this.queryParams.dateRange[1] || null,
         },
       };
       console.log("所有参数列表", obj);
       const res = await http_request(obj);
       console.log("res", res);
-      this.vehicleList = res.data.rows;
-      this.total = res.data.total;
-      this.loading = false;
+      if (res.code == "200") {
+        this.vehicleList = res.data.rows;
+        this.total = res.data.total;
+        this.loading = false;
+      } else {
+        console.log("error", res);
+        this.loading = false;
+      }
     },
     //新增
     handleAdd() {
-        this.title = '新增车辆弹窗'
-        this.open = true
+      this.title = "新增车辆弹窗";
+      this.editType = "add";
+      this.open = true;
     },
     //导入
     handleImport() {},
     //导出
     handleExport() {},
     //分组管理
-    handleGroup() {},
+    handleGroup() {
+      this.groupOpen = true;
+    },
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.selection = selection;
@@ -208,6 +363,16 @@ export default {
       console.log("obj", obj);
       const ids = obj.code || this.ids;
       console.log("this.ids", ids);
+      this.$confirm("确认要删除吗?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(function () {})
+        .then(() => {
+          this.msgSuccess("删除成功");
+        })
+        .catch(function () {});
       console.log("暂未开通, 等待接口");
       return;
       this.$confirm("是否确认删除此项数据?", "警告", {
@@ -230,17 +395,59 @@ export default {
         });
     },
     handleUpdate(obj) {
-        this.title = '修改车辆弹窗'
-        this.open = true
+      this.title = "修改车辆弹窗";
+      this.editType = "update";
+      this.open = true;
+      this.currCode = obj.code;
     },
     handlePosition(obj) {},
-    handleDetail(obj) {},
-    colseDialog(){
-        console.log('关闭。。。')
-        this.open = false
-    }
+    handleDetail(obj) {
+      const code = obj.code;
+      console.log(" index code", code);
+      this.$router.push("detail?code=" + code);
+    },
+    colseDialog() {
+      console.log("关闭。。。");
+      this.open = false;
+    },
+    colseGroupDialog() {
+      console.log("group关闭。。。");
+      this.groupOpen = false;
+    },
   },
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.device-info {
+  margin: 0 15px;
+  @mixin box-shadow {
+    margin: 0 0 15px;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
+    border-radius: 3px;
+  }
+
+  .device-info-left {
+    @include box-shadow;
+    min-height: calc(100vh - 146px);
+  }
+
+  .device-info-right {
+    .device-info-right-top {
+      @include box-shadow;
+      padding-bottom: 8px;
+    }
+    .device-info-right-bottom {
+      @include box-shadow;
+    }
+  }
+}
+.deviceInf-cion {
+  display: flex;
+  flex-direction: row;
+  width: 20xp;
+  height: 20px;
+}
+</style>
