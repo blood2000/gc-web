@@ -2,7 +2,7 @@
   <!-- 角色管理 -->
   <div>
     <div class="app-container app-container--search" v-show="showSearch">
-      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px" @submit.native.prevent>
         <el-form-item label="角色名称" prop="roleName">
           <el-input
             v-model="queryParams.roleName"
