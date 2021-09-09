@@ -47,7 +47,7 @@
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 import { http_request } from '@/api';
-import { sha1 } from '@/utils/sha1';
+const Base64 = require('js-base64').Base64;
 export default {
   name: 'EmployeeDialog',
   components: {
@@ -162,7 +162,7 @@ export default {
           this.loading = true;
           // 密码加密
           if (this.form.password && this.form.password !== '') {
-            this.form.password = sha1(this.form.password);
+            this.form.password = Base64.encode(this.form.password);
           }
           if (this.form.employeeCode) {
             // 编辑
