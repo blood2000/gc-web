@@ -137,19 +137,19 @@
             <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
           </el-row>
           <el-table v-loading="loading" highlight-current-row border :data="dataList" @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="50" align="center" />
+            <el-table-column type="selection" width="50" align="center" :selectable="checkboxSelectable"  />
             <el-table-column label="序号" type="index" width="50" align="center" />
             <el-table-column label="姓名" align="center" prop="nickName" :show-overflow-tooltip="true" />
             <el-table-column label="手机号" align="center" prop="phonenumber" :show-overflow-tooltip="true" />
             <el-table-column label="所属组织" align="center" prop="orgName" :show-overflow-tooltip="true" />
             <el-table-column label="所属角色" align="center" prop="roleNames" :show-overflow-tooltip="true" />
-            <!-- 0 禁用 1 启用 -->
+            <!-- 0 启用 1 禁用 -->
             <el-table-column label="账号状态" align="center" prop="employeeStatus">
               <template slot-scope="scope">
                 <el-switch
                   v-model="scope.row.employeeStatus"
-                  :active-value="1"
-                  :inactive-value="0"
+                  active-value="0"
+                  inactive-value="1"
                   @change="handleStatusChange(scope.row)"
                 />
               </template>
@@ -191,6 +191,7 @@
                   @click="handleResetPwd(scope.row)"
                 >重置密码</el-button>
                 <el-button
+                  v-if="!scope.row.teamLeaderFlag"
                   v-hasPermi="['employee:delete']"
                   size="mini"
                   type="text"
@@ -270,8 +271,8 @@ export default {
       title: '',
       // 字典
       employeeStatusOptions: [
-        { dictLabel: '禁用', dictValue: 0 },
-        { dictLabel: '启用', dictValue: 1 }
+        { dictLabel: '启用', dictValue: '0' },
+        { dictLabel: '禁用', dictValue: '1' }
       ],
       // 导出按钮
       exportLoading: false
@@ -326,11 +327,16 @@ export default {
     /** 获取职员列表 */
     getList() {
       this.loading = true;
+      // 构造参数
+      const params = Object.assign({}, this.queryParams);
+      if(params.startTime && params.startTime !== '') params.startTime = params.startTime + ' 00:00:00';
+      if(params.endTime && params.endTime !== '') params.endTime = params.endTime + ' 23:59:59';
+      // 构造参数end
       const obj = {
         moduleName: 'http_employee',
         method: 'post',
         url_alias: 'listEmployee',
-        data: this.queryParams
+        data: params
       }
       http_request(obj).then(res => {
         this.loading = false;
@@ -378,7 +384,7 @@ export default {
     },
     /** 用户状态修改 */
     handleStatusChange(row) {
-      const text = row.employeeStatus === 1 ? '启用' : '停用';
+      const text = row.employeeStatus === '0' ? '启用' : '停用';
       this.$confirm('确认要' + text + '"' + row.nickName + '"用户吗?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -397,7 +403,7 @@ export default {
       }).then(() => {
         this.msgSuccess(text + '成功');
       }).catch(function() {
-        row.employeeStatus = row.employeeStatus === 1 ? 0 : 1;
+        row.employeeStatus = row.employeeStatus === '1' ? '0' : '1';
       });
     },
     /** 重置密码 */
@@ -453,8 +459,17 @@ export default {
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
+      if(params.startTime && params.startTime !== '') params.startTime = params.startTime + ' 00:00:00';
+      if(params.endTime && params.endTime !== '') params.endTime = params.endTime + ' 23:59:59';
       this.download('/fmsweb/basic/teamEmployee/v1/export', params, `职员信息`);
       this.exportLoading = false;
+    },
+    /** 车队长的checkbox不可选 */
+    checkboxSelectable(row) {
+      if (!row.teamLeaderFlag) {
+        return true;
+      }
+      return false;
     }
     
   }

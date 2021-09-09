@@ -6,7 +6,7 @@
         <el-input v-model="form.nickName" placeholder="请输入用户姓名" clearable />
       </el-form-item>
       <el-form-item label="手机号码" prop="phonenumber">
-        <el-input v-model="form.phonenumber" placeholder="请输入手机号码" clearable :disabled="!!form.employeeCode" @blur="getUserAlreadyExist" />
+        <el-input v-model="form.phonenumber" placeholder="请输入手机号码" clearable :disabled="!!form.employeeCode" />
       </el-form-item>
       <el-form-item label="登录密码" prop="password">
         <el-input v-model="form.password" type="password" placeholder="请输入登录密码" clearable style="width: 60%" class="mr10" />
@@ -105,9 +105,7 @@ export default {
         };
       },
       // 角色树选项
-      roleOptions: [],
-      // 手机号是否存在
-      phoneUniq: false
+      roleOptions: []
     };
   },
   computed: {
@@ -141,7 +139,7 @@ export default {
       const obj = {
         moduleName: 'http_role',
         method: 'get',
-        url_alias: 'listRoleAll'
+        url_alias: 'listExcludeDriver'
       }
       http_request(obj).then(res => {
         this.roleOptions = res.data;
@@ -149,13 +147,20 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
-      this.$refs['form'].validate(valid => {
+      const _this = this;
+      this.$refs['form'].validate(async (valid) => {
         if (valid) {
-          if (this.phoneUniq) {
-            this.msgWarning('该手机号已被使用');
-            return;
-          }
+          // 判断手机号是否存在
+          const { data } = await http_request({
+            moduleName: 'http_employee',
+            method: 'get',
+            url_alias: 'checkPhoneExist',
+            data: {
+              phonenumber: this.form.phonenumber
+            }
+          })
           this.loading = true;
+          // 密码加密
           if (this.form.password && this.form.password !== '') {
             this.form.password = sha1(this.form.password);
           }
@@ -183,14 +188,46 @@ export default {
               url_alias: 'addEmployee',
               data: this.form
             }
-            http_request(obj).then(res => {
-              this.loading = false;
-              this.msgSuccess('操作成功');
-              this.close();
-              this.$emit('refresh');
-            }).catch(e => {
-              this.loading = false;
-            });
+            // 手机号已存在
+            if (data.phoneExist) {
+              // 允许绑定
+              if (data.allowBind) {
+                this.$confirm('手机号已存在，是否绑定该手机号?', '警告', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'warning'
+                }).then(function() {
+                  // 绑定
+                  return http_request({
+                    moduleName: 'http_employee',
+                    method: 'post',
+                    url_alias: 'bindByphoneNumber',
+                    data: _this.form
+                  })
+                }).then(() => {
+                  this.loading = false;
+                  this.msgSuccess('操作成功');
+                  this.close();
+                  this.$emit('refresh');
+                }).catch(() => {
+                  this.loading = false;
+                });
+              } else {
+                // 不允许绑定
+                this.msgWarning('该手机号已被使用');
+                this.loading = false;
+              }
+            } else {
+              // 手机号不存在, 新增
+              http_request(obj).then(res => {
+                this.loading = false;
+                this.msgSuccess('操作成功');
+                this.close();
+                this.$emit('refresh');
+              }).catch(e => {
+                this.loading = false;
+              });
+            }
           }
         }
       });
@@ -216,7 +253,6 @@ export default {
         remark: null
       };
       this.resetForm('form');
-      this.phoneUniq = false;
     },
     /** 表单赋值 */
     setForm(data) {
@@ -227,34 +263,6 @@ export default {
       this.$nextTick(() => {
         this.$refs.form.validateField('orgCode');
       });
-    },
-    /** 检查手机号码是否存在 */
-    getUserAlreadyExist() {
-      if (this.form.phonenumber) {
-        const obj = {
-          moduleName: 'http_employee',
-          method: 'get',
-          url_alias: 'checkPhoneExist',
-          data: {
-            phonenumber: this.form.phonenumber
-          }
-        }
-        http_request(obj).then(res => {
-          if (res.data) {
-            // 已存在
-            this.phoneUniq = true;
-            this.msgWarning('该手机号已被使用');
-            this.$nextTick(() => {
-              this.$refs.telphone.focus();
-            });
-          } else {
-            // 不存在
-            this.phoneUniq = false;
-          }
-        }).catch(e => {
-          this.phoneUniq = false;
-        });
-      }
     }
   }
 };
