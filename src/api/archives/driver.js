@@ -4,5 +4,7 @@ export default {
   driver_list:'/fmsweb/basic/driver/v1/list',
   driver_paging:'/fmsweb/basic/driver/v1/paging',
   driver_detail:(code)=>`/fmsweb/basic/driver/v1/detail/${code}`,
-  driver_del:(teamCode,driverCode)=>`/fmsweb/basic/driver/v1/delete/${teamCode}/${driverCode}`
+  driver_del:'/fmsweb/basic/driver/v1/delete',
+  driver_enabled:'/fmsweb/basic/driver/v1/updateEnabled',
+  driver_reset_pwd:'/fmsweb/basic/driver/v1/restPassword'
 }

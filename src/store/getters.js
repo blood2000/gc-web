@@ -16,5 +16,9 @@ const getters = {
   topbarRouters:state => state.permission.topbarRouters,
   defaultRoutes:state => state.permission.defaultRoutes,
   sidebarRouters:state => state.permission.sidebarRouters,
+  vehicleEnergyTypeList:state => state.dict.vehicleEnergyTypeList,
+  vehicleTypeCodeList:state => state.dict.vehicleTypeCodeList,
+  carrierTypeList:state => state.dict.carrierTypeList,
+  vehicleLicenseColorCodeList:state => state.dict.vehicleLicenseColorCodeList,
 }
 export default getters

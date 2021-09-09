@@ -39,13 +39,13 @@
       </el-col>
       <el-col :xl="19" :lg="18" :md="16" :sm="15" :xs="24">
         <div class="device-info-right">
-          <div class="device-info-right-top">
+          <div class="device-info-right-top" v-show="showSearch">
             <!-- 上：搜索 -->
             <QueryForm
               v-model="queryParams"
-              :stopStatusList="stopStatusList"
-              :taskStatusList="taskStatusList"
-              :realStatusList="realStatusList"
+              :enabled-list="enabledList"
+              :driver-status-list="driverStatusList"
+              :real-status-list="realStatusList"
               @handleQuery="searchQuery"
             />
           </div>
@@ -80,6 +80,10 @@
                   >导出</el-button
                 >
               </el-col>
+              <right-toolbar
+                :show-search.sync="showSearch"
+                @queryTable="searchQuery"
+              />
             </el-row>
             <!-- 表格 -->
             <RefactorTable
@@ -90,6 +94,33 @@
               :table-columns-config="tableColumnsConfig"
               @selection-change="handleSelectionChange"
             >
+              <template #driverStatus="{ row }">
+                <span
+                  :style="{
+                    color: driverStatusDeal(row.driverStatus, 'color'),
+                  }"
+                >
+                  {{ driverStatusDeal(row.driverStatus, "text") }}
+                </span>
+              </template>
+              <template #realStatus="{ row }">
+                <span
+                  :style="{
+                    color: realStatusDeal(row.realStatus, 'color'),
+                  }"
+                >
+                  {{ realStatusDeal(row.realStatus, "text") }}
+                </span>
+              </template>
+
+              <template #enabled="{ row }">
+                <el-switch
+                  v-model="row.enabled"
+                  :active-value="1"
+                  :inactive-value="0"
+                  @change="handleStatusChange(row)"
+                />
+              </template>
               <template #edit="{ row }">
                 <el-button
                   size="mini"
@@ -134,7 +165,7 @@
             <pagination
               v-show="total > 0"
               :total="total"
-              :page.sync="queryParams.pageNum"
+              :page.sync="queryParams.startIndex"
               :limit.sync="queryParams.pageSize"
               @pagination="driverHttpReq"
             />
@@ -146,9 +177,15 @@
       :options="{ editType: editType, code: currCode }"
       :open="open"
       :title="title"
-      :orgList ="orgList"
+      :orgList="orgList"
       @colseDialog="colseDialog"
     ></DriverDialog>
+    <ResetPwdDialog
+      ref="resetPwdDialog"
+      :open.sync="resetPwdOpen"
+      :title="pwdTitle"
+      @refresh="searchQuery"
+    />
   </div>
 </template>
 
@@ -157,8 +194,9 @@ import { http_request } from "@/api";
 import driverConfig from "./driver_config";
 import DriverDialog from "./components/driver_dialog.vue";
 import QueryForm from "./components/queryForm.vue";
+import ResetPwdDialog from './components/resetPwdDialog.vue'
 export default {
-  components: { QueryForm, DriverDialog },
+  components: { QueryForm, DriverDialog ,ResetPwdDialog},
   data() {
     return {
       showSearch: true, //搜索显隐
@@ -168,21 +206,22 @@ export default {
       open: false,
       editType: "",
       title: "",
+      resetPwdOpen: false,
+      pwdTitle: "",
       multiple: true, //是否激活多选删除按钮
       ids: [],
       driverList: [], //表格数据
       queryParams: {
-        pageNum: 1,
+        startIndex: 1,
         pageSize: 10,
-        name: "",
-        telphone: "",
-        stopStatus: "",
-        taskStatus: "",
-        realStatus: "",
+        name: null,
+        telphone: null,
+        enabled: null, //停用状态
+        driverStatus: null, //司机状态
+        realStatus: null, //实名状态
         dateRange: [], //日期范围
       },
       currCode: null, //当前选中的currCode
-
       orgName: "", //组织查询
       orgCode: null, // 当前选中的类型
       defaultTreeProps: {
@@ -192,10 +231,12 @@ export default {
       orgTreeData: [],
       selection: [], // 被勾选表格数据
       codes: [], //删除选择的codes
-      stopStatusList: [],
-      taskStatusList: [],
+      enabledList: [],
+      driverStatusList: [],
       realStatusList: [],
-      orgList:[]
+      orgList: [],
+      driverConfig: {},
+      orgNmaetable: "",
     };
   },
   watch: {
@@ -205,12 +246,25 @@ export default {
   },
   created() {
     this.tableColumnsConfig = driverConfig.tableColumnsConfig;
+    this.driverStatusList = driverConfig.driverStatusCongfigArr
+    this.driverConfig = driverConfig;
+    console.log("driverConfig", this.driverConfig);
   },
   mounted() {
     this.getOrgHttp();
     this.searchQuery();
   },
   methods: {
+    //数据处理
+    driverStatusDeal(status, type) {
+      if (!status) return null;
+      return driverConfig.driverStatusCongfig[status][type];
+    },
+    //实名状态处理
+    realStatusDeal(status, type) {
+      if (!status && status != 0) return null;
+      return driverConfig.realStatusConfig[status][type];
+    },
     //新增
     handleAdd() {
       this.title = "新增司机弹窗";
@@ -219,17 +273,51 @@ export default {
     }, //删除
     async handleDelete(obj = {}) {
       console.log("obj", obj);
-      const ids = obj.code || this.ids;
+      if (obj.driverStatus == "0") {
+        this.$confirm("司机正在运输任务中，无法删除。", "警告", {
+          cancelButtonText: "取消",
+          type: "warning",
+        });
+        return;
+      }
+      const ids = [obj.code] || this.ids;
       console.log("this.ids", ids);
-      console.log("暂未开通, 等待接口");
-      return;
+      this.$confirm("是否确认删除此项数据?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          const tmp = {
+            moduleName: "http_driver",
+            method: "post",
+            url_alias: "driver_del",
+            data: { list: ids },
+          };
+          http_request(tmp);
+        })
+        .then(() => {
+          this.searchQuery();
+          this.msgSuccess("删除成功");
+        });
     },
-    handleReset(data) {},
+    handleReset(data) {
+      this.$refs.resetPwdDialog.reset(data.userCode);
+      this.resetPwdOpen = true;
+      this.pwdTitle = "密码重置";
+    },
     handlePermission(data) {},
     //导入
     handleImport() {},
     //导出
-    handleExport() {},
+    handleExport() {
+      //  this.exportLoading = true;
+      // const params = Object.assign({}, this.queryParams);
+      // params.pageSize = undefined;
+      // params.startIndex = undefined;
+      // this.download('/fmsweb/basic/teamEmployee/v1/export', params, `职员信息`);
+      // this.exportLoading = false;
+    },
     handleUpdate(obj) {
       this.title = "修改司机弹窗";
       this.editType = "update";
@@ -239,6 +327,9 @@ export default {
     handleDetail(obj) {
       this.editType = "detail";
       const code = obj.code;
+      this.open = true;
+      this.currCode = obj.code;
+      this.title = "司机详情弹窗";
       console.log("index code", code);
     },
     // 多选框选中数据
@@ -248,6 +339,7 @@ export default {
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
+    //获取组织树
     async getOrgHttp() {
       const obj = {
         moduleName: "http_org",
@@ -263,6 +355,7 @@ export default {
       console.log("当前code", this.currCode);
       //     this.searchQuery();
     },
+    //组织树节点过滤
     filterNode(value, data) {
       if (!value) return true;
       return data.orgName.indexOf(value) !== -1;
@@ -270,14 +363,42 @@ export default {
     handleNodeClick(data) {
       console.log("data", data);
       this.orgCode = data.code;
-      this.queryParams.pageNum = 1;
+      this.queryParams.startIndex = 1;
       this.driverHttpReq();
     },
     //发送搜索请求
     searchQuery() {
-      this.queryParams.pageNum = 1;
+      this.queryParams.startIndex = 1;
       this.driverHttpReq();
     },
+    //停用状态修改
+    handleStatusChange(row) {
+      const text = row.enabled === 1 ? "启用" : "停用";
+      this.$confirm("确认要" + text + "吗?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(function () {
+          const obj = {
+            moduleName: "http_driver",
+            method: "put",
+            url_alias: "driver_enabled",
+            data: {
+              driverCode: row.code,
+              enabled: row.enabled,
+            },
+          };
+          return http_request(obj);
+        })
+        .then(() => {
+          this.msgSuccess(text + "成功");
+        })
+        .catch(function () {
+          row.enabled = row.enabled === 1 ? 0 : 1;
+        });
+    },
+
     //请求分页数据
     async driverHttpReq() {
       this.loading = true;
@@ -286,12 +407,12 @@ export default {
         method: "post",
         url_alias: "driver_paging",
         data: {
-          pageNum: this.queryParams.pageNum,
+          startIndex: this.queryParams.startIndex,
           pageSize: this.queryParams.pageSize,
-          name: this.queryParams.name || null,
-          telphone: this.queryParams.telphone || null,
-          stopStatus: this.queryParams.stopStatus || null, //分组
-          taskStatus: this.queryParams.taskStatus, //是否停用
+          name: this.queryParams.name,
+          telphone: this.queryParams.telphone,
+          enabled: this.queryParams.enabled, //分组
+          driverStatus: this.queryParams.driverStatus, //是否停用
           realStatus: this.queryParams.realStatus, //是否停用
           createBeginTime: this.queryParams.dateRange[0] || null,
           createEndTime: this.queryParams.dateRange[1] || null,
@@ -302,6 +423,7 @@ export default {
       console.log("res", res);
       if (res.code == "200") {
         this.driverList = res.data.rows;
+        console.log("this.driverList", this.driverList);
         this.total = res.data.total;
         this.loading = false;
       } else {
@@ -309,9 +431,10 @@ export default {
         this.loading = false;
       }
     },
-    colseDialog() {
-      console.log("关闭。。。");
+    colseDialog(e) {
+      console.log("关闭。。。", e);
       this.open = false;
+      if (e == "ok") this.searchQuery();
     },
   },
 };

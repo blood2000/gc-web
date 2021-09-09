@@ -39,13 +39,13 @@
       </el-col>
       <el-col :xl="19" :lg="18" :md="16" :sm="15" :xs="24">
         <div class="device-info-right">
-          <div class="device-info-right-top">
+          <div class="device-info-right-top" v-show="showSearch">
             <!-- 上：搜索 -->
             <QueryForm
               v-model="queryParams"
               :vehicle-status-list="vehicleStatusList"
               :group-List="groupList"
-              :data-status-list="dataStatusList"
+              :enabled-list="enabledList"
               @handleQuery="searchQuery"
             />
           </div>
@@ -86,7 +86,9 @@
                   >车辆分组管理</el-button
                 >
               </el-col>
-              <el-col :span="1.5"><a> 下载导入模板</a> </el-col>
+              <el-col :span="1.5" class="loadTemplate"
+                ><a> 下载导入模板</a>
+              </el-col>
               <right-toolbar
                 :show-search.sync="showSearch"
                 @queryTable="searchQuery"
@@ -101,9 +103,19 @@
               :table-columns-config="tableColumnsConfig"
               @selection-change="handleSelectionChange"
             >
-              <template #dataStatus="{ row }">
+              <template #vehicleStatus="{ row }">
+                <span
+                  :style="{
+                    color: getVehicleStatusConfigOption(row.vehicleStatus)
+                      .color,
+                  }"
+                >
+                  {{ getVehicleStatusConfigOption(row.vehicleStatus).label }}
+                </span>
+              </template>
+              <template #enabled="{ row }">
                 <el-switch
-                  v-model="row.dataStatus"
+                  v-model="row.enabled"
                   :active-value="1"
                   :inactive-value="0"
                   @change="handleStatusChange(row)"
@@ -189,7 +201,8 @@ import QueryForm from "./components/queryForm.vue";
 import VehicleDialog from "./components/vehicle_dialog.vue";
 import GroupDialog from "./components/group_dialog.vue";
 import { http_request } from "@/api";
-
+import store from "@/store";
+// import { mapState, mapMutations } from "vuex";
 export default {
   name: "vehicle", // 车辆管理
   components: { QueryForm, VehicleDialog, GroupDialog },
@@ -208,14 +221,15 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        licenseNumber: "", //车牌号
-        vehicleStatus: "", //车辆状态
-        group: "", //分组
+        licenseNumber: null, //车牌号
+        vehicleStatus: null, //车辆状态
+        groupCode: null, //分组
         dateRange: [], //日期范围
-        dataStatus: "", //是否停用
+        enabled: null, //是否停用
       },
       vehicleStatusList: [], //车辆状态
-      dataStatusList: [], //是否停用列表
+      vehicleStatusOptions: {},
+      enabledList: [], //是否停用列表
       groupList: [], //分组列表
       tableColumnsConfig: [], //配置表头数据
       vehicleList: [], //表格数据
@@ -232,10 +246,13 @@ export default {
   },
   created() {
     this.vehicleStatusList = vehicleConfig.vehicleStatusList;
-    this.dataStatusList = vehicleConfig.dataStatusList;
+    this.enabledList = vehicleConfig.enabledList;
     this.tableColumnsConfig = vehicleConfig.tableColumnsConfig;
-    //缺少请求 待修改
-    //this.group =
+    this.getDictData();
+    setTimeout(()=>{
+    console.log("store", store);
+
+    },2000)
   },
   mounted() {
     this.getOrgHttp();
@@ -247,31 +264,57 @@ export default {
     },
   },
   methods: {
+    getDictData() {
+      this.getDicts("energyTypes").then((response) => {
+        store.commit("SET_vehicleEnergyTypeList", response.data);
+      });
+      this.getDicts("vehicleClassification").then((response) => {
+        store.commit("set_vehicleTypeCodeList", response.data);
+      });
+      this.getDicts("vehicle-carrier-type").then((response) => {
+        store.commit("set_carrierTypeList", response.data);
+      });
+      this.getDicts("licenseColor").then((response) => {
+        store.commit("set_vehicleLicenseColorCodeList", response.data);
+      });
+    },
+    getVehicleStatusConfigOption(item) {
+      let result = null;
+      vehicleConfig.vehicleStatusList.forEach((el) => {
+        if (item == el.value) {
+          result = el;
+        }
+      });
+
+      return result;
+    },
     //停用状态修改
     handleStatusChange(row) {
-      const text = row.dataStatus === 1 ? "启用" : "停用";
+      const text = row.enabled === 1 ? "启用" : "停用";
       this.$confirm("确认要" + text + "吗?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(function () {
+          console.log("row", row);
           const obj = {
             moduleName: "http_vehicle",
             method: "put",
-            url_alias: "vehicle_stopstatus",
+            url_alias: "vehicle_enabled",
             data: {
-              code: row.code,
-              stopStatus: row.dataStatus,
+              vehicleCode: row.code,
+              enabled: row.enabled,
             },
           };
           return http_request(obj);
         })
-        .then(() => {
+        .then((res) => {
+          console.log("res", res);
           this.msgSuccess(text + "成功");
         })
         .catch(function () {
-          row.dataStatus = row.dataStatus === 1 ? 0 : 1;
+          row.enabled = row.enabled === 1 ? 0 : 1;
         });
     },
     //请求组织树数据
@@ -286,6 +329,7 @@ export default {
       console.log("orgRes res", orgRes);
       this.orgTreeData =
         orgRes.data.length > 0 ? orgRes.data[0].childrenOrgList : [];
+      if (!this.orgTreeData.length > 0) return;
       this.currCode = this.orgTreeData[0].code;
       console.log("当前code", this.currCode);
       //     this.searchQuery();
@@ -310,20 +354,25 @@ export default {
     //请求分页数据
     async vehicleHttpReq() {
       this.loading = true;
+      const tmp = {
+        startIndex: this.queryParams.pageNum,
+        pageSize: this.queryParams.pageSize,
+        licenseNumber: this.queryParams.licenseNumber || null, //车牌号
+        vehicleStatus: this.queryParams.vehicleStatus || null, //车辆状态
+        groupCode: this.queryParams.groupCode || null, //分组
+        enabled: this.queryParams.enabled || null, //是否停用
+        createBeginTime: this.queryParams.dateRange[0] || null,
+        createEndTime: this.queryParams.dateRange[1] || null,
+      };
+      if (tmp.createBeginTime)
+        tmp.createBeginTime = tmp.createBeginTime + " " + "00:00:00";
+      if (tmp.createEndTime)
+        tmp.createEndTime = tmp.createEndTime + " " + "23:59:59";
       const obj = {
         moduleName: "http_vehicle",
         method: "post",
         url_alias: "vehicle_list_page",
-        data: {
-          pageNum: this.queryParams.pageNum,
-          pageSize: this.queryParams.pageSize,
-          licenseNumber: this.queryParams.licenseNumber || null, //车牌号
-          vehicleStatus: this.queryParams.vehicleStatus || null, //车辆状态
-          group: this.queryParams.group || null, //分组
-          dataStatus: this.queryParams.dataStatus, //是否停用
-          createBeginTime: this.queryParams.dateRange[0] || null,
-          createEndTime: this.queryParams.dateRange[1] || null,
-        },
+        data: tmp,
       };
       console.log("所有参数列表", obj);
       const res = await http_request(obj);
@@ -346,7 +395,14 @@ export default {
     //导入
     handleImport() {},
     //导出
-    handleExport() {},
+    handleExport() {
+      //  this.exportLoading = true;
+      // const params = Object.assign({}, this.queryParams);
+      // params.pageSize = undefined;
+      // params.pageNum = undefined;
+      // this.download('/fmsweb/basic/vehicle/v1/export', params, `车辆信息`);
+      // this.exportLoading = false;
+    },
     //分组管理
     handleGroup() {
       this.groupOpen = true;
@@ -363,18 +419,6 @@ export default {
       console.log("obj", obj);
       const ids = obj.code || this.ids;
       console.log("this.ids", ids);
-      this.$confirm("确认要删除吗?", "警告", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(function () {})
-        .then(() => {
-          this.msgSuccess("删除成功");
-        })
-        .catch(function () {});
-      console.log("暂未开通, 等待接口");
-      return;
       this.$confirm("是否确认删除此项数据?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -383,9 +427,9 @@ export default {
         .then(() => {
           const tmp = {
             moduleName: "http_vehicle",
-            method: "delete",
+            method: "post",
             url_alias: "vehicle_del",
-            url_code: ids,
+            data: { list: ids },
           };
           http_request(tmp);
         })
@@ -406,9 +450,10 @@ export default {
       console.log(" index code", code);
       this.$router.push("detail?code=" + code);
     },
-    colseDialog() {
-      console.log("关闭。。。");
+    colseDialog(e) {
+      console.log("关闭。。。", e);
       this.open = false;
+      if (e == "ok") this.searchQuery();
     },
     colseGroupDialog() {
       console.log("group关闭。。。");
@@ -449,5 +494,12 @@ export default {
   flex-direction: row;
   width: 20xp;
   height: 20px;
+}
+.loadTemplate {
+  padding-left: 15px;
+  padding-right: 5px;
+  padding-top: 3px !important;
+  color: #409eff;
+  font-size: 14px;
 }
 </style>

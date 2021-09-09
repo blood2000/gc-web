@@ -1,36 +1,35 @@
 const vehicleStatusList = [
   {
-    label: "空闲中",
+    label: "●空闲中",
     color: "#67C23A",
     value: "0"
   },
   {
-    label: "任务中",
+    label: "●任务中",
     color: "#409EFF",
     value: "1"
   },
   {
-    label: "维修中",
+    label: "●维修中",
     color: "#FF8C00",
     value: "2"
   },
   {
-    label: "保养中",
+    label: "●保养中",
     color: "#F4A460",
     value: "3"
   },
   {
-    label: "不可用",
+    label: "●不可用",
     color: "#F56C6C",
     value: "4"
   },
 ]
 
-const dataStatusList = [
+const enabledList = [
   {
-    label: "正常",
+    label: "启用",
     value: "0"
-
   },
   {
     label: "停用",
@@ -56,14 +55,14 @@ const tableColumnsConfig = [
   {
     isShow: true,
     label: "分组",
-    prop: "group",
+    prop: "groupCode",
     sortNum: 3,
     tooltip: true,
   },
   {
     isShow: true,
     label: "是否停用",
-    prop: "dataStatus",
+    prop: "enabled",
     sortNum: 4,
     tooltip: true,
   },
@@ -77,7 +76,7 @@ const tableColumnsConfig = [
   {
     isShow: true,
     label: "创建时间",
-    prop: "createtime",
+    prop: "createTime",
     sortNum: 6,
     tooltip: true,
   },
@@ -87,12 +86,12 @@ const tableColumnsConfig = [
     prop: "edit",
     sortNum: 7,
     tooltip: true,
-    width:150
+    width: 150
   },
 ]
 
 export default {
-  dataStatusList,
+  enabledList,
   vehicleStatusList,
   tableColumnsConfig
 }
