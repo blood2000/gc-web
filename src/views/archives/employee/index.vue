@@ -203,8 +203,8 @@
           <pagination
             v-show="total>0"
             :total="total"
-            :page.sync="queryParams.pageNum"
-            :limit.sync="queryParams.pageSize"
+            :page.sync="queryParams.start"
+            :limit.sync="queryParams.limit"
             @pagination="getList"
           />
         </div>
@@ -250,8 +250,8 @@ export default {
       },
       // 查询参数
       queryParams: {
-        pageNum: 1,
-        pageSize: 10,
+        start: 1,
+        limit: 10,
         orgCode: undefined,
         nickName: undefined,
         phonenumber: undefined,
@@ -307,13 +307,13 @@ export default {
     },
     /** 节点单击事件 */
     handleNodeClick(data) {
-      this.queryParams.page = 1;
+      this.queryParams.start = 1;
       this.queryParams.orgCode = data.code;
       this.getList();
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.page = 1;
+      this.queryParams.start = 1;
       this.getList();
     },
     /** 重置按钮操作 */
@@ -457,8 +457,8 @@ export default {
     handleExport() {
       this.exportLoading = true;
       const params = Object.assign({}, this.queryParams);
-      params.pageSize = undefined;
-      params.pageNum = undefined;
+      params.limit = undefined;
+      params.start = undefined;
       if(params.startTime && params.startTime !== '') params.startTime = params.startTime + ' 00:00:00';
       if(params.endTime && params.endTime !== '') params.endTime = params.endTime + ' 23:59:59';
       this.download('/fmsweb/basic/teamEmployee/v1/export', params, `职员信息`);
