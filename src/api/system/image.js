@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
 // 上传图片api
-export const uploadImgApi = '/assets/upload/uploadToHW';
+export const uploadImgApi = '/fmsweb/system/common/v1/upload';
 // 下载图片api
 export const downImgApi = '/assets/upload/imageDown';
 
@@ -16,7 +16,7 @@ export function getFile(code) {
 // 自动识别
 export function uploadOcr(data) {
   return request({
-    url: '/assets/upload/ocr',
+    url: '/fmsweb/system/common/v1/certificates',
     method: 'post',
     data: data
   });

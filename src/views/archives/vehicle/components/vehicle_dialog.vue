@@ -79,8 +79,8 @@
               <el-option
                 v-for="(item, index) in vehicleTypeCodeList"
                 :key="index"
-                :label="item.label"
-                :value="item.value"
+                :label="item.dictLabel"
+                :value="item.dictValue"
               />
             </el-select>
           </el-form-item>
@@ -155,19 +155,19 @@
           <el-form-item
             style="display: inline-block"
             label="车辆承运类型"
-            prop="vehicleCarryType"
+            prop="carrierType"
           >
             <el-select
-              v-model="form.vehicleCarryType"
+              v-model="form.carrierType"
               clearable
               filterable
               placeholder="请选择"
             >
               <el-option
-                v-for="(item, index) in licensePlateTypeOptionsList"
+                v-for="(item, index) in carrierTypeList"
                 :key="index"
-                :label="item.label"
-                :value="item.value"
+                :label="item.dictLabel"
+                :value="item.dictValue"
               />
             </el-select>
           </el-form-item>
@@ -176,19 +176,19 @@
           <el-form-item
             style="display: inline-block"
             label="车牌类型"
-            prop="licensePlateTypeOptions"
+            prop="vehicleLicenseColorCode"
           >
             <el-select
-              v-model="form.licensePlateTypeOptions"
+              v-model="form.vehicleLicenseColorCode"
               clearable
               filterable
               placeholder="请选择"
             >
               <el-option
-                v-for="(item, index) in licensePlateTypeOptionsList"
+                v-for="(item, index) in vehicleLicenseColorCodeList"
                 :key="index"
-                :label="item.label"
-                :value="item.value"
+                :label="item.dictLabel"
+                :value="item.dictValue"
               />
             </el-select>
           </el-form-item>
@@ -231,40 +231,42 @@
               v-model="form.vehicleEnergyType"
               clearable
               filterable
-              placeholder="请选择车辆类型"
+              placeholder="请选择车辆能源类型"
             >
               <el-option
                 v-for="(item, index) in vehicleEnergyTypeList"
                 :key="index"
-                :label="item.label"
-                :value="item.value"
+                :label="item.dictLabel"
+                :value="item.dictValue"
               />
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="绑定设备编号" prop="deviceCode">
+          <el-form-item label="绑定设备编号" prop="deviceNumber	">
             <el-input
-              v-model="form.deviceCode"
+              v-model="form.deviceNumber"
               placeholder="请输入设备编号"
               clearable
             />
           </el-form-item>
         </el-col>
       </el-row>
-      <div class="form-remarks">
+      <div class="form-remark">
         <span>备注:</span>
         <el-input
           type="textarea"
           :rows="2"
           placeholder="请输入内容"
-          v-model="form.remarks"
+          v-model="form.remark"
         >
         </el-input>
       </div>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">确 定</el-button>
+      <el-button type="primary" @click="submitForm" :loading="loading"
+        >确 定</el-button
+      >
       <el-button @click="cancel">取 消</el-button>
     </div>
   </el-dialog>
@@ -294,6 +296,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       code: null,
       id: null,
       form: {
@@ -308,13 +311,13 @@ export default {
         chassisNumber: null, //车辆识别号码
         licenseNumber: null, //车牌号
         vehicleTotalWeight: null, //车辆总重量
-        licensePlateTypeOptions: null, //车牌类型
-        vehicleEnergyType: null, //
+        vehicleLicenseColorCode: null, //车牌类型
+        vehicleEnergyType: null, //能源类型
         roadTransportCertificateImg: null, //道路运输证
-        orgCode: null, //组织
-        vehicleCarryType: null, //车辆承运类型
-        deviceCode: null, //绑定设备的编号
-        remarks: null, //备注
+        orgCode: null, //归属组织编码
+        carrierType: null, //车辆承运类型
+        deviceNumber: null, //绑定设备的编号
+        remark: null, //备注
       },
       rules: {
         vehicleLicenseImg: [
@@ -365,18 +368,39 @@ export default {
           children: node.childrenOrgList,
         };
       },
-      licensePlateTypeOptionsList: [], //
-      vehicleCarryTypeList: [], //车辆承运类型list
+      vehicleLicenseColorCodeList: [], //车牌类型
+      carrierTypeList: [], //车辆承运类型list
       vehicleEnergyTypeList: [], //车辆能源类型list
     };
   },
   created() {
     //   this.vehicleTypeCodeList =
+    // this.getDicts("energyTypes").then((response) => {
+    //   console.log("energyTypes response", response);
+    //   this.vehicleEnergyTypeList = response.data;
+    // });
+    // this.getDicts("vehicleClassification").then((response) => {
+    //   console.log("vehicleClassification response", response);
+    //   this.vehicleTypeCodeList = response.data;
+    // });
+    // this.getDicts("vehicle-carrier-type").then((response) => {
+    //   console.log("vehicle-carrier-type response", response);
+    //   this.carrierTypeList = response.data;
+    // });
+    // this.getDicts("licenseColor").then((response) => {
+    //   console.log("licenseColor response", response);
+    //   this.vehicleLicenseColorCodeList = response.data;
+    // });
   },
   watch: {
     options() {
       if (this.options.editType == "update" && this.open) {
-        console.log("this.options", this.options);
+        console.log("this.options", this.options, this.open);
+        this.vehicleEnergyTypeList = this.$store.getters.vehicleEnergyTypeList;
+        this.vehicleTypeCodeList = this.$store.getters.vehicleTypeCodeList;
+        this.carrierTypeList = this.$store.getters.carrierTypeList;
+        this.vehicleLicenseColorCodeList =
+          this.$store.getters.vehicleLicenseColorCodeList;
         //请求
         this.requsetDetail();
       }
@@ -415,7 +439,7 @@ export default {
       console.log("tmp", tmp);
       http_request(tmp)
         .then((res) => {
-          console.log("res", res);
+          console.log("requsetDetail res", res);
 
           this.getDetailToForm(res.data);
         })
@@ -424,33 +448,51 @@ export default {
         });
     },
     //提交表单
-    async submitForm() {
+    submitForm() {
       const me = this;
-      if (this.options.editType == "update") {
-        //修改请求
-        const obj = {
-          data: me.getFormToUpdateData(),
-          moduleName: "http_vehicle",
-          method: "put",
-          url_alias: "vehicle_edit",
-        };
-        const updateres = await http_request(obj);
-        console.log("updateres", updateres);
-      } else {
-        const obj = {
-          data: me.getFormToAddData(),
-          moduleName: "http_vehicle",
-          method: "post",
-          url_alias: "vehicle_add",
-        };
-        const addres = await http_request(obj);
-        console.log("addres", addres);
-      }
-      this.$emit("colseDialog");
+      this.$refs["form"].validate((valid) => {
+        if (valid) {
+          this.loading = true;
+          if (this.options.editType == "update") {
+            //修改请求
+            const obj = {
+              data: me.getFormToUpdateData(),
+              moduleName: "http_vehicle",
+              method: "put",
+              url_alias: "vehicle_edit",
+            };
+            http_request(obj)
+              .then((updateres) => {
+                console.log("updateres", updateres);
+                this.loading = false;
+                this.$emit("colseDialog", "ok");
+              })
+              .catch((e) => {
+                this.loading = false;
+              });
+          } else {
+            const obj = {
+              data: me.getFormToAddData(),
+              moduleName: "http_vehicle",
+              method: "post",
+              url_alias: "vehicle_add",
+            };
+            http_request(obj)
+              .then((addres) => {
+                console.log("addres", addres);
+                this.loading = false;
+                this.$emit("colseDialog", "ok");
+              })
+              .catch((e) => {
+                this.loading = false;
+              });
+          }
+        }
+      });
     },
     //关闭弹窗
     cancel() {
-      this.$emit("colseDialog");
+      this.$emit("colseDialog", "no");
       this.reset();
     },
     //重置
@@ -466,19 +508,19 @@ export default {
         chassisNumber: null, //车辆识别号码
         licenseNumber: null, //车牌号
         vehicleTotalWeight: null, //车辆总重量
-        licensePlateTypeOptions: null, //车牌类型
+        vehicleLicenseColorCode: null, //车牌类型
         vehicleEnergyType: null, //
         roadTransportCertificateImg: null, //道路运输证
         orgCode: orgCode, //组织
-        vehicleCarryType: null, //车辆承运类型
-        deviceCode: null, //绑定设备的编号
-        remarks: null, //备注
+        carrierType: null, //车辆承运类型
+        deviceNumber: null, //绑定设备的编号
+        remark: null, //备注
       };
       this.resetForm("form");
     },
     //选择照片
     chooseImg(e) {
-      console.log("chooseImg", chooseImg);
+      console.log("chooseImg", e);
     },
     //表单信息赋值
     getDetailToForm(data) {
@@ -490,24 +532,24 @@ export default {
       this.form.registerDate = data.vehicleLicenseInf.registerDate; // 注册日期
       this.form.issueDate = data.vehicleLicenseInf.issueDate; //发证日期
       this.form.vehicleLoadWeight = data.vehicleInf.vehicleLoadWeight; // 可载重量
-      this.form.vehicleTypeCode = data.vehicleInf.vehicleTypeCode; //  车辆类型
+      this.form.vehicleTypeCode = data.vehicleLicenseInf.vehicleTypeCode; //  车辆类型*
       this.form.engineNumber = data.vehicleLicenseInf.engineNumber; //发动机号
       this.form.chassisNumber = data.vehicleInf.chassisNumber; //车辆识别号码
       this.form.licenseNumber = data.vehicleLicenseInf.licenseNumber; //车牌号
       this.form.vehicleTotalWeight = data.vehicleInf.vehicleTotalWeight; //车辆总重量
-      this.form.licensePlateTypeOptions =
-        data.vehicleInf.licensePlateTypeOptions; //车牌类型
-      this.form.vehicleEnergyType = data.vehicleInf.vehicleEnergyType; //车辆能源类型
-      this.form.roadTransportCertificateImg =
-        data.vehicleLicenseInf.roadTransportCertificateImg; //道路运输证
-      this.form.orgCode = data.vehicleInf.orgCode; //组织
-      this.form.vehicleCarryType = data.vehicleInf.vehicleCarryType; //车辆承运类型
-      this.form.deviceCode = data.vehicleInf.deviceCode; //绑定设备的编号
-      this.form.remarks = data.vehicleInf.remarks; //备注
+      this.form.vehicleLicenseColorCode =
+        data.vehicleInf.vehicleLicenseColorCode; //车牌类型*
+      this.form.vehicleEnergyType = data.vehicleInf.vehicleEnergyType; //车辆能源类型*
+      this.form.roadTransportCertificateImg = data.roadTransportCertificateImg; //道路运输证
+      this.form.orgCode = data.orgCode; //组织
+      this.form.carrierType = data.vehicleInf.carrierType; //车辆承运类型*
+      this.form.deviceNumber = data.deviceNumber; //绑定设备的编号
+      this.form.remark = data.remark; //备注
     },
     //表单给提交修改数据
     getFormToUpdateData() {
       const me = this;
+      console.log("me.form", me.form);
       const obj = {
         vehicleEnergyType: me.form.vehicleEnergyType,
         roadTransportCertificateImg: me.form.roadTransportCertificateImg,
@@ -519,19 +561,24 @@ export default {
           registerDate: me.form.registerDate,
           chassisNumber: me.form.chassisNumber,
           licenseNumber: me.form.licenseNumber,
-          vehicleTypeCode: me.form.vehicleLoadWeight,
+          vehicleTypeCode: me.form.vehicleTypeCode,
           vehicleLoadWeight: me.form.vehicleLoadWeight,
           vehicleTotalWeight: me.form.vehicleTotalWeight,
           vehicleLicenseImg: me.form.vehicleLicenseImg,
+          carrierType: me.form.carrierType,
         },
+        deviceNumber: me.form.deviceNumber,
+        orgCode: me.form.orgCode,
         code: me.code,
         id: me.id,
+        remark: me.form.remark,
       };
 
       return obj;
     },
     //表单给提交新增数据
     getFormToAddData() {
+      const me = this;
       const obj = {
         vehicleLicenseInf: {
           vehicleLicenseColorCode: me.form.vehicleLicenseColorCode,
@@ -545,12 +592,14 @@ export default {
           engineNumber: me.form.engineNumber,
           chassisNumber: me.form.chassisNumber,
           licenseNumber: me.form.licenseNumber,
+          carrierType: me.form.carrierType,
         },
         roadTransportCertificateImg: me.form.roadTransportCertificateImg,
         vehicleEnergyType: me.form.vehicleEnergyType,
-        driverCode: me.form.driverCode,
-        deviceCode: me.form.deviceCode,
+        // driverCode: me.form.driverCode,
+        deviceNumber: me.form.deviceNumber,
         orgCode: me.form.orgCode,
+        remark: me.form.remark,
       };
       return obj;
     },
@@ -562,10 +611,10 @@ export default {
 .el-form-item__label {
   width: 120px !important;
 }
-.form-remarks {
+.form-remark {
   display: flex;
 }
-.form-remarks span {
+.form-remark span {
   display: inline-block;
   width: 58px;
 }

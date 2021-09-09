@@ -6,14 +6,10 @@ import http_driver from './archives/driver'
 import http_employee from './archives/employee'
 import http_role from './archives/role'
 import http_org from './archives/org'
-
+import http_group from './archives/group'
+import http_common from './common'
 import Vue from 'vue'
 
-// 还需要修改
-// BASE_URL: 'http://192.168.30.90:8080' //本地服务器
-// const BASE_URL =  'http://10.0.0.75:8080'   //测试服务器
-// BASE_URL: 'http://api.chaohaoyun.cn:8080'  //正式地址
-// BASE_URL: 'http://127.0.0.1:8888'  //正式地址
 export const defaultH = {
   "App-Code": '6d818ca732214b6e889dbf6ac3d25aee', //应用编码
   "App-Type": 0,
@@ -36,7 +32,9 @@ const selModuleName = (name) => {
     http_driver,
     http_employee,
     http_role,
-    http_org
+    http_org,
+    http_group,
+    http_common
   }
   return tmpObj[name]
 }
@@ -74,7 +72,7 @@ export const http_request = async  (obj) =>  {
   tmp.headers = defaultH
   if (obj.header) tmp.headers = { ...tmp.headers, ...obj.header }
   const res  = await  request(tmp);
-  return error_respone(res)
+  return res
 };
 
 /**

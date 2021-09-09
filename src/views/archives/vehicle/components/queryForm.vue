@@ -6,7 +6,6 @@
     label-width="120px"
     size="small"
   >
-    <div class="app-container app-container--search">
       <el-form-item label="车牌号" prop="licenseNumber">
         <el-input
           v-model="queryParams.licenseNumber"
@@ -50,9 +49,9 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="是否停运" prop="dataStatus">
+      <el-form-item label="是否停运" prop="enabled">
         <el-select
-          v-model="queryParams.dataStatus"
+          v-model="queryParams.enabled"
           clearable
           filterable
           style="width: 185px"
@@ -60,7 +59,7 @@
           @change="$emit('handleQuery')"
         >
           <el-option
-            v-for="(item, index) in dataStatusList"
+            v-for="(item, index) in enabledList"
             :key="index"
             :label="item.label"
             :value="item.value"
@@ -98,7 +97,6 @@
           重置
         </el-button>
       </el-form-item>
-    </div>
   </el-form>
 </template>
 
@@ -119,7 +117,7 @@ export default {
       type: Array,
       default: () => []
     },
-    dataStatusList: {
+    enabledList: {
       type: Array,
       default: () => []
     }

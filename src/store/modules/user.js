@@ -9,10 +9,15 @@ const user = {
     avatar: "",
     permissions: [],
     menus:[],
-    nickName: ""
+    nickName: "",
+    test:''
   },
 
   mutations: {
+    SET_TEST:(state ,data) =>{
+      console.log(' state.test', state.test)
+      state.test = data
+    },
     SET_TOKEN: (state, token) => {
       state.token = token;
     },

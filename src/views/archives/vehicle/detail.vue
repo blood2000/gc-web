@@ -9,110 +9,108 @@
               <span>基础信息</span>
               <el-divider></el-divider>
             </div>
-            <el-row :gutter="10">
-              <el-col :span="8">
+            <div class="base-info">
+              <div>
                 <span> 车牌号： </span>
                 <span>{{
                   isPageShow("vehicleLicenseInf", "licenseNumber")
                 }}</span>
-              </el-col>
-              <el-col :span="8">
+              </div>
+              <div>
                 <span> 归属组织： </span>
-                <span> </span>
-              </el-col>
-              <el-col :span="8">
+                <span> {{ orgName }}</span>
+              </div>
+              <div>
                 <span> 车辆分组： </span>
                 <span>{{ isPageShow("vehicleInf", "group") }} </span>
-              </el-col>
-            </el-row>
-            <el-row :gutter="10">
-              <el-col :span="12">
+              </div>
+
+              <div>
                 <span> 车辆识别代号： </span>
                 <span
                   >{{ isPageShow("vehicleLicenseInf", "chassisNumber") }}
                 </span>
-              </el-col>
-              <el-col :span="12">
+              </div>
+              <div>
                 <span> 发动机号： </span>
                 <span>
                   {{ isPageShow("vehicleLicenseInf", "engineNumber") }}</span
                 >
-              </el-col>
-            </el-row>
-            <el-row :gutter="10">
-              <el-col :span="8">
+              </div>
+
+              <div>
                 <span> 车辆类型： </span>
-                <span>
-                  {{ isPageShow("vehicleLicenseInf", "vehicleTypeCode") }}</span
-                >
-              </el-col>
-              <el-col :span="8">
+                <span> {{ isPageShow("vehicleInf", "vehicleTypeValue") }}</span>
+              </div>
+              <div>
                 <span> 车辆承运类型： </span>
-                <span> </span>
-              </el-col>
-              <el-col :span="8">
+                <span>
+                  {{ isPageShow("vehicleInf", "carrierTypeValue") }}
+                </span>
+              </div>
+              <div>
                 <span> 车牌类型： </span>
-                <span> </span>
-              </el-col>
-            </el-row>
-            <el-row :gutter="10">
-              <el-col :span="8">
+                <span
+                  >{{ isPageShow("vehicleInf", "vehicleLicenseColorValue") }}
+                </span>
+              </div>
+
+              <div>
                 <span> 车辆能源类型： </span>
                 <span
-                  >{{ isPageShow("vehicleInf", "vehicleEnergyType") }}
+                  >{{ isPageShow("vehicleInf", "vehicleEnergyTypeValue") }}
                 </span>
-              </el-col>
-              <el-col :span="8">
+              </div>
+              <div>
                 <span> 车辆总重量： </span>
                 <span
-                  >{{ isPageShow("vehicleInf", "vehicleTotalWeight") }}
+                  >{{ isPageShow("vehicleInf", "vehicleTotalWeight") }} 吨
                 </span>
-              </el-col>
-              <el-col :span="8">
+              </div>
+              <div>
                 <span> 车辆可载重量： </span>
                 <span
-                  >{{ isPageShow("vehicleInf", "vehicleLoadWeight") }}
+                  >{{ isPageShow("vehicleInf", "vehicleLoadWeight") }} 吨
                 </span>
-              </el-col>
-            </el-row>
-            <el-row :gutter="10">
-              <el-col :span="24">
+              </div>
+
+              <div>
                 <span> 备注信息： </span>
-                <span>{{ isPageShow("vehicleInf", "remarks") }} </span>
-              </el-col>
-            </el-row>
+                <span>{{ vehicleInfo.remark }} </span>
+              </div>
+            </div>
           </div>
           <div class="info">
             <div class="info-title">
               <span>状态信息</span>
               <el-divider></el-divider>
             </div>
-            <div class="info-content">
-              <div>
+            <el-row>
+              <el-col :span="12">
                 <span>车辆状态：</span>
-                <span></span>
-              </div>
-              <div>
+                <span>{{ vehicleInfo.enabledValue }}</span>
+              </el-col>
+              <el-col :span="12">
                 <span>停用状态：</span>
-                <span></span>
-              </div>
-            </div>
+                <span>{{ vehicleInfo.vehicleStatusValue }}</span>
+              </el-col>
+            </el-row>
           </div>
           <div class="info">
             <div class="info-title">
               <span>默认司机</span>
               <el-divider></el-divider>
             </div>
-            <div class="info-content">
-              <div>
+            <el-row>
+              <el-col :span="12">
                 <span>司机姓名：</span>
                 <span></span>
-              </div>
-              <div>
+              </el-col>
+              <el-col :span="12">
                 <span>司机电话：</span>
                 <span></span>
-              </div>
-            </div>
+              </el-col>
+            </el-row>
           </div>
           <div class="info">
             <div class="info-title">
@@ -143,41 +141,40 @@
                 <div><span>驾驶证副页</span></div>
               </el-col>
               <el-col :span="8">
-                <div class="mar-bottom">
-                  <p>注册时间：</p>
-                  <span>{{
-                    isPageShow("vehicleLicenseInf", "registerDate")
-                  }}</span>
-                </div>
-                <div class="mar-bottom">
-                  <p>发证日期：</p>
-                  <span>{{
-                    isPageShow("vehicleLicenseInf", "issueDate")
-                  }}</span>
-                </div>
-                <div class="mar-bottom">
-                  <p>发证机关：</p>
-                  <span>{{
-                    isPageShow("vehicleLicenseInf", "issuingOrganizations")
-                  }}</span>
-                </div>
-              </el-col>
-            </el-row>
-            <el-row :gutter="10">
-              <el-col :span="8">
                 <div>
                   <img
                     width="100%"
-                    :src="
-                      isPageShow(
-                        'vehicleLicenseInf',
-                        'roadTransportCertificateImg'
-                      )
-                    "
+                    :src="vehicleInfo.roadTransportCertificateImg"
                     alt=""
                   />
                 </div>
                 <div><span>道路运输许可证</span></div>
+              </el-col>
+            </el-row>
+            <el-row :gutter="10">
+              <el-col :span="8">
+                <p>注册时间：</p>
+                <span>{{
+                  parseTime(
+                    isPageShow("vehicleLicenseInf", "registerDate"),
+                    "{y}-{m}-{d}"
+                  )
+                }}</span>
+              </el-col>
+              <el-col :span="8">
+                <p>发证日期：</p>
+                <span>{{
+                  parseTime(
+                    isPageShow("vehicleLicenseInf", "issueDate"),
+                    "{y}-{m}-{d}"
+                  )
+                }}</span>
+              </el-col>
+              <el-col :span="8">
+                <p>发证机关：</p>
+                <span>{{
+                  isPageShow("vehicleLicenseInf", "issuingOrganizations")
+                }}</span>
               </el-col>
             </el-row>
           </div>
@@ -189,7 +186,7 @@
             <el-row :gutter="10">
               <el-col :span="8">
                 <span>设备编号：</span>
-                <span> </span>
+                <span>{{ vehicleInfo.defaultDriverCode }} </span>
               </el-col>
             </el-row>
           </div>
@@ -214,6 +211,7 @@ export default {
     return {
       code: "",
       vehicleInfo: {},
+      orgName: "",
     };
   },
   mounted() {
@@ -229,6 +227,16 @@ export default {
         this.vehicleInfo[info][val]
       );
     },
+    async returnOrgcode(val) {
+      const obj = {
+        moduleName: "http_org",
+        method: "get",
+        url_alias: "infoOrg",
+        url_code: [val],
+      };
+      const res = await http_request(obj);
+      return res.data.orgName;
+    },
     getVehicleDetailHttp() {
       const me = this;
       me.code = document.location.search.split("=")[1];
@@ -240,8 +248,12 @@ export default {
         url_code: [me.code],
       };
       http_request(obj).then((res) => {
-        console.log("res", res);
+        console.log("getVehicleDetailHttp res", res);
         me.vehicleInfo = res.data;
+        me.returnOrgcode(me.vehicleInfo.orgCode).then((name) => {
+          console.log("name", name);
+          me.orgName = name;
+        });
       });
     },
   },
@@ -249,6 +261,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.base-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  div {
+    min-width: 80px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+  }
+}
 .device-info {
   margin: 0 15px;
   @mixin box-shadow {
@@ -288,7 +311,7 @@ export default {
     flex-direction: row;
     justify-content: flex-start;
     span {
-      margin-right: 20px;
+      // margin-right: 10px;
     }
   }
 }

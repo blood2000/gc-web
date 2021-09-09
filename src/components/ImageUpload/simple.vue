@@ -91,7 +91,6 @@ export default {
   },
   methods: {
     handleBeforeUpload(file) {
-      console.log('handleBeforeUpload',file)
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg';
       const isLt1M = file.size / 1024 / 1024 < 5;
       if (!isJPG) {
@@ -109,22 +108,23 @@ export default {
       });
     },
     handleUploadSuccess(res) {
-      console.log("res",res)
       if (this.loading) this.loading.close();
       if (res.code === 200) {
         this.$emit('input', res.data.code);
+        console.log('上传成功')
         this.handleGetFile(res.data.code, true);
       }
     },
     // 根据code获取url
     handleGetFile(code, flag) {
       this.flag = true;
-      console.log('code',code)
       if (code) {
         if (code.startsWith('https://') || code.startsWith('http://')) {
           this.attachUrl = code;
           this.flag = false;
         } else {
+          return
+          console.log('222 code',code)
           getFile(code).then(response => {
             console.log('response',response)
             this.flag = false;
@@ -141,7 +141,6 @@ export default {
     },
     // 图片识别
     handleOrc(url) {
-      console.log('handleOrc',url)
       const formData = new FormData();
       if (this.imageType) {
         formData.append('type', this.imageType);
@@ -157,7 +156,6 @@ export default {
         formData.append('side', this.side);
       }
       uploadOcr(formData).then(response => {
-        console.log('uploadOcr',response)
         if (response.data) {
           if (this.side) {
             this.$emit('fillForm', this.imageType, response.data, this.side);
@@ -168,7 +166,6 @@ export default {
       });
     },
     handleUploadError() {
-      console.log('handleUploadError')
       this.$message({
         type: 'error',
         message: '上传失败'

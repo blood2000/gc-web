@@ -6,7 +6,6 @@
     label-width="120px"
     size="small"
   >
-    <div class="app-container app-container--search">
       <el-form-item label="用户名称:" prop="name">
         <el-input
           v-model="queryParams.name"
@@ -56,9 +55,9 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="任务状态" prop="taskStatus">
+      <el-form-item label="司机状态" prop="driverStatus">
         <el-select
-          v-model="queryParams.taskStatus"
+          v-model="queryParams.driverStatus"
           clearable
           filterable
          style="width: 150px"
@@ -66,9 +65,9 @@
           @change="$emit('handleQuery')"
         >
           <el-option
-            v-for="(item, index) in taskStatusList"
+            v-for="(item, index) in driverStatusList"
             :key="index"
-            :label="item.label"
+            :label="item.text"
             :value="item.value"
           />
         </el-select>
@@ -108,7 +107,6 @@
           重置
         </el-button>
       </el-form-item>
-    </div>
   </el-form>
 </template>
 
@@ -125,7 +123,7 @@ export default {
       type: Array,
       default: () => []
     },
-    taskStatusList: {
+    driverStatusList: {
       type: Array,
       default: () => []
     },
