@@ -98,7 +98,7 @@
 import { http_request } from "@/api";
 import QueryForm from "./components/queryForm.vue";
 import warningConfig from "./config";
-import store from "@/store";
+// import store from "@/store";
 export default {
   name: "warning", // 告警管理
   components: { QueryForm },

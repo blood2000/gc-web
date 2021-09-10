@@ -61,6 +61,17 @@ const permission = {
       const menus = store.getters.menus;
       const sdata = JSON.parse(JSON.stringify(menus));
       const rdata = JSON.parse(JSON.stringify(menus));
+      // 需要更改
+      sdata.map(item => {
+        if (item.component === null) {
+          item.component = 'Layout'
+        }
+      })
+      rdata.map(item => {
+        if (item.component === null) {
+          item.component = 'Layout'
+        }
+      })
       const sidebarRoutes = filterAsyncRouter(sdata);
       const rewriteRoutes = filterAsyncRouter(rdata, false, true);
       rewriteRoutes.push({ path: '*', redirect: '/404', hidden: true });
