@@ -16,7 +16,7 @@
 
 <script>
 import { http_request } from '@/api';
-import { sha1 } from '@/utils/sha1';
+const Base64 = require('js-base64').Base64;
 export default {
   props: {
     open: Boolean,
@@ -61,7 +61,7 @@ export default {
             url_alias: 'resetPassword',
             data: {
               employeeCode: this.employeeCode,
-              password: sha1(this.form.password)
+              password: Base64.encode(this.form.password)
             }
           }
           http_request(obj).then(() => {
