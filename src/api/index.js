@@ -8,6 +8,7 @@ import http_role from './archives/role'
 import http_org from './archives/org'
 import http_group from './archives/group'
 import http_common from './common'
+import http_dispatch from './archives/dispatch'
 import Vue from 'vue'
 
 export const defaultH = {
@@ -34,7 +35,8 @@ const selModuleName = (name) => {
     http_role,
     http_org,
     http_group,
-    http_common
+    http_common,
+    http_dispatch
   }
   return tmpObj[name]
 }
@@ -48,6 +50,7 @@ const selModuleName = (name) => {
  *  url_code = [],  参数code
  * data   param或者body  
  * header  配置头部数据
+ * query  true/false
  * @returns 
  */
 export const http_request = async  (obj) =>  {
@@ -63,7 +66,7 @@ export const http_request = async  (obj) =>  {
   //method
   tmp.method = obj.method;
   //data or params
-  if (obj.method === 'get') {
+  if (obj.method === 'get' || obj.query) {
     obj.data ? tmp.params = obj.data : null;
   } else {
     obj.data ? tmp.data = obj.data : null;

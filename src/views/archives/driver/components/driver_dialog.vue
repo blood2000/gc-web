@@ -66,7 +66,7 @@
             </p>
             <ImageUploadSimple
               v-model="form.identificationBackImage"
-              @input="chooseImg"
+              @input="chooseImgBack"
             />
           </el-form-item>
         </el-col>
@@ -196,7 +196,9 @@
       </div>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm" :loading="loading">确 定</el-button>
+      <el-button type="primary" @click="submitForm" :loading="loading"
+        >确 定</el-button
+      >
       <el-button @click="cancel">取 消</el-button>
     </div>
   </el-dialog>
@@ -232,7 +234,7 @@ export default {
   },
   data() {
     return {
-      loading:false,
+      loading: false,
       pickerOptions,
       form: {
         orgCode: null, //所属组织
@@ -375,7 +377,7 @@ export default {
               url_alias: "driver_edit",
               data: me.FormToUpdate(),
             };
-            console.log('obj',obj)
+            console.log("obj", obj);
             http_request(obj).then((updateRes) => {
               console.log("updateRes", updateRes);
               this.$emit("colseDialog", "ok");
@@ -431,7 +433,11 @@ export default {
     //身份证正面照/身份证反面照 上传结束后回调
     chooseImg(e) {
       console.log("chooseImg", e);
-      this.ocrHttp(e, 0);
+      this.ocrHttp(e, 0, "front");
+    },
+    chooseImgBack(e) {
+      console.log("chooseImg", e);
+      this.ocrHttp(e, 0, "back");
     },
     //驾驶证照 上传结束后回调
     driverChooseImg(e) {
@@ -439,7 +445,7 @@ export default {
       this.ocrHttp(e, 2);
     },
     //ocr请求
-    async ocrHttp(imgPath, type) {
+    async ocrHttp(imgPath, type,side) {
       const obj = {
         moduleName: "http_common",
         method: "post",
@@ -447,6 +453,7 @@ export default {
         data: {
           imgPath,
           type,
+          side
         },
       };
       const res = await http_request(obj);
@@ -489,14 +496,16 @@ export default {
           data.identificationInf.identificationBeginTime || "",
           data.identificationInf.identificationEndTime || "",
         ], //身份证有效期
-        identificationEffective: data.identificationInf.identificationEffective =="1"?true:false,
+        identificationEffective:
+          data.identificationInf.identificationEffective == "1" ? true : false,
         driverLicenseImage: data.driverLicenseInf.driverLicenseImage, //驾驶证
         driverDateRange: [
           data.driverLicenseInf.validPeriodTo || "",
           data.driverLicenseInf.validPeriodFrom || "",
         ], //驾驶证有效期
-        driverLicense:data.driverLicenseInf.driverLicense,
-        validPeriodAlways: data.driverLicenseInf.validPeriodAlways =="1"?true:false, // 是否长期有效
+        driverLicense: data.driverLicenseInf.driverLicense,
+        validPeriodAlways:
+          data.driverLicenseInf.validPeriodAlways == "1" ? true : false, // 是否长期有效
         issuingOrganizations: data.driverLicenseInf.issuingOrganizations, //发证机关
         remark: data.remark, //备注
       };
@@ -518,7 +527,7 @@ export default {
           issuingOrganizations: form.issuingOrganizations, //驾驶证发证机关
           validPeriodTo: form.driverDateRange[1], //驾驶证有效期至
           driverLicenseImage: form.driverLicenseImage, //驾驶证照
-          validPeriodAlways: form.validPeriodAlways?"1":"0", //驾驶证是否长期有效
+          validPeriodAlways: form.validPeriodAlways ? "1" : "0", //驾驶证是否长期有效
         },
         identificationInf: {
           identificationImage: form.identificationImage, //身份证正面照
@@ -527,7 +536,7 @@ export default {
           identificationBeginTime: form.idDateRange[0], //身份证有效期开始
           identificationBackImage: form.identificationBackImage, //身份证反面照
           identificationNumber: form.identificationNumber, //身份证号
-          identificationEffective: form.identificationEffective?"1":"0", //身份证是否长期有效（0否,1是）
+          identificationEffective: form.identificationEffective ? "1" : "0", //身份证是否长期有效（0否,1是）
         },
       };
       return obj;
@@ -541,7 +550,7 @@ export default {
           validPeriodTo: form.driverDateRange[1] || null,
           issuingOrganizations: form.issuingOrganizations,
           validPeriodFrom: form.driverDateRange[0] || null,
-          validPeriodAlways: form.validPeriodAlways?"1":"0" ,
+          validPeriodAlways: form.validPeriodAlways ? "1" : "0",
         },
         identificationInf: {
           name: form.name,
@@ -550,7 +559,7 @@ export default {
           identificationBackImage: form.identificationBackImage,
           identificationImage: form.identificationImage,
           identificationNumber: form.identificationNumber,
-          identificationEffective: form.identificationEffective ?"1":"0",
+          identificationEffective: form.identificationEffective ? "1" : "0",
         },
         telphone: form.telphone,
         password: form.password, //用户密码

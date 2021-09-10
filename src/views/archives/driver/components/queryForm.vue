@@ -38,9 +38,9 @@
           end-placeholder="结束日期"
         />
       </el-form-item>
-      <el-form-item label="停用状态" prop="stopStatus">
+      <el-form-item label="停用状态" prop="enabled">
         <el-select
-          v-model="queryParams.stopStatus"
+          v-model="queryParams.enabled"
           clearable
           filterable
           style="width: 150px"
@@ -48,10 +48,10 @@
           @change="$emit('handleQuery')"
         >
           <el-option
-            v-for="(item, index) in stopStatusList"
+            v-for="(item, index) in enabledList"
             :key="index"
-            :label="item.dictLabel"
-            :value="item.dictValue"
+            :label="item.label"
+            :value="item.value"
           />
         </el-select>
       </el-form-item>
@@ -119,7 +119,7 @@ export default {
       type: Object,
       default: () => { return {}; }
     },
-    stopStatusList: {
+    enabledList: {
       type: Array,
       default: () => []
     },

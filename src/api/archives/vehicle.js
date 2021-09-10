@@ -8,4 +8,5 @@ export default {
   }, //车辆详情
   vehicle_list_page:'/fmsweb/basic/vehicle/v1/paging',//获取分页 
   vehicle_enabled:'/fmsweb/basic/vehicle/v1/updateEnabled', //修改停用状态
+  paging_de_driver: '/fmsweb/basic/vehicle/v1/pagingDefaultDriver'
 }

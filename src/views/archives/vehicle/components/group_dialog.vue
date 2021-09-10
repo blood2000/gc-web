@@ -14,11 +14,17 @@
           <ul class="group-dialog-list-content">
             <li
               class="group-dialog-list-content-item"
-              v-for="(item, index) in [1, 2, 3, 4, 5, 6, 7, 8, 9]"
+              v-for="(item, index) in groupList"
               :key="index"
+              @click="handleGroup(item)"
             >
-              <div class="group-dialog-list-content-item-title">{{ item }}</div>
-              <el-button type="text" class="group-dialog-list-content-item-del"
+              <div class="group-dialog-list-content-item-title">
+                {{ item.name }}
+              </div>
+              <el-button
+                type="text"
+                class="group-dialog-list-content-item-del"
+                @click="groupDel(item)"
                 >删除</el-button
               >
             </li>
@@ -31,16 +37,42 @@
           <el-transfer
             filterable
             :filter-method="filterMethod"
-            filter-placeholder="请输入车辆"
+            filter-placeholder="请输入车牌号"
+            :titles="['未加入车辆', '已加入车辆']"
             v-model="searchValue"
+            :props="{
+              key: 'vehicleCode',
+              label: 'licenseNumber',
+            }"
             :data="searchData"
+            @change="getObject"
           >
+            <span slot-scope="{ option }">{{ option.licenseNumber }}</span>
+            <!-- <pagination
+              :total="no_obj.total"
+              small
+              class="transfer-footer"
+              layout="prev, pager, next"
+              slot="left-footer"
+              :page.sync="no_obj.startIndex"
+              :limit.sync="no_obj.pageSize"
+              @pagination="no_obj_http"
+            />
+            <pagination
+              slot="right-footer"
+              small
+              class="transfer-footer"
+              layout="prev, pager, next"
+              :total="add_obj.total"
+              :page.sync="add_obj.startIndex"
+              :limit.sync="add_obj.pageSize"
+              @pagination="add_obj_http"
+            /> -->
           </el-transfer>
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
+        <el-button @click="cancel">关 闭</el-button>
       </div>
     </el-dialog>
     <el-dialog
@@ -73,21 +105,38 @@ export default {
   watch: {
     groupOpen() {
       if (this.groupOpen) {
+        console.log("this.groupOpen", this.groupOpen);
         this.requsetGroupHttp();
       }
     },
   },
   data() {
     return {
-      searchValue: [],
-      searchData: [],
-      addGroupName: "",
-      addOpen: false,
+      searchValue: [], //右
+      searchData: [], //左
+      addGroupName: "", //新增分组名字
+      addOpen: false, //新增分组弹出框
+      groupList: [], //分组列表
+      no_obj: {
+        groupCode: null,
+        licenseNumber: null,
+        startIndex: 1,
+        pageSize: 1000,
+        total: 0,
+      },
+      add_obj: {
+        groupCode: null,
+        licenseNumber: null,
+        startIndex: 1,
+        pageSize: 1000,
+        total: 0,
+      },
     };
   },
   methods: {
     //获取分组列表
     async requsetGroupHttp() {
+      console.log("我被请求了");
       const obj = {
         moduleName: "http_group",
         method: "post",
@@ -95,18 +144,106 @@ export default {
       };
       const res = await http_request(obj);
       console.log("group_list res==>", res);
+      this.groupList = res.data;
+      console.log("this.groupList", this.groupList);
     },
     //新增分组
     handleAddGroup() {
       this.addOpen = true;
     },
-    // 分组管理确认
-    async submitForm() {
-      console.log("queren");
-      this.$emit("colseGroupDialog");
+    //数据init
+    init() {
+      this.searchValue = [];
+      this.searchData = [];
+      this.no_obj = {
+        groupCode: null,
+        licenseNumber: null,
+        startIndex: 1,
+        pageSize: 1000,
+        total: 0,
+      };
+      this.add_obj = {
+        groupCode: null,
+        licenseNumber: null,
+        startIndex: 1,
+        pageSize: 1000,
+        total: 0,
+      };
+    },
+    //查看分组
+    async handleGroup(data) {
+      this.init();
+      console.log("handleGroup data", data);
+      this.no_obj.groupCode = data.code;
+      this.add_obj.groupCode = data.code;
+      this.no_obj_http();
+      this.add_obj_http();
+    },
+    //未加入车辆列表
+    async no_obj_http() {
+      const me = this;
+      console.log("no_obj_http", me.no_obj);
+      const obj = {
+        moduleName: "http_group",
+        method: "post",
+        url_alias: "paging_no_add_group",
+        data: me.no_obj,
+      };
+      const res = await http_request(obj);
+      console.log("paging_no_add_group", res);
+      me.searchData = res.data.rows;
+      me.no_obj.total = res.data.total;
+      console.log("this.searchData", me.searchData);
+    },
+    //已加入车辆列表
+    async add_obj_http() {
+      const obj = {
+        moduleName: "http_group",
+        method: "post",
+        url_alias: "paging_ok_add_group",
+        data: this.add_obj,
+      };
+      const res = await http_request(obj);
+      console.log("paging_ok_add_group", res);
+      const tmpList = res.data.rows;
+      this.searchValue = [];
+      for (const item of tmpList) {
+        this.searchValue.push(item.vehicleCode);
+        this.searchData.push({
+          vehicleCode: item.vehicleCode,
+          licenseNumber: item.licenseNumber,
+        });
+      }
+      console.log(this.searchValue, "<- value 11 data ->", this.searchData);
+      this.add_obj.total = res.data.total;
+    },
+    //删除分组
+    groupDel(data) {
+      const code = data.code;
+      this.$confirm("确认要删除吗?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(function () {
+          const obj = {
+            moduleName: "http_group",
+            method: "delete",
+            url_alias: "group_del",
+            data: { code },
+            query: true,
+          };
+          return http_request(obj);
+        })
+        .then((res) => {
+          this.msgSuccess("删除成功");
+          this.requsetGroupHttp();
+        });
     },
     // 分组管理关闭
     cancel() {
+      this.groupList= []
+      this.init();
       this.$emit("colseGroupDialog");
     },
     // 新增分组名关闭
@@ -116,9 +253,72 @@ export default {
     },
     // 新增分组名确认
     addOk() {
+      const obj = {
+        moduleName: "http_group",
+        method: "post",
+        url_alias: "group_add",
+        data: { name: this.addGroupName },
+      };
+      http_request(obj).then((res) => {
+        console.log("addOk res", res);
+        this.msgSuccess("添加成功");
+        this.requsetGroupHttp();
+      });
+
       this.addCancel();
     },
-    filterMethod() {},
+    filterMethod(query, item) {
+      console.log("item", item, query);
+      return item.licenseNumber.indexOf(query) > -1;
+    },
+    //发生变化操作
+    getObject(value, direction, movedKeys) {
+      console.log("sss", value, direction, movedKeys);
+      console.log("选中的数据有" + this.searchValue);
+      const me = this;
+      const list = [];
+      for (const item of movedKeys) {
+        const tmp = {
+          groupCode: me.add_obj.groupCode,
+          vehicleCode: item,
+        };
+        list.push(tmp);
+      }
+      console.log("转移的数据", list);
+      const sendHttp = {
+        right: async () => {
+          try {
+            const obj = {
+              moduleName: "http_group",
+              method: "post",
+              url_alias: "add_vehicle_group",
+              data: { list },
+            };
+            const res = await http_request(obj);
+            console.log("res", res);
+          } catch (error) {
+            console.log("error", error);
+            me.handleGroup();
+          }
+        },
+        left: async () => {
+          try {
+            const obj = {
+              moduleName: "http_group",
+              method: "post",
+              url_alias: "del_from_group",
+              data: { list },
+            };
+            const res = await http_request(obj);
+            console.log("res", res);
+          } catch (error) {
+            console.log("error", error);
+            me.handleGroup();
+          }
+        },
+      };
+      sendHttp[direction]();
+    },
   },
 };
 </script>
@@ -165,7 +365,7 @@ export default {
       height: 40px;
       line-height: 40px;
       // text-align: center;
-      padding-left: 30px;
+      padding-left: 20px;
     }
     .group-dialog-list-content {
       flex: 1;
@@ -178,10 +378,11 @@ export default {
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
         line-height: 40px;
+        cursor:pointer;
         &-title {
           flex: 1;
           height: 100;
-          padding-left: 30px;
+          padding-left: 20px;
           font-size: 16px;
         }
         &-del {
@@ -189,6 +390,10 @@ export default {
           text-align: center;
           color: red;
         }
+      }
+      &-item:hover{
+        background: #409EFF;
+        color: #ffffff;
       }
     }
   }

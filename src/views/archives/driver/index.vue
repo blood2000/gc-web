@@ -23,7 +23,7 @@
               :indent="0"
               :highlight-current="true"
               node-key="code"
-              :current-node-key="orgCode"
+              :current-node-key="queryParams.orgCode"
               default-expand-all
               @node-click="handleNodeClick"
             >
@@ -43,9 +43,9 @@
             <!-- 上：搜索 -->
             <QueryForm
               v-model="queryParams"
-              :enabled-list="enabledList"
+              :enabled-list="driverConfig.enabledConfigArr"
               :driver-status-list="driverStatusList"
-              :real-status-list="realStatusList"
+              :real-status-list="driverConfig.realStatusConfigArr"
               @handleQuery="searchQuery"
             />
           </div>
@@ -174,7 +174,7 @@
       </el-col>
     </el-row>
     <DriverDialog
-      :options="{ editType: editType, code: currCode }"
+      :options="{ editType: editType, code: queryParams.orgCode }"
       :open="open"
       :title="title"
       :orgList="orgList"
@@ -220,10 +220,9 @@ export default {
         driverStatus: null, //司机状态
         realStatus: null, //实名状态
         dateRange: [], //日期范围
+        orgCode:null
       },
-      currCode: null, //当前选中的currCode
       orgName: "", //组织查询
-      orgCode: null, // 当前选中的类型
       defaultTreeProps: {
         children: "childrenOrgList",
         label: "orgName",
@@ -248,11 +247,10 @@ export default {
     this.tableColumnsConfig = driverConfig.tableColumnsConfig;
     this.driverStatusList = driverConfig.driverStatusCongfigArr
     this.driverConfig = driverConfig;
-    console.log("driverConfig", this.driverConfig);
   },
   mounted() {
     this.getOrgHttp();
-    this.searchQuery();
+    // this.searchQuery();
   },
   methods: {
     //数据处理
@@ -322,13 +320,13 @@ export default {
       this.title = "修改司机弹窗";
       this.editType = "update";
       this.open = true;
-      this.currCode = obj.code;
+      this.queryParams.orgCode = obj.code;
     },
     handleDetail(obj) {
       this.editType = "detail";
       const code = obj.code;
       this.open = true;
-      this.currCode = obj.code;
+      this.queryParams.orgCode = obj.code;
       this.title = "司机详情弹窗";
       console.log("index code", code);
     },
@@ -350,19 +348,21 @@ export default {
       const orgRes = await http_request(obj);
       console.log("orgRes res", orgRes);
       this.orgTreeData =
-        orgRes.data.length > 0 ? orgRes.data[0].childrenOrgList : [];
-      this.currCode = this.orgTreeData[0].code;
-      console.log("当前code", this.currCode);
-      //     this.searchQuery();
+        orgRes.data.length > 0 ? orgRes.data : [];
+        console.log('orgRes.data[0]',orgRes.data)
+      this.queryParams.orgCode = this.orgTreeData[0].code;
+      console.log("当前code", this.queryParams.orgCode);
+      this.searchQuery();
     },
     //组织树节点过滤
     filterNode(value, data) {
       if (!value) return true;
+      console.log('data.orgName.indexOf(value) !== -1',data.orgName.indexOf(value) !== -1)
       return data.orgName.indexOf(value) !== -1;
     },
     handleNodeClick(data) {
       console.log("data", data);
-      this.orgCode = data.code;
+      this.queryParams.orgCode = data.code;
       this.queryParams.startIndex = 1;
       this.driverHttpReq();
     },
@@ -402,21 +402,27 @@ export default {
     //请求分页数据
     async driverHttpReq() {
       this.loading = true;
-      const obj = {
-        moduleName: "http_driver",
-        method: "post",
-        url_alias: "driver_paging",
-        data: {
+      const tmp = {
           startIndex: this.queryParams.startIndex,
           pageSize: this.queryParams.pageSize,
           name: this.queryParams.name,
           telphone: this.queryParams.telphone,
           enabled: this.queryParams.enabled, //分组
-          driverStatus: this.queryParams.driverStatus, //是否停用
+          driverStatus: this.queryParams.driverStatus ||null, //是否停用
           realStatus: this.queryParams.realStatus, //是否停用
           createBeginTime: this.queryParams.dateRange[0] || null,
           createEndTime: this.queryParams.dateRange[1] || null,
-        },
+          orgCode:this.queryParams.orgCode
+        }
+         if (tmp.createBeginTime)
+        tmp.createBeginTime = tmp.createBeginTime + " " + "00:00:00";
+      if (tmp.createEndTime)
+        tmp.createEndTime = tmp.createEndTime + " " + "23:59:59";
+      const obj = {
+        moduleName: "http_driver",
+        method: "post",
+        url_alias: "driver_paging",
+        data: tmp,
       };
       console.log("所有参数列表", obj);
       const res = await http_request(obj);

@@ -40,7 +40,7 @@
             </p>
             <ImageUploadSimple
               v-model="form.vehicleLicenseSecondImg"
-              @input="chooseImg"
+              @input="chooseImgBack"
             />
           </el-form-item>
         </el-col>
@@ -52,7 +52,7 @@
             <p class="upload-image-label">道路运输证:</p>
             <ImageUploadSimple
               v-model="form.roadTransportCertificateImg"
-              @input="chooseImg"
+              @input="LoadChooseImg"
             />
           </el-form-item>
         </el-col>
@@ -123,6 +123,27 @@
               placeholder="请选择所属组织"
               @select="selectOrgCode"
             />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item
+            style="display: inline-block"
+            label="默认司机"
+            prop="defaultDriverCode"
+          >
+            <el-select
+              v-model="form.defaultDriverCode"
+              clearable
+              filterable
+              placeholder="请选择车辆类型"
+            >
+              <el-option
+                v-for="(item, index) in options.defaultDriverList"
+                :key="index"
+                :label="item.name"
+                :value="item.code"
+              />
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
@@ -318,6 +339,7 @@ export default {
         carrierType: null, //车辆承运类型
         deviceNumber: null, //绑定设备的编号
         remark: null, //备注
+        defaultDriverCode: null, //默认司机
       },
       rules: {
         vehicleLicenseImg: [
@@ -373,34 +395,17 @@ export default {
       vehicleEnergyTypeList: [], //车辆能源类型list
     };
   },
-  created() {
-    //   this.vehicleTypeCodeList =
-    // this.getDicts("energyTypes").then((response) => {
-    //   console.log("energyTypes response", response);
-    //   this.vehicleEnergyTypeList = response.data;
-    // });
-    // this.getDicts("vehicleClassification").then((response) => {
-    //   console.log("vehicleClassification response", response);
-    //   this.vehicleTypeCodeList = response.data;
-    // });
-    // this.getDicts("vehicle-carrier-type").then((response) => {
-    //   console.log("vehicle-carrier-type response", response);
-    //   this.carrierTypeList = response.data;
-    // });
-    // this.getDicts("licenseColor").then((response) => {
-    //   console.log("licenseColor response", response);
-    //   this.vehicleLicenseColorCodeList = response.data;
-    // });
-  },
+  created() {},
   watch: {
     options() {
+      console.log("this.$store.getters", this.$store.getters);
+      this.vehicleEnergyTypeList = this.$store.getters.vehicleEnergyTypeList;
+      this.vehicleTypeCodeList = this.$store.getters.vehicleTypeCodeList;
+      this.carrierTypeList = this.$store.getters.carrierTypeList;
+      this.vehicleLicenseColorCodeList =
+        this.$store.getters.vehicleLicenseColorCodeList;
       if (this.options.editType == "update" && this.open) {
         console.log("this.options", this.options, this.open);
-        this.vehicleEnergyTypeList = this.$store.getters.vehicleEnergyTypeList;
-        this.vehicleTypeCodeList = this.$store.getters.vehicleTypeCodeList;
-        this.carrierTypeList = this.$store.getters.carrierTypeList;
-        this.vehicleLicenseColorCodeList =
-          this.$store.getters.vehicleLicenseColorCodeList;
         //请求
         this.requsetDetail();
       }
@@ -449,6 +454,13 @@ export default {
     },
     //提交表单
     submitForm() {
+      if (
+        isNaN(this.form.vehicleLoadWeight) ||
+        isNaN(this.form.vehicleTotalWeight)
+      ) {
+        this.msgError("请选择正确图片上传");
+        return;
+      }
       const me = this;
       this.$refs["form"].validate((valid) => {
         if (valid) {
@@ -515,12 +527,72 @@ export default {
         carrierType: null, //车辆承运类型
         deviceNumber: null, //绑定设备的编号
         remark: null, //备注
+        defaultDriverCode: null,
       };
       this.resetForm("form");
     },
     //选择照片
+    chooseImgBack(e) {
+      this.ocrHttp(e, "1", "back");
+    },
     chooseImg(e) {
-      console.log("chooseImg", e);
+      this.ocrHttp(e, "1", "front");
+    },
+    LoadChooseImg(e) {
+      console.log("LoadChooseImg", e);
+    },
+    async ocrHttp(imgPath, type, side) {
+      const obj = {
+        moduleName: "http_common",
+        method: "post",
+        url_alias: "ocr",
+        data: {
+          imgPath,
+          type,
+          side,
+        },
+      };
+      console.log("ocr请求 参数", obj);
+      const res = await http_request(obj);
+      console.log("ocr请求", res);
+      const result = res.data.result;
+      this.form.licenseNumber = result.number;
+      console.log("side", side);
+      const sideFn = {
+        front: () => {
+          this.form.engineNumber = result.engine_no;
+          this.form.chassisNumber = result.vin;
+          this.form.issueDate = result.issue_date;
+          this.form.registerDate = result.register_date;
+          if (result.vehicle_type) {
+            let typeValue = "X99";
+            this.vehicleTypeCodeList.forEach((el) => {
+              if (result.vehicle_type === el.dictLabel) {
+                typeValue = el.dictValue;
+              }
+            });
+            this.form.vehicleTypeCode = typeValue;
+          }
+        },
+        back: () => {
+          if (result.gross_mass) {
+            const mass = parseInt(result.gross_mass.replace("kg", "")) / 1000;
+            this.form.vehicleTotalWeight = mass;
+          }
+          if (result.approved_load) {
+            const load =
+              parseInt(result.approved_load.replace("kg", "")) / 1000;
+            this.form.vehicleLoadWeight = load;
+          }
+          if (
+            isNaN(this.form.vehicleLoadWeight) ||
+            isNaN(this.form.vehicleTotalWeight)
+          ) {
+            this.msgError("请选择正确图片上传");
+          }
+        },
+      };
+      sideFn[side]();
     },
     //表单信息赋值
     getDetailToForm(data) {
@@ -542,9 +614,10 @@ export default {
       this.form.vehicleEnergyType = data.vehicleInf.vehicleEnergyType; //车辆能源类型*
       this.form.roadTransportCertificateImg = data.roadTransportCertificateImg; //道路运输证
       this.form.orgCode = data.orgCode; //组织
-      this.form.carrierType = data.vehicleInf.carrierType; //车辆承运类型*
+      this.form.carrierType = data.carrierType; //车辆承运类型*
       this.form.deviceNumber = data.deviceNumber; //绑定设备的编号
       this.form.remark = data.remark; //备注
+      this.form.defaultDriverCode = data.defaultDriverCode;
     },
     //表单给提交修改数据
     getFormToUpdateData() {
@@ -554,6 +627,7 @@ export default {
         vehicleEnergyType: me.form.vehicleEnergyType,
         roadTransportCertificateImg: me.form.roadTransportCertificateImg,
         vehicleLicenseColorCode: me.form.vehicleLicenseColorCode,
+        carrierType: me.form.carrierType,
         vehicleLicenseInf: {
           engineNumber: me.form.engineNumber,
           vehicleLicenseSecondImg: me.form.vehicleLicenseSecondImg,
@@ -565,13 +639,13 @@ export default {
           vehicleLoadWeight: me.form.vehicleLoadWeight,
           vehicleTotalWeight: me.form.vehicleTotalWeight,
           vehicleLicenseImg: me.form.vehicleLicenseImg,
-          carrierType: me.form.carrierType,
         },
         deviceNumber: me.form.deviceNumber,
         orgCode: me.form.orgCode,
         code: me.code,
         id: me.id,
         remark: me.form.remark,
+        defaultDriverCode: me.form.defaultDriverCode,
       };
 
       return obj;
@@ -592,14 +666,15 @@ export default {
           engineNumber: me.form.engineNumber,
           chassisNumber: me.form.chassisNumber,
           licenseNumber: me.form.licenseNumber,
-          carrierType: me.form.carrierType,
         },
+        carrierType: me.form.carrierType,
         roadTransportCertificateImg: me.form.roadTransportCertificateImg,
         vehicleEnergyType: me.form.vehicleEnergyType,
         // driverCode: me.form.driverCode,
         deviceNumber: me.form.deviceNumber,
         orgCode: me.form.orgCode,
         remark: me.form.remark,
+        defaultDriverCode: me.form.defaultDriverCode,
       };
       return obj;
     },

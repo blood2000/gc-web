@@ -77,9 +77,17 @@ const realStatusConfig = {
 
 const realStatusConfigArr = [
   {
-    label:'已实名',value:'1',
+    
     label:"未实名",value:"0"
+  },
+  {
+    label:'已实名',value:'1'
   }
+]
+
+const enabledConfigArr = [
+  {label:"启用",value:1},
+  {label:"停用",value:0}
 ]
 
 export default {
@@ -87,5 +95,6 @@ export default {
   driverStatusCongfig,
   driverStatusCongfigArr,
   realStatusConfig,
-  realStatusConfigArr
+  realStatusConfigArr,
+  enabledConfigArr
 }

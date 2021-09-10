@@ -23,7 +23,7 @@
               :indent="0"
               :highlight-current="true"
               node-key="code"
-              :current-node-key="orgCode"
+              :current-node-key="queryParams.orgCode"
               default-expand-all
               @node-click="handleNodeClick"
             >
@@ -183,7 +183,7 @@
       </el-col>
     </el-row>
     <VehicleDialog
-      :options="{ editType: editType, code: currCode }"
+      :options="{ editType: editType, code: vehicleCode,defaultDriverList:defaultDriverList }"
       :open="open"
       :title="title"
       @colseDialog="colseDialog"
@@ -217,7 +217,6 @@ export default {
       open: false, //dialog show
       groupOpen: false, //分组弹窗
       title: "", //dialog titile
-      currCode: null, //当前选中的currCode
       queryParams: {
         pageNum: 1,
         pageSize: 10,
@@ -226,7 +225,9 @@ export default {
         groupCode: null, //分组
         dateRange: [], //日期范围
         enabled: null, //是否停用
+        orgCode: null,
       },
+      vehicleCode: "",
       vehicleStatusList: [], //车辆状态
       vehicleStatusOptions: {},
       enabledList: [], //是否停用列表
@@ -236,7 +237,7 @@ export default {
       selection: [], // 被勾选表格数据
       codes: [], //删除选择的codes
       orgName: "", //组织查询
-      orgCode: null, // 当前选中的类型
+      defaultDriverList: [],
       defaultTreeProps: {
         children: "childrenOrgList",
         label: "orgName",
@@ -244,19 +245,14 @@ export default {
       orgTreeData: [],
     };
   },
-  created() {
-    this.vehicleStatusList = vehicleConfig.vehicleStatusList;
-    this.enabledList = vehicleConfig.enabledList;
-    this.tableColumnsConfig = vehicleConfig.tableColumnsConfig;
-    this.getDictData();
-    setTimeout(()=>{
-    console.log("store", store);
-
-    },2000)
-  },
+  created() {},
   mounted() {
+    this.getConfigData();
+    this.getDictData();
     this.getOrgHttp();
-    this.searchQuery();
+    setTimeout(() => {
+      console.log("store", store);
+    }, 2000);
   },
   watch: {
     orgName(val) {
@@ -264,6 +260,28 @@ export default {
     },
   },
   methods: {
+    async getDefaultDriver() {
+      const obj = {
+        moduleName: "http_vehicle",
+        method: "post",
+        url_alias: "paging_de_driver",
+        data: {
+          startIndex: 1,
+          pageSize: 10000,
+          orgCode: this.queryParams.orgCode,
+        },
+      };
+      const res = await http_request(obj);
+      if (res.code == "200") {
+        this.defaultDriverList = res.data;
+      }
+      console.log("paging_de_driver", res);
+    },
+    getConfigData() {
+      this.vehicleStatusList = vehicleConfig.vehicleStatusList;
+      this.enabledList = vehicleConfig.enabledList;
+      this.tableColumnsConfig = vehicleConfig.tableColumnsConfig;
+    },
     getDictData() {
       this.getDicts("energyTypes").then((response) => {
         store.commit("SET_vehicleEnergyTypeList", response.data);
@@ -312,6 +330,7 @@ export default {
         .then((res) => {
           console.log("res", res);
           this.msgSuccess(text + "成功");
+          this.searchQuery();
         })
         .catch(function () {
           row.enabled = row.enabled === 1 ? 0 : 1;
@@ -327,12 +346,11 @@ export default {
       if (this.orgName) obj.data = { orgName: this.orgName };
       const orgRes = await http_request(obj);
       console.log("orgRes res", orgRes);
-      this.orgTreeData =
-        orgRes.data.length > 0 ? orgRes.data[0].childrenOrgList : [];
-      if (!this.orgTreeData.length > 0) return;
-      this.currCode = this.orgTreeData[0].code;
-      console.log("当前code", this.currCode);
-      //     this.searchQuery();
+      this.orgTreeData = orgRes.data.length > 0 ? orgRes.data : [];
+      this.queryParams.orgCode = this.orgTreeData[0].code;
+      console.log("当前code", this.queryParams.orgCode);
+      this.getDefaultDriver();
+      this.searchQuery();
     },
     //过滤节点
     filterNode(value, data) {
@@ -342,7 +360,7 @@ export default {
     //点击组织树节点
     handleNodeClick(data) {
       console.log("data", data);
-      this.orgCode = data.code;
+      this.queryParams.orgCode = data.code;
       this.queryParams.pageNum = 1;
       this.vehicleHttpReq();
     },
@@ -354,6 +372,7 @@ export default {
     //请求分页数据
     async vehicleHttpReq() {
       this.loading = true;
+      console.log("vehicleHttpReq", this.queryParams);
       const tmp = {
         startIndex: this.queryParams.pageNum,
         pageSize: this.queryParams.pageSize,
@@ -363,6 +382,7 @@ export default {
         enabled: this.queryParams.enabled || null, //是否停用
         createBeginTime: this.queryParams.dateRange[0] || null,
         createEndTime: this.queryParams.dateRange[1] || null,
+        orgCode: this.queryParams.orgCode,
       };
       if (tmp.createBeginTime)
         tmp.createBeginTime = tmp.createBeginTime + " " + "00:00:00";
@@ -376,7 +396,7 @@ export default {
       };
       console.log("所有参数列表", obj);
       const res = await http_request(obj);
-      console.log("res", res);
+      console.log("page res", res);
       if (res.code == "200") {
         this.vehicleList = res.data.rows;
         this.total = res.data.total;
@@ -417,7 +437,7 @@ export default {
     //删除
     async handleDelete(obj = {}) {
       console.log("obj", obj);
-      const ids = obj.code || this.ids;
+      const ids = [obj.code] || this.ids;
       console.log("this.ids", ids);
       this.$confirm("是否确认删除此项数据?", "警告", {
         confirmButtonText: "确定",
@@ -442,7 +462,7 @@ export default {
       this.title = "修改车辆弹窗";
       this.editType = "update";
       this.open = true;
-      this.currCode = obj.code;
+      this.vehicleCode = obj.code;
     },
     handlePosition(obj) {},
     handleDetail(obj) {
