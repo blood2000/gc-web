@@ -22,10 +22,10 @@ export default {
     key() {
       return this.$route.path;
     },
-    // 工作台不显示版本号
+    // 工作台/地图不显示版本号
     showRecord() {
       const path = this.$route.path;
-      return path !== '/index';
+      return path !== '/index' && path !== '/map/mapInfo';
     }
   }
 };
