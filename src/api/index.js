@@ -8,7 +8,7 @@ import http_role from './archives/role'
 import http_org from './archives/org'
 import http_group from './archives/group'
 import http_common from './common'
-import http_dispatch from './archives/dispatch'
+import http_dispatch from './dispatch/dispatch'
 import Vue from 'vue'
 
 export const defaultH = {
@@ -49,7 +49,7 @@ const selModuleName = (name) => {
  * url_alias, 必填 url对象对应的key
  *  url_code = [],  参数code
  * data   param或者body  
- * header  配置头部数据
+ * header  配置头部数据 
  * query  true/false
  * @returns 
  */
@@ -74,6 +74,7 @@ export const http_request = async  (obj) =>  {
   //header
   tmp.headers = defaultH
   if (obj.header) tmp.headers = { ...tmp.headers, ...obj.header }
+  console.log('最终结果',tmp)
   const res  = await  request(tmp);
   return res
 };

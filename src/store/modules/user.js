@@ -74,6 +74,7 @@ const user = {
         };
         http_request(obj)
           .then(res => {
+            console.log('res userinfo',res.data)
             if (!res) return;
             const user = res.data.user;
             const avatar =

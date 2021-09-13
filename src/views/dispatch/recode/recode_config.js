@@ -1,0 +1,88 @@
+export const tableColumnsConfig = [
+    {
+        isShow: true,
+        label: "派车记录编号",
+        prop: "dispatchOrderCode",
+        sortNum: 1,
+        tooltip: true,
+    },
+    {
+        isShow: true,
+        label: "派车时间",
+        prop: "createTime",
+        sortNum: 1,
+        tooltip: true,
+    },
+    {
+        isShow: true,
+        label: "调度单号",
+        prop: "dispatchOrderNo",
+        sortNum: 1,
+        tooltip: true,
+    },
+    {
+        isShow: true,
+        label: "司机",
+        prop: "driverName",
+        sortNum: 1,
+        tooltip: true,
+    },
+    {
+        isShow: true,
+        label: "车辆",
+        prop: "vehicleNumber",
+        sortNum: 1,
+        tooltip: true,
+    },
+    {
+        isShow: true,
+        label: "出车时间",
+        prop: "outCarTime",
+        sortNum: 1,
+        tooltip: true,
+    },
+    {
+        isShow: true,
+        label: "出发地",
+        prop: "loadAddress",
+        sortNum: 1,
+        tooltip: true,
+    },
+    {
+        isShow: true,
+        label: "目的地",
+        prop: "unloadAddress",
+        sortNum: 1,
+        tooltip: true,
+    },
+    {
+        isShow: true,
+        label: "项目",
+        prop: "projectName",
+        sortNum: 1,
+        tooltip: true,
+    },
+    {
+        isShow: true,
+        label: "货物大类",
+        prop: "goodsBigTypeName",
+        sortNum: 1,
+        tooltip: true,
+    },
+    {
+        isShow: true,
+        label: "货物小类",
+        prop: "goodsSmallTypeName",
+        sortNum: 1,
+        tooltip: true,
+    },
+    {
+        isShow: true,
+        label: "操作",
+        prop: "edit",
+        sortNum: 1,
+        tooltip: true,
+    },
+   
+
+]
