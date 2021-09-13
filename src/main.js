@@ -37,6 +37,16 @@ import DictTag from '@/components/DictTag'
 // 表头
 import RefactorTable from '@/components/ddc/tin/RefactorTable';
 
+// 高德地图vue组件库
+import VueAMap from 'vue-amap';
+Vue.use(VueAMap);
+VueAMap.initAMapApiLoader({
+  key: '2066cb0dafaa492aee47fa1090227a38', // 高德企业key
+  plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.Driving', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor', 'AMap.Geocoder', 'AMap.Marker'],
+  v: '1.4.4',
+  uiVersion: '1.1.1'
+});
+
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
 Vue.prototype.getConfigKey = getConfigKey
