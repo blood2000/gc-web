@@ -25,7 +25,7 @@ export default {
     // 工作台/地图不显示版本号
     showRecord() {
       const path = this.$route.path;
-      return path !== '/index' && path !== '/map/mapInfo';
+      return path !== '/index';
     }
   }
 };
