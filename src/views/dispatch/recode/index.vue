@@ -148,7 +148,8 @@ export default {
       this.$router.push("/dispatch/manage?code=" + code);
     },
     handleDetail(data) {
-      const code = data.dispatchOrderCode;
+      const code = data.appointCarRecordCode;
+      console.log('????',code)
       this.$router.push("recode/detail?code=" + code);
     },
     async getList() {

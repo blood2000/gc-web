@@ -137,7 +137,7 @@ export default {
     },
     handleDetail(data) {
       console.log("manage data", data);
-      const code = data.pageSizeappointCarOrderCode;
+      const code = data.appointCarOrderCode;
       this.$router.push("manage/detail?code=" + code);
     },
 

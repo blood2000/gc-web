@@ -7,5 +7,7 @@ export default {
     paging_appoint_car_record:'/fmsweb/basic/appointCarRecord/v1/pagingAppointCarRecord', //派车记录列表 
     dispatch_order_info:'/fmsweb/basic/appointCarRecord/v1/generateDispatchOrderInfo', //生成调度信息
     car_order:'/fmsweb/basic/appointCarOrder/v1/pagingAppointCarOrder', //派车单列表 派车单管理
-    del_by_codes:(codes)=>`/fmsweb/basic/appointCarRecord/v1/deleteAppointCarRecordByCodes/${codes}`//删除派车单
+    del_by_codes:(codes)=>`/fmsweb/basic/appointCarRecord/v1/deleteAppointCarRecordByCodes/${codes}`,//删除派车单
+    detail_record:(code)=>`/fmsweb/basic/appointCarRecord/v1/detailAppointCarRecordByCode/${code}`,//派车记录详情
+    detail_manage:(appointCarOrderCode)=>`/fmsweb/basic/appointCarOrder/v1/detailAppointCarOrderByCode/${appointCarOrderCode}`//派车单详情
 }

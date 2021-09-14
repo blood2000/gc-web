@@ -1,9 +1,8 @@
  <template>
   <div class="app-container">
-    <div class="order-info">
+    <div class="dispatch-order-info">
       <TitleSideBlueTip title="订单信息" />
-      <el-divider></el-divider>
-      <div class="order-content">
+      <div class="dispatch-order-content">
         <el-form
           :disabled="true"
           ref="pageData"
@@ -11,7 +10,7 @@
           label-width="120px"
           label-position="left"
         >
-          <el-row :gutter="10" style="padding-left: 20px">
+          <el-row :gutter="10" class="dispatch-base-contents-box">
             <el-col :span="8">
               <el-form-item label="用车企业:" prop="companyName">
                 <el-input
@@ -40,7 +39,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row :gutter="10" style="padding-left: 20px">
+          <el-row :gutter="10" class="dispatch-base-contents-box">
             <el-col :span="8">
               <el-form-item label="货物类型:" prop="goodsTypeName">
                 <el-input
@@ -60,9 +59,10 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <div class="loadFormattedAddress-info">
-            <TitleSideBlueTip title="出发地信息" />
-            <div class="info-content">
+          <div>
+            <div class="dispatch-title-item">出发地信息</div>
+
+            <div class="dispatch-info-content">
               <el-row>
                 <el-col :span="12">
                   <el-form-item label="省 / 市 / 区:" prop="loadAddress">
@@ -116,9 +116,10 @@
               </el-row>
             </div>
           </div>
-          <div class="loadFormattedAddress-info">
-            <TitleSideBlueTip title="目的地信息" />
-            <div class="info-content">
+          <div>
+            <div class="title-item">目的地信息</div>
+
+            <div class="dispatch-info-content">
               <el-row>
                 <el-col :span="12">
                   <el-form-item label="省 / 市 / 区:" prop="unloadAddress">
@@ -175,7 +176,7 @@
         </el-form>
       </div>
     </div>
-    <div class="order-deit">
+    <div class="dispatch-order-info">
       <el-form
         ref="ruleForm"
         :rules="rules"
@@ -183,7 +184,7 @@
         label-width="90px"
         label-position="left"
       >
-        <el-row class="order-date" style="padding-top: 20px">
+        <el-row class="dispatch-base-contents-box" style="padding-top: 20px">
           <el-col :span="8">
             <el-form-item label="开始日期:" prop="startDate">
               <el-date-picker
@@ -209,7 +210,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row class="order-date">
+        <el-row class="dispatch-base-contents-box">
           <el-col :span="8">
             <el-form-item label="出车时间:" prop="outCarTime">
               <el-time-picker
@@ -222,7 +223,6 @@
           </el-col>
         </el-row>
         <TitleSideBlueTip title="承运车辆" />
-        <el-divider></el-divider>
         <!-- <el-row :gutter="10" style="padding-left: 20px">
           <el-col :span="8">
             <el-form-item label="承运数量:" prop="companyName">
@@ -524,36 +524,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.order-deit {
-  width: 1250px;
-}
-.order-info {
-  width: 1250px;
-}
-
-.order-content {
-  padding: 20px;
-}
-
-.mini-title {
-  font-size: 16px;
-  font-weight: 700;
-}
-.content-info {
-  display: flex;
-  flex-wrap: wrap;
-}
-.info-content {
-  min-height: 200px;
-  width: 100%;
-  background: rgba(176, 224, 230, 0.5);
-  border-radius: 10px;
-  padding: 20px 20px;
-}
-.order-date {
-  //
-  padding-left: 20px;
-}
 .vehicleDrivers-content {
   display: flex;
   flex-direction: row;
@@ -564,5 +534,10 @@ export default {
 }
 .edit-icon i {
   padding-right: 20px;
+}
+.title-item {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 10px;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="info-header">
     <div class="title-side-right"></div>
-    <div class="title">{{ title }}</div>
+    <div class="titles">{{ title }}</div>
   </div>
 </template>
 
@@ -27,7 +27,7 @@ export default {
     height: 100%;
     margin-right: 10px;
   }
-  .title {
+  .titles {
     font-size: 18px;
     font-weight: bold;
     line-height: 22px;
