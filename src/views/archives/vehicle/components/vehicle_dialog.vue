@@ -138,7 +138,7 @@
               placeholder="请选择车辆类型"
             >
               <el-option
-                v-for="(item, index) in options.defaultDriverList"
+                v-for="(item, index) in defaultDriverList"
                 :key="index"
                 :label="item.name"
                 :value="item.code"
@@ -626,7 +626,6 @@ export default {
       const obj = {
         vehicleEnergyType: me.form.vehicleEnergyType,
         roadTransportCertificateImg: me.form.roadTransportCertificateImg,
-        vehicleLicenseColorCode: me.form.vehicleLicenseColorCode,
         carrierType: me.form.carrierType,
         vehicleLicenseInf: {
           engineNumber: me.form.engineNumber,
@@ -639,6 +638,7 @@ export default {
           vehicleLoadWeight: me.form.vehicleLoadWeight,
           vehicleTotalWeight: me.form.vehicleTotalWeight,
           vehicleLicenseImg: me.form.vehicleLicenseImg,
+          vehicleLicenseColorCode: me.form.vehicleLicenseColorCode,
         },
         deviceNumber: me.form.deviceNumber,
         orgCode: me.form.orgCode,

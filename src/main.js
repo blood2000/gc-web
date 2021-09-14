@@ -6,6 +6,7 @@ import Element from 'element-ui'
 import './assets/styles/element-variables.scss'
 import '@/assets/styles/index.scss'; // global css
 import '@/assets/styles/ddc.scss'; // ddc css
+import '@/assets/styles/dispatch.scss'; // ddc css
 import '@/assets/iconfont/iconfont.css'; // 字体图标
 import App from './App'
 import store from './store'
@@ -36,6 +37,8 @@ import DictTag from '@/components/DictTag'
 // import VueMeta from 'vue-meta'
 // 表头
 import RefactorTable from '@/components/ddc/tin/RefactorTable';
+//左侧标题蓝条
+import TitleSideBlueTip   from '@/components/titleSideBlueTip'
 
 // 高德地图vue组件库
 import VueAMap from 'vue-amap';
@@ -84,6 +87,8 @@ Vue.component('FileUpload', FileUpload)
 Vue.component('ImageUpload', ImageUpload)
 Vue.component('RefactorTable',RefactorTable)
 Vue.use(directive)
+Vue.component('TitleSideBlueTip',TitleSideBlueTip)
+
 // Vue.use(VueMeta)
 
 /**
