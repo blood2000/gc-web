@@ -10,6 +10,7 @@ import http_group from './archives/group'
 import http_warning from './archives/warning'
 import http_common from './common'
 import http_dispatch from './dispatch/dispatch'
+import http_map from './map/map';
 import Vue from 'vue'
 
 export const defaultH = {
@@ -39,6 +40,7 @@ const selModuleName = (name) => {
     http_common,
     http_dispatch,
     http_warning,
+    http_map
   }
   return tmpObj[name]
 }

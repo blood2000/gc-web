@@ -8,9 +8,10 @@
     </div>
 
     <div class="left-tree-panel">
-      <el-tabs class="left-tree-panel__tab own-map-panel-tab" v-model="currentType" @tab-click="handleType">
-        <el-tab-pane v-for="item in typeList" :key="item.code" :label="item.label" :name="item.code"></el-tab-pane>
-      </el-tabs>
+      <ul class="left-tree-panel__tab">
+        <li :class="{active: currentType === '1'}" class="ly-flex-v ly-flex-pack-center ly-flex-align-center" @click="handleType('1')"><p>车</p><p>辆</p><p>(100)</p></li>
+        <li :class="{active: currentType === '2'}" class="ly-flex-v ly-flex-pack-center ly-flex-align-center" @click="handleType('2')"><p>司</p><p>机</p><p>(10)</p></li>
+      </ul>
       <!-- 车辆树 -->
       <template v-if="currentType === '1'">
         <ul class="btn-list-box">
@@ -25,7 +26,7 @@
             class="device-search-input"
             @keyup.enter.native="vehicleQuery"
           />
-          <el-select v-model="vehicleParams.vehicleTypeCode" class="device-search-select" placeholder="车辆类型" size="small" clearable filterable>
+          <el-select v-model="vehicleParams.vehicleTypeCode" class="device-search-select" @change="vehicleQuery" placeholder="车辆类型" size="small" clearable filterable>
             <el-option
               v-for="dict in vehicleTypeOptions"
               :key="dict.dictValue"
@@ -33,16 +34,15 @@
               :value="dict.dictValue"
             />
           </el-select>
-          <el-button type="primary" icon="el-icon-search" size="mini" @click="vehicleQuery">搜索</el-button>
         </div>
-        <div class="device-info-list-box">
+        <div class="device-info-list-box own-map-panel-tree">
           <el-tree
             ref="vehicleTree"
             :data="vehicleTreeOptions"
             :props="vehicleTreeProps"
             :expand-on-click-node="true"
             :filter-node-method="vehicleFilterNode"
-            :indent="0"
+            :indent="24"
             :highlight-current="true"
             node-key="code"
             :current-node-key="vehicleCode"
@@ -50,10 +50,21 @@
             @node-click="vehicleNodeClick"
           >
             <span slot-scope="{ node, data }">
-              <span class="node-label">
-                <i class="tree-node-icon" :class="data.icon" />
-                {{ node.label }}
-              </span>
+              <template v-if="!data.vehicleFlag">
+                <span class="node-label">
+                  <i class="tree-node-icon" :class="data.icon" />
+                  {{ `${node.label}（${data.vehicleCount}）` }}
+                </span>
+              </template>
+              <template v-if="data.vehicleFlag">
+                <div class="tree-node-car-box ly-flex ly-flex-align-center">
+                  <div class="img-box"></div>
+                  <div class="info-box ly-flex-1">
+                    <h5>闽A11111</h5>
+                    <p>渣土车 | 设备在线</p>
+                  </div>
+                </div>
+              </template>
             </span>
           </el-tree>
         </div>
@@ -73,14 +84,14 @@
             @keyup.enter.native="driverQuery"
           />
         </div>
-        <div class="device-info-list-box">
+        <div class="device-info-list-box own-map-panel-tree">
           <el-tree
             ref="driverTree"
             :data="driverTreeOptions"
             :props="driverTreeProps"
             :expand-on-click-node="true"
             :filter-node-method="driverFilterNode"
-            :indent="0"
+            :indent="24"
             :highlight-current="true"
             node-key="code"
             :current-node-key="driverCode"
@@ -145,10 +156,6 @@ export default {
       map: null,
       // 树切换
       currentType: '1',
-      typeList: [
-        {code: '1', label: '车辆 (151)'},
-        {code: '2', label: '司机 (1)'}
-      ],
       // 车小tab
       vehicleActiveTab: '0',
       vehicleTablist: [{
@@ -161,14 +168,15 @@ export default {
       // 车树查询
       vehicleParams: {
         licenseNumber: undefined,
-        vehicleTypeCode: undefined
+        vehicleTypeCode: undefined,
+        vehicleStatus: undefined // 0 空闲 1 任务中  2 维修 3 保养
       },
       vehicleTypeOptions: [],
       // 车树
       vehicleTreeOptions: undefined,
       vehicleTreeProps: {
         children: 'children',
-        label: 'typeName'
+        label: 'orgOrlicenseNumber'
       },
       // 当前选中的车节点
       vehicleCode: undefined,
@@ -189,7 +197,7 @@ export default {
       driverTreeOptions: [],
       driverTreeProps: {
         children: 'children',
-        label: 'typeName'
+        label: 'orgOrlicenseNumber'
       },
       // 当前选中的司机节点
       driverCode: undefined,
@@ -214,6 +222,8 @@ export default {
   },
   mounted() {
     this.initMap();
+    this.getOrgVehicleTree();
+    this.getOrgDriverTree();
   },
   methods: {
     /** 初始化地图 */
@@ -508,13 +518,26 @@ export default {
       this.pathSimplifierIns.renderLater();
     },
     // 切换车辆/司机
-    handleType() {
-      console.log(this.currentType);
+    handleType(code) {
+      if (this.currentType === code) return;
+      this.currentType = code;
     },
     // 车小tab
     handleVehicleTab(code) {
       if (this.vehicleActiveTab === code) return;
       this.vehicleActiveTab = code;
+    },
+    // 获取车辆树数据
+    getOrgVehicleTree() {
+      const obj = {
+        moduleName: 'http_map',
+        method: 'get',
+        url_alias: 'orgVehicleTree',
+        data: this.vehicleParams
+      };
+      http_request(obj).then(res => {
+        this.vehicleTreeOptions = res.data;
+      });
     },
     // 车树查询
     vehicleQuery() {
@@ -532,6 +555,18 @@ export default {
     handleDriverTab(code) {
       if (this.driverActiveTab === code) return;
       this.driverActiveTab = code;
+    },
+    // 获取司机树数据
+    getOrgDriverTree() {
+      const obj = {
+        moduleName: 'http_map',
+        method: 'get',
+        url_alias: 'orgVehicleTree',
+        data: this.vehicleParams
+      };
+      http_request(obj).then(res => {
+        this.driverTreeOptions = res.data;
+      });
     },
     // 司机树查询
     driverQuery() {
@@ -602,11 +637,30 @@ export default {
     left: 0;
     width: $left-tree-width;
     height: calc(100% - #{$header-height});
-    padding: 0;
     background-color: #fff;
-    border-radius: 4px;
-    overflow: hidden;
     z-index: 9998;
+
+    // 大tab样式
+    >.left-tree-panel__tab{
+      position: absolute;
+      right: -40px;
+      top: 0;
+      >li{
+        width: 40px;
+        min-height: 100px;
+        background: #ccc;
+        margin-bottom: 10px;
+        border-radius: 0 6px 6px 0;
+        cursor: pointer;
+        text-align: center;
+        >p{
+          word-break: break-all;
+        }
+        &.active{
+          background: #fff;
+        }
+      }
+    }
 
     // 小tab样式
     .btn-list-box{
@@ -615,7 +669,7 @@ export default {
       opacity: 1;
       border-radius: 5px;
       overflow: hidden;
-      margin: 0 12px 8px;
+      margin: 0 12px 12px;
       width: 200px;
       >li{
         display: inline-block;
@@ -635,6 +689,17 @@ export default {
           background: #FFFFFF;
           color: #262626;
         }
+      }
+    }
+
+    // 搜索样式
+    .device-search-box{
+      padding: 0 12px;
+      .device-search-input{
+        margin-bottom: 12px;
+      }
+      .device-search-select{
+        margin-bottom: 12px;
       }
     }
   }
@@ -784,23 +849,61 @@ export default {
 
 <style lang="scss">
 // elementui 覆盖tab样式
-.left-tree-panel__tab{
-  .el-tabs__nav{
-    width: 100%;
-  }
+.own-map-panel-tab{
   .el-tabs__item{
-    width: 50%;
-    text-align: center;
-    padding: 0;
+    color: #ccc;
+    font-weight: 700;
+    &.is-active{
+      color: #000;
+    }
   }
-  .el-tabs__active-bar{
-    width: 50px !important;
-    left: 50px;
+  .el-tabs__nav-wrap::after{
+    background: transparent;
   }
 }
 
-// 地图公共tab样式
-.own-map-panel-tab{
-
+// elementui 覆盖tree样式
+.own-map-panel-tree{
+  .el-tree-node:before{
+    display: none;
+  }
+  .el-tree-node:after{
+    border-top: none;
+  }
+  .el-tree-node__children{
+    padding-left: 0;
+  }
+  .el-tree-node{
+    padding-left: 0;
+  }
+  .el-tree-node__content{
+    height: auto;
+    min-height: 32px;
+    .el-tree-node__expand-icon{
+      padding: 6px;
+      color: #ccc;
+    }
+    .tree-node-icon{
+      margin-left: -2px;
+    }
+  }
+  // 车的树节点
+  .tree-node-car-box{
+    .img-box{
+      width: 40px;
+      height: 40px;
+      background: #ccc;
+      margin: 8px 8px 8px 0;
+    }
+    .info-box{
+      >h5{
+        color: #000;
+      }
+      >p{
+        color: #ccc;
+        font-size: 12px;
+      }
+    }
+  }
 }
 </style>
