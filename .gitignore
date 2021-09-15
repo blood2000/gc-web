@@ -18,6 +18,5 @@ selenium-debug.log
 *.njsproj
 *.sln
 *.local
-vue.config.js
 package-lock.json
 yarn.lock
