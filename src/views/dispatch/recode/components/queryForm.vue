@@ -63,8 +63,8 @@
         <el-option
           v-for="(item, index) in goodsTypeList"
           :key="index"
-          :label="item.label"
-          :value="item.value"
+          :label="item.dictLabel"
+          :value="item.dictValue"
         />
       </el-select>
     </el-form-item>
@@ -74,8 +74,8 @@
         v-model="queryParams.appointCarDate"
         unlink-panels
         type="date"
+        value-format="yyyy-MM-dd"
         placeholder="请选择派车日期"
-        :picker-options="pickerOptions"
       >
       </el-date-picker>
     </el-form-item>

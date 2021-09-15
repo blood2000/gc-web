@@ -10,61 +10,51 @@
     </div>
     <div class="app-container">
       <!-- 操作栏 -->
-      <right-toolbar
-        :show-search.sync="showSearch"
-        @queryTable="searchQuery"
-        style="marginbottom: 10px"
-      />
+      <div class="recode-tool-bar">
+        <el-button
+          :disabled="multiple"
+          type="primary"
+          size="mini"
+          :loading="recLoading"
+          @click="handleInfo"
+          >生成调度信息</el-button
+        >
+        <right-toolbar
+          :show-search.sync="showSearch"
+          @queryTable="searchQuery"
+        />
+      </div>
+
       <!-- 表格 -->
-      <el-table
-        v-loading="loading"
-        row-key="id"
-        highlight-current-row
-        border
-        default-expand-all
+      <RefactorTable
+        is-show-index
+        :loading="loading"
         :data="tableData"
+        row-key="id"
+        :table-columns-config="tableColumnsConfig"
+        @selection-change="handleSelectionChange"
       >
-        <template v-for="(item, index) in tableColumnsConfig">
-          <el-table-column
-            v-if="item.prop == 'edit'"
-            :key="index"
-            :prop="item.prop"
-            :label="item.label"
-            :show-overflow-tooltip="item.tooltip"
-            :width="item.width || '180'"
+        <template #edit="{ row }">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-position"
+            @click="handleCarlog(row)"
+            >查看派车单</el-button
           >
-            <template slot-scope="scope">
-              <el-button
-                size="mini"
-                type="text"
-                icon="el-icon-position"
-                @click="handleCarlog(scope.row)"
-                >查看派车单</el-button
-              >
-              <el-button
-                size="mini"
-                type="text"
-                icon="el-icon-edit"
-                @click="handleDetail(scope.row)"
-                >详情</el-button
-              >
-              <el-button size="mini" type="text" @click="handleDel(scope.row)"
-                >删除</el-button
-              >
-            </template>
-          </el-table-column>
-          <el-table-column
-            v-else
-            v-show="item.isShow"
-            :key="index"
-            :prop="item.prop"
-            :label="item.label"
-            :show-overflow-tooltip="item.tooltip"
-            :width="item.width || '180'"
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleDetail(row)"
+            >详情</el-button
           >
-          </el-table-column>
+          <el-button size="mini" type="text" @click="handleDel(row)"
+            >删除</el-button
+          >
         </template>
-      </el-table>
+      </RefactorTable>
+
       <!-- 分页 -->
 
       <pagination
@@ -74,6 +64,19 @@
         @pagination="getList"
       />
     </div>
+    <el-dialog
+      title="分享文案"
+      :visible.sync="open"
+      width="800px"
+      :close-on-click-modal="false"
+      :before-close="cancel"
+    >
+      <div style="white-space: pre-line">{{ shareText }}</div>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="ok">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -88,6 +91,10 @@ export default {
     return {
       showSearch: true,
       loading: false,
+      recLoading: false,
+      multiple: true,
+      open: false,
+      ids: [],
       queryParams: {
         pageNum: 1, //页码
         pageSize: 10, //每页显示条数
@@ -104,10 +111,18 @@ export default {
       tableColumnsConfig,
       tableData: [],
       goodsTypeList: [],
+      shareText: "",
     };
   },
   created() {
+    const me = this;
     console.log("tableColumnsConfig", tableColumnsConfig);
+    me.getDicts("goodsType").then((res) => {
+      console.log("res", res);
+      me.$store.commit("set_goodsTypeList", res.data);
+      console.log(111, me.$store.state.dict.goodsTypeList);
+      me.goodsTypeList = me.$store.state.dict.goodsTypeList;
+    });
   },
   mounted() {
     console.log("document.location.search", document.location.search);
@@ -119,6 +134,19 @@ export default {
     this.searchQuery();
   },
   methods: {
+    cancel() {
+      this.open = false;
+      this.shareText = "";
+    },
+    ok() {
+      this.cancel();
+    },
+    // 多选框选中数据
+    handleSelectionChange(selection) {
+      this.selection = selection;
+      this.ids = selection.map((item) => item.appointCarRecordCode);
+      this.multiple = !selection.length;
+    },
     handleDel(data) {
       console.log("data", data);
       const codes = data.appointCarOrderCode;
@@ -142,6 +170,21 @@ export default {
           this.msgSuccess("删除成功");
         });
     },
+    async handleInfo() {
+      console.log("handleInfo", this.ids);
+      this.recLoading = true;
+      const obj = {
+        moduleName: "http_dispatch",
+        method: "post",
+        url_alias: "dispatch_order_info",
+        data: { appointCarRecordCodes: this.ids },
+      };
+      const res = await http_request(obj);
+      console.log("res", res);
+      this.shareText = res.data.msg;
+      this.open = true;
+      this.recLoading = false;
+    },
     handleCarlog(data) {
       console.log("data", data);
       const code = data.appointCarRecordCode;
@@ -149,10 +192,11 @@ export default {
     },
     handleDetail(data) {
       const code = data.appointCarRecordCode;
-      console.log('????',code)
+      console.log("????", code);
       this.$router.push("recode/detail?code=" + code);
     },
     async getList() {
+      this.loading = true;
       const obj = {
         //paging_dispatch
         moduleName: "http_dispatch",
@@ -164,6 +208,7 @@ export default {
       console.log("geatlist ===>", res);
       this.tableData = res.data.rows;
       this.total = res.data.total;
+      this.loading = false;
     },
     searchQuery() {
       this.queryParams.pageNum = 1;
@@ -203,5 +248,8 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.recode-tool-bar {
+  padding: 0 0 20px 20px;
 }
 </style>

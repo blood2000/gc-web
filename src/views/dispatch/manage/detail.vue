@@ -1,8 +1,8 @@
  <template>
   <div class="app-container">
     <TitleSideBlueTip title="订单信息" />
-    <div class="order-content">
-      <el-row class="contents-box">
+    <div class="dispatch-base-contents-box">
+      <el-row class="contents-box ">
         <el-col :span="8">
           <span class="base-label">用车企业:</span>
           <span class="base-text"> {{ baseData.companyName }}</span>
@@ -12,7 +12,7 @@
           <span class="base-text"> {{ baseData.goodsSmallTypeName }}</span>
         </el-col>
       </el-row>
-      <el-row class="contents-box">
+      <el-row class="contents-box ">
         <el-col :span="8">
           <span class="base-label">下单客户姓名:</span>
           <span class="base-text"> {{ baseData.shipmentName }}</span>
@@ -22,7 +22,7 @@
           <span class="base-text"> {{ baseData.shipmentPhone }}</span>
         </el-col>
       </el-row>
-      <el-row class="contents-box">
+      <el-row class="contents-box ">
         <el-col :span="18">
           <span class="base-label">备注:</span>
           <span class="base-text"> {{ baseData.shipmentName }}</span>
@@ -38,7 +38,7 @@
         <div class="title-item">出发地信息</div>
         <div class="info-content">
           <!-- <TitleSideBlueTip title="出发地信息" /> -->
-          <div class="contents-box">
+          <div class="dispatch-base-contents-box">
             <el-row>
               <el-col :span="12">
                 <el-form-item label="省 / 市 / 区:" prop="loadFormattedAddress">
@@ -95,7 +95,7 @@
         <div class="title-item">目的地信息</div>
         <div class="info-content">
           <!-- <TitleSideBlueTip title="目的地信息" /> -->
-          <div class="contents-box">
+          <div class="dispatch-base-contents-box">
             <el-row>
               <el-col :span="12">
                 <el-form-item
@@ -155,7 +155,7 @@
       </el-form>
     </div>
     <TitleSideBlueTip title="承运信息" />
-    <div class="order-content">
+    <div class="dispatch-base-contents-box">
       <el-row class="contents-box">
         <el-col :span="8">
           <span class="base-label">承运车辆:</span>
@@ -224,27 +224,27 @@
       </el-row>
     </div>
     <TitleSideBlueTip title="费用信息" />
-    <div class="order-content">
+     <div  class="contents-box">
       <template v-if="waybillInfo.status === 10">
-        <div>
+        <div  class="contents-box">
           <span class="base-label">运费单价:</span>
           <span class="base-text"> {{ settlementInfo.unitPrice }}</span>
         </div>
-        <div>
+       <div  class="contents-box">
           <span class="base-label">计费重量:</span>
           <span class="base-text"> {{ settlementInfo.weight }}</span>
         </div>
-        <div>
+       <div  class="contents-box">
           <span class="base-label">货物单价:</span>
           <span class="base-text"> {{ settlementInfo.goodsPrice }}</span>
         </div>
       </template>
       <template v-else>
-        <div>
+        <div  class="contents-box">
           <span class="base-label">司机应收:</span>
           <span class="base-text"> {{ settlementInfo.driverFreight }}</span>
         </div>
-        <el-row>
+        <el-row  class="contents-box">
           <el-col :span="4">
             <span class="base-label">路耗扣费:</span>
             <span class="base-text"> {{ settlementInfo.lossPrice }}</span>
@@ -258,20 +258,20 @@
             <span class="base-text"> {{ settlementInfo.deductionPrice }}</span>
           </el-col>
         </el-row>
-        <div>
+       <div  class="contents-box">
           <span class="base-label">司机实收:</span>
           <span class="base-text"> {{ settlementInfo.driverRealFreight }}</span>
         </div>
-        <div>
+        <div  class="contents-box">
           <span class="base-label">纳税金额:</span>
           <span class="base-text"> {{ settlementInfo.servicePrice }}</span>
         </div>
-        <div>
+        <div  class="contents-box">
           <span class="base-label">货主实付:</span>
           <span class="base-text"> {{ settlementInfo.shipmentPrice }}</span>
         </div>
       </template>
-    </div>
+       </div>
   </div>
 </template>
 
@@ -327,12 +327,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.order-content {
-  padding: 20px;
-}
+
 .contents-box {
   font-size: 16px;
-  margin: 10px;
+  margin:  20px 0 20px 20px;
 }
 .title-item {
   font-size: 18px;

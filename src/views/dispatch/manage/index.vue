@@ -142,6 +142,7 @@ export default {
     },
 
     async getList() {
+      this.loading = true
       const obj = {
         //paging_dispatch
         moduleName: "http_dispatch",
@@ -153,6 +154,7 @@ export default {
       console.log("geatlist ===>", res);
       this.tableData = res.data.rows;
       this.total = res.data.total;
+      this.loading = false
     },
     searchQuery() {
       this.queryParams.pageNum = 1;
