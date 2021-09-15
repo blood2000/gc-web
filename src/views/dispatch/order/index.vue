@@ -14,7 +14,7 @@
       <right-toolbar
         :show-search.sync="showSearch"
         @queryTable="searchQuery"
-        style="marginbottom: 10px"
+        style="margin-bottom: 10px"
       />
       <!-- 表格 -->
       <el-table
@@ -138,7 +138,14 @@ export default {
     };
   },
   created() {
+      const me = this;
     console.log("tableColumnsConfig", tableColumnsConfig);
+    me.getDicts("goodsType").then((res) => {
+      console.log("res", res);
+      me.$store.commit("set_goodsTypeList", res.data);
+      console.log(111, me.$store.state.dict.goodsTypeList);
+      me.goodsTypeList = me.$store.state.dict.goodsTypeList;
+    });
   },
   mounted() {
     this.searchQuery();
@@ -169,6 +176,7 @@ export default {
       this.$router.push("order/car?code=" + code);
     },
     async getList() {
+      this.loading = true
       const tmp = { ...this.queryParams };
       tmp.startDate = tmp.dateRange[0];
       tmp.endDate = tmp.dateRange[1];
@@ -185,6 +193,7 @@ export default {
       console.log("geatlist ===>", res);
       this.tableData = res.data.rows;
       this.total = res.data.total;
+      this.loading = false
     },
     searchQuery() {
       this.queryParams.pageNum = 1;

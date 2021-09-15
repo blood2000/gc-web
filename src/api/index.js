@@ -7,6 +7,7 @@ import http_employee from './archives/employee'
 import http_role from './archives/role'
 import http_org from './archives/org'
 import http_group from './archives/group'
+import http_warning from './archives/warning'
 import http_common from './common'
 import http_dispatch from './dispatch/dispatch'
 import Vue from 'vue'
@@ -36,7 +37,8 @@ const selModuleName = (name) => {
     http_org,
     http_group,
     http_common,
-    http_dispatch
+    http_dispatch,
+    http_warning,
   }
   return tmpObj[name]
 }

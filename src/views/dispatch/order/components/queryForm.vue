@@ -55,8 +55,8 @@
         <el-option
           v-for="(item, index) in goodsTypeList"
           :key="index"
-          :label="item.label"
-          :value="item.value"
+          :label="item.dictLabel"
+          :value="item.dictValue"
         />
       </el-select>
     </el-form-item>
