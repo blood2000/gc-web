@@ -1,7 +1,7 @@
 <template>
   <!-- 地图告警列表 -->
   <div class="map-warning-table">
-    <el-tabs v-model="activeTab">
+    <el-tabs v-model="activeTab" class="own-map-panel-tab">
       <el-tab-pane label="实时报警" name="1"></el-tab-pane>
       <el-tab-pane label="ADAS报警" name="2"></el-tab-pane>
       <el-tab-pane label="异常驾驶报警" name="3"></el-tab-pane>

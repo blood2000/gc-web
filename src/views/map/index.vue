@@ -3,13 +3,19 @@
   <div class="map-container">
     <div class="header-panel">
       <ul class="map-tab">
-        <li v-for="item in tabList" :key="item.code" :class="{active: item.code === currentTab}" @click="handleTab(item.code)">{{ item.label }}</li>
+        <li v-for="item in headerTabList" :key="item.code" :class="{active: item.code === headerTab}" @click="handleHeaderTab(item.code)">{{ item.label }}</li>
       </ul>
     </div>
 
     <div class="left-tree-panel">
+      <el-tabs class="left-tree-panel__tab own-map-panel-tab" v-model="currentType" @tab-click="handleType">
+        <el-tab-pane v-for="item in typeList" :key="item.code" :label="item.label" :name="item.code"></el-tab-pane>
+      </el-tabs>
       <!-- 车辆树 -->
-      <template v-if="currentType === 1">
+      <template v-if="currentType === '1'">
+        <ul class="btn-list-box">
+          <li v-for="item in vehicleTablist" :key="item.code" :class="{active: item.code === vehicleActiveTab}" @click="handleVehicleTab(item.code)">{{ `${item.tabName}` }}</li>
+        </ul>
         <div class="device-search-box">
           <el-input
             v-model="vehicleParams.licenseNumber"
@@ -53,7 +59,10 @@
         </div>
       </template>
       <!-- 司机树 -->
-      <template v-if="currentType === 2">
+      <template v-if="currentType === '2'">
+        <ul class="btn-list-box">
+          <li v-for="item in driverTablist" :key="item.code" :class="{active: item.code === driverActiveTab}" @click="handleDriverTab(item.code)">{{ `${item.tabName}` }}</li>
+        </ul>
         <div class="device-search-box">
           <el-input
             v-model="driverParams.driverName"
@@ -94,7 +103,7 @@
 
     <!-- 车辆监控 -->
     <WarnList
-      v-if="currentTab === 1"
+      v-if="headerTab === 1"
       ref="WarnListRef"
       class="warn-list-panel"
     />
@@ -103,7 +112,7 @@
 
     <!-- 轨迹回放 -->
     <TrackList
-      v-if="currentTab === 3"
+      v-if="headerTab === 3"
       ref="TrackListRef"
       class="track-list-panel"
       @initPathSimplifier="initPathSimplifier"
@@ -135,11 +144,20 @@ export default {
       // 地图
       map: null,
       // 树切换
-      currentType: 1,
+      currentType: '1',
       typeList: [
-        {code: 1, label: '车辆'},
-        {code: 2, label: '司机'}
+        {code: '1', label: '车辆 (151)'},
+        {code: '2', label: '司机 (1)'}
       ],
+      // 车小tab
+      vehicleActiveTab: '0',
+      vehicleTablist: [{
+        code: '0',
+        tabName: '全部'
+      }, {
+        code: '1',
+        tabName: '在线'
+      }],
       // 车树查询
       vehicleParams: {
         licenseNumber: undefined,
@@ -154,6 +172,15 @@ export default {
       },
       // 当前选中的车节点
       vehicleCode: undefined,
+      // 司机小tab
+      driverActiveTab: '0',
+      driverTablist: [{
+        code: '0',
+        tabName: '空闲'
+      }, {
+        code: '1',
+        tabName: '任务'
+      }],
       // 司机树查询
       driverParams: {
         driverName: undefined
@@ -167,8 +194,8 @@ export default {
       // 当前选中的司机节点
       driverCode: undefined,
       // 地图切换
-      currentTab: 1,
-      tabList: [
+      headerTab: 1,
+      headerTabList: [
         {code: 1, label: '车辆监控'},
         {code: 2, label: '调度指派'},
         {code: 3, label: '轨迹回放'}
@@ -192,9 +219,10 @@ export default {
     /** 初始化地图 */
     initMap() {
       this.map = new AMap.Map('device-map-container', {
+        mapStyle: 'amap://styles/2fe468ae95b55caa76404a537353e63a', //设置地图的显示样式
         resizeEnable: true,
         center: [119.358267, 26.04577],
-        zoom: 11
+        zoom: 11,
       });
     },
     /** 绘制标记
@@ -236,19 +264,19 @@ export default {
       return option;
     },
     /** 实例化窗体并打开
-     * @param {Object} marker 标记点对象
+     * @param {Array} position 经纬度必传
      * @param {Object} info 动态内容
      * @param {string} anchor 图标锚点
      * @param {Array} offset 窗体偏移量
      */
-    markerInfoInit(marker, {info = [], offset = [20, -16] , anchor = 'top-center'}) {
+    markerInfoInit(position, {info = [], offset = [10, -12] , anchor = 'bottom-center'}) {
       const infoWindow = new AMap.InfoWindow({
         isCustom: false, // 使用自定义窗体
         content: info.join('<br/>'),
         offset: new AMap.Pixel(offset[0], offset[1]),
         anchor
       });
-      infoWindow.open(this.map, marker.getPosition());
+      infoWindow.open(this.map, position);
       return infoWindow;
     },
     /** 关闭地图信息窗体 */
@@ -370,7 +398,7 @@ export default {
           path: that.$refs.TrackListRef.jmTracklist
         }]);
         // 对线路创建一个巡航器
-        const contentImg = require('@/assets/images/device/track_car_c.png');
+        const contentImg = require('@/assets/images/device/track_car.png');
         that.navgtr = that.pathSimplifierIns.createPathNavigator(0, {
           loop: false, // 循环播放
           speed: that.navgtrSpeed, // 巡航速度，单位千米/小时
@@ -397,6 +425,9 @@ export default {
             }
           }
         });
+        // 创建信息窗
+        const info = ['<div>111111</div>']
+        const infoWindow = that.markerInfoInit(that.$refs.TrackListRef.jmTracklist[0], {info});
         // 巡航器移动事件
         that.navgtr.on('move', function(data, position) {
           const path = position.dataItem.pathData.path;
@@ -412,6 +443,8 @@ export default {
           }
           // 进度条实时展示tail
           that.$refs.TrackListRef.setSlideValue((totalIdx / len) * 100);
+          // 重新设置信息窗口位置
+          infoWindow.setPosition(path[idx]);
           // 车超出视野范围后重新定位
           if (!that.isPointInRing(path[idx])) {
             that.map.setCenter(path[idx]);
@@ -474,6 +507,15 @@ export default {
       this.navgtr.moveToPoint(num, Number('0.' + decimal));
       this.pathSimplifierIns.renderLater();
     },
+    // 切换车辆/司机
+    handleType() {
+      console.log(this.currentType);
+    },
+    // 车小tab
+    handleVehicleTab(code) {
+      if (this.vehicleActiveTab === code) return;
+      this.vehicleActiveTab = code;
+    },
     // 车树查询
     vehicleQuery() {
 
@@ -485,6 +527,11 @@ export default {
     // 车树节点选中
     vehicleNodeClick(data) {
 
+    },
+    // 司机小tab
+    handleDriverTab(code) {
+      if (this.driverActiveTab === code) return;
+      this.driverActiveTab = code;
     },
     // 司机树查询
     driverQuery() {
@@ -499,9 +546,9 @@ export default {
       
     },
     // 切换地图tab
-    handleTab(code) {
-      if (this.currentTab === code) return;
-      this.currentTab = code;
+    handleHeaderTab(code) {
+      if (this.headerTab === code) return;
+      this.headerTab = code;
     }
   }
 }
@@ -560,6 +607,36 @@ export default {
     border-radius: 4px;
     overflow: hidden;
     z-index: 9998;
+
+    // 小tab样式
+    .btn-list-box{
+      font-size: 0;
+      background: #E9E9E9;
+      opacity: 1;
+      border-radius: 5px;
+      overflow: hidden;
+      margin: 0 12px 8px;
+      width: 200px;
+      >li{
+        display: inline-block;
+        width: 100px;
+        height: 28px;
+        line-height: 26px;
+        opacity: 1;
+        border-radius: 5px;
+        font-size: 12px;
+        font-family: PingFang SC;
+        font-weight: bold;
+        color: rgba(38, 38, 38, 0.37);
+        text-align: center;
+        cursor: pointer;
+        border: 1px solid #E9E9E9;
+        &.active{
+          background: #FFFFFF;
+          color: #262626;
+        }
+      }
+    }
   }
 
   // 报警列表
@@ -568,6 +645,7 @@ export default {
     bottom: 10px;
     left: calc(#{$left-tree-width} + 10px);
     right: 10px;
+    z-index: 1000;
   }
 
   // 行车轨迹
@@ -576,6 +654,7 @@ export default {
     bottom: 10px;
     left: calc(#{$left-tree-width} + 10px);
     right: 10px;
+    z-index: 1000;
   }
 
   // 地图
@@ -687,8 +766,8 @@ export default {
     }
     // 轨迹车样式
     ::v-deep.own-device-line-car{
-      width: 58px;
-      height: 20px;
+      width: 20px;
+      height: 59px;
       background: url('~@/assets/images/device/track_car.png') no-repeat;
       background-size: 100% 100%;
     }
@@ -700,5 +779,28 @@ export default {
       background-size: 100% 100%;
     }
   }
+}
+</style>
+
+<style lang="scss">
+// elementui 覆盖tab样式
+.left-tree-panel__tab{
+  .el-tabs__nav{
+    width: 100%;
+  }
+  .el-tabs__item{
+    width: 50%;
+    text-align: center;
+    padding: 0;
+  }
+  .el-tabs__active-bar{
+    width: 50px !important;
+    left: 50px;
+  }
+}
+
+// 地图公共tab样式
+.own-map-panel-tab{
+
 }
 </style>
