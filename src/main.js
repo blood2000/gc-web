@@ -50,6 +50,12 @@ VueAMap.initAMapApiLoader({
   uiVersion: '1.1.1'
 });
 
+import VideoPlayer from 'vue-video-player';
+require('video.js/dist/video-js.css');
+require('vue-video-player/src/custom-theme.css');
+Vue.use(VideoPlayer);
+import "videojs-flash";
+
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
 Vue.prototype.getConfigKey = getConfigKey

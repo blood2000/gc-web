@@ -36,7 +36,14 @@
         <div class="image-box">image3</div>
       </el-col>
       <el-col :span="12">
-        <div class="image-box">mp4</div>
+        <div class="image-box">
+          <video-player 
+            class="vjs-custom-skin videoPlayer" 
+            :playsinline="true"
+            :options="playerOptions"
+            width="100%"
+          />
+        </div>
       </el-col>
     </el-row>
   </div>
@@ -55,14 +62,30 @@ export default {
       // 报警列表
       total: 0,
       loading: false,
-      dataList: []
+      dataList: [],
+      // 视频配置
+      playerOptions: {
+        height: "150", // 播放器高度
+        sources: [
+          {
+            type: "rtmp/mp4", // 视频流协议，如果是hls，需要后端开启跨域
+            // 内测地址
+            src: "rtmp://live.hkstv.hk.lxdns.com/live/hks"
+          }
+        ],
+        techOrder: ["flash"],
+        autoplay: true, // 自动播放
+        controls: true // 编辑器控件
+      }
     }
   },
   mounted() {
 
   },
   methods: {
-    
+    getList() {
+
+    }
   }
 }
 </script>
@@ -70,7 +93,6 @@ export default {
 <style lang="scss" scoped>
 .map-warning-detail{
   width: 500px;
-  height: 100%;
   background: #fff;
   padding: 10px;
   .image-list{
