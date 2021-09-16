@@ -78,7 +78,7 @@
                 </template>
                 <template v-if="data.vehicleFlag">
                   <div class="tree-node-car-box ly-flex ly-flex-align-center">
-                    <div class="img-box"></div>
+                    <img class="img-box" src="~@/assets/images/device/car_type.png">
                     <div class="info-box ly-flex-1">
                       <h5>
                         {{ data.orgOrlicenseNumber }}
@@ -700,9 +700,11 @@ export default {
   height: 100%;
   min-width: 1320px;
   overflow-x: auto;
+  overflow-y: hidden !important;
   $header-height: 68px; 
   $left-tree-width: 300px;
   $bottom: 16px;
+  $right: 16px;
 
   >.header-panel{
     position: absolute;
@@ -920,18 +922,19 @@ export default {
   // 报警列表
   >.warn-list-panel{
     position: absolute;
-    bottom: 10px;
+    bottom: $bottom;
     left: calc(#{$left-tree-width} + 10px);
-    right: 10px;
+    right: $right;
     z-index: 1000;
+    height: 226px;
   }
 
   // 报警详情
   >.warn-detail-panel{
     position: absolute;
-    right: 10px;
+    right: $right;
     top: $header-height;
-    bottom: 10px;
+    bottom: $bottom;
     z-index: 1000;
     height: calc(100% - #{$header-height});
   }
