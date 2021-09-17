@@ -152,6 +152,12 @@
     <!-- 地图 -->
     <div id="device-map-container" />
 
+    <!-- 设备信息 -->
+    <Infos 
+      ref="InfosRef"
+      class="map-info-panel"
+    />
+
     <!-- 车辆监控 -->
     <WarnList
       v-if="headerTab === 1"
@@ -182,6 +188,7 @@
 </template>
 
 <script>
+import Infos from './components/infos.vue';
 import WarnList from './warning/warnList.vue';
 import WarnDetail from './warning/warnDetail.vue';
 import TrackList from './track/trackList.vue';
@@ -193,6 +200,7 @@ const geocoder = new AMap.Geocoder({
 export default {
   name: 'MapInfo',
   components: {
+    Infos,
     WarnList,
     WarnDetail,
     TrackList
@@ -698,7 +706,6 @@ export default {
 .map-container{
   margin: 0;
   height: 100%;
-  min-width: 1320px;
   overflow-x: auto;
   overflow-y: hidden !important;
   $header-height: 68px; 
@@ -814,7 +821,7 @@ export default {
   >.left-tree-panel{
     $tab-height: 48px;
     position: absolute;
-    top: calc(#{$header-height} + #{$tab-height} + 20px);
+    top: calc(#{$header-height} + #{$tab-height} + 18px);
     left: 0;
     bottom: $bottom;
     width: $left-tree-width;
@@ -917,6 +924,16 @@ export default {
       height: calc(100% - 124px);
       overflow: auto;
     }
+  }
+
+  // 信息
+  >.map-info-panel{
+    position: absolute;
+    top: calc(#{$header-height} + 12px);
+    bottom: 254px;
+    right: $right;
+    z-index: 1000;
+    width: 380px;
   }
 
   // 报警列表

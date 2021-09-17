@@ -10,7 +10,7 @@
         <li v-for="(item, index) in dataList" :key="index">
           <div class="warning-card" :class="{active: warnActice === index}" @click="handleCard(index)">
             <h5 class="g-single-row">闽A12345</h5>
-            <p class="label mb10 g-single-row">杨洋洋  |  车队1</p>
+            <p class="label mb10 g-single-row">杨洋洋<span style="margin: 0 10px">|</span>车队1</p>
             <div class="center-box ly-flex-pack-justify ly-flex-align-end mb5">
               <div class="ly-flex-v ly-flex-align-center">
                 <img src="~@/assets/images/device/warn_icon_1.png">
@@ -43,6 +43,7 @@
 
 <script>
 import { http_request } from '@/api';
+import bus from '../components/bus';
 export default {
   data() {
     return {
@@ -70,7 +71,7 @@ export default {
     }
   },
   mounted() {
-
+    
   },
   methods: {
     /** 切换tab */
@@ -90,6 +91,7 @@ export default {
     /** 展开收起面板 */
     handlePull() {
       this.isClose = !this.isClose;
+      bus.$emit('isClose', this.isClose);
     }
   }
 }
@@ -181,7 +183,7 @@ export default {
             font-family: PingFang SC;
             font-weight: 400;
             line-height: 26px;
-            color: #8592AD;
+            color: #A6A8AD;
           }
           .address{
             font-size: 14px;
