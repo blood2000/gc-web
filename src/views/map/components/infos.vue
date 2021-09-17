@@ -8,13 +8,19 @@
       <div class="car-content ly-flex ly-flex-align-center">
         <img class="img-box" src="~@/assets/images/device/car_type.png">
         <div class="info-box ly-flex-1">
-          <h5>闽A12345</h5>
+          <h5>{{ vehicleInfo.plateNumber }}</h5>
           <p class="car-name">
-            杨洋洋
-            <span style="margin: 0 10px">|</span>
-            渣土车
-            <span style="margin: 0 10px">|</span>
-            车队1
+            <template v-if="vehicleInfo.driverName">
+              {{ vehicleInfo.driverName }}
+              <span style="margin: 0 10px">|</span>
+            </template>
+            <template v-if="vehicleInfo.carrierTypeName">
+              {{ vehicleInfo.carrierTypeName }}
+            </template>
+            <template v-if="vehicleInfo.orgName">
+              <span style="margin: 0 10px">|</span>
+              {{ vehicleInfo.orgName }}
+            </template>
           </p>
           <p class="car-type">
             <span class="label">车辆类型</span>
@@ -147,11 +153,30 @@
 </template>
 
 <script>
+import { http_request } from '@/api';
 import bus from './bus';
 export default {
+  props: {
+    vehicleCode: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
-      warnIsClose: false
+      warnIsClose: false,
+      // 车辆信息
+      vehicleInfo: {}
+    }
+  },
+  watch: {
+    vehicleCode: {
+      handler(val) {
+        if (val) {
+          this.getVehicleInfo();
+        }
+      },
+      immediate: true
     }
   },
   mounted() {
@@ -161,7 +186,18 @@ export default {
 		});
   },
   methods: {
-
+    // 获取车辆信息
+    getVehicleInfo() {
+      const obj = {
+        moduleName: 'http_map',
+        method: 'get',
+        url_alias: 'getVehicleInfo',
+        url_code: [this.vehicleCode]
+      }
+      http_request(obj).then(res => {
+        this.vehicleInfo = res.data;
+      });
+    }
   }
 }
 </script>

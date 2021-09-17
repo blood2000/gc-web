@@ -65,7 +65,7 @@
               :indent="24"
               :highlight-current="true"
               node-key="code"
-              :current-node-key="vehicleCode"
+              :current-node-key="orgOrVehicleCode"
               default-expand-all
               @node-click="vehicleNodeClick"
             >
@@ -163,9 +163,11 @@
     <div id="device-map-container" />
 
     <!-- 设备信息 -->
-    <Infos 
+    <Infos
+      v-if="isShowVehicleInfo"
       ref="InfosRef"
       class="map-info-panel"
+      :vehicleCode="orgOrVehicleCode"
     />
 
     <!-- 车辆监控 -->
@@ -258,7 +260,7 @@ export default {
         label: 'orgOrlicenseNumber'
       },
       // 当前选中的车节点
-      vehicleCode: undefined,
+      orgOrVehicleCode: undefined,
       // 司机小tab
       driverActiveTab: '0',
       driverTablist: [{
@@ -294,6 +296,8 @@ export default {
       },
       // 当前选中的司机节点
       driverCode: undefined,
+      // 通过这个值判断当前是否选中车辆
+      isShowVehicleInfo: false,
       // 地图切换
       headerTab: 1,
       headerTabList: [
@@ -526,13 +530,13 @@ export default {
           path: that.$refs.TrackListRef.jmTracklist
         }]);
         // 对线路创建一个巡航器
-        const contentImg = require('@/assets/images/device/track_car.png');
+        const contentImg = require('@/assets/images/device/map_car_phc.png');
         that.navgtr = that.pathSimplifierIns.createPathNavigator(0, {
           loop: false, // 循环播放
           speed: that.navgtrSpeed, // 巡航速度，单位千米/小时
           pathNavigatorStyle: {
-            width: 20,
-            height: 59,
+            width: 31,
+            height: 79,
             // 使用图片
             content: PathSimplifier.Render.Canvas.getImageContent(contentImg,
               function onload() {
@@ -741,7 +745,16 @@ export default {
     },
     // 车树节点选中
     vehicleNodeClick(data) {
-      
+      if (this.orgOrVehicleCode === data.orgOrVehicleCode) return;
+      console.log('tree-node: ', data)
+      this.orgOrVehicleCode = data.orgOrVehicleCode;
+      if (data.vehicleFlag) {
+        // 选中车
+        this.isShowVehicleInfo = true;
+      } else {
+        // 选中组织
+        this.isShowVehicleInfo = false;
+      }
     },
     // 司机小tab
     handleDriverTab(code) {
@@ -1169,13 +1182,6 @@ export default {
       &.end{
         background: #1990FF;
       }
-    }
-    // 轨迹车样式
-    ::v-deep.own-device-line-car{
-      width: 20px;
-      height: 59px;
-      background: url('~@/assets/images/device/track_car.png') no-repeat;
-      background-size: 100% 100%;
     }
     // 标记物车样式
     ::v-deep.own-device-marker-car{
