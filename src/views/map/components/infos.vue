@@ -366,7 +366,7 @@ export default {
       }
       .info-list{
         margin-top: 12px;
-        overflow: auto;
+        overflow-y: scroll;
         flex-wrap: wrap;
         >li{
           width: 50%;

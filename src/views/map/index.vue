@@ -18,14 +18,15 @@
 
     <div class="left-tree-panel">
       <ul class="left-tree-panel__tab ly-flex-pack-justify">
-        <li :class="{active: currentType === '1'}" @click="handleType('1')">车辆（16）</li>
-        <li :class="{active: currentType === '2'}" @click="handleType('2')">司机（16）</li>
+        <li :class="{active: currentType === '1'}" @click="handleType('1')">{{ `车辆（${countVehicle.countAll ? countVehicle.countAll : 0}）` }}</li>
+        <li :class="{active: currentType === '2'}" @click="handleType('2')">{{ `司机（${countDriver.countAll ? countDriver.countAll : 0}）` }}</li>
       </ul>
       <div class="left-tree-panel__content">
         <!-- 车辆树 -->
-        <template v-if="currentType === '1'">
+        <div v-show="currentType === '1'">
           <ul class="btn-list-box">
-            <li v-for="item in vehicleTablist" :key="item.code" :class="{active: item.code === vehicleActiveTab}" @click="handleVehicleTab(item.code)">{{ `${item.tabName}（10）` }}</li>
+            <li :class="{active: vehicleActiveTab === '0'}" @click="handleVehicleTab('0')">{{ `全部（${countVehicle.countAll ? countVehicle.countAll : 0}）` }}</li>
+            <li :class="{active: vehicleActiveTab === '1'}" @click="handleVehicleTab('1')">{{ `在线（${countVehicle.countAll ? countVehicle.countAll : 0}）` }}</li>
           </ul>
           <div class="device-search-box">
             <el-input
@@ -34,12 +35,11 @@
               clearable
               size="small"
               class="device-search-input"
-              @keyup.enter.native="vehicleQuery"
             />
             <div class="ly-flex-pack-justify">
-              <el-select v-model="vehicleParams.vehicleTypeCode" class="device-search-select" @change="vehicleQuery" placeholder="车辆类型" size="small" clearable filterable>
+              <el-select v-model="vehicleParams.carrierType" class="device-search-select" @change="vehicleQuery" placeholder="车辆类型" size="small" clearable filterable>
                 <el-option
-                  v-for="dict in vehicleTypeOptions"
+                  v-for="dict in vehicleCarrierTypeOptions"
                   :key="dict.dictValue"
                   :label="dict.dictLabel"
                   :value="dict.dictValue"
@@ -60,7 +60,7 @@
               ref="vehicleTree"
               :data="vehicleTreeOptions"
               :props="vehicleTreeProps"
-              :expand-on-click-node="true"
+              :expand-on-click-node="false"
               :filter-node-method="vehicleFilterNode"
               :indent="24"
               :highlight-current="true"
@@ -82,17 +82,16 @@
                     <div class="info-box ly-flex-1">
                       <h5>
                         {{ data.orgOrlicenseNumber }}
-                        <span class="type">渣土车</span>
+                        <span class="type">{{ selectDictLabel(vehicleCarrierTypeOptions, data.carrierType) }}</span>
                       </h5>
                       <p>
                         <!-- 在线/离线 -->
                         <span class="status green"><strong>· </strong>设备在线</span>
                         <!-- <span class="status gray"><strong>· </strong>设备离线</span> -->
                         <!-- 设备状态 -->
-                        <span class="status blue" v-if="data.vehicleStatus === 0"><strong>· </strong>空闲中</span>
-                        <span class="status green" v-if="data.vehicleStatus === 1"><strong>· </strong>任务中</span>
-                        <span class="status gray" v-if="data.vehicleStatus === 2"><strong>· </strong>维修</span>
-                        <span class="status gray" v-if="data.vehicleStatus === 3"><strong>· </strong>保养</span>
+                        <span v-if="data.vehicleStatus !== null && data.vehicleStatus !== undefined" class="status" :class="selectDictColor(vehicleStatusOptions, data.vehicleStatus)">
+                          <strong>· </strong>{{ selectDictLabel(vehicleStatusOptions, data.vehicleStatus) }}
+                        </span>
                       </p>
                     </div>
                   </div>
@@ -100,12 +99,12 @@
               </span>
             </el-tree>
           </div>
-        </template>
+        </div>
         <!-- 司机树 -->
-        <template v-if="currentType === '2'">
-          <ul class="btn-list-box">
+        <div v-show="currentType === '2'">
+          <!-- <ul class="btn-list-box">
             <li v-for="item in driverTablist" :key="item.code" :class="{active: item.code === driverActiveTab}" @click="handleDriverTab(item.code)">{{ `${item.tabName}（10）` }}</li>
-          </ul>
+          </ul> -->
           <div class="device-search-box">
             <el-input
               v-model="driverParams.driverName"
@@ -113,15 +112,22 @@
               clearable
               size="small"
               class="device-search-input"
-              @keyup.enter.native="driverQuery"
             />
+            <el-select v-model="driverParams.driverStatus" class="device-search-select" style="width:100%" @change="driverQuery" placeholder="司机状态" size="small" clearable filterable>
+              <el-option
+                v-for="dict in driverStatusOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
           </div>
           <div class="device-info-list-box own-map-panel-tree map-scroll-panel">
             <el-tree
               ref="driverTree"
               :data="driverTreeOptions"
               :props="driverTreeProps"
-              :expand-on-click-node="true"
+              :expand-on-click-node="false"
               :filter-node-method="driverFilterNode"
               :indent="24"
               :highlight-current="true"
@@ -139,13 +145,17 @@
                 </template>
                 <template v-if="data.driverFlag	">
                   <div class="tree-node-driver-box ly-flex ly-flex-align-center">
-                    {{ data.orgOrDriverName }}
+                    <span class="mr8">{{ data.orgOrDriverName }}</span>
+                    <!-- 司机状态 -->
+                    <span v-if="data.driverStatus !== null && data.driverStatus !== undefined" class="status" :class="selectDictColor(driverStatusOptions, data.driverStatus)">
+                      <strong>· </strong>{{ selectDictLabel(driverStatusOptions, data.driverStatus) }}
+                    </span>
                   </div>
                 </template>
               </span>
             </el-tree>
           </div>
-        </template>
+        </div>
       </div>
     </div>
 
@@ -218,27 +228,28 @@ export default {
       currentType: '1',
       // 车小tab
       vehicleActiveTab: '0',
-      vehicleTablist: [{
-        code: '0',
-        tabName: '全部'
-      }, {
-        code: '1',
-        tabName: '在线'
-      }],
+      // 车各个状态统计值
+      countVehicle: {
+        countAll: 0, // 所有
+        countIdle: 0, // 空闲
+        countInTask: 0, // 任务
+        countRepair: 0, // 维修
+        countMaintenance: 0 // 保养
+      },
       // 车树查询
       vehicleParams: {
         licenseNumber: undefined,
-        vehicleTypeCode: undefined,
-        vehicleStatus: undefined // 0 空闲 1 任务中  2 维修 3 保养
+        carrierType: undefined,
+        vehicleStatus: undefined
       },
-      // 车辆类型字典
-      vehicleTypeOptions: [],
+      // 车辆承运类型字典
+      vehicleCarrierTypeOptions: [],
       // 车辆状态字典
       vehicleStatusOptions: [
-        { dictLabel: '空闲', dictValue: 0 },
-        { dictLabel: '任务中', dictValue: 1 },
-        { dictLabel: '维修', dictValue: 2 },
-        { dictLabel: '保养', dictValue: 3 }
+        { dictLabel: '空闲中', dictValue: 0, color: 'blue' },
+        { dictLabel: '任务中', dictValue: 1, color: 'green' },
+        { dictLabel: '维修', dictValue: 2, color: 'gray' },
+        { dictLabel: '保养', dictValue: 3, color: 'gray' }
       ],
       // 车树
       vehicleTreeOptions: undefined,
@@ -257,11 +268,24 @@ export default {
         code: '1',
         tabName: '任务'
       }],
+      // 司机各个状态统计值
+      countDriver: {
+        countAll: 0, // 全部
+        countIdle: 0, // 空闲
+        countInTask: 0, // 任务中
+        countUnavailable: 0 // 不可用
+      },
       // 司机树查询
       driverParams: {
         driverName: undefined,
-        driverStatus: undefined // 0 任务中 1 空闲中 2 不可用
+        driverStatus: undefined
       },
+      // 司机状态字典
+      driverStatusOptions: [
+        { dictLabel: '任务中', dictValue: 0, color: 'green' },
+        { dictLabel: '空闲中', dictValue: 1, color: 'blue' },
+        { dictLabel: '不可用', dictValue: 2, color: 'gray' }
+      ],
       // 司机树
       driverTreeOptions: undefined,
       driverTreeProps: {
@@ -289,10 +313,30 @@ export default {
       endMarker: null
     }
   },
+  watch: {
+    'vehicleParams.licenseNumber': {
+      handler() {
+        this.vehicleQuery();
+      }
+    },
+    'driverParams.driverName': {
+      handler() {
+        this.driverQuery();
+      }
+    }
+  },
   mounted() {
+    // 时间
     this.getCurrentTime();
     this.refreshTime();
+    // 地图
     this.initMap();
+    // 字典
+    this.getDictData();
+    // 统计值
+    this.getCountVehicle();
+    this.getCountDriver();
+    // 树
     this.getOrgVehicleTree();
     this.getOrgDriverTree();
   },
@@ -630,6 +674,24 @@ export default {
         clearInterval(this.timer);
       }
     },
+    // 获取字典
+    getDictData() {
+      // 车辆承运类型
+      this.getDicts("vehicle-carrier-type").then((response) => {
+        this.vehicleCarrierTypeOptions = response.data;
+      });
+    },
+    // 字典匹配颜色
+    selectDictColor(datas, value) {
+      var actions = [];
+      Object.keys(datas).some((key) => {
+        if (datas[key].dictValue == ('' + value)) {
+          actions.push(datas[key].color);
+          return true;
+        }
+      })
+      return actions.join('');
+    },
     // 切换车辆/司机
     handleType(code) {
       if (this.currentType === code) return;
@@ -639,6 +701,17 @@ export default {
     handleVehicleTab(code) {
       if (this.vehicleActiveTab === code) return;
       this.vehicleActiveTab = code;
+    },
+    // 获取车辆各个状态统计值
+    getCountVehicle() {
+      const obj = {
+        moduleName: 'http_map',
+        method: 'get',
+        url_alias: 'countVehicle'
+      }
+      http_request(obj).then(res => {
+        this.countVehicle = res.data;
+      });
     },
     // 获取车辆树数据
     getOrgVehicleTree() {
@@ -654,20 +727,37 @@ export default {
     },
     // 车树查询
     vehicleQuery() {
-
+      this.$refs.vehicleTree.filter(this.vehicleParams);
     },
-    vehicleFilterNode(value, data) {
-      if (!value) return true;
-      return data.typeName.indexOf(value) !== -1;
+    // 车树节点筛选
+    vehicleFilterNode(vehicleParams, data) {
+      const { licenseNumber, carrierType, vehicleStatus } = vehicleParams;
+      if (!licenseNumber && !carrierType && (vehicleStatus === undefined || vehicleStatus === null)) return true;
+      let flag1 = true, flag2 = true, flag3 = true;
+      if (licenseNumber && licenseNumber !== '') flag1 = data.orgOrlicenseNumber.indexOf(licenseNumber) !== -1;
+      if (carrierType && carrierType !== '') flag2 = data.carrierType === carrierType;
+      if (vehicleStatus !== undefined && vehicleStatus !== null && vehicleStatus !== '') flag3 = data.vehicleStatus === vehicleStatus;
+      return (flag1 && flag2 && flag3);
     },
     // 车树节点选中
     vehicleNodeClick(data) {
-
+      
     },
     // 司机小tab
     handleDriverTab(code) {
       if (this.driverActiveTab === code) return;
       this.driverActiveTab = code;
+    },
+    // 获取司机各个状态统计值
+    getCountDriver() {
+      const obj = {
+        moduleName: 'http_map',
+        method: 'get',
+        url_alias: 'countDriver'
+      }
+      http_request(obj).then(res => {
+        this.countDriver = res.data;
+      });
     },
     // 获取司机树数据
     getOrgDriverTree() {
@@ -683,11 +773,16 @@ export default {
     },
     // 司机树查询
     driverQuery() {
-
+      this.$refs.driverTree.filter(this.driverParams);
     },
-    driverFilterNode(value, data) {
-      if (!value) return true;
-      return data.typeName.indexOf(value) !== -1;
+    // 司机树节点筛选
+    driverFilterNode(driverParams, data) {
+      const { driverName, driverStatus } = driverParams;
+      if (!driverName && (driverStatus === undefined || driverStatus === null)) return true;
+      let flag1 = true, flag2 = true;
+      if (driverName && driverName !== '') flag1 = data.orgOrDriverName.indexOf(driverName) !== -1;
+      if (driverStatus !== undefined && driverStatus !== null && driverStatus !== '') flag2 = data.driverStatus === driverStatus;
+      return (flag1 && flag2);
     },
     // 司机节点选中
     driverNodeClick(data) {
@@ -719,7 +814,7 @@ export default {
     left: 0;
     right: 0;
     height: $header-height;
-    z-index: 9999;
+    z-index: 999;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, #FFFFFF 100%);
     border-bottom: 1px solid #E4ECF4;
     >.logo{
@@ -825,7 +920,7 @@ export default {
     left: 0;
     bottom: $bottom;
     width: $left-tree-width;
-    z-index: 9998;
+    z-index: 998;
 
     // 大tab样式
     >.left-tree-panel__tab{
@@ -870,6 +965,9 @@ export default {
       box-shadow: 6px 3px 10px rgba(0, 0, 0, 0.1);
       border-radius: 0 8px 8px 0;
       padding: 18px 0;
+      >div{
+        height: 100%;
+      }
     }
 
     // 小tab样式
@@ -1133,6 +1231,30 @@ export default {
       margin-left: -2px;
     }
   }
+  // 树节点状态标签
+  .tree-node-car-box, .tree-node-driver-box{
+    .status{
+      display: inline-block;
+      margin-right: 8px;
+      height: 20px;
+      line-height: 20px;
+      font-size: 12px;
+      border-radius: 4px;
+      padding: 0 8px;
+      &.green{
+        color: #43B91E;
+        background: #E5F0E4;
+      }
+      &.gray{
+        color: #959AA4;  
+        background: #F1F1F1;
+      }
+      &.blue{
+        color: #4682FA;  
+        background: #E5ECF6;
+      }
+    }
+  }
   // 车的树节点
   .tree-node-car-box{
     .img-box{
@@ -1164,26 +1286,6 @@ export default {
         font-weight: 400;
         color: #959AA4;
         line-height: 24px;
-        >.status{
-          display: inline-block;
-          margin-right: 8px;
-          height: 20px;
-          line-height: 20px;
-          border-radius: 4px;
-          padding: 0 8px;
-          &.green{
-            color: #43B91E;
-            background: #E5F0E4;
-          }
-          &.gray{
-            color: #959AA4;  
-            background: #F1F1F1;
-          }
-          &.blue{
-            color: #4682FA;  
-            background: #E5ECF6;
-          }
-        }
       }
     }
   }

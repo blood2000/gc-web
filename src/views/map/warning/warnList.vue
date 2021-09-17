@@ -8,7 +8,7 @@
     <div class="map-warning-table__content ly-flex-pack-justify">
       <ul v-show="!isClose" class="warning-list ly-flex-pack-justify">
         <li v-for="(item, index) in dataList" :key="index">
-          <div class="warning-card" :class="{active: warnActice === index}" @click="handleCard(index)">
+          <div class="warning-card" :class="{active: index === 0}">
             <h5 class="g-single-row">闽A12345</h5>
             <p class="label mb10 g-single-row">杨洋洋<span style="margin: 0 10px">|</span>车队1</p>
             <div class="center-box ly-flex-pack-justify ly-flex-align-end mb5">
@@ -65,7 +65,6 @@ export default {
       }],
       // 报警列表
       dataList: [{}, {}, {}, {}, {}],
-      warnActice: 0,
       // 面板是否收起
       isClose: false
     }
@@ -82,11 +81,6 @@ export default {
     /** 获取告警列表 */
     getList() {
 
-    },
-    /** 选中告警卡片 */
-    handleCard(index) {
-      if (this.warnActice === index) return;
-      this.warnActice = index;
     },
     /** 展开收起面板 */
     handlePull() {
@@ -166,7 +160,7 @@ export default {
         .warning-card{
           height: 100%;
           border-radius: 6px;
-          cursor: pointer;
+          cursor: default;
           padding: 12px 14px;
           &.active{
             background: linear-gradient(90deg, rgba(239, 105, 105, 0.16) 0%, rgba(239, 105, 105, 0) 100%);
