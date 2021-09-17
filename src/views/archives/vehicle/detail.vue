@@ -195,7 +195,31 @@
       <el-col :span="15">
         <el-card class="box-card detail-right">
           <div class="maps"></div>
-          <div class="tables"></div>
+          <div class="tables">
+            <div class="table-title">告警信息 {{warningInfo.length ? '(' + warningInfo.length + ')' : ''}}</div>
+            <RefactorTable
+                  :loading="loading"
+                  :data="warningInfo"
+                  row-key="id"
+                  :table-columns-config="warningInfoTableColumnsConfig"
+                >
+                  <template #warinigType="{ row }">
+                    {{ getWarinigTypeName(row.warinigType) }}
+                  </template>
+                  <template #warningLevel="{ row }">
+                    {{ getWarningLevelName(row.warningLevel) }}
+                  </template>
+                  <template #handle="{ row }">
+                    <el-button
+                      size="mini"
+                      type="text"
+                      icon="el-icon-tickets"
+                      @click="toWarningDetail(row)"
+                      >详情
+                    </el-button>
+                  </template>
+                </RefactorTable>
+          </div>
         </el-card>
       </el-col>
     </el-row>
@@ -204,6 +228,7 @@
 
 <script>
 import { http_request } from "../../../api";
+import vehicleConfig from "./vehicle_config";
 export default {
   name: "vehicleDetail",
   components: {},
@@ -212,10 +237,15 @@ export default {
       code: "",
       vehicleInfo: {},
       orgName: "",
+      warningInfo: [],
+      warningInfoTableColumnsConfig: [],
+      loading: false
     };
   },
   mounted() {
     this.getVehicleDetailHttp();
+    this.warningInfo = vehicleConfig.warningInfo;
+    this.warningInfoTableColumnsConfig = vehicleConfig.warningInfoTableColumnsConfig;
   },
   created() {},
   computed: {},
@@ -255,6 +285,32 @@ export default {
           me.orgName = name;
         });
       });
+    },
+    //告警类型表格项
+    getWarinigTypeName(warningType) {
+      let warningName = "";
+      vehicleConfig.warningTypeList.map(item => {
+        if (item.warningType === warningType) {
+          warningName = item.warningName;
+        }
+      });
+      return warningName;
+    },
+    // 告警级别
+    getWarningLevelName(level) {
+      let levelName = "";
+      vehicleConfig.warningLevelList.map(item => {
+        if (item.level === level) {
+          levelName = item.name;
+        }
+      });
+      return levelName;
+    },
+    // 告警详情
+    // 详情
+    toWarningDetail(obj) {
+      this.$router.push("../../warning/warningDetail?driver=" + obj.driver);
+      // this.$router.push({name: "warningDetail", params: {driver: obj.driver}});
     },
   },
 };
@@ -320,5 +376,12 @@ export default {
   .maps {
     height: 450px;
   }
+}
+// 告警信息表格标题
+.table-title {
+  font-weight: bold;
+  font-size: 16px;
+  height: 40px;
+  line-height: 40px;
 }
 </style>

@@ -1,43 +1,42 @@
 const overviewMock = {
   rest: 12000,
   handle: 10000
-}
+};
 
 const cardTypeList = [
   {
-    cardType: '中国工商银行',
+    cardType: "中国工商银行",
     userName: "李白",
-    acct: "6226 1111 2222 3333",
+    acct: "6226111122223333586",
     id: 0
   },
   {
-    cardType: '中国建设银行',
+    cardType: "中国建设银行",
     userName: "李白",
     acct: "0026 1111 2222 3333",
     id: 1
   },
   {
-    cardType: '中国农业银行',
+    cardType: "中国农业银行",
     userName: "李白",
     acct: "6200 1111 2222 3333",
     id: 2
   },
   {
-    cardType: '招商银行',
+    cardType: "招商银行",
     userName: "李白",
     acct: "3700 1111 2222 3333",
     id: 3
   },
   {
-    cardType: '交通银行',
+    cardType: "交通银行",
     userName: "李白",
     acct: "5200 1111 2222 3333",
     id: 4
-  },
-]
+  }
+];
 
 const tableColumnsConfig = [
-  
   {
     isShow: true,
     label: "告警类型",
@@ -77,15 +76,11 @@ const tableColumnsConfig = [
     sortNum: 7,
     tooltip: true,
     width: 200
-  },
-]
-
-
-
-
+  }
+];
 
 export default {
   overviewMock,
   cardTypeList,
-  tableColumnsConfig,
-}
+  tableColumnsConfig
+};
