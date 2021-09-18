@@ -4,13 +4,13 @@
       ref="queryForm"
       :model="queryParams"
       :inline="true"
-      label-width="80px"
+      label-width="100px"
       size="small"
     >
       <el-form-item label="开户姓名" prop="bankUserName">
         <el-input
           v-model="queryParams.bankUserName"
-          placeholder="请输入开户姓名"
+          placeholder="请输入名称"
           clearable
           style="width: 185px"
           @keyup.enter.native="$emit('handleQuery')"
@@ -51,20 +51,6 @@
           @keyup.enter.native="$emit('handleQuery')"
         />
       </el-form-item>
-      <el-form-item label="提现日期">
-        <el-date-picker
-          v-model="queryParams.dateRange"
-          unlink-panels
-          :picker-options="pickerOptions"
-          size="small"
-          style="width: 240px"
-          value-format="yyyy-MM-dd"
-          type="daterange"
-          range-separator="至"
-          start-placeholder=" 请选择"
-          end-placeholder=" 请选择"
-        />
-      </el-form-item>
       <el-form-item>
         <el-button
           type="primary"
@@ -82,7 +68,6 @@
 </template>
 
 <script>
-import { pickerOptions } from "@/utils/dateRange";
 
 export default {
   props: {
@@ -95,17 +80,10 @@ export default {
     bankNameList:{
       type:Array,
       default:()=>[]
-    },
-    bankNumberList:{
-       type:Array,
-      default:()=>[]
-    }
-    
+    } 
   },
   data() {
     return {
-      pickerOptions,
-      // 'projectList': []
     };
   },
   computed: {

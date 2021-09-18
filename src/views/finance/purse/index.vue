@@ -1,78 +1,37 @@
-<!-- 告警 -->
+<!-- 钱包 -->
 <template>
   <div class="device-info">
-    <el-row :gutter="15">
-      <el-col :xl="5" :lg="6" :md="8" :sm="9" :xs="24">
-        <div class="device-info-left">
-          <div class="head-container">
-            <el-input
-              v-model="orgName"
-              placeholder="请输入组织名称"
-              clearable
-              size="small"
-              prefix-icon="el-icon-search"
-              class="mb20"
-            />
+    <div class="device-info-right">
+      <div class="device-info-right-top" v-show="showSearch">
+        <!-- 我的账户 -->
+        <div class="top-title">我的账户</div>
+      </div>
+      <div class="device-info-right-bottom">
+        <div class="overview-box">
+          <div>
+            <div>{{ pageData.amount | priceFormat }}</div>
+            <div>余额</div>
           </div>
-          <div class="head-container el-tree-scroll-container">
-            <el-tree
-              ref="tree"
-              :data="orgTreeData"
-              :props="defaultTreeProps"
-              :expand-on-click-node="true"
-              :filter-node-method="filterNode"
-              :indent="0"
-              :highlight-current="true"
-              node-key="code"
-              :current-node-key="orgCode"
-              default-expand-all
-              @node-click="handleNodeClick"
-            >
-              <span slot-scope="{ node, data }">
-                <span class="node-label">
-                  <i class="tree-node-icon" :class="data.icon" />
-                  {{ node.label }}
-                </span>
-              </span>
-            </el-tree>
-          </div>
-        </div>
-      </el-col>
-      <el-col :xl="19" :lg="18" :md="16" :sm="15" :xs="24">
-        <div class="device-info-right">
-          <div class="device-info-right-top" v-show="showSearch">
-            <!-- 我的账户 -->
-            <div class="top-title">我的账户</div>
-          </div>
-          <div class="device-info-right-bottom">
-            <div class="overview-box">
-              <div >
-                <div>{{overviewData.rest | priceFormat}}</div>
-                <div>余额</div>
-              </div>
 
-              <div>
-                <div>{{overviewData.handle | priceFormat}}</div>
-                <div>提现处理中金额</div>
-              </div>
-            </div>
-            <div class="btn-box">
-              <div class="as-btn" @click="applyCash">提现</div>
-              <div @click="toReport(0)">提现记录</div>
-              <div>运费记录</div>
-              <div>银行卡</div>
-            </div>
+          <div>
+            <div>{{ pageData.isWithdrawing | priceFormat }}</div>
+            <div>提现处理中金额</div>
           </div>
         </div>
-      </el-col>
-    </el-row>
+        <div class="btn-box">
+          <div class="as-btn" @click="applyCash">提现</div>
+          <div @click="toReport(1)">交易明细</div>
+          <div @click="toReport(0)">提现记录</div>
+          <div @click="toReport(2)">银行卡</div>
+        </div>
+      </div>
+    </div>
     <Apply-Dialog
       :open="open"
       :cardTypeList="cardTypeList"
-      :overviewData="overviewData"
+      :amount="pageData.amount"
       @colseDialog="colseDialog"
     >
-
     </Apply-Dialog>
   </div>
 </template>
@@ -81,26 +40,18 @@
 import { http_request } from "@/api";
 import QueryForm from "./components/queryForm.vue";
 import ApplyDialog from "./components/ApplyDialog.vue";
-import purseConfig from "./config";
 import format from "../../../utils/format";
 // import store from "@/store";
 export default {
   name: "purse", // 钱包
-  components: { QueryForm, ApplyDialog},
+  components: { QueryForm, ApplyDialog },
   data() {
     return {
-      orgName: "", //组织查询
-      orgCode: null, // 当前选中的类型
-      defaultTreeProps: {
-        children: "childrenOrgList",
-        label: "orgName",
-      },
-      orgTreeData: [],
       showSearch: true, //搜索显隐
       loading: false, //表格load
-      overviewData: {},
       cardTypeList: [],
       open: false,
+      pageData: {},
     };
   },
 
@@ -112,45 +63,34 @@ export default {
 
   computed: {},
 
-  created() {
-    this.overviewData = purseConfig.overviewMock;
-    this.cardTypeList = purseConfig.cardTypeList;
-  },
-
+  created() {},
   mounted() {
-    this.getOrgHttp();
-    
+    this.getPurseInfo();
+    this.getBankCardList();
   },
 
   methods: {
-    //请求组织树数据
-    async getOrgHttp() {
+    async getBankCardList() {
       const obj = {
-        moduleName: "http_org",
-        method: "get",
-        url_alias: "orgTree",
+        moduleName: "http_purse",
+        method: "post",
+        url_alias: "carList",
+        data: { pageNum: 1, pageSize: 1000 },
       };
-      if (this.orgName) obj.data = { orgName: this.orgName };
-      const orgRes = await http_request(obj);
-      console.log("orgRes res", orgRes);
-      this.orgTreeData =
-        orgRes.data.length > 0 ? orgRes.data[0].childrenOrgList : [];
-      if (!this.orgTreeData.length > 0) return;
-      this.currCode = this.orgTreeData[0].code;
-      console.log("当前code", this.currCode);
-      //     this.searchQuery();
+      const res = await http_request(obj);
+      console.log("res", res);
+      this.cardTypeList = res.data.rows;
     },
-    //过滤节点
-    filterNode(value, data) {
-      if (!value) return true;
-      return data.orgName.indexOf(value) !== -1;
-    },
-    //点击组织树节点
-    handleNodeClick(data) {
-      console.log("data", data);
-      this.orgCode = data.code;
-      this.queryParams.pageNum = 1;
-      this.warningDataReq();
+    //获取钱包信息
+    async getPurseInfo() {
+      const obj = {
+        moduleName: "http_purse",
+        method: "get",
+        url_alias: "getInfoPersonWallet",
+      };
+      const res = await http_request(obj);
+      console.log("res", res);
+      this.pageData = res.data;
     },
     //提现申请弹窗
     applyCash() {
@@ -161,16 +101,17 @@ export default {
     colseDialog() {
       this.open = false;
     },
-    
+
     // 跳转页面
     toReport(type) {
-      if (type === 0) {
-        this.$router.push("caseReport?code=13293134f07c4865abd846cdddd40d77");
-        console.log(123)
-      }
-    }
-   
-    
+      const obj = {
+        0: "caseReport",
+        1: "detailedRecord",
+        2: "bankCard",
+      };
+      const paths = obj[type];
+      this.$router.push(paths);
+    },
   },
 };
 </script>
@@ -224,12 +165,12 @@ export default {
 
 .top-title::before {
   position: absolute;
-  content: '';
+  content: "";
   top: 1px;
   left: -15px;
   height: 26px;
   width: 5px;
-  background: #1890FF;
+  background: #1890ff;
 }
 
 .overview-box {
@@ -257,7 +198,7 @@ export default {
 
 .btn-box > div {
   font-size: 16px;
-  color: #169BD5;
+  color: #169bd5;
   cursor: pointer;
   margin-right: 30px;
 }
@@ -269,7 +210,7 @@ export default {
   line-height: 36px;
   text-align: center;
   border-radius: 6px;
-  background: #169BD5;
+  background: #169bd5;
   color: #fff;
   font-size: 14px;
 }

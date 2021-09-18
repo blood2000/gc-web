@@ -2,14 +2,14 @@ export const tableColumnsConfig = [
     {
         isShow: true,
         label: "派车记录编号",
-        prop: "appointCarOrderCode",
+        prop: "appointCarRecordNo",
         sortNum: 1,
         tooltip: true,
     },
     {
         isShow: true,
         label: "派车单号",
-        prop: "appointCarRecordNo",
+        prop: "appointCarOrderNo",
         sortNum: 1,
         tooltip: true,
     },
