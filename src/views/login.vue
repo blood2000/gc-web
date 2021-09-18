@@ -98,6 +98,8 @@ export default {
       loginForm: {
         telephone: "15859109120",
         password: "test-123",
+        //   telephone: "15859102001",
+        // password: "abcd1234@",
         rememberMe: false,
         captcha: "12",
         uuid: ""

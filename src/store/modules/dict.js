@@ -5,8 +5,12 @@ const dict = {
     carrierTypeList: [],//车辆承运类型list
     vehicleLicenseColorCodeList: [], //车牌类型
     goodsTypeList: [], //货物类型
+    bank: []
   },
   mutations: {
+    set_bank: (state, list) => {
+      state.bank = list
+    },
     set_vehicleTypeCodeList: (state, list) => {
       state.vehicleTypeCodeList = list
     },

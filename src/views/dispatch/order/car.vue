@@ -176,6 +176,7 @@
         </el-form>
       </div>
     </div>
+    <!-- 派车填写表单 -->
     <div class="dispatch-order-info">
       <el-form
         ref="ruleForm"
@@ -252,14 +253,14 @@
               v-model="item.vehicleCode"
               clearable
               filterable
-              @change="vehicleChange($event, index, 0)"
+              @change="vehicleChange($event, index)"
               placeholder="请选择承运车辆"
             >
               <el-option
                 v-for="(sub, i) in vehicleList"
                 :key="i"
-                :label="sub.value"
-                :value="sub.key"
+                :label="sub.vehicleNumber"
+                :value="sub.vehicleCode"
               />
             </el-select>
           </el-form-item>
@@ -277,11 +278,11 @@
               v-model="item.driverCode"
               clearable
               filterable
-              @change="vehicleChange($event, index, 1)"
+              @change="driverChange($event, index)"
               placeholder="请选择承运司机"
             >
               <el-option
-                v-for="(sub, i) in driverList"
+                v-for="(sub, i) in driverList[index]"
                 :key="i"
                 :label="sub.value"
                 :value="sub.key"
@@ -300,7 +301,7 @@
               type="danger"
               icon="el-icon-minus"
               circle
-              @click="delItem(item)"
+              @click="delItem(item, index)"
             ></el-button>
           </div>
         </div>
@@ -355,6 +356,7 @@ export default {
       },
       vehicleList: [],
       driverList: [],
+      oldkey: [],
       startPickerOptions: {
         //开始时间过滤
         disabledDate: (time) => {
@@ -397,35 +399,100 @@ export default {
     this.listVehicleSelect();
   },
   methods: {
-    // 车辆变化
-    vehicleChange(e, index, type) {
-      //检查是否重复
-      const checkList = this.form.vehicleDrivers;
-      let resultIndex = -1;
-      for (let i = 0; i < index; i++) {
-        const item = checkList[i];
-        if (type == 0) {
-          if (item.vehicleCode === e) resultIndex = i;
-        } else {
-          if (item.driverCode === e) resultIndex = i;
+    //查找车辆默认司机
+    searchDefaultDriverCode(vkey, index) {
+      const me  = this
+      let Dcode = null;
+      //找到
+      for (const item of me.vehicleList) {
+        if (item.vehicleCode == vkey) {
+          Dcode = item.driverCode;
         }
       }
+      //排重
+      this.driverChange(Dcode,index)
+      return Dcode;
+    },
+    // 车辆变化
+    vehicleChange(e, index) {
+      const me = this;
+      console.log("e=%s,index=%d", e, index);
+      if (me.oldkey[index] !== e || !e) {
+        console.log("车辆选择发生变化");
+        me.driverList[index] = [];
+        me.form.vehicleDrivers[index].driverCode = null;
+      }
+      //获取司机列表
+      if (e && me.oldkey[index] !== e) {
+        console.log("车辆选择发生变化,而后开始获取数据");
+        const obj1 = {
+          moduleName: "http_dispatch",
+          method: "get",
+          url_alias: "by_vehicle_code",
+          url_code: [e],
+        };
+        http_request(obj1).then((res) => {
+          console.log("res", res.data);
+          me.$set(me.driverList, index, res.data);
+          me.form.vehicleDrivers[index].driverCode = me.searchDefaultDriverCode(
+            e,
+            index
+          );
+          me.oldkey[index] = e;
+        });
+      }
+      //检查是否重复
+      const checkList = me.form.vehicleDrivers;
+      let resultIndex = -1;
+      console.log(
+        "me.form.vehicleDrivers.length",
+        me.form.vehicleDrivers.length
+      );
+      for (let i = 0; i < me.form.vehicleDrivers.length; i++) {
+        const item = checkList[i];
+        console.log("item", item.vehicleCode);
+        if (item.vehicleCode === e && index !== i) resultIndex = i;
+      }
+      console.log("resultIndex", resultIndex);
       if (resultIndex > -1) {
-        if (type == 0) this.form.vehicleDrivers[resultIndex].vehicleCode = null;
-        if (type == 1) this.form.vehicleDrivers[resultIndex].driverCode = null;
+        //互拆清空
+        me.form.vehicleDrivers[resultIndex].vehicleCode = null;
+        me.form.vehicleDrivers[resultIndex].driverCode = null;
+        me.$set(me.driverList, resultIndex, []);
+        me.oldkey[resultIndex] = "";
+        console.log(
+          "检查是否重复  me.driverList=",
+          me.driverList,
+          "me.oldkey=",
+          me.oldkey,
+          "resultIndex=",
+          resultIndex
+        );
+      }
+    },
+    //司机排重
+    driverChange(e, index) {
+      const me = this;
+      let resultIndex = -1;
+      const checkList = me.form.vehicleDrivers;
+      for (let i = 0; i < me.form.vehicleDrivers.length; i++) {
+        const item = checkList[i];
+        if (item.driverCode === e && index !== i) resultIndex = i;
+      }
+      if (resultIndex > -1) {
+        me.form.vehicleDrivers[resultIndex].driverCode = null;
       }
     },
     //添加
     addItem(item, index) {
       this.form.vehicleDrivers.splice(index + 1, 0, {
         vehicleCode: null,
-        vehicleLabel: null,
         driverCode: null,
-        driverLabel: null,
       });
     },
     //删除
-    delItem(item) {
+    delItem(item, index) {
+      this.$set(this.driverList, index, []);
       var index = this.form.vehicleDrivers.indexOf(item);
       if (index !== -1) {
         this.form.vehicleDrivers.splice(index, 1);
@@ -434,29 +501,15 @@ export default {
     //获取派车的车辆Select
     async listVehicleSelect() {
       const me = this;
+      me.driverList = [];
       const obj = {
         moduleName: "http_dispatch",
         method: "get",
         url_alias: "list_vehicle_select",
       };
       const res = await http_request(obj);
+      console.log("获取派车的车辆Select", res);
       me.vehicleList = res.data;
-      const list = await Promise.all(
-        me.vehicleList.map((val) => {
-          const obj1 = {
-            moduleName: "http_dispatch",
-            method: "get",
-            url_alias: "by_vehicle_code",
-            url_code: [val.key],
-          };
-          return http_request(obj1);
-        })
-      );
-      for (const item of list) {
-        if (item.code == "200" && item.data.length > 0) {
-          me.driverList.push(...item.data);
-        }
-      }
     },
     //获取详情
     async getDetail() {
@@ -468,9 +521,9 @@ export default {
         url_code: [this.form.dispatchOrderCode],
       };
       const res = await http_request(obj);
-      // this.pageData = res.data;
       this.DetailToPageData(res.data);
     },
+    //提交表单
     submitForm(formName) {
       const me = this;
       this.$refs[formName].validate((valid) => {
@@ -496,10 +549,11 @@ export default {
         }
       });
     },
+    //重置
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-    //详情绑定页面
+    //详情绑定页面数据填写
     DetailToPageData(data) {
       this.pageData = {
         companyName: data.companyName,
