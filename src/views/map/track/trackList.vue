@@ -14,7 +14,7 @@
       <div class="form-item ly-flex ly-flex-pack-justify ly-flex-align-center">
         开始时间：
         <el-date-picker
-          v-model="jimiQueryParams.beginTime"
+          v-model="jimiQueryParams.startTime"
           clearable
           size="small"
           type="datetime"
@@ -83,19 +83,17 @@
         <li v-for="item in tabList" :key="item.code" :class="{active: currentTab === item.code}" @click="handleTab(item.code)">{{ item.label }}</li>
       </ul>
       <!-- 轨迹明细 -->
-      <el-table v-show="currentTab === 1" v-loading="trackLoading" height="100%" highlight-current-row border :data="trackList">
+      <el-table v-show="currentTab === 1" v-loading="trackLoading" height="100%" highlight-current-row border :data="jmTrackInfolist" >
         <el-table-column label="序号" type="index" width="50" align="center" />
         <el-table-column label="状态" align="center" prop="name" :show-overflow-tooltip="true" />
-        <el-table-column label="速度(km/h)" align="center" prop="name" :show-overflow-tooltip="true" />
-        <el-table-column label="定位时间" align="center" prop="createTime" width="160">
-          <template slot-scope="scope">
-            <span>{{ parseTime(scope.row.createTime) }}</span>
-          </template>
-        </el-table-column>
+        <el-table-column label="速度(km/h)" align="center" prop="gpsSpeed" :show-overflow-tooltip="true" />
+        <el-table-column label="定位时间" align="center" prop="gpsTime" width="160" />
         <el-table-column label="定位方式" align="center" prop="name" :show-overflow-tooltip="true" />
-        <el-table-column label="定位位置" align="center" prop="name" :show-overflow-tooltip="true" />
+        <!-- <el-table-column label="定位位置" align="center" prop="name" :show-overflow-tooltip="true" /> -->
+        <el-table-column label="经度" align="center" prop="lng" :show-overflow-tooltip="true" />
+        <el-table-column label="纬度" align="center" prop="lat" :show-overflow-tooltip="true" />
       </el-table>
-      <!-- 轨迹明细 -->
+      <!-- 停车详情 -->
       <el-table v-show="currentTab === 2" v-loading="parkingLoading" height="100%" highlight-current-row border :data="parkingList">
         <el-table-column label="序号" type="index" width="50" align="center" />
         <el-table-column label="车辆" align="center" prop="name" :show-overflow-tooltip="true" />
@@ -119,19 +117,23 @@
 
 <script>
 import { http_request } from '@/api';
-import { jmTrackInfolist, jmTracklist } from './trackList.js';
 export default {
   name: 'TrackList',
+  props: {
+    orgOrVehicleCode: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
       // 快捷事件选项
       radio: 1,
       // jimi查询参数
       jimiQueryParams: {
-        beginTime: '', // 2021-07-31 00:00:00
-        endTime: '', // 2021-08-02 17:00:00
-        imeis: '', // 868120274644936
-        mapType: 'GOOGLE' // GOOGOLE或BAIDU
+        startTime: '',
+        endTime: '',
+        vehicleCode: ''
       },
       buttonLoading: false,
       jmTrackInfolist: [],
@@ -152,14 +154,15 @@ export default {
       ],
       // 轨迹明细列表
       trackLoading: false,
-      trackList: [],
       // 停车详情列表
       parkingLoading: false,
       parkingList: []
     }
   },
   mounted() {
-
+    // 时间默认选中当天
+    this.jimiQueryParams.startTime = this.parseTime(new Date(), '{y}-{m}-{d}') + ' 00:00:00';
+    this.jimiQueryParams.endTime = this.parseTime(new Date());
   },
   methods: {
     /** 快捷选择事件 */
@@ -168,39 +171,73 @@ export default {
     },
     /** 获取硬件轨迹 */
     getJimi() {
-      this.jmTrackInfolist = jmTrackInfolist;
-      this.jmTracklist = jmTracklist;
-      this.$emit('clearPathSimplifierIns'); // 绘制前先清除
-      this.setCurrentTrackTimeAndSpeed(0);
-      this.$emit('initPathSimplifier');
-      // const _this = this;
-      // this.buttonLoading = true;
-      // this.jimiQueryParams.imeis = this.factoryOnlyCode;
-      // jimiTrackLocation(this.jimiQueryParams).then(response => {
-      //   if (response.data) {
-      //     this.buttonLoading = false;
-      //     this.jmTracklist = [];
-      //     this.jmTrackInfolist = response.data;
-      //     for (var i = 0; i < response.data.length; i++) {
-      //       var dataItem = response.data[i];
-      //       var item = [];
-      //       item.push(dataItem.lng);
-      //       item.push(dataItem.lat);
-      //       _this.jmTracklist[i] = item;
-      //     }
-      //     this.$emit('clearPathSimplifierIns'); // 绘制前先清除
-      //     if (this.jmTracklist.length > 0) {
-      //       // 设置当前轨迹点时间、速度
-      //       this.setCurrentTrackTimeAndSpeed(0);
-      //       // 创建巡航
-      //       this.$emit('initPathSimplifier');
-      //     } else {
-      //       this.msgInfo('暂无轨迹信息');
-      //     }
-      //   }
-      // }).catch(() => {
-      //   this.buttonLoading = false;
-      // });
+      // this.jmTrackInfolist = jmTrackInfolist;
+      // this.jmTracklist = jmTracklist;
+      // this.$emit('clearPathSimplifierIns'); // 绘制前先清除
+      // this.setCurrentTrackTimeAndSpeed(0);
+      // this.$emit('initPathSimplifier');
+      // return;
+      
+      const _this = this;
+      // 参数不能为空
+      if (!this.orgOrVehicleCode || this.orgOrVehicleCode === '') {
+        this.msgWarning('请选择车辆');
+        return;
+      }
+      if (!this.jimiQueryParams.startTime || this.jimiQueryParams.startTime === '') {
+        this.msgWarning('开始时间不能为空');
+        return;
+      }
+      if (!this.jimiQueryParams.endTime || this.jimiQueryParams.endTime === '') {
+        this.msgWarning('结束时间不能为空');
+        return;
+      }
+      this.buttonLoading = true;
+      this.jimiQueryParams.vehicleCode = this.orgOrVehicleCode;
+      const obj = {
+        moduleName: 'http_map',
+        method: 'post',
+        url_alias: 'getVehicleTrack',
+        data: this.jimiQueryParams
+      }
+      http_request(obj).then(response => {
+        this.buttonLoading = false;
+        if (response.data) {
+          this.buttonLoading = false;
+          this.jmTracklist = [];
+          this.jmTrackInfolist = response.data.map(el => {
+            // el "119.27744340468621|25.43044766673091|7|94|0.0|2021-09-13 08:14:16"
+            // el {经度}|{纬度}|{时速}|{方向}|{里程}|{时间}
+            const arr = el.split('|');
+            return {
+              lng: arr[0],
+              lat: arr[1],
+              gpsSpeed: arr[2],
+              direction: arr[3],
+              mileage: arr[4],
+              gpsTime: arr[5]
+            }
+          })
+          for (var i = 0; i < this.jmTrackInfolist.length; i++) {
+            var dataItem = _this.jmTrackInfolist[i];
+            var item = [];
+            item.push(dataItem.lng);
+            item.push(dataItem.lat);
+            _this.jmTracklist[i] = item;
+          }
+          this.$emit('clearPathSimplifierIns'); // 绘制前先清除
+          if (this.jmTracklist.length > 0) {
+            // 设置当前轨迹点时间、速度
+            this.setCurrentTrackTimeAndSpeed(0);
+            // 创建巡航
+            this.$emit('initPathSimplifier');
+          } else {
+            this.msgInfo('暂无轨迹信息');
+          }
+        }
+      }).catch(() => {
+        this.buttonLoading = false;
+      });;
     },
     /** 进度条滑块触发 */
     handleSlideChange(value) {
