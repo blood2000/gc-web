@@ -149,6 +149,11 @@ export const constantRoutes = [
         meta: { title: '修改生成配置', activeMenu: '/tool/gen'}
       }
     ]
+  },
+  {
+    path: '/map/mapInfo',
+    component: (resolve) => require(['@/views/map/index'], resolve),
+    hidden: true
   }
 ]
 
