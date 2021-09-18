@@ -164,7 +164,7 @@
 
     <!-- 设备信息 -->
     <Infos
-      v-if="isShowVehicleInfo"
+      v-if="headerTab === 1 && isShowVehicleInfo"
       ref="InfosRef"
       class="map-info-panel"
       :vehicleCode="orgOrVehicleCode"
@@ -186,9 +186,10 @@
 
     <!-- 轨迹回放 -->
     <TrackList
-      v-if="headerTab === 3"
+      v-if="headerTab === 3 && isShowVehicleInfo"
       ref="TrackListRef"
       class="track-list-panel"
+      :orgOrVehicleCode="orgOrVehicleCode"
       @initPathSimplifier="initPathSimplifier"
       @startPathSimplifier="startPathSimplifier"
       @resumePathSimplifier="resumePathSimplifier"
@@ -261,6 +262,7 @@ export default {
       },
       // 当前选中的车节点
       orgOrVehicleCode: undefined,
+      orgOrVehicleInfo: null,
       // 司机小tab
       driverActiveTab: '0',
       driverTablist: [{
@@ -404,7 +406,7 @@ export default {
     markerInfoInit(position, {info = [], offset = [10, -12] , anchor = 'bottom-center'}) {
       const infoWindow = new AMap.InfoWindow({
         isCustom: false, // 使用自定义窗体
-        content: info.join('<br/>'),
+        content: info.join(''),
         offset: new AMap.Pixel(offset[0], offset[1]),
         anchor
       });
@@ -530,13 +532,14 @@ export default {
           path: that.$refs.TrackListRef.jmTracklist
         }]);
         // 对线路创建一个巡航器
-        const contentImg = require('@/assets/images/device/map_car_phc.png');
+        const icon = that.orgOrVehicleInfo.carrierType || 'qt';
+        const contentImg = require(`@/assets/images/device/map_car_${icon}.png`);
         that.navgtr = that.pathSimplifierIns.createPathNavigator(0, {
           loop: false, // 循环播放
           speed: that.navgtrSpeed, // 巡航速度，单位千米/小时
           pathNavigatorStyle: {
-            width: 31,
-            height: 79,
+            width: 30,
+            height: 78,
             // 使用图片
             content: PathSimplifier.Render.Canvas.getImageContent(contentImg,
               function onload() {
@@ -558,8 +561,15 @@ export default {
           }
         });
         // 创建信息窗
-        const info = ['<div>111111</div>']
-        const infoWindow = that.markerInfoInit(that.$refs.TrackListRef.jmTracklist[0], {info});
+        const info = [];
+        const text = '暂无';
+        info.push("<div class='own-map-navgtr-info-window'>");
+        info.push("<p class='input-item'><span>总时间:</span>" + text + '</p>');
+        info.push("<p class='input-item'><span>里程:</span>" + text + '</p>');
+        info.push("<p class='input-item'><span>行驶时长:</span>" + text + '</p>');
+        info.push("<p class='input-item'><span>总停留时长:</span>" + text + '</p>');
+        info.push('</div>');
+        const infoWindow = that.markerInfoInit(that.$refs.TrackListRef.jmTracklist[0], {info, offset: [8, -16]});
         // 巡航器移动事件
         that.navgtr.on('move', function(data, position) {
           const path = position.dataItem.pathData.path;
@@ -577,6 +587,13 @@ export default {
           that.$refs.TrackListRef.setSlideValue((totalIdx / len) * 100);
           // 重新设置信息窗口位置
           infoWindow.setPosition(path[idx]);
+          // 重新设置信息窗体内容
+          const nweInfo = [];
+          nweInfo.push("<div class='own-map-navgtr-info-window'>");
+          nweInfo.push("<p class='input-item'><span>速度:</span>" + that.$refs.TrackListRef.jmTrackInfolist[idx].gpsSpeed + ' km/h</p>');
+          nweInfo.push("<p class='input-item'><span>时间:</span>" + that.$refs.TrackListRef.jmTrackInfolist[idx].gpsTime + '</p>');
+          nweInfo.push('</div>');
+          infoWindow.setContent(nweInfo.join(''));
           // 车超出视野范围后重新定位
           if (!that.isPointInRing(path[idx])) {
             that.map.setCenter(path[idx]);
@@ -624,11 +641,9 @@ export default {
     clearPathSimplifierIns() {
       this.startMarker && this.startMarker.setMap(null);
       this.endMarker && this.endMarker.setMap(null);
-      this.$refs.TrackListRef.setSlideValue(0);
-      this.$refs.TrackListRef.setPlayStatus(0);
-      if (this.pathSimplifierIns) {
-        this.pathSimplifierIns.setData([]);
-      }
+      this.$refs.TrackListRef && this.$refs.TrackListRef.setSlideValue(0);
+      this.$refs.TrackListRef && this.$refs.TrackListRef.setPlayStatus(0);
+      this.pathSimplifierIns && this.pathSimplifierIns.setData([]);
     },
     /** 进度条滑块触发改变巡航轨迹 */
     handleSlideChange(value) {
@@ -748,6 +763,7 @@ export default {
       if (this.orgOrVehicleCode === data.orgOrVehicleCode) return;
       console.log('tree-node: ', data)
       this.orgOrVehicleCode = data.orgOrVehicleCode;
+      this.orgOrVehicleInfo = data;
       if (data.vehicleFlag) {
         // 选中车
         this.isShowVehicleInfo = true;
@@ -805,6 +821,10 @@ export default {
     handleHeaderTab(code) {
       if (this.headerTab === code) return;
       this.headerTab = code;
+      // 清除巡航轨迹
+      this.clearPathSimplifierIns();
+      // 关闭地图信息窗体
+      this.closeInfoWindow();
     }
   }
 }
@@ -1082,18 +1102,10 @@ export default {
     height: 100%;
     // 地图信息窗体样式-覆盖
     ::v-deep.amap-info-content{
-      padding: 0;
       .amap-info-close{
-        top: 10px;
-        right: 10px !important;
+        top: 6px;
+        right: 6px !important;
       }
-    }
-    ::v-deep.amap-info-outer, ::v-deep.amap-menu-outer{
-      box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.15);
-      border-radius: 6px;
-    }
-    ::v-deep.middle-left .amap-info-sharp:after{
-      filter: blur(8px);
     }
     // 地图标记label样式
     ::v-deep.amap-marker-label{
@@ -1160,6 +1172,25 @@ export default {
           color: #409EFF;
           margin-bottom: 4px;
           margin-right: 20px;
+        }
+      }
+    }
+    // 巡航信息窗体样式
+    ::v-deep.own-map-navgtr-info-window{
+      .input-item{
+        padding: 6px 10px 0 6px;
+        font-size: 14px;
+        font-family: PingFang SC;
+        font-weight: bold;
+        line-height: 20px;
+        color: #20273A;
+        >span{
+          font-size: 14px;
+          font-family: PingFang SC;
+          font-weight: 400;
+          line-height: 20px;
+          color: rgba(144, 147, 152, 0.9);
+          margin-right: 12px;
         }
       }
     }
