@@ -12,6 +12,7 @@ import http_common from './common'
 import http_dispatch from './dispatch/dispatch'
 import http_purse from './finance/purse'
 import http_map from './map/map';
+import http_monitor from './monitor/carlist'
 import Vue from 'vue'
 
 export const defaultH = {
@@ -42,7 +43,8 @@ const selModuleName = (name) => {
     http_dispatch,
     http_warning,
     http_purse,
-    http_map
+    http_map,
+    http_monitor
   }
   return tmpObj[name]
 }
@@ -61,6 +63,7 @@ const selModuleName = (name) => {
  */
 export const http_request = async  (obj) =>  {
   const tmp = {};
+  console.log('objobjobjobj',obj)
   if (!obj.moduleName || !obj.method || !obj.url_alias) return console.error('请填写请求必要条件')
   const request_url = selModuleName(obj.moduleName)
   // get url
