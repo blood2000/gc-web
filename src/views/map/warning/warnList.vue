@@ -307,6 +307,9 @@ export default {
             padding: 10px 12px;
             margin-bottom: 6px;
             overflow: hidden;
+            >div{
+              width: 50%;
+            }
             .label{
               font-size: 14px;
               font-family: PingFang SC;
