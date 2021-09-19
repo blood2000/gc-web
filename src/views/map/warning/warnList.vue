@@ -7,28 +7,68 @@
 
     <div class="map-warning-table__content ly-flex-pack-justify">
       <ul v-show="!isClose" class="warning-list ly-flex-pack-justify">
-        <li v-for="(item, index) in dataList" :key="index">
-          <div class="warning-card" :class="{active: index === 0}">
-            <h5 class="g-single-row">闽A12345</h5>
-            <p class="label mb10 g-single-row">杨洋洋<span style="margin: 0 10px">|</span>车队1</p>
-            <div class="center-box ly-flex-pack-justify ly-flex-align-end mb5">
-              <div class="ly-flex-v ly-flex-align-center">
-                <img src="~@/assets/images/device/warn_icon_1.png">
-                <p class="g-single-row">车道偏离</p>
+        <!-- 实时报警 -->
+        <template v-if="activeTab === '1'">
+          <li class="warning-list-li" v-for="(item, index) in dataList" :key="index">
+            <div class="warning-card" :class="{active: index === 0}">
+              <h5 class="g-single-row">闽A12345</h5>
+              <p class="label mb10 g-single-row">杨洋洋<span style="margin: 0 10px">|</span>车队1</p>
+              <div class="center-box ly-flex-pack-justify ly-flex-align-end mb5">
+                <div class="ly-flex-v ly-flex-align-center">
+                  <img src="~@/assets/images/device/warn_icon_1.png">
+                  <p class="g-single-row text">车道偏离</p>
+                </div>
+                <div class="ly-flex-v ly-flex-align-center">
+                  <img src="~@/assets/images/device/warn_icon_2.png">
+                  <p class="g-single-row text">一级告警</p>
+                </div>
+                <div class="ly-flex-v ly-flex-align-center">
+                  <p class="g-single-row"><strong>108</strong> km/h</p>
+                  <p class="g-single-row text">报警时速</p>
+                </div>
               </div>
-              <div class="ly-flex-v ly-flex-align-center">
-                <img src="~@/assets/images/device/warn_icon_2.png">
-                <p class="g-single-row">一级告警</p>
-              </div>
-              <div class="ly-flex-v ly-flex-align-center">
-                <p class="g-single-row"><strong>108</strong> km/h</p>
-                <p class="g-single-row">报警时速</p>
-              </div>
+              <p class="label g-single-row">报警位置</p>
+              <p class="address g-single-row">福州市台江区东滨路1号副班总部大楼</p>
             </div>
-            <p class="label g-single-row">报警位置</p>
-            <p class="address g-single-row">福州市台江区东滨路1号副班总部大楼</p>
-          </div>
-        </li>
+          </li>
+        </template>
+        <!-- ADAS报警、异常驾驶报警、特殊报警 -->
+        <template v-else>
+          <li class="warning-list-adas" v-for="(item, index) in adasDataList" :key="index">
+            <div class="warning-card" :class="{active: index === 0}">
+              <div class="center-box ly-flex-pack-justify ly-flex-align-end mb5">
+                <div class="ly-flex-v ly-flex-align-center">
+                  <img src="~@/assets/images/device/warn_icon_1.png">
+                  <p class="g-single-row text">车道偏离</p>
+                </div>
+                <div class="ly-flex-v ly-flex-align-center">
+                  <img src="~@/assets/images/device/warn_icon_2.png">
+                  <p class="g-single-row text">一级告警</p>
+                </div>
+                <div class="ly-flex-v">
+                  <p class="g-single-row count">53</p>
+                  <p class="g-single-row text">告警次数</p>
+                </div>
+                <div class="ly-flex-v">
+                  <p class="g-single-row count">闽A54772</p>
+                  <p class="g-single-row text">车牌号</p>
+                </div>
+              </div>
+              <div class="time-box ly-flex-pack-justify">
+                <div>
+                  <p class="label g-single-row">首次告警时间</p>
+                  <p class="time g-single-row">2021-06-15 13:46:58</p>
+                </div>
+                <div>
+                  <p class="label g-single-row">末次告警时间</p>
+                  <p class="time g-single-row">2021-06-15 13:46:58</p>
+                </div>
+              </div>
+              <p class="label g-single-row">报警位置</p>
+              <p class="address g-single-row">福州市台江区东滨路1号副班总部大楼</p>
+            </div>
+          </li>
+        </template>
       </ul>
       <div class="more-button ly-flex-v ly-flex-pack-center ly-flex-align-center">
         <img src="@/assets/images/device/icon_more.png">
@@ -63,8 +103,10 @@ export default {
         code: '4',
         tabName: '特殊报警'
       }],
-      // 报警列表
+      // 实时报警列表
       dataList: [{}, {}, {}, {}, {}],
+      // adas报警列表
+      adasDataList: [{}, {}, {}, {}],
       // 面板是否收起
       isClose: false
     }
@@ -139,7 +181,7 @@ export default {
     >.warning-list{
       width: calc(100% - 84px);
       height: 100%;
-      >li{
+      >.warning-list-li{
         width: 20%;
         height: 100%;
         position: relative;
@@ -155,8 +197,7 @@ export default {
           top: 50%;
           transform: translateY(-50%);
         }
-
-        // 告警卡片样式
+        // 告警卡片样式1
         .warning-card{
           height: 100%;
           border-radius: 6px;
@@ -200,6 +241,85 @@ export default {
             }
             strong{
               font-size: 20px;
+            }
+            .text{
+              font-weight: 700;
+            }
+          }
+        }
+      }
+      >.warning-list-adas{
+        width: 25%;
+        height: 100%;
+        position: relative;
+        padding: 0 4px;
+        // 告警卡片样式2
+        .warning-card{
+          cursor: pointer;
+          height: 100%;
+          border-radius: 6px;
+          cursor: default;
+          padding: 6px 14px 12px;
+          overflow: hidden;
+          &.active{
+            
+          }
+          .label{
+            font-size: 14px;
+            font-family: PingFang SC;
+            font-weight: 400;
+            line-height: 26px;
+            color: #A6A8AD;
+          }
+          .address{
+            font-size: 14px;
+            font-family: PingFang SC;
+            font-weight: bold;
+            line-height: 20px;
+            color: #3D4050;
+          }
+          .center-box{
+            font-size: 12px;
+            font-family: PingFang SC;
+            line-height: 24px;
+            color: #3D4050;
+            padding-right: 10px;
+            img{
+              width: 30px;
+              height: 30px;
+            }
+            strong{
+              font-size: 20px;
+            }
+            .text{
+              font-weight: 700;
+            }
+            .count{
+              font-size: 18px;
+              font-family: PingFang SC;
+              font-weight: bold;
+            }
+          }
+          .time-box{
+            height: 68px;
+            background: #EDF1F3;
+            border-radius: 5px;
+            padding: 10px 12px;
+            margin-bottom: 6px;
+            overflow: hidden;
+            .label{
+              font-size: 14px;
+              font-family: PingFang SC;
+              font-weight: 400;
+              line-height: 24px;
+              color: #A6A8AD;
+            }
+            .time{
+              font-size: 14px;
+              font-family: PingFang SC;
+              font-weight: bold;
+              line-height: 24px;
+              color: #3D4050;
             }
           }
         }
