@@ -123,7 +123,8 @@ export default {
     orgOrVehicleCode: {
       type: String,
       default: null
-    }
+    },
+    isShowVehicleInfo: Boolean
   },
   data() {
     return {
@@ -180,7 +181,7 @@ export default {
       
       const _this = this;
       // 参数不能为空
-      if (!this.orgOrVehicleCode || this.orgOrVehicleCode === '') {
+      if (!this.isShowVehicleInfo || !this.orgOrVehicleCode || this.orgOrVehicleCode === '') {
         this.msgWarning('请选择车辆');
         return;
       }

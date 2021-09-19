@@ -162,6 +162,7 @@ export default {
           border-radius: 6px;
           cursor: default;
           padding: 12px 14px;
+          overflow: hidden;
           &.active{
             background: linear-gradient(90deg, rgba(239, 105, 105, 0.16) 0%, rgba(239, 105, 105, 0) 100%);
           }

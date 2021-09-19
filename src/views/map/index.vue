@@ -186,9 +186,10 @@
 
     <!-- 轨迹回放 -->
     <TrackList
-      v-if="headerTab === 3 && isShowVehicleInfo"
+      v-if="headerTab === 3"
       ref="TrackListRef"
       class="track-list-panel"
+      :isShowVehicleInfo="isShowVehicleInfo"
       :orgOrVehicleCode="orgOrVehicleCode"
       @initPathSimplifier="initPathSimplifier"
       @startPathSimplifier="startPathSimplifier"
@@ -316,7 +317,32 @@ export default {
       // 巡航起点
       startMarker: null,
       // 巡航终点
-      endMarker: null
+      endMarker: null,
+      // 地图点位集合
+      markerList: {},
+      // 根据承运类型设置车marker样式
+      markerStyle: {
+        'ztc': {
+          content: '<div class="own-device-marker-car ztc"></div>',
+          offset: [-19, -28]
+        },
+        'jbc': {
+          content: '<div class="own-device-marker-car jbc"></div>',
+          offset: [-19, -28]
+        },
+        'llc': {
+          content: '<div class="own-device-marker-car llc"></div>',
+          offset: [-19, -28]
+        },
+        'phc': {
+          content: '<div class="own-device-marker-car phc"></div>',
+          offset: [-19, -28]
+        },
+        'qt': {
+          content: '<div class="own-device-marker-car qt"></div>',
+          offset: [-19, -28]
+        }
+      }
     }
   },
   watch: {
@@ -345,6 +371,8 @@ export default {
     // 树
     this.getOrgVehicleTree();
     this.getOrgDriverTree();
+    // 获取全部车定位
+    this.getVehicleLoLocations();
   },
   beforeDestroy() {
     this.clearTimer();
@@ -364,15 +392,18 @@ export default {
      * @param {Object} labelText 信息窗内容,没有就不传
      * @param {string} content 图标
      * @param {Array} offset 图标偏移量
+     * @param {number} angle 旋转角度
     */
-    drawMarker(position, {clickable = true, content = '<div class="own-device-marker-car"></div>', offset = [-19, -28]}) {
+    drawMarker(position, {clickable = true, content = '<div class="own-device-marker-car qt"></div>', offset = [-19, -28], angle = -30}) {
       const marker = new AMap.Marker({
         map: this.map,
         position,
         content,
         autoFitView: true,
         autoRotation: true,
-        offset: new AMap.Pixel(offset[0], offset[1]),
+        // offset: new AMap.Pixel(offset[0], offset[1]),
+        offset: new AMap.Pixel(0, 0),
+        angle,
         clickable
       });
       return marker;
@@ -478,6 +509,14 @@ export default {
     /** 清除地图所有绘制的覆盖物 */
     clearMap() {
       this.map.clearMap();
+    },
+    /** 清除地图点位 */
+    clearMarkerList() {
+      for (const key in this.markerList) {
+        this.markerList[key].setMap(null);
+        this.markerList[key] = null;
+      }
+      this.markerList = {};
     },
     /** 判断当前位置是否在可视区域 */
     isPointInRing(position) {
@@ -585,6 +624,10 @@ export default {
           }
           // 进度条实时展示tail
           that.$refs.TrackListRef.setSlideValue((totalIdx / len) * 100);
+          // 移动的时候,信息窗体保持打开
+          if (!infoWindow.getIsOpen()) {
+            infoWindow.open(that.map, path[idx]);
+          }
           // 重新设置信息窗口位置
           infoWindow.setPosition(path[idx]);
           // 重新设置信息窗体内容
@@ -767,9 +810,11 @@ export default {
       if (data.vehicleFlag) {
         // 选中车
         this.isShowVehicleInfo = true;
+        this.getDeviceLocationInfo(data.orgOrlicenseNumber);
       } else {
         // 选中组织
         this.isShowVehicleInfo = false;
+        this.getVehicleLoLocations(data.orgOrVehicleCode);
       }
     },
     // 司机小tab
@@ -816,6 +861,62 @@ export default {
     // 司机节点选中
     driverNodeClick(data) {
       
+    },
+    // 获取车辆定位列表
+    getVehicleLoLocations(orgCode) {
+      const params = orgCode ? { orgCode } : {};
+      const obj = {
+        moduleName: 'http_map',
+        method: 'post',
+        url_alias: 'getVehicleLoLocations',
+        data: params
+      }
+      http_request(obj).then(res => {
+        // 绘制前先清空之前的绘制, 避免重复绘制
+        this.clearMarkerList();
+        if (res.data.rows && res.data.rows.length > 0) {
+          // 绘制全部车辆点位
+          res.data.rows.forEach(el => {
+            const { location } = el;
+            if (location && location.lng && location.lat) {
+              const marker = this.drawMarker([location.lng, location.lat], Object.assign({}, this.markerStyle[el.carrier_type || 'qt'], { angle: location.direction || -30 }));
+              this.markerList[el.vehicle_code] = marker;
+            }
+          });
+          this.$nextTick(() => {
+            this.map.setFitView();
+          })
+        } else {
+          this.msgWarning('该组织下暂无车辆定位信息');
+        }
+      });
+    },
+    // 获取设备定位信息
+    getDeviceLocationInfo(plateNumber) {
+      const obj = {
+        moduleName: 'http_map',
+        method: 'get',
+        url_alias: 'getDeviceLocationInfo',
+        url_code: [plateNumber]
+      }
+      http_request(obj).then(res => {
+        const { data } = res;
+        // 绘制前先清空之前的绘制, 避免重复绘制
+        this.clearMarkerList();
+        if (data) {
+          // 绘制全部车辆点位
+          const { location } = data;
+          if (location && location.lng && location.lat) {
+            const marker = this.drawMarker([location.lng, location.lat], Object.assign({}, this.markerStyle[data.carrier_type || 'qt'], { angle: location.direction || -30 }));
+            this.markerList[data.vehicle_code] = marker;
+            this.$nextTick(() => {
+              this.map.setZoomAndCenter(13, [location.lng, location.lat]);
+            })
+            return;
+          }
+        }
+        this.msgWarning('该车辆暂无定位信息');
+      });
     },
     // 切换地图tab
     handleHeaderTab(code) {
@@ -1216,10 +1317,36 @@ export default {
     }
     // 标记物车样式
     ::v-deep.own-device-marker-car{
-      width: 40px;
-      height: 58px;
-      background: url('~@/assets/images/device/car.png') no-repeat;
-      background-size: 100% 100%;
+      &.ztc{
+        width: 34px;
+        height: 76px;
+        background: url('~@/assets/images/device/map_car_ztc.png') no-repeat;
+        background-size: 100% 100%;
+      }
+      &.jbc{
+        width: 34px;
+        height: 80px;
+        background: url('~@/assets/images/device/map_car_jbc.png') no-repeat;
+        background-size: 100% 100%;
+      }
+      &.llc{
+        width: 28px;
+        height: 62px;
+        background: url('~@/assets/images/device/map_car_llc.png') no-repeat;
+        background-size: 100% 100%;
+      }
+      &.phc{
+        width: 31px;
+        height: 79px;
+        background: url('~@/assets/images/device/map_car_phc.png') no-repeat;
+        background-size: 100% 100%;
+      }
+      &.qt{
+        width: 31px;
+        height: 79px;
+        background: url('~@/assets/images/device/map_car_qt.png') no-repeat;
+        background-size: 100% 100%;
+      }
     }
   }
 }
