@@ -319,30 +319,7 @@ export default {
       // 巡航终点
       endMarker: null,
       // 地图点位集合
-      markerList: {},
-      // 根据承运类型设置车marker样式
-      markerStyle: {
-        'ztc': {
-          content: '<div class="own-device-marker-car ztc"></div>',
-          offset: [-19, -28]
-        },
-        'jbc': {
-          content: '<div class="own-device-marker-car jbc"></div>',
-          offset: [-19, -28]
-        },
-        'llc': {
-          content: '<div class="own-device-marker-car llc"></div>',
-          offset: [-19, -28]
-        },
-        'phc': {
-          content: '<div class="own-device-marker-car phc"></div>',
-          offset: [-19, -28]
-        },
-        'qt': {
-          content: '<div class="own-device-marker-car qt"></div>',
-          offset: [-19, -28]
-        }
-      }
+      markerList: {}
     }
   },
   watch: {
@@ -362,7 +339,9 @@ export default {
     this.getCurrentTime();
     this.refreshTime();
     // 地图
-    this.initMap();
+    this.$nextTick(() => {
+      this.initMap();
+    })
     // 字典
     this.getDictData();
     // 统计值
@@ -394,17 +373,17 @@ export default {
      * @param {Array} offset 图标偏移量
      * @param {number} angle 旋转角度
     */
-    drawMarker(position, {clickable = true, content = '<div class="own-device-marker-car qt"></div>', offset = [-19, -28], angle = -30}) {
+    drawMarker(position, {clickable = true, content = '<div class="own-device-marker-car qt"></div>', offset = [0, 0], angle = 0}) {
       const marker = new AMap.Marker({
         map: this.map,
         position,
         content,
         autoFitView: true,
         autoRotation: true,
-        // offset: new AMap.Pixel(offset[0], offset[1]),
-        offset: new AMap.Pixel(0, 0),
+        offset: new AMap.Pixel(offset[0], offset[1]),
         angle,
-        clickable
+        clickable,
+        topWhenClick: true // 鼠标点击时marker置顶
       });
       return marker;
     },
@@ -417,14 +396,15 @@ export default {
       marker.setLabel(content);
     },
     /** 生成文本标签内容
-     * @param {string} text 文本标签内容,没有就不传
+     * @param {string} info 文本标签内容,没有就不传
      * @param {Array} offset 文本标签偏移量
+     * @param {string} direction 文本标签出现位置 top'|'right'|'bottom'|'left'|'center
      */
-    setLabelContent(text, offset = [0, -8]) {
-      const option = text ? {
+    setLabelContent(info = [], {offset = [0, -8], direction = 'top'}) {
+      const option = info.length > 0 ? {
         offset: new AMap.Pixel(offset[0], offset[1]),
-        content: '<div>' + text + '</div>',
-        direction: 'top'
+        content: info.join(''),
+        direction
       } : {};
       return option;
     },
@@ -877,10 +857,9 @@ export default {
         if (res.data.rows && res.data.rows.length > 0) {
           // 绘制全部车辆点位
           res.data.rows.forEach(el => {
-            const { location } = el;
-            if (location && location.lng && location.lat) {
-              const marker = this.drawMarker([location.lng, location.lat], Object.assign({}, this.markerStyle[el.carrier_type || 'qt'], { angle: location.direction || -30 }));
-              this.markerList[el.vehicle_code] = marker;
+            const { attribute } = el;
+            if (attribute && attribute.coordinate && attribute.coordinate.value && attribute.coordinate.value.length === 2 && attribute.coordinate.value[0] && attribute.coordinate.value[1]) {
+              this.drawVehicleMarker(el);
             }
           });
           this.$nextTick(() => {
@@ -905,17 +884,59 @@ export default {
         this.clearMarkerList();
         if (data) {
           // 绘制全部车辆点位
-          const { location } = data;
-          if (location && location.lng && location.lat) {
-            const marker = this.drawMarker([location.lng, location.lat], Object.assign({}, this.markerStyle[data.carrier_type || 'qt'], { angle: location.direction || -30 }));
-            this.markerList[data.vehicle_code] = marker;
+          const { attribute } = data;
+          if (attribute && attribute.coordinate && attribute.coordinate.value && attribute.coordinate.value.length === 2 && attribute.coordinate.value[0] && attribute.coordinate.value[1]) {
+            this.drawVehicleMarker(data);
             this.$nextTick(() => {
-              this.map.setZoomAndCenter(13, [location.lng, location.lat]);
+              this.map.setZoomAndCenter(13, attribute.coordinate.value);
             })
             return;
           }
         }
         this.msgWarning('该车辆暂无定位信息');
+      });
+    },
+    // 绘制车辆定位marder
+    drawVehicleMarker(row) {
+      const _this = this;
+      const { vehicle_code, carrier_type, plate_number, attribute } = row;
+      const direction = attribute.direction || {};
+      const onlineStatus = attribute.onlineStatus || {};
+      const speed = attribute.speed || {};
+      const position = attribute.coordinate.value;
+      const statusColor = onlineStatus === 1 ? 'green' : 'gray'; // 设备状态 0离线 1在线
+      const contentValue = [];
+      if (speed.text) contentValue.push(speed.text);
+      if (direction.text) contentValue.push(direction.text);
+      // 绘制标记
+      const styleObj = {
+        content: '<div style="transform:rotate('+ ( direction.value || -30) +'deg)" class="own-device-marker-car '+ (carrier_type || 'qt') +'"></div>', 
+        offset: [0, 0], 
+        angle: 0
+      }
+      const marker = this.drawMarker(position, styleObj);
+      this.markerList[vehicle_code] = marker;
+      // 绘制文本框
+      const info = [];
+      info.push("<div class='own-map-vehicle-marker-label'>");
+      info.push("<h5>"+ plate_number);
+      if (onlineStatus.text) info.push("<span class='status "+ statusColor +"'><strong class='mr5'>· </strong>"+ onlineStatus.text +"</span>");
+      info.push("</h5>");
+      if (contentValue.length > 0) info.push("<p class='input-item'>"+ contentValue.join('  |  ') +"</p>");
+      info.push('</div>');
+      const content = this.setLabelContent(info, {offset: [0, -10]});
+      this.setLabel(marker, content);
+      // 双击定位
+      marker.on('dblclick', function(e) {
+        _this.map.setFitView(marker);
+      });
+      // 单击
+      marker.on('click', function(e) {
+        if (JSON.stringify(marker.getLabel()) === '{}') {
+          _this.setLabel(marker, content);
+        } else {
+          _this.setLabel(marker, {});
+        }
       });
     },
     // 切换地图tab
@@ -1208,72 +1229,69 @@ export default {
         right: 6px !important;
       }
     }
-    // 地图标记label样式
+    // 地图标记label样式-覆盖
     ::v-deep.amap-marker-label{
       border: none;
-      border-radius: 4px;
       font-size: 12px;
       line-height: 14px;
+      background: transparent;
       color: #262626;
-      box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.1);
-      padding: 3px 6px;
-      &::after{
-        content: '';
-        position: absolute;
-        bottom: -6px;
-        left: 50%;
-        transform: translateX(-50%);
-        border-left: 6px solid transparent;
-        border-top: 6px solid #fff;
-        border-right: 6px solid transparent;
-      }
+      box-shadow: none;
+      padding: 0;
+      // &::after{
+      //   content: '';
+      //   position: absolute;
+      //   bottom: -6px;
+      //   left: 50%;
+      //   transform: translateX(-50%);
+      //   border-left: 6px solid transparent;
+      //   border-top: 6px solid #fff;
+      //   border-right: 6px solid transparent;
+      // }
     }
-    // 地图信息窗体样式
-    ::v-deep.own-map-info-content{
+    // 车标记的信息样式
+    ::v-deep.own-map-vehicle-marker-label{
+      min-width: 218px;
+      min-height: 40px;
+      background: rgba(255, 255, 255, 0.7);
+      box-shadow: 0px 3px 5px rgba(206, 206, 206, 0.7);
+      border-radius: 4px;
+      padding: 8px 12px;
       >h5{
-        font-size: 18px;
+        font-size: 20px;
         font-family: PingFang SC;
         font-weight: bold;
-        line-height: 22px;
-        color: #262626;
-        padding: 15px 15px 0;
-      }
-      br{
-        display: none !important;
-      }
-      >.top-content{
-        padding: 15px 20px 9px 15px;
-        border-bottom: 1px solid rgba(159, 162, 181, 0.2);
-        .input-item{
-          font-size: 14px;
+        line-height: 24px;
+        color: #3D4050;
+        >.status{
+          float: right;
+          font-size: 12px;
           font-family: PingFang SC;
           font-weight: bold;
-          line-height: 20px;
-          color: #20273A;
-          margin-bottom: 6px;
-          >span{
-            font-size: 14px;
-            font-family: PingFang SC;
-            font-weight: 400;
-            line-height: 20px;
-            color: rgba(144, 147, 152, 0.9);
-            margin-right: 12px;
+          line-height: 24px;
+          &.green{
+            color: rgba(67, 185, 30, 1);
+          }
+          &.red{
+            color: rgba(239, 105, 105, 1);
+          }
+          &.gray{
+            color: rgba(173, 181, 189, 1);
           }
         }
       }
-      >.bottom-content{
-        padding: 14px 15px 10px;
-        font-size: 0;
-        >a{
-          display: inline-block;
-          font-size: 12px;
-          font-family: PingFang SC;
-          font-weight: 400;
-          line-height: 22px;
-          color: #409EFF;
-          margin-bottom: 4px;
-          margin-right: 20px;
-        }
+      >.input-item{
+        height: 26px;
+        line-height: 26px;
+        background: #E4ECF4;
+        opacity: 1;
+        border-radius: 5px;
+        margin-top: 8px;
+        padding: 0 8px;
+        font-size: 14px;
+        font-family: PingFang SC;
+        font-weight: 600;
+        color: #3D4050;
       }
     }
     // 巡航信息窗体样式
@@ -1317,6 +1335,7 @@ export default {
     }
     // 标记物车样式
     ::v-deep.own-device-marker-car{
+      transform-origin: center center;
       &.ztc{
         width: 34px;
         height: 76px;
