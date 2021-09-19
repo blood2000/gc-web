@@ -39,21 +39,21 @@
         </div>
       </el-col>
       <el-col :xl="19" :lg="18" :md="16" :sm="15" :xs="24">
-        <div class="device-info-right">
-          <div class="device-info-right-top" v-show="showSearch">
-            <!-- 我的账户 -->
+        <div class="device-info-right ">
+          <!-- <div class="device-info-right-top" v-show="showSearch">
             <div class="top-title">我的账户</div>
-          </div>
-          <div class="device-info-right-bottom">
+          </div> -->
+          <div class="device-info-right-bottom main-box">
+            <div class="card-title">我的账户</div>
             <div class="overview-box">
-              <div >
-                <div>{{overviewData.rest | priceFormat}}</div>
-                <div>余额</div>
+              <div>
+                <div>{{ overviewData.rest | priceFormat }} <span>元</span></div>
+                <div class="overview-value">余额</div>
               </div>
 
               <div>
-                <div>{{overviewData.handle | priceFormat}}</div>
-                <div>提现处理中金额</div>
+                <div>{{ overviewData.handle | priceFormat }} <span>元</span></div>
+                <div class="overview-value">提现处理中金额</div>
               </div>
             </div>
             <div class="btn-box">
@@ -72,7 +72,6 @@
       :overviewData="overviewData"
       @colseDialog="colseDialog"
     >
-
     </Apply-Dialog>
   </div>
 </template>
@@ -86,28 +85,28 @@ import format from "../../../utils/format";
 // import store from "@/store";
 export default {
   name: "purse", // 钱包
-  components: { QueryForm, ApplyDialog},
+  components: { QueryForm, ApplyDialog },
   data() {
     return {
       orgName: "", //组织查询
       orgCode: null, // 当前选中的类型
       defaultTreeProps: {
         children: "childrenOrgList",
-        label: "orgName",
+        label: "orgName"
       },
       orgTreeData: [],
       showSearch: true, //搜索显隐
       loading: false, //表格load
       overviewData: {},
       cardTypeList: [],
-      open: false,
+      open: false
     };
   },
 
   filters: {
-    priceFormat: (val) => {
-      return format.priceFormat(val, 0);
-    },
+    priceFormat: val => {
+      return format.priceFormat(val, 2);
+    }
   },
 
   computed: {},
@@ -119,7 +118,6 @@ export default {
 
   mounted() {
     this.getOrgHttp();
-    
   },
 
   methods: {
@@ -128,7 +126,7 @@ export default {
       const obj = {
         moduleName: "http_org",
         method: "get",
-        url_alias: "orgTree",
+        url_alias: "orgTree"
       };
       if (this.orgName) obj.data = { orgName: this.orgName };
       const orgRes = await http_request(obj);
@@ -161,20 +159,18 @@ export default {
     colseDialog() {
       this.open = false;
     },
-    
+
     // 跳转页面
     toReport(type) {
       if (type === 0) {
         this.$router.push("caseReport?code=13293134f07c4865abd846cdddd40d77");
-        console.log(123)
+        console.log(123);
       }
     }
-   
-    
-  },
+  }
 };
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .device-info {
   margin: 0 15px;
   @mixin box-shadow {
@@ -199,6 +195,9 @@ export default {
     .device-info-right-bottom {
       @include box-shadow;
     }
+    .main-box {
+      padding: 10px 20px;
+    }
   }
 }
 .deviceInf-cion {
@@ -215,49 +214,66 @@ export default {
   font-size: 14px;
 }
 
-.top-title {
+.card-title {
   position: relative;
-  font-size: 20px;
+  font-size: 14px;
   font-weight: bold;
-  height: 40px;
+  height: 30px;
 }
 
-.top-title::before {
+.card-title::before {
   position: absolute;
-  content: '';
-  top: 1px;
-  left: -15px;
-  height: 26px;
-  width: 5px;
-  background: #1890FF;
+  content: "";
+  top: 2px;
+  left: -10px;
+  background: #1890ff;
+  width: 2px;
+  height: 16px;
+  border-radius: 2px;
+}
+
+.card-title::after {
+    content: '';
+    height: 1px;
+    position: absolute;
+    left: -20px;
+    right: -20px;
+    bottom: 0;
+    background: #F3F3F3;
 }
 
 .overview-box {
-  padding: 0 20px;
+  padding: 20px 20px 0;
   display: flex;
   align-items: center;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: bold;
 }
 
 .overview-box > div {
-  margin-right: 100px;
-  height: 100px;
+  margin-right: 200px;
+  height: 70px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
 }
 
+.overview-box .overview-value,
+.overview-box span {
+  font-size: 14px;
+  font-weight: normal;
+}
+
 .btn-box {
-  padding: 40px 20px 10px;
+  padding: 20px 20px 10px;
   display: flex;
   align-items: center;
 }
 
 .btn-box > div {
-  font-size: 16px;
-  color: #169BD5;
+  font-size: 14px;
+  color: #169bd5;
   cursor: pointer;
   margin-right: 30px;
 }
@@ -269,7 +285,7 @@ export default {
   line-height: 36px;
   text-align: center;
   border-radius: 6px;
-  background: #169BD5;
+  background: #169bd5;
   color: #fff;
   font-size: 14px;
 }
