@@ -6,7 +6,7 @@
       <div class="info-box-status"><strong class="mr8">·</strong>行驶中</div>
       <!-- content -->
       <div class="car-content ly-flex ly-flex-align-center">
-        <img class="img-box" src="~@/assets/images/device/car_type.png">
+        <img class="img-box" :src="require('@/assets/images/device/car_type_'+ (vehicleInfo.carrierType || 'qt') +'.png')">
         <div class="info-box ly-flex-1">
           <h5>{{ vehicleInfo.plateNumber }}</h5>
           <p class="car-name">

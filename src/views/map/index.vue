@@ -78,7 +78,7 @@
                 </template>
                 <template v-if="data.vehicleFlag">
                   <div class="tree-node-car-box ly-flex ly-flex-align-center">
-                    <img class="img-box" src="~@/assets/images/device/car_type.png">
+                    <img class="img-box" :src="require('@/assets/images/device/car_type_'+ (data.carrierType || 'qt') +'.png')">
                     <div class="info-box ly-flex-1">
                       <h5>
                         {{ data.orgOrlicenseNumber }}
@@ -207,10 +207,6 @@ import WarnList from './warning/warnList.vue';
 import WarnDetail from './warning/warnDetail.vue';
 import TrackList from './track/trackList.vue';
 import { http_request } from '@/api';
-const geocoder = new AMap.Geocoder({
-  radius: 1000,
-  extensions: 'all'
-});
 export default {
   name: 'MapInfo',
   components: {
@@ -223,6 +219,7 @@ export default {
     return {
       // 地图
       map: null,
+      geocoder: null,
       // 时间
       timer: null,
       currentday: '',
@@ -364,6 +361,10 @@ export default {
         resizeEnable: true,
         center: [119.358267, 26.04577],
         zoom: 11,
+      });
+      this.geocoder = new AMap.Geocoder({
+        radius: 1000,
+        extensions: 'all'
       });
     },
     /** 绘制标记
