@@ -252,10 +252,10 @@ export default {
 
 .overview-box > div {
   margin-right: 200px;
-  height: 70px;
+  height: 60px;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -279,7 +279,7 @@ export default {
 }
 
 .btn-box .as-btn {
-  width: 110px;
+  width: 80px;
   height: 36px;
   margin-right: 40px;
   line-height: 36px;
