@@ -1,0 +1,134 @@
+<template>
+  <el-form
+    ref="queryForm"
+    :model="queryParams"
+    :inline="true"
+    label-width="120px"
+    size="small"
+  >
+    <el-form-item label="车牌号" prop="plateNumber	">
+      <el-input
+        v-model="queryParams.plateNumber	"
+        placeholder=" 请输入车牌号"
+        clearable
+        style="width: 185px"
+        @keyup.enter.native="$emit('handleQuery')"
+      />
+    </el-form-item>
+    <el-form-item label="司机" prop="driverName">
+      <el-input
+        v-model="queryParams.driverName"
+        placeholder=" 请输入司机姓名"
+        clearable
+        style="width: 185px"
+        @keyup.enter.native="$emit('handleQuery')"
+      />
+    </el-form-item>
+    <!-- <el-form-item label="设备类型" prop="status">
+      <el-select
+        v-model="queryParams.status"
+        clearable
+        filterable
+        style="width: 150px"
+        placeholder="全部"
+        @change="$emit('handleQuery')"
+      >
+        <el-option
+          v-for="(item, index) in snList"
+          :key="index"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+    </el-form-item> -->
+    <el-form-item label="车辆状态" prop="vehicleStatus">
+      <el-select
+        v-model="queryParams.vehicleStatus"
+        clearable
+        filterable
+        style="width: 150px"
+        placeholder="请选择车辆状态"
+        @change="$emit('handleQuery')"
+      >
+        <el-option
+          v-for="(item, index) in vehicleStatusList"
+          :key="index"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+    </el-form-item>
+
+    <el-form-item label="设备号" prop="sn">
+      <el-input
+        v-model="queryParams.sn"
+        placeholder="请输入设别编号"
+        clearable
+        style="width: 185px"
+        @keyup.enter.native="$emit('handleQuery')"
+      />
+    </el-form-item>
+
+    <el-form-item>
+      <el-button
+        type="primary"
+        icon="el-icon-search"
+        @click="$emit('handleQuery')"
+      >
+        搜索
+      </el-button>
+      <el-button type="primary" plain icon="el-icon-refresh" @click="reset">
+        重置
+      </el-button>
+    </el-form-item>
+  </el-form>
+</template>
+
+<script>
+import config from '../../../warning/warning/config';
+export default {
+  props: {
+    value: {
+      type: Object,
+      default: () => {
+        return {};
+      },
+    },
+    snList: {
+      type: Array,
+      default: () => {
+        return [];
+      },
+    },
+  },
+  data() {
+    return {
+      // 'projectList': []
+    };
+  },
+  computed: {
+    queryParams: {
+      get() {
+        return this.value;
+      },
+      set(value) {
+        this.$emit("input", value);
+      },
+    },
+  },
+  mounted() {
+    // this.vehicleStatusList = 
+  },
+  methods: {
+    reset() {
+      this.queryParams.pageNum = 1;
+      // this.resetForm('queryForm');
+      console.log("qqq", this.$refs["queryForm"]);
+      this.$refs["queryForm"].resetFields();
+      this.$emit("handleQuery");
+    },
+  },
+};
+</script>
+
+<style></style>

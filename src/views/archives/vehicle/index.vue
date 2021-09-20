@@ -273,7 +273,7 @@ export default {
       };
       const res = await http_request(obj);
       if (res.code == "200") {
-        this.defaultDriverList = res.data;
+        this.defaultDriverList = res.data.rows;
       }
       console.log("paging_de_driver", res);
     },

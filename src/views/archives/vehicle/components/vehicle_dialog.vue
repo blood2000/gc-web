@@ -138,7 +138,7 @@
               placeholder="请选择车辆类型"
             >
               <el-option
-                v-for="(item, index) in defaultDriverList"
+                v-for="(item, index) in defaultDriverList                                                 "
                 :key="index"
                 :label="item.name"
                 :value="item.code"
@@ -384,15 +384,24 @@ export default {
       deptOptions: [],
       // 部门树键值转换
       normalizer(node) {
-        return {
+        if(node.children == null || node.children == 'null'){
+          delete node.children
+        }
+        const   obj = {
           id: node.code, // 键名转换，方法默认是label和children进行树状渲染
           label: node.orgName,
-          children: node.childrenOrgList,
-        };
+          // children: node.childrenOrgList,
+        }; 
+        if(node.childrenOrgList&& node.childrenOrgList.length >0 ){
+          obj.children =  node.childrenOrgList
+        }
+        console.log('obj',obj)
+        return obj
       },
       vehicleLicenseColorCodeList: [], //车牌类型
       carrierTypeList: [], //车辆承运类型list
       vehicleEnergyTypeList: [], //车辆能源类型list
+      defaultDriverList:[],//
     };
   },
   created() {},
@@ -407,6 +416,7 @@ export default {
       if (this.options.editType == "update" && this.open) {
         console.log("this.options", this.options, this.open);
         //请求
+        this.defaultDriverList = this.options.defaultDriverList
         this.requsetDetail();
       }
     },

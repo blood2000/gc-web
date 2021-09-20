@@ -55,7 +55,7 @@ const tableColumnsConfig = [
   {
     isShow: true,
     label: "分组",
-    prop: "groupCode",
+    prop: "groupName",
     sortNum: 3,
     tooltip: true,
   },
@@ -66,13 +66,13 @@ const tableColumnsConfig = [
     sortNum: 4,
     tooltip: true,
   },
-  {
-    isShow: true,
-    label: "绑定设备",
-    prop: "deviceInf",
-    sortNum: 5,
-    tooltip: true,
-  },
+  // {
+  //   isShow: true,
+  //   label: "绑定设备",
+  //   prop: "deviceInf",
+  //   sortNum: 5,
+  //   tooltip: true,
+  // },
   {
     isShow: true,
     label: "创建时间",

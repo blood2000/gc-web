@@ -266,7 +266,7 @@
           </el-form-item>
           <el-form-item
             label="承运司机:"
-            :prop="'vehicleDrivers.' + index + '.driverCode'"
+            :prop="`vehicleDrivers[${index}].driverCode`"
             style="padding-left: 20px"
             :rules="{
               required: true,
@@ -411,6 +411,7 @@ export default {
       }
       //排重
       this.driverChange(Dcode,index)
+      console.log('Dcode',Dcode)
       return Dcode;
     },
     // 车辆变化
@@ -418,7 +419,7 @@ export default {
       const me = this;
       console.log("e=%s,index=%d", e, index);
       if (me.oldkey[index] !== e || !e) {
-        console.log("车辆选择发生变化");
+        console.log("车辆选择发生变化",me.vehicleList[index]);
         me.driverList[index] = [];
         me.form.vehicleDrivers[index].driverCode = null;
       }
@@ -432,28 +433,23 @@ export default {
           url_code: [e],
         };
         http_request(obj1).then((res) => {
-          console.log("res", res.data);
+          console.log("获取司机列表 res", res.data);
           me.$set(me.driverList, index, res.data);
-          me.form.vehicleDrivers[index].driverCode = me.searchDefaultDriverCode(
-            e,
-            index
-          );
+          // me.form.vehicleDrivers[index].driverCode = me.searchDefaultDriverCode(
+          //   e,
+          //   index
+          // );
+          console.log(me.driverList,me.form.vehicleDrivers[index].driverCode)
           me.oldkey[index] = e;
         });
       }
       //检查是否重复
       const checkList = me.form.vehicleDrivers;
       let resultIndex = -1;
-      console.log(
-        "me.form.vehicleDrivers.length",
-        me.form.vehicleDrivers.length
-      );
       for (let i = 0; i < me.form.vehicleDrivers.length; i++) {
         const item = checkList[i];
-        console.log("item", item.vehicleCode);
         if (item.vehicleCode === e && index !== i) resultIndex = i;
       }
-      console.log("resultIndex", resultIndex);
       if (resultIndex > -1) {
         //互拆清空
         me.form.vehicleDrivers[resultIndex].vehicleCode = null;
@@ -525,6 +521,7 @@ export default {
     },
     //提交表单
     submitForm(formName) {
+      console.log('提交表单',this.form)
       const me = this;
       this.$refs[formName].validate((valid) => {
         if (valid) {
