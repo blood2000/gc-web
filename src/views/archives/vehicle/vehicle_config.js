@@ -90,8 +90,72 @@ const tableColumnsConfig = [
   },
 ]
 
+
+
+const warningInfoTableColumnsConfig = [
+  {
+    isShow: true,
+    label: "告警类型",
+    prop: "alarmTypeName",
+    sortNum: 1,
+    tooltip: true,
+    width: 100
+  },
+  {
+    isShow: true,
+    label: "司机",
+    prop: "nickName",
+    sortNum: 2,
+    tooltip: true
+  },
+  {
+    isShow: true,
+    label: "告警级别",
+    prop: "alarmLevel",
+    sortNum: 3,
+    tooltip: true,
+    width: 80
+  },
+  {
+    isShow: true,
+    label: "告警时间",
+    prop: "alarmTime",
+    sortNum: 4,
+    tooltip: true,
+    width: 120
+  },
+  {
+    isShow: true,
+    label: "告警时速(km/h)",
+    prop: "speed",
+    sortNum: 5,
+    tooltip: true,
+    width: 100
+  },
+  
+  {
+    isShow: true,
+    label: "告警位置",
+    prop: "alarmAddress",
+    sortNum: 6,
+    tooltip: true,
+    width: 200
+  },
+  {
+    isShow: true,
+    label: "操作",
+    prop: "handle",
+    sortNum: 7,
+    tooltip: true,
+    width: 80
+  }
+];
+
+
+
 export default {
   enabledList,
   vehicleStatusList,
-  tableColumnsConfig
+  tableColumnsConfig,
+  warningInfoTableColumnsConfig,
 }

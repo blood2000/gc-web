@@ -379,8 +379,8 @@ export default {
         vehicleStatus: this.queryParams.vehicleStatus || null, //车辆状态
         groupCode: this.queryParams.groupCode || null, //分组
         enabled: this.queryParams.enabled || null, //是否停用
-        createBeginTime: this.queryParams.dateRange[0] || null,
-        createEndTime: this.queryParams.dateRange[1] || null,
+        createBeginTime: (this.queryParams.dateRange && this.queryParams.dateRange[0]) || null,
+        createEndTime: (this.queryParams.dateRange && this.queryParams.dateRange[1]) || null,
         orgCode: this.queryParams.orgCode,
       };
       if (tmp.createBeginTime)
