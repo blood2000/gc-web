@@ -373,7 +373,9 @@ export default {
         //结束时间过滤
         disabledDate: (time) => {
           if (this.form.startDate) {
-            return time.getTime() <= new Date(this.form.startDate).getTime();
+            console.log(' time.getTime()', time.getTime())
+             console.log('  orm.startDate', new Date(this.form.startDate).getTime())
+            return time.getTime() < new Date(this.form.startDate).getTime() - 24 * 60 * 60 * 1000;
           }
         },
       },
