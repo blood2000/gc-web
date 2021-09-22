@@ -72,9 +72,9 @@
                   >轨迹查看</el-button
                 >
               </template>
-                            <template #vehicle_status="{ row }">
-                                <span>{{dealVehicleStatus(row.vehicle_status)}}</span>
-                            </template>
+              <template #vehicle_status="{ row }">
+                <span>{{ dealVehicleStatus(row.vehicle_status) }}</span>
+              </template>
             </RefactorTable>
             <!-- 分页 -->
             <pagination
@@ -92,7 +92,7 @@
 </template>
 <script>
 import { http_request } from "../../../api";
-import { tableColumnsConfig ,vehicleStatusList} from "./config";
+import { tableColumnsConfig, vehicleStatusList } from "./config";
 import QueryForm from "./components/queryForm.vue";
 export default {
   name: "carlist",
@@ -104,11 +104,11 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        driverName:null,
+        driverName: null,
         onlineStatus: null, //在线状态 0,离线; 1,在线
         sn: null, //对外序列号，等同于 imei
         plateNumber: null,
-        vehicleStatus:null,
+        vehicleStatus: null,
         orgCode: null,
       },
       total: 0,
@@ -127,15 +127,15 @@ export default {
     this.getList();
   },
   methods: {
-    dealVehicleStatus(status){
-      let result = ''
-      vehicleStatusList.forEach(element => {
-        console.log('element',element)
-          if(element.value == status){
-            result = element.label
-          }
+    dealVehicleStatus(status) {
+      let result = "";
+      vehicleStatusList.forEach((element) => {
+        console.log("element", element);
+        if (element.value == status) {
+          result = element.label;
+        }
       });
-      return result
+      return result;
     },
     mapSearch() {},
     travelSeach() {},
@@ -197,9 +197,9 @@ export default {
         sn: this.queryParams.sn,
         plateNumber: this.queryParams.plateNumber,
         // telephone:,
-        vehicleStatus:this.queryParams.vehicleStatus,
-        driverName:this.queryParams.driverName,
-        orgCode:this.queryParams.orgCode
+        vehicleStatus: this.queryParams.vehicleStatus,
+        driverName: this.queryParams.driverName,
+        orgCode: this.queryParams.orgCode,
       };
 
       return obj;
