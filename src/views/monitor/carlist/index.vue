@@ -62,16 +62,19 @@
                   type="text"
                   icon="el-icon-edit"
                   @click="mapSearch(row)"
-                  >修改</el-button
+                  >地图查看</el-button
                 >
                 <el-button
                   size="mini"
                   type="text"
                   icon="el-icon-edit"
                   @click="travelSeach(row)"
-                  >修改</el-button
+                  >轨迹查看</el-button
                 >
               </template>
+                            <template #vehicle_status="{ row }">
+                                <span>{{dealVehicleStatus(row.vehicle_status)}}</span>
+                            </template>
             </RefactorTable>
             <!-- 分页 -->
             <pagination
@@ -89,7 +92,7 @@
 </template>
 <script>
 import { http_request } from "../../../api";
-import { tableColumnsConfig } from "./config";
+import { tableColumnsConfig ,vehicleStatusList} from "./config";
 import QueryForm from "./components/queryForm.vue";
 export default {
   name: "carlist",
@@ -124,6 +127,16 @@ export default {
     this.getList();
   },
   methods: {
+    dealVehicleStatus(status){
+      let result = ''
+      vehicleStatusList.forEach(element => {
+        console.log('element',element)
+          if(element.value == status){
+            result = element.label
+          }
+      });
+      return result
+    },
     mapSearch() {},
     travelSeach() {},
     //获取组织树
@@ -171,7 +184,7 @@ export default {
         data: this.formToList(),
       };
       const res = await http_request(obj);
-      console.log("res", res);
+      console.log("res getList", res);
       this.total = res.data.total;
       this.list = res.data.rows;
       this.loading = false;
