@@ -174,7 +174,7 @@
       </el-col>
     </el-row>
     <DriverDialog
-      :options="{ editType: editType, code: queryParams.orgCode }"
+      :options="{ editType: editType, code: dialogCode }"
       :open="open"
       :title="title"
       :orgList="orgList"
@@ -236,6 +236,7 @@ export default {
       orgList: [],
       driverConfig: {},
       orgNmaetable: "",
+      dialogCode:null
     };
   },
   watch: {
@@ -320,13 +321,15 @@ export default {
       this.title = "修改司机弹窗";
       this.editType = "update";
       this.open = true;
-      this.queryParams.orgCode = obj.code;
+      console.log('修改司机弹窗 ckc obj ', obj.code)
+      this.dialogCode = obj.code;
     },
     handleDetail(obj) {
       this.editType = "detail";
       const code = obj.code;
       this.open = true;
-      this.queryParams.orgCode = obj.code;
+            console.log('司机详情弹窗 ckc obj ', obj.code)
+      this.dialogCode = obj.code;
       this.title = "司机详情弹窗";
       console.log("index code", code);
     },
@@ -351,7 +354,7 @@ export default {
         orgRes.data.length > 0 ? orgRes.data : [];
         console.log('orgRes.data[0]',orgRes.data)
       this.queryParams.orgCode = this.orgTreeData[0].code;
-      console.log("当前code", this.queryParams.orgCode);
+      console.log("当前code ckc", this.queryParams.orgCode);
       this.searchQuery();
     },
     //组织树节点过滤
@@ -361,7 +364,7 @@ export default {
       return data.orgName.indexOf(value) !== -1;
     },
     handleNodeClick(data) {
-      console.log("data", data);
+      console.log("data ckc", data);
       this.queryParams.orgCode = data.code;
       this.queryParams.startIndex = 1;
       this.driverHttpReq();
@@ -401,6 +404,7 @@ export default {
 
     //请求分页数据
     async driverHttpReq() {
+      console.log('this.queryParams.orgCode',this.queryParams.orgCode)
       this.loading = true;
       const tmp = {
           startIndex: this.queryParams.startIndex,

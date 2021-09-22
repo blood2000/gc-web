@@ -294,11 +294,19 @@ export default {
       isDetail: false,
       // 部门树键值转换
       normalizer(node) {
-        return {
+        if (node.children == null || node.children == "null") {
+          delete node.children;
+        }
+        const obj = {
           id: node.code, // 键名转换，方法默认是label和children进行树状渲染
           label: node.orgName,
-          children: node.childrenOrgList,
+          // children: node.childrenOrgList,
         };
+        if (node.childrenOrgList && node.childrenOrgList.length > 0) {
+          obj.children = node.childrenOrgList;
+        }
+        console.log("obj", obj);
+        return obj;
       },
     };
   },
@@ -445,7 +453,7 @@ export default {
       this.ocrHttp(e, 2);
     },
     //ocr请求
-    async ocrHttp(imgPath, type,side) {
+    async ocrHttp(imgPath, type, side) {
       const obj = {
         moduleName: "http_common",
         method: "post",
@@ -453,7 +461,7 @@ export default {
         data: {
           imgPath,
           type,
-          side
+          side,
         },
       };
       const res = await http_request(obj);
