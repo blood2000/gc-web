@@ -34,7 +34,7 @@
         </template>
         <!-- ADAS报警、异常驾驶报警、特殊报警 -->
         <template v-else>
-          <li class="warning-list-adas" v-for="(item, index) in adasDataList" :key="index">
+          <li class="warning-list-adas" v-for="(item, index) in adasDataList" :key="index" @click="handleDetail(item)">
             <div class="warning-card" :class="{active: index === 0}">
               <div class="center-box ly-flex-pack-justify ly-flex-align-end mb5">
                 <div class="ly-flex-v ly-flex-align-center">
@@ -78,13 +78,24 @@
 
     <!-- 收起按钮 -->
     <img class="map-warning-table__pull" src="~@/assets/images/device/icon_pull.png" @click="handlePull">
+
+    <!-- 轨迹详情 -->
+    <WarnDetail
+      :open.sync="detailOpen"
+      ref="WarnDetailRef"
+      class="warn-detail-panel"
+    />
   </div>
 </template>
 
 <script>
 import { http_request } from '@/api';
 import bus from '../components/bus';
+import WarnDetail from './warnDetail.vue';
 export default {
+  components: {
+    WarnDetail
+  },
   data() {
     return {
       // 当前选中tab
@@ -108,7 +119,9 @@ export default {
       // adas报警列表
       adasDataList: [{}, {}, {}, {}],
       // 面板是否收起
-      isClose: false
+      isClose: false,
+      // 告警详情开关
+      detailOpen: false
     }
   },
   mounted() {
@@ -128,6 +141,10 @@ export default {
     handlePull() {
       this.isClose = !this.isClose;
       bus.$emit('isClose', this.isClose);
+    },
+    /** 查看告警详情 */
+    handleDetail(row) {
+      this.detailOpen = true;
     }
   }
 }
@@ -255,10 +272,9 @@ export default {
         padding: 0 4px;
         // 告警卡片样式2
         .warning-card{
-          cursor: pointer;
           height: 100%;
           border-radius: 6px;
-          cursor: default;
+          cursor: pointer;
           padding: 6px 14px 12px;
           overflow: hidden;
           &.active{

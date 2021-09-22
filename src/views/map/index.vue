@@ -26,7 +26,7 @@
         <div v-show="currentType === '1'">
           <ul class="btn-list-box">
             <li :class="{active: vehicleActiveTab === '0'}" @click="handleVehicleTab('0')">{{ `全部（${countVehicle.countAll ? countVehicle.countAll : 0}）` }}</li>
-            <li :class="{active: vehicleActiveTab === '1'}" @click="handleVehicleTab('1')">{{ `在线（${countVehicle.countAll ? countVehicle.countAll : 0}）` }}</li>
+            <li :class="{active: vehicleActiveTab === '1'}" @click="handleVehicleTab('1')">{{ `在线（${countVehicle.countOnline ? countVehicle.countOnline : 0}）` }}</li>
           </ul>
           <div class="device-search-box">
             <el-input
@@ -86,8 +86,8 @@
                       </h5>
                       <p>
                         <!-- 在线/离线 -->
-                        <span class="status green"><strong>· </strong>设备在线</span>
-                        <!-- <span class="status gray"><strong>· </strong>设备离线</span> -->
+                        <span v-if="data.deviceStatus === 1" class="status green"><strong>· </strong>设备在线</span>
+                        <span v-if="data.deviceStatus === 0" class="status gray"><strong>· </strong>设备离线</span>
                         <!-- 设备状态 -->
                         <span v-if="data.vehicleStatus !== null && data.vehicleStatus !== undefined" class="status" :class="selectDictColor(vehicleStatusOptions, data.vehicleStatus)">
                           <strong>· </strong>{{ selectDictLabel(vehicleStatusOptions, data.vehicleStatus) }}
@@ -176,11 +176,6 @@
       ref="WarnListRef"
       class="warn-list-panel"
     />
-    <!-- <WarnDetail
-      v-if="headerTab === 1"
-      ref="WarnDetailRef"
-      class="warn-detail-panel"
-    /> -->
 
     <!-- 调度指派 -->
 
@@ -204,7 +199,6 @@
 <script>
 import Infos from './components/infos.vue';
 import WarnList from './warning/warnList.vue';
-import WarnDetail from './warning/warnDetail.vue';
 import TrackList from './track/trackList.vue';
 import { http_request } from '@/api';
 export default {
@@ -212,7 +206,6 @@ export default {
   components: {
     Infos,
     WarnList,
-    WarnDetail,
     TrackList
   },
   data() {
@@ -232,6 +225,8 @@ export default {
       // 车各个状态统计值
       countVehicle: {
         countAll: 0, // 所有
+        countOnline: 0, // 在线
+        countOffline: 0, // 离线
         countIdle: 0, // 空闲
         countInTask: 0, // 任务
         countRepair: 0, // 维修
@@ -239,6 +234,7 @@ export default {
       },
       // 车树查询
       vehicleParams: {
+        deviceStatus: undefined,
         licenseNumber: undefined,
         carrierType: undefined,
         vehicleStatus: undefined
@@ -356,6 +352,10 @@ export default {
   methods: {
     /** 初始化地图 */
     initMap() {
+      if (!AMap) {
+        this.msgWarning('地图加载失败，请刷新页面重试');
+        return;
+      }
       this.map = new AMap.Map('device-map-container', {
         mapStyle: 'amap://styles/2fe468ae95b55caa76404a537353e63a', //设置地图的显示样式
         resizeEnable: true,
@@ -744,6 +744,14 @@ export default {
     handleVehicleTab(code) {
       if (this.vehicleActiveTab === code) return;
       this.vehicleActiveTab = code;
+      if (code === '0') {
+        // 全部
+        this.vehicleParams.deviceStatus = undefined;
+      } else if (code === '1') {
+        // 在线
+        this.vehicleParams.deviceStatus = 1;
+      }
+      this.vehicleQuery();
     },
     // 获取车辆各个状态统计值
     getCountVehicle() {
@@ -774,13 +782,15 @@ export default {
     },
     // 车树节点筛选
     vehicleFilterNode(vehicleParams, data) {
-      const { licenseNumber, carrierType, vehicleStatus } = vehicleParams;
-      if (!licenseNumber && !carrierType && (vehicleStatus === undefined || vehicleStatus === null)) return true;
-      let flag1 = true, flag2 = true, flag3 = true;
+      console.log(vehicleParams)
+      const { licenseNumber, carrierType, vehicleStatus, deviceStatus } = vehicleParams;
+      if (!licenseNumber && !carrierType && (vehicleStatus === undefined || vehicleStatus === null) && (deviceStatus === undefined || deviceStatus === null)) return true;
+      let flag1 = true, flag2 = true, flag3 = true, flag4 = true;
       if (licenseNumber && licenseNumber !== '') flag1 = data.orgOrlicenseNumber.indexOf(licenseNumber) !== -1;
       if (carrierType && carrierType !== '') flag2 = data.carrierType === carrierType;
       if (vehicleStatus !== undefined && vehicleStatus !== null && vehicleStatus !== '') flag3 = data.vehicleStatus === vehicleStatus;
-      return (flag1 && flag2 && flag3);
+      if (deviceStatus !== undefined && deviceStatus !== null && deviceStatus !== '') flag3 = data.deviceStatus === deviceStatus;
+      return (flag1 && flag2 && flag3 && flag4);
     },
     // 车树节点选中
     vehicleNodeClick(data) {
@@ -1198,16 +1208,6 @@ export default {
     right: $right;
     z-index: 1000;
     height: 226px;
-  }
-
-  // 报警详情
-  >.warn-detail-panel{
-    position: absolute;
-    right: $right;
-    top: $header-height;
-    bottom: $bottom;
-    z-index: 1000;
-    height: calc(100% - #{$header-height});
   }
 
   // 行车轨迹
