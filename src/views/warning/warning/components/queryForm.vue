@@ -90,7 +90,7 @@
       :destroy-on-close="true"
     >
       <div>
-        <div class="types-title">设备异常警告</div>
+        <!-- <div class="types-title">设备异常警告</div>
         <div class="types-box">
           <div
             class="types-item"
@@ -102,18 +102,17 @@
           >
             {{ item.warningName }}
           </div>
-        </div>
+        </div> -->
         <div class="types-title">车辆警告</div>
         <div class="types-box">
           <div
             class="types-item"
             v-for="(item, index) in warningTypes"
             :key="index"
-            v-show="item.type === 1"
             :class="item.isChoose ? 'choosed' : ''"
             @click="changeWarningType(item)"
           >
-            {{ item.warningName }}
+            {{ item.alarmTypeName }}
           </div>
         </div>
       </div>
@@ -188,8 +187,10 @@ export default {
       // this.resetForm('queryForm');
       this.queryParams.vehicleCode = '';
       this.warningNames = '';
+      this.queryParams.warningTypes = [];
       this.queryParams.dateRange = [];
       this.queryParams.deviceType = null;
+      console.log(this.queryParams)
       this.$emit("handleQuery");
     },
 
@@ -206,7 +207,7 @@ export default {
       this.warningNames = '';
       this.warningTypes.map(item => {
         if (item.isChoose) {
-          this.warningNames += item.warningName + ',';
+          this.warningNames += item.alarmTypeName + ',';
         }
       })
       this.$emit('updateWarningTypeList', this.warningTypes)

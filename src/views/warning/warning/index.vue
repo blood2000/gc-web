@@ -154,18 +154,20 @@ export default {
 
   created() {
     this.deviceTypeList = warningConfig.deviceTypeList;
-    this.warningTypeList = warningConfig.warningTypeList;
+    // this.warningTypeList = warningConfig.warningTypeList;
     this.warningLevelList = warningConfig.warningLevelList;
+    this.getWarningTypes();
     this.tableColumnsConfig = [
       ...warningConfig.vehicleColumn,
       ...warningConfig.tableColumnsConfig
     ];
     this.warningTabs = warningConfig.warningTabs;
-    this.warningDataReq();
+    // this.warningDataReq();
   },
 
   mounted() {
     this.getOrgHttp();
+    
   },
 
 
@@ -185,6 +187,7 @@ export default {
       if (!this.orgTreeData.length > 0) return;
       this.orgCode = this.orgTreeData[0].code;
       console.log("当前code", this.orgCode);
+
       this.searchQuery();
     },
     //过滤节点
@@ -205,10 +208,31 @@ export default {
       let warningTypes = [];
       this.warningTypeList.map(item => {
         if (item.isChoose) {
-          warningTypes.push(item.warningType);
+          warningTypes.push(item.id);
         }
       });
       this.queryParams.warningTypes = warningTypes;
+      this.searchQuery();
+    },
+    //告警类型获取
+    async getWarningTypes() {
+      const obj = {
+        moduleName: "http_warning",
+        method: "get",
+        url_alias: "warningType_list",
+      };
+      const res = await http_request(obj);
+      console.log('告警类型列表', res);
+      let warningTypeList = [];
+      if (res.code === 200) {
+        let obj = {};
+        res.data.map(item => {
+          obj = item;
+          obj.isChoose = true;
+          warningTypeList.push(obj)
+        })
+        this.warningTypeList = warningTypeList;
+      }
     },
     //初始页数请求
     searchQuery() {
@@ -231,7 +255,7 @@ export default {
         limit: this.queryParams.pageSize,
         bigAlarmTime: (this.queryParams.dateRange && this.queryParams.dateRange[0]) || null,
         endAlarmTime: (this.queryParams.dateRange && this.queryParams.dateRange[1]) || null,
-        
+        alarmTypeInfoId: this.queryParams.warningTypes.join(',')
       };
       if (this.tabIndex === "1") {
         tmp.dimensionType = "vehicle";
