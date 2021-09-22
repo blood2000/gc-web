@@ -1,57 +1,45 @@
 <template>
   <!-- 轨迹回放列表 -->
-  <div class="map-warning-table ly-flex-pack-justify">
+  <div class="map-track-list">
     <div class="time-box">
       <!-- 查询时间 -->
+      <div class="label">选择时间：</div>
       <div class="form-item ly-flex ly-flex-pack-justify ly-flex-align-center">
-        快捷选项：
-        <el-radio-group v-model="radio" style="width: 228px" @change="changeRadio">
-          <el-radio :label="1">1天</el-radio>
-          <el-radio :label="3">3天</el-radio>
-          <el-radio :label="7">7天</el-radio>
-        </el-radio-group>
-      </div>
-      <div class="form-item ly-flex ly-flex-pack-justify ly-flex-align-center">
-        开始时间：
         <el-date-picker
-          v-model="jimiQueryParams.startTime"
-          clearable
-          size="small"
-          type="datetime"
-          style="width: 228px"
+          v-model="rangeTime"
+          type="datetimerange"
+          unlink-panels
+          range-separator="-"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
           value-format="yyyy-MM-dd HH:mm:ss"
-          placeholder="请选择开始时间"
-        />
-      </div>
-      <div class="form-item ly-flex ly-flex-pack-justify ly-flex-align-center">
-        结束时间：
-        <el-date-picker
-          v-model="jimiQueryParams.endTime"
-          clearable
-          size="small"
-          type="datetime"
-          style="width: 228px"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          placeholder="请选择结束时间"
+          style="width: 100%"
+          @change="dateChoose"
         />
       </div>
       <div class="form-item" style="text-align: right;">
         <el-button type="primary" size="mini" :loading="buttonLoading" @click="getJimi">查 询</el-button>
       </div>
-
       <!-- 播放器 -->
-      <template v-if="jmTracklist && jmTracklist.length > 0">
+      <template>
         <!-- 当前时间、速度、方向 -->
-        <div v-if="jmTracklist && jmTracklist.length > 0" class="device-current-view ly-flex-pack-justify">
-          <span>{{ currentTrackTime || '-' }}</span>
+        <div class="device-current-view ly-flex-pack-justify">
+          <span>{{ currentTrackTime || '00:00:00 00:00:00' }}</span>
           <span v-if="currentTrackSpeed !== -1">{{ currentTrackSpeed || '-' }} km/h</span>
         </div>
         <!-- 进度条 -->
         <div class="device-slide-box">
-          <el-slider v-model="slideValue" :show-tooltip="false" @input="handleSlideChange" />
+          <el-slider v-model="slideValue" :show-tooltip="false" :disabled="!this.jmTracklist || this.jmTracklist.length === 0" @input="handleSlideChange" />
         </div>
         <!-- 播放器 -->
         <div class="device-play-box ly-flex ly-flex-pack-justify ly-flex-align-center">
+          <div class="replay-button" @click="startPathSimplifier">
+            <i class="el-icon-refresh-right" />
+            重播
+          </div>
+          <div v-if="isPlay === 0" title="播放" class="play-button" @click="startPathSimplifier" />
+          <div v-if="isPlay === 2" title="继续" class="play-button" @click="resumePathSimplifier" />
+          <div v-if="isPlay === 1" title="暂停" class="pause-button" @click="pausePathSimplifier" />
           <el-select
             v-model="rateTime"
             class="time-select"
@@ -66,13 +54,6 @@
               :value="dict"
             />
           </el-select>
-          <div v-if="isPlay === 0" title="播放" class="play-button" @click="$emit('startPathSimplifier')" />
-          <div v-if="isPlay === 2" title="继续" class="play-button" @click="$emit('resumePathSimplifier')" />
-          <div v-if="isPlay === 1" title="暂停" class="pause-button" @click="$emit('pausePathSimplifier')" />
-          <div class="replay-button" @click="$emit('startPathSimplifier')">
-            <i class="el-icon-refresh-right" />
-            重播
-          </div>
         </div>
       </template>
     </div>
@@ -82,35 +63,49 @@
       <ul class="tab-left">
         <li v-for="item in tabList" :key="item.code" :class="{active: currentTab === item.code}" @click="handleTab(item.code)">{{ item.label }}</li>
       </ul>
-      <!-- 轨迹明细 -->
-      <el-table v-show="currentTab === 1" v-loading="trackLoading" height="100%" highlight-current-row border :data="jmTrackInfolist" >
-        <el-table-column label="序号" type="index" width="50" align="center" />
-        <el-table-column label="状态" align="center" prop="name" :show-overflow-tooltip="true" />
-        <el-table-column label="速度(km/h)" align="center" prop="gpsSpeed" :show-overflow-tooltip="true" />
-        <el-table-column label="定位时间" align="center" prop="gpsTime" width="160" />
-        <el-table-column label="定位方式" align="center" prop="name" :show-overflow-tooltip="true" />
-        <!-- <el-table-column label="定位位置" align="center" prop="name" :show-overflow-tooltip="true" /> -->
-        <el-table-column label="经度" align="center" prop="lng" :show-overflow-tooltip="true" />
-        <el-table-column label="纬度" align="center" prop="lat" :show-overflow-tooltip="true" />
-      </el-table>
-      <!-- 停车详情 -->
-      <el-table v-show="currentTab === 2" v-loading="parkingLoading" height="100%" highlight-current-row border :data="parkingList">
-        <el-table-column label="序号" type="index" width="50" align="center" />
-        <el-table-column label="车辆" align="center" prop="name" :show-overflow-tooltip="true" />
-        <el-table-column label="状态" align="center" prop="name" :show-overflow-tooltip="true" />
-        <el-table-column label="开始时间" align="center" prop="createTime" width="160">
-          <template slot-scope="scope">
-            <span>{{ parseTime(scope.row.createTime) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="结束时间" align="center" prop="createTime" width="160">
-          <template slot-scope="scope">
-            <span>{{ parseTime(scope.row.createTime) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="停留时长" align="center" prop="name" :show-overflow-tooltip="true" />
-        <el-table-column label="停留位置" align="center" prop="name" :show-overflow-tooltip="true" />
-      </el-table>
+      <div class="tab-box-content">
+        <!-- 轨迹明细 jmTrackInfolist -->
+        <div class="track-list map-scroll-panel" v-show="currentTab === 1" v-loading="trackLoading">
+          <div class="card" v-for="(item, index) in trackList" :key="index">
+            <p class="date">8月15日</p>
+            <div class="ly-flex ly-flex-pack-justify">
+              <div class="time">13:00:00</div>
+              <div class="box">
+                <div class="info-box" v-for="(value, vIndex) in item.list" :key="vIndex">
+                  <h5>
+                    <img src="@/assets/images/device/icon_track_xs.png">
+                    行驶
+                    <!-- <img src="@/assets/images/device/icon_track_ds.png">
+                    怠速 -->
+                  </h5>
+                  <div class="content">
+                    <p class="address g-double-row">河南省平顶山市湛河区荆山街道润建代维公司驻点(黄河路29号北239米)</p>
+                    <div class="ly-flex ly-flex-pack-justify">
+                      <p class="p speed">55km/h</p>
+                      <p class="p gps">GPS定位</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 停车详情 -->
+        <div class="parking-list map-scroll-panel" v-show="currentTab === 2" v-loading="parkingLoading">
+          <div class="card" v-for="(item, index) in parkingList" :key="index">
+            <h5>闽A12345</h5>
+            <div class="status">
+              <img src="@/assets/images/device/icon_park.png">
+              静止
+            </div>
+            <p class="address g-double-row">河南省平顶山市湛河区荆山街道润建代维公司驻点(黄河路29号北239米)</p>
+            <p class="time"><span>开始时间</span>2021-09-17 10:00:00</p>
+            <p class="time"><span>结束时间</span>2021-09-17 10:00:00</p>
+            <p class="time"><span>停留时长</span>3小时35分0秒</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -128,9 +123,8 @@ export default {
   },
   data() {
     return {
-      // 快捷事件选项
-      radio: 1,
       // jimi查询参数
+      rangeTime: [],
       jimiQueryParams: {
         startTime: '',
         endTime: '',
@@ -155,6 +149,7 @@ export default {
       ],
       // 轨迹明细列表
       trackLoading: false,
+      trackList: [],
       // 停车详情列表
       parkingLoading: false,
       parkingList: []
@@ -162,13 +157,24 @@ export default {
   },
   mounted() {
     // 时间默认选中当天
+    this.rangeTime = [this.parseTime(new Date(), '{y}-{m}-{d}') + ' 00:00:00', this.parseTime(new Date())]
     this.jimiQueryParams.startTime = this.parseTime(new Date(), '{y}-{m}-{d}') + ' 00:00:00';
     this.jimiQueryParams.endTime = this.parseTime(new Date());
+    // 假数据
+    this.trackList = [{list: [{},{},{},{}]}, {list: [{},{}]}, {list: [{}]}];
+    this.parkingList = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
   },
   methods: {
-    /** 快捷选择事件 */
-    changeRadio(value) {
-      console.log(value)
+    /** 选择日期 */
+    dateChoose(date) {
+      if (date) {
+        this.jimiQueryParams.startTime = this.parseTime(date[0]);
+        this.jimiQueryParams.endTime = this.parseTime(date[1]);
+        // this.getJimi();
+      } else {
+        this.jimiQueryParams.startTime = null;
+        this.jimiQueryParams.endTime = null;
+      }
     },
     /** 获取硬件轨迹 */
     getJimi() {
@@ -261,6 +267,21 @@ export default {
     setPlayStatus(value) {
       this.isPlay = value;
     },
+    /** 播放 */
+    startPathSimplifier() {
+      if (!this.jmTracklist || this.jmTracklist.length === 0) return;
+      this.$emit('startPathSimplifier');
+    },
+    /** 继续 */
+    resumePathSimplifier() {
+      if (!this.jmTracklist || this.jmTracklist.length === 0) return;
+      this.$emit('resumePathSimplifier');
+    },
+    /** 暂停 */
+    pausePathSimplifier() {
+      if (!this.jmTracklist || this.jmTracklist.length === 0) return;
+      this.$emit('pausePathSimplifier');
+    },
     /** 切换tab */
     handleTab(code) {
       if (this.currentTab === code) return;
@@ -271,18 +292,32 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.map-warning-table{
-  height: 400px;
-  background: #fff;
+.map-track-list{
+  width: 380px;
+  height: 100%;
   .time-box{
-    width: 334px;
-    padding: 10px;
+    width: 100%;
+    width: 380px;
+    height: 236px;
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.05);
+    border-radius: 6px;
+    padding: 20px 16px 10px;
+    margin-bottom: 10px;
+    .label{
+      font-size: 14px;
+      font-family: PingFang SC;
+      font-weight: bold;
+      line-height: 24px;
+      color: #8592AD;
+      margin-bottom: 5px;
+    }
     .form-item{
-      margin-bottom: 15px;
+      margin-bottom: 12px;
     }
     // 进度条样式
     .device-slide-box{
-      padding: 0 16px;
+      padding: 0 2px;
       ::v-deep.el-slider{
         ::v-deep.el-slider__button{
           width: 16px;
@@ -294,7 +329,7 @@ export default {
     }
     // 播放器样式
     .device-play-box{
-      padding: 0 15px 8px;
+      padding: 0 2px 8px;
       .time-select ::v-deep.el-input__inner{
         border-radius: 16px;
         color: #ADB5BD;
@@ -333,7 +368,7 @@ export default {
     }
     // 当前时间、速度、方向
     .device-current-view{
-      padding: 15px 18px 0px 15px;
+      padding-top: 2px;
       margin-bottom: -10px;
       color: #ADB5BD;
       font-size: 13px;
@@ -341,27 +376,205 @@ export default {
   }
 
   .tab-box{
-    width: calc(100% - 334px);
-    height: 100%;
+    width: 100%;
+    height: calc(100% - 246px);
     position: relative;
-    padding-left: 40px;
     // tab
     .tab-left{
       position: absolute;
-      left: 0;
+      left: -40px;
       top: 0;
       bottom: 0;
       width: 40px;
       cursor: pointer;
+      z-index: 0;
       >li{
-        height: 50%;
+        float: right;
+        width: 36px;
+        height: 108px;
         background: #fff;
-        border: 1px solid #fff;
-        padding: 12px;
+        padding: 13px 10px;
+        margin-bottom: 12px;
+        border-radius: 6px 0 0 6px;
+        background: #E3E7F0;
+        box-shadow: -2px 2px 10px rgba(0, 0, 0, 0.16);
+        font-size: 16px;
+        font-family: PingFang SC;
+        font-weight: bold;
+        line-height: 20px;
+        color: #8592AD;
+        transition: width 0.3s;
         &.active{
-          background: #ccc;
+          width: 40px;
+          height: 130px;
+          padding: 24px 12px;
+          background: rgba(255, 255, 255, 0.85);
+          color: #3D4050;
         }
       }
+    }
+    // tab content
+    .tab-box-content{
+      height: 100%;
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.85);
+      box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.05);
+      border-radius: 0 6px 6px 6px;
+      padding: 4px 0;
+      // 轨迹明细
+      .track-list{
+        height: 100%;
+        padding: 0 0 0 20px;
+        overflow-y: scroll;
+        >.card{
+          &:first-child{
+            padding-top: 14px;
+          }
+          &:not(:first-child){
+            margin-top: -22px;
+          }
+          .date{
+            font-size: 14px;
+            font-family: PingFang SC;
+            font-weight: 400;
+            line-height: 20px;
+            color: #3D4050;
+            margin-bottom: 2px;
+          }
+          .time{
+            width: 72px;
+            font-size: 14px;
+            font-family: PingFang SC;
+            font-weight: bold;
+            line-height: 20px;
+            color: #3D4050;
+          }
+          .box{
+            width: calc(100% - 72px);
+          }
+          .info-box{
+            width: 100%;
+            padding-right: 16px;
+            >h5{
+              font-size: 14px;
+              font-family: PingFang SC;
+              font-weight: bold;
+              line-height: 18px;
+              color: #3D4050;
+              margin-bottom: 4px;
+              >img{
+                width: 18px;
+                height: 18px;
+                vertical-align: bottom;
+                margin-right: 6px;
+              }
+            }
+            >.content{
+              padding: 4px 0 10px 18px;
+              border-left: 1px dashed #C9CFDB;
+              margin-left: 8px;
+              margin-bottom: 6px;
+              .address{
+                font-size: 14px;
+                font-family: PingFang SC;
+                font-weight: 400;
+                line-height: 20px;
+                color: #3D4050;
+                margin-bottom: 8px;
+              }
+              .p{
+                width: 50%;
+                font-size: 14px;
+                font-family: PingFang SC;
+                font-weight: 400;
+                line-height: 20px;
+                color: #A1A1A1;
+                padding-left: 22px;
+              }
+              .speed{
+                background: url('~@/assets/images/device/icon_track_speed.png') no-repeat 0px 0px;
+                background-size: 18px 18px;
+              }
+              .gps{
+                background: url('~@/assets/images/device/icon_track_gps.png') no-repeat 0px 0px;
+                background-size: 18px 18px;
+              }
+            }
+          }
+        }
+      }
+      // 停车详情
+      .parking-list{
+        height: 100%;
+        padding: 0 0 0 24px;
+        overflow-y: scroll;
+        >.card{
+          position: relative;
+          margin-right: 20px;
+          padding: 20px 0;
+          &:not(:last-child){
+            border-bottom: 1px solid #E4ECF4;
+          }
+          >h5{
+            font-size: 16px;
+            font-family: PingFang SC;
+            font-weight: bold;
+            line-height: 20px;
+            color: #3D4050;
+          }
+          >.status{
+            position: absolute;
+            top: 18px;
+            right: 0;
+            font-size: 14px;
+            font-family: PingFang SC;
+            font-weight: bold;
+            line-height: 18px;
+            color: #3D4050;
+            >img{
+              vertical-align: bottom;
+              margin-right: 4px;
+            }
+          }
+          >.address{
+            font-size: 14px;
+            font-family: PingFang SC;
+            font-weight: 400;
+            line-height: 20px;
+            color: #3D4050;
+            margin: 12px 0;
+          }
+          >.time{
+            font-size: 14px;
+            font-family: PingFang SC;
+            font-weight: bold;
+            line-height: 20px;
+            color: #3D4050;
+            margin-top: 4px;
+            >span{
+              color: #A1A1A1;
+              margin-right: 16px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</style>
+
+<style lang="scss">
+.map-track-list{
+  .time-box{
+    .el-range-editor.el-input__inner{
+      padding: 3px 0 3px 10px;
+    }
+    .el-date-editor .el-range-input{
+      width: 40%;
+    }
+    .el-range-separator{
+      padding: 0;
     }
   }
 }

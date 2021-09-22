@@ -582,14 +582,11 @@ export default {
         });
         // 创建信息窗
         const info = [];
-        const text = '暂无';
         info.push("<div class='own-map-navgtr-info-window'>");
-        info.push("<p class='input-item'><span>总时间:</span>" + text + '</p>');
-        info.push("<p class='input-item'><span>里程:</span>" + text + '</p>');
-        info.push("<p class='input-item'><span>行驶时长:</span>" + text + '</p>');
-        info.push("<p class='input-item'><span>总停留时长:</span>" + text + '</p>');
+        info.push("<p class='input-item'><span class='speed'>速度：</span>" + that.$refs.TrackListRef.jmTrackInfolist[0].gpsSpeed + ' km/h</p>');
+        info.push("<p class='input-item'><span class='time'>时间：</span>" + that.$refs.TrackListRef.jmTrackInfolist[0].gpsTime + '</p>');
         info.push('</div>');
-        const infoWindow = that.markerInfoInit(that.$refs.TrackListRef.jmTracklist[0], {info, offset: [8, -16]});
+        const infoWindow = that.markerInfoInit(that.$refs.TrackListRef.jmTracklist[0], {info, offset: [0, -20]});
         // 巡航器移动事件
         that.navgtr.on('move', function(data, position) {
           const path = position.dataItem.pathData.path;
@@ -614,8 +611,8 @@ export default {
           // 重新设置信息窗体内容
           const nweInfo = [];
           nweInfo.push("<div class='own-map-navgtr-info-window'>");
-          nweInfo.push("<p class='input-item'><span>速度:</span>" + that.$refs.TrackListRef.jmTrackInfolist[idx].gpsSpeed + ' km/h</p>');
-          nweInfo.push("<p class='input-item'><span>时间:</span>" + that.$refs.TrackListRef.jmTrackInfolist[idx].gpsTime + '</p>');
+          nweInfo.push("<p class='input-item'><span class='speed'>速度：</span>" + that.$refs.TrackListRef.jmTrackInfolist[idx].gpsSpeed + ' km/h</p>');
+          nweInfo.push("<p class='input-item'><span class='time'>时间：</span>" + that.$refs.TrackListRef.jmTrackInfolist[idx].gpsTime + '</p>');
           nweInfo.push('</div>');
           infoWindow.setContent(nweInfo.join(''));
           // 车超出视野范围后重新定位
@@ -632,8 +629,8 @@ export default {
           this.$refs.TrackListRef.jmTracklist[0], 
           {
             clickable: false,
-            content: '<div class="own-device-line-icon start">起</div>',
-            offset: [-20, -20]
+            content: '<div class="own-device-line-icon start"><div>起</div></div>',
+            offset: [-58, -58]
           }
         );
         // 绘制终点
@@ -641,8 +638,8 @@ export default {
           this.$refs.TrackListRef.jmTracklist[this.$refs.TrackListRef.jmTracklist.length - 1], 
           {
             clickable: false,
-            content: '<div class="own-device-line-icon end">终</div>',
-            offset: [-20, -20]
+            content: '<div class="own-device-line-icon end"><div>终</div></div>',
+            offset: [-58, -58]
           }
         );
       });
@@ -1213,10 +1210,11 @@ export default {
   // 行车轨迹
   >.track-list-panel{
     position: absolute;
-    bottom: 10px;
-    left: calc(#{$left-tree-width} + 10px);
-    right: 10px;
+    top: calc(#{$header-height} + 12px);
+    bottom: $bottom;
+    right: $right;
     z-index: 1000;
+    height: calc(100% - #{$header-height} - #{$bottom} - 12px);
   }
 
   // 地图
@@ -1224,7 +1222,13 @@ export default {
     width: 100%;
     height: 100%;
     // 地图信息窗体样式-覆盖
+    ::v-deep.amap-info-sharp{
+      display: none;
+    }
     ::v-deep.amap-info-content{
+      background: transparent;
+      box-shadow: 0px 3px 5px rgba(206, 206, 206, 0.7);
+      padding: 0;
       .amap-info-close{
         top: 6px;
         right: 6px !important;
@@ -1297,41 +1301,81 @@ export default {
     }
     // 巡航信息窗体样式
     ::v-deep.own-map-navgtr-info-window{
+      min-width: 216px;
+      max-width: 246px;
+      min-height: 68px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 4px;
+      padding: 10px 18px 10px 14px;
       .input-item{
-        padding: 6px 10px 0 6px;
         font-size: 14px;
         font-family: PingFang SC;
         font-weight: bold;
-        line-height: 20px;
-        color: #20273A;
+        line-height: 24px;
+        color: #3D4050;
         >span{
           font-size: 14px;
           font-family: PingFang SC;
           font-weight: 400;
-          line-height: 20px;
-          color: rgba(144, 147, 152, 0.9);
-          margin-right: 12px;
+          line-height: 24px;
+          color: #A6A8AD;
+          margin-right: 2px;
+          padding-left: 22px;
+          &.speed{
+            background: url('~@/assets/images/device/icon_speed.png') no-repeat 0px 1px;
+            background-size: 16px 16px;
+          }
+          &.time{
+            background: url('~@/assets/images/device/icon_time.png') no-repeat 0px 2px;
+            background-size: 16px 16px;
+          }
         }
       }
     }
     // 轨迹起点终点样式
     ::v-deep.own-device-line-icon{
-      width: 40px;
-      height: 40px;
-      border: 4px solid #FFFFFF;
-      box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+      width: 118px;
+      height: 118px;
+      background: rgba(255, 255, 255, 0.25);
       border-radius: 50%;
-      font-size: 18px;
-      font-family: PingFang SC;
-      font-weight: bold;
-      line-height: 32px;
-      text-align: center;
-      color: #FFFFFF;
+      padding: 31px;
+      position: relative;
+      >div{
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        border-radius: 50%;
+        margin: 16px;
+        font-size: 12px;
+        font-family: PingFang SC;
+        font-weight: bold;
+        color: #FFFFFF;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+      }
+      &::after{
+        content: '';
+        position: absolute;
+        width: 56px;
+        height: 56px;
+        top: 31px;
+        left: 31px;
+        background: rgba(255, 255, 255, 0.72);
+        border-radius: 50%;
+        z-index: 0;
+      }
       &.start{
-        background: #FB8720;
+        >div{
+          background: linear-gradient(180deg, #FFBC00 0%, #FF9405 100%);
+          box-shadow: 0px 0px 6px rgba(241, 184, 25, 0.35);
+        }
       }
       &.end{
-        background: #1990FF;
+        >div{
+          background: linear-gradient(180deg, #4682FA 0%, #1359E6 100%);
+          box-shadow: 0px 0px 6px rgba(70, 130, 250, 0.49);
+        }
       }
     }
     // 标记物车样式
