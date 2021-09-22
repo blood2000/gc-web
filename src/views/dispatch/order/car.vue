@@ -373,9 +373,15 @@ export default {
         //结束时间过滤
         disabledDate: (time) => {
           if (this.form.startDate) {
-            console.log(' time.getTime()', time.getTime())
-             console.log('  orm.startDate', new Date(this.form.startDate).getTime())
-            return time.getTime() < new Date(this.form.startDate).getTime() - 24 * 60 * 60 * 1000;
+            console.log(" time.getTime()", time.getTime());
+            console.log(
+              "  orm.startDate",
+              new Date(this.form.startDate).getTime()
+            );
+            return (
+              time.getTime() <
+              new Date(this.form.startDate).getTime() - 24 * 60 * 60 * 1000
+            );
           }
         },
       },
@@ -403,7 +409,7 @@ export default {
   methods: {
     //查找车辆默认司机
     searchDefaultDriverCode(vkey, index) {
-      const me  = this
+      const me = this;
       let Dcode = null;
       //找到
       for (const item of me.vehicleList) {
@@ -412,8 +418,8 @@ export default {
         }
       }
       //排重
-      this.driverChange(Dcode,index)
-      console.log('Dcode',Dcode)
+      this.driverChange(Dcode, index);
+      console.log("Dcode", Dcode);
       return Dcode;
     },
     // 车辆变化
@@ -421,7 +427,7 @@ export default {
       const me = this;
       console.log("e=%s,index=%d", e, index);
       if (me.oldkey[index] !== e || !e) {
-        console.log("车辆选择发生变化",me.vehicleList[index]);
+        console.log("车辆选择发生变化", me.vehicleList[index]);
         me.driverList[index] = [];
         me.form.vehicleDrivers[index].driverCode = null;
       }
@@ -441,7 +447,7 @@ export default {
           //   e,
           //   index
           // );
-          console.log(me.driverList,me.form.vehicleDrivers[index].driverCode)
+          console.log(me.driverList, me.form.vehicleDrivers[index].driverCode);
           me.oldkey[index] = e;
         });
       }
@@ -523,7 +529,7 @@ export default {
     },
     //提交表单
     submitForm(formName) {
-      console.log('提交表单',this.form)
+      console.log("提交表单", this.form);
       const me = this;
       this.$refs[formName].validate((valid) => {
         if (valid) {

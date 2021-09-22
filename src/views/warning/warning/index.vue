@@ -70,11 +70,23 @@
                   row-key="id"
                   :table-columns-config="tableColumnsConfig"
                 >
-                  <template #warinigType="{ row }">
+                  <!-- <template #warinigType="{ row }">
                     {{ getWarinigTypeName(row.warinigType) }}
                   </template>
+                  <template #warningLevel="{ row }">
+                    {{ getWarningLevelName(row.warningLevel) }}
+                  </template> -->
                   <template #deviceType="{ row }">
                     {{ getDeviceTypeName(row.deviceType) }}
+                  </template>
+                  <template #handle="{ row }">
+                    <el-button
+                      size="mini"
+                      type="text"
+                      icon="el-icon-tickets"
+                      @click="toDetail(row)"
+                      >详情
+                    </el-button>
                   </template>
                 </RefactorTable>
                 <!-- 分页 -->
@@ -108,7 +120,7 @@ export default {
       orgCode: null, // 当前选中的类型
       defaultTreeProps: {
         children: "childrenOrgList",
-        label: "orgName",
+        label: "orgName"
       },
       orgTreeData: [],
       showSearch: true, //搜索显隐
@@ -121,29 +133,36 @@ export default {
         driver: "",
         deviceType: null,
         dateRange: [],
-        warningTypes: [],
+        warningTypes: []
       },
       deviceTypeList: [],
       warningTypeList: [],
+      warningLevelList: [],
       tabIndex: "1",
       warningTabs: [],
       tableColumnsConfig: [], //配置表头数据
-      total: 0,
+      total: 0
     };
   },
 
   computed: {},
+  watch: {
+    orgName(val) {
+      this.$refs.tree.filter(val);
+    },
+  },
 
   created() {
     this.deviceTypeList = warningConfig.deviceTypeList;
-    this.warningTypeList = warningConfig.warningTypeList;
-
+    // this.warningTypeList = warningConfig.warningTypeList;
+    this.warningLevelList = warningConfig.warningLevelList;
+    this.getWarningTypes();
     this.tableColumnsConfig = [
       ...warningConfig.vehicleColumn,
-      ...warningConfig.tableColumnsConfig,
+      ...warningConfig.tableColumnsConfig
     ];
     this.warningTabs = warningConfig.warningTabs;
-    this.warningDataReq();
+    // this.warningDataReq();
   },
 
   mounted() {
@@ -151,13 +170,14 @@ export default {
     
   },
 
+
   methods: {
     //请求组织树数据
     async getOrgHttp() {
       const obj = {
         moduleName: "http_org",
         method: "get",
-        url_alias: "orgTree",
+        url_alias: "orgTree"
       };
       if (this.orgName) obj.data = { orgName: this.orgName };
       const orgRes = await http_request(obj);
@@ -165,9 +185,10 @@ export default {
       this.orgTreeData =
         orgRes.data.length > 0 ? orgRes.data[0].childrenOrgList : [];
       if (!this.orgTreeData.length > 0) return;
-      this.currCode = this.orgTreeData[0].code;
-      console.log("当前code", this.currCode);
-      //     this.searchQuery();
+      this.orgCode = this.orgTreeData[0].code;
+      console.log("当前code", this.orgCode);
+
+      this.searchQuery();
     },
     //过滤节点
     filterNode(value, data) {
@@ -185,15 +206,37 @@ export default {
       console.log("update==>", list);
       this.warningTypeList = list;
       let warningTypes = [];
-      this.warningTypeList.map((item) => {
+      this.warningTypeList.map(item => {
         if (item.isChoose) {
-          warningTypes.push(item.warningType);
+          warningTypes.push(item.id);
         }
       });
       this.queryParams.warningTypes = warningTypes;
+      this.searchQuery();
+    },
+    //告警类型获取
+    async getWarningTypes() {
+      const obj = {
+        moduleName: "http_warning",
+        method: "get",
+        url_alias: "warningType_list",
+      };
+      const res = await http_request(obj);
+      console.log('告警类型列表', res);
+      let warningTypeList = [];
+      if (res.code === 200) {
+        let obj = {};
+        res.data.map(item => {
+          obj = item;
+          obj.isChoose = true;
+          warningTypeList.push(obj)
+        })
+        this.warningTypeList = warningTypeList;
+      }
     },
     //初始页数请求
     searchQuery() {
+      console.log(this.queryParams)
       this.queryParams.pageNum = 1;
       // this.queryParams.deviceType = this.queryParams.deviceType ? this.queryParams.deviceType : 0;
       if (this.tabIndex === "1") {
@@ -201,61 +244,97 @@ export default {
       } else {
         this.queryParams.vehicleCode = "";
       }
-      
+
       this.warningDataReq();
       // this.vehicleHttpReq();
     },
-    warningDataReq() {
-      let curPageNum = this.queryParams.pageNum;
-      let endIndex = this.queryParams.pageSize * curPageNum;
-      let startIndex = this.queryParams.pageSize * (curPageNum - 1);
-      this.total = warningConfig.mockData.length;
-      console.log(curPageNum)
-      this.warningData = warningConfig.mockData.slice(startIndex, endIndex);
-      
-      
-      console.log(this.warningData);
+    async warningDataReq() {
+      this.loading = true;
+      const tmp = {
+        start: this.queryParams.pageNum,
+        limit: this.queryParams.pageSize,
+        bigAlarmTime: (this.queryParams.dateRange && this.queryParams.dateRange[0]) || null,
+        endAlarmTime: (this.queryParams.dateRange && this.queryParams.dateRange[1]) || null,
+        alarmTypeInfoId: this.queryParams.warningTypes.join(',')
+      };
+      if (this.tabIndex === "1") {
+        tmp.dimensionType = "vehicle";
+        tmp.licenseNumber = this.queryParams.vehicleCode || null; //车牌号
+      } else {
+        tmp.dimensionType = "driver";
+        tmp.nickName = this.queryParams.driver; //司机姓名
+      }
+      const obj = {
+        moduleName: "http_warning",
+        method: "get",
+        url_alias: "warning_list",
+        data: tmp
+      };
+      console.log("告警参数", obj);
+      const res = await http_request(obj);
+      this.loading = false;
+      console.log("告警列表==>", res);
+      if (res.code === 200) {
+        this.total = res.data.total;
+        this.warningData = res.data.rows;
+        console.log(this.warningData);
+      }
     },
     //告警类型表格项
     getWarinigTypeName(warningType) {
       let warningName = "";
-      this.warningTypeList.map((item) => {
+      this.warningTypeList.map(item => {
         if (item.warningType === warningType) {
           warningName = item.warningName;
         }
       });
       return warningName;
     },
-    //告警类型
+    //设备类型
     getDeviceTypeName(deviceType) {
       let name = "";
-      this.deviceTypeList.map((item) => {
+      this.deviceTypeList.map(item => {
         if (item.value === deviceType) {
           name = item.label;
         }
       });
       return name;
     },
+    // 告警级别
+    getWarningLevelName(level) {
+      let levelName = "";
+      this.warningLevelList.map(item => {
+        if (item.level === level) {
+          levelName = item.name;
+        }
+      });
+      return levelName;
+    },
+    // 详情
+    toDetail(obj) {
+      this.$router.push("warningDetail?id=" + obj.id);
+      // this.$router.push("/warning/warning/warningDetail/" + obj.driver);
+    },
     //选项卡切换
     tabClick() {
       if (this.tabIndex === "1") {
         this.tableColumnsConfig = [
           ...warningConfig.vehicleColumn,
-          ...warningConfig.tableColumnsConfig,
+          ...warningConfig.tableColumnsConfig
         ];
       } else {
         this.tableColumnsConfig = [
           ...warningConfig.driverColumn,
-          ...warningConfig.tableColumnsConfig,
+          ...warningConfig.tableColumnsConfig
         ];
       }
       this.searchQuery();
       console.log(this.tableColumnsConfig);
-    },
-  },
+    }
+  }
 };
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .device-info {
   margin: 0 15px;
   @mixin box-shadow {

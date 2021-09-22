@@ -56,9 +56,9 @@ export default {
   },
 
   filters: {
-    priceFormat: (val) => {
-      return format.priceFormat(val, 0);
-    },
+    priceFormat: val => {
+      return format.priceFormat(val, 2);
+    }
   },
 
   computed: {},
@@ -115,7 +115,7 @@ export default {
   },
 };
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .device-info {
   margin: 0 15px;
   @mixin box-shadow {
@@ -140,6 +140,9 @@ export default {
     .device-info-right-bottom {
       @include box-shadow;
     }
+    .main-box {
+      padding: 10px 20px;
+    }
   }
 }
 .deviceInf-cion {
@@ -156,14 +159,14 @@ export default {
   font-size: 14px;
 }
 
-.top-title {
+.card-title {
   position: relative;
-  font-size: 20px;
+  font-size: 14px;
   font-weight: bold;
-  height: 40px;
+  height: 30px;
 }
 
-.top-title::before {
+.card-title::before {
   position: absolute;
   content: "";
   top: 1px;
@@ -174,24 +177,30 @@ export default {
 }
 
 .overview-box {
-  padding: 0 20px;
+  padding: 20px 20px 0;
   display: flex;
   align-items: center;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: bold;
 }
 
 .overview-box > div {
-  margin-right: 100px;
-  height: 100px;
+  margin-right: 200px;
+  height: 60px;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
 }
 
+.overview-box .overview-value,
+.overview-box span {
+  font-size: 14px;
+  font-weight: normal;
+}
+
 .btn-box {
-  padding: 40px 20px 10px;
+  padding: 20px 20px 10px;
   display: flex;
   align-items: center;
 }
@@ -204,7 +213,7 @@ export default {
 }
 
 .btn-box .as-btn {
-  width: 110px;
+  width: 80px;
   height: 36px;
   margin-right: 40px;
   line-height: 36px;

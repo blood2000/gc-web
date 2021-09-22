@@ -8,7 +8,7 @@
   >
     <el-form-item label="车牌号" prop="plateNumber	">
       <el-input
-        v-model="queryParams.plateNumber	"
+        v-model="queryParams.plateNumber"
         placeholder=" 请输入车牌号"
         clearable
         style="width: 185px"
@@ -59,6 +59,24 @@
       </el-select>
     </el-form-item>
 
+    <el-form-item label="在线状态" prop="onlineStatus">
+      <el-select
+        v-model="queryParams.onlineStatus"
+        clearable
+        filterable
+        style="width: 150px"
+        placeholder="请选择车辆状态"
+        @change="$emit('handleQuery')"
+      >
+        <el-option
+          v-for="(item, index) in onlineStatusList"
+          :key="index"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+    </el-form-item>
+
     <el-form-item label="设备号" prop="sn">
       <el-input
         v-model="queryParams.sn"
@@ -85,7 +103,7 @@
 </template>
 
 <script>
-import config from '../../../warning/warning/config';
+import { onlineStatusList, vehicleStatusList } from "../config";
 export default {
   props: {
     value: {
@@ -103,7 +121,8 @@ export default {
   },
   data() {
     return {
-      // 'projectList': []
+      vehicleStatusList,
+      onlineStatusList,
     };
   },
   computed: {
@@ -117,7 +136,7 @@ export default {
     },
   },
   mounted() {
-    // this.vehicleStatusList = 
+    // this.vehicleStatusList =
   },
   methods: {
     reset() {

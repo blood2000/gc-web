@@ -78,3 +78,24 @@ export const tableColumnsConfig = [
         width: 200
     },
 ]
+
+export const onlineStatusList = [
+    { label: '离线', value: '0' }, {
+        label: '在线', value: '1'
+    }
+]
+
+// 0 空闲 1 任务中 2 维修 3 保养
+export const vehicleStatusList = [
+    {
+        label: '空闲', value: '0'
+    }, {
+        label: '任务中', value: '1'
+    },
+    {
+        label: '维修', value: '2'
+    },
+    {
+        label: '保养', value: '3'
+    }
+]
