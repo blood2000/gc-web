@@ -179,6 +179,7 @@
 
     <!-- 调度指派 -->
 
+
     <!-- 轨迹回放 -->
     <TrackList
       v-if="headerTab === 3"
@@ -914,8 +915,8 @@ export default {
       const position = attribute.coordinate.value;
       const statusColor = onlineStatus === 1 ? 'green' : 'gray'; // 设备状态 0离线 1在线
       const contentValue = [];
-      if (speed.text) contentValue.push(speed.text);
-      if (direction.text) contentValue.push(direction.text);
+      if (speed.text) contentValue.push(speed.text + ' km/h');
+      if (direction.text) contentValue.push(direction.text + '°');
       // 绘制标记
       const styleObj = {
         content: '<div style="transform:rotate('+ ( direction.value || -30) +'deg)" class="own-device-marker-car '+ (carrier_type || 'qt') +'"></div>', 
@@ -1274,6 +1275,9 @@ export default {
           font-family: PingFang SC;
           font-weight: bold;
           line-height: 24px;
+          &.blue{
+            color: #4682FA;
+          }
           &.green{
             color: rgba(67, 185, 30, 1);
           }

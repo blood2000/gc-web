@@ -3,7 +3,10 @@
     <!-- 车辆信息 -->
     <div class="info-box info-car">
       <h5 class="info-box-title">车辆信息</h5>
-      <div class="info-box-status"><strong class="mr8">·</strong>行驶中</div>
+      <div class="info-box-status" :class="selectDictColor(vehicleStatusOptions, vehicleInfo.vehicleStatus)">
+        <strong class="mr8">·</strong>
+        {{ selectDictLabel(vehicleStatusOptions, vehicleInfo.vehicleStatus) }}
+      </div>
       <!-- content -->
       <div class="car-content ly-flex ly-flex-align-center">
         <img class="img-box" :src="require('@/assets/images/device/car_type_'+ (vehicleInfo.carrierType || 'qt') +'.png')">
@@ -14,6 +17,7 @@
               {{ vehicleInfo.driverName }}
               <span style="margin: 0 10px">|</span>
             </template>
+            <!-- 无数据 -->
             <template v-if="vehicleInfo.carrierTypeName">
               {{ vehicleInfo.carrierTypeName }}
             </template>
@@ -29,7 +33,7 @@
         </div>
       </div>
       <p class="address g-single-row">福建省福州市台江区东滨路1号富邦总部大楼</p>
-      <p class="time">2021-06-01 13:13:13</p>
+      <p class="time">{{ locationInfo.time ? locationInfo.time : '' }}</p>
     </div>
 
     <!-- 调度信息 -->
@@ -60,7 +64,7 @@
           <img src="~@/assets/images/device/device.png">
         </div>
         <div class="info-box ly-flex-1">
-          <h5>超好运小黑盒 | 便携款</h5>
+          <h5>{{ `${deviceInfo.modelName ? deviceInfo.modelName : ''} | ${deviceInfo.seriesName ? deviceInfo.seriesName : ''}` }}</h5>
           <p class="warn-text">
             今日告警
             <span class="count">5</span>
@@ -68,7 +72,11 @@
         </div>
       </div>
       <ul class="device-list ly-flex">
-        <li>
+        <li v-for="item in functionsInfo" :key="item.functionCode">
+          <img :src="item.functionIcon">
+          <p :title="item.functionName">{{ item.functionName }}</p>
+        </li>
+        <!-- <li>
           <img src="~@/assets/images/device/device_info_1.png">
           <p>车辆状态</p>
         </li>
@@ -95,10 +103,17 @@
         <li>
           <img src="~@/assets/images/device/device_info_7.png">
           <p>路线规划</p>
-        </li>
+        </li> -->
       </ul>
       <ul class="info-list ly-flex map-scroll-panel" :style="warnIsClose ? '' : 'height: calc(100% - 170px)'">
-        <li class="ly-flex ly-flex-align-center">
+        <li class="ly-flex ly-flex-align-center" v-for="item in attributesInfo" :key="item.attributeCode">
+          <img src="~@/assets/images/device/device_type_1.png">
+          <div>
+            <p class="label">{{ item.attributeLabel }}</p>
+            <p class="count" :style="`color:${item.attributeColor ? item.attributeColor : '#3D4050'}`"><span>{{ item.attributeText }}</span> {{ item.attributeUnit ? item.attributeUnit : '' }}</p>
+          </div>
+        </li>
+        <!-- <li class="ly-flex ly-flex-align-center">
           <img src="~@/assets/images/device/device_type_1.png">
           <div>
             <p class="label">时速</p>
@@ -146,7 +161,7 @@
             <p class="label">电瓶电压</p>
             <p class="count"><span>5000</span> V</p>
           </div>
-        </li>
+        </li> -->
       </ul>
     </div>
   </div>
@@ -166,7 +181,18 @@ export default {
     return {
       warnIsClose: false,
       // 车辆信息
-      vehicleInfo: {}
+      vehicleInfo: {},
+      locationInfo: {},
+      deviceInfo: {},
+      functionsInfo: [],
+      attributesInfo: [],
+      // 车辆状态字典
+      vehicleStatusOptions: [
+        { dictLabel: '空闲中', dictValue: 0, color: 'blue' },
+        { dictLabel: '任务中', dictValue: 1, color: 'green' },
+        { dictLabel: '维修', dictValue: 2, color: 'gray' },
+        { dictLabel: '保养', dictValue: 3, color: 'gray' }
+      ]
     }
   },
   watch: {
@@ -188,15 +214,32 @@ export default {
   methods: {
     // 获取车辆信息
     getVehicleInfo() {
+      const type = 'vehicle,location,device,function,attribute'; // 获取信息类型, 可指定多个
       const obj = {
         moduleName: 'http_map',
         method: 'get',
         url_alias: 'getVehicleInfo',
-        url_code: [this.vehicleCode]
+        url_code: [this.vehicleCode, type]
       }
       http_request(obj).then(res => {
-        this.vehicleInfo = res.data;
+        const { vehicle, location, device, functions, attributes } = res.data; 
+        this.vehicleInfo = vehicle || {};
+        this.locationInfo = location || {};
+        this.deviceInfo = device || {};
+        this.functionsInfo = functions || [];
+        this.attributesInfo = attributes || [];
       });
+    },
+    // 字典匹配颜色
+    selectDictColor(datas, value) {
+      var actions = [];
+      Object.keys(datas).some((key) => {
+        if (datas[key].dictValue == ('' + value)) {
+          actions.push(datas[key].color);
+          return true;
+        }
+      })
+      return actions.join('');
     }
   }
 }
@@ -234,7 +277,18 @@ export default {
       font-family: PingFang SC;
       font-weight: bold;
       line-height: 24px;
-      color: #43B91E;
+      &.blue{
+        color: #4682FA;
+      }
+      &.green{
+        color: rgba(67, 185, 30, 1);
+      }
+      &.red{
+        color: rgba(239, 105, 105, 1);
+      }
+      &.gray{
+        color: rgba(173, 181, 189, 1);
+      }
     }
 
     // 车辆信息
@@ -382,6 +436,8 @@ export default {
       }
       .device-list{
         padding-right: 10px;
+        height: 46px;
+        overflow: hidden;
         >li{
           text-align: center;
           width: 14.2%;
@@ -406,6 +462,7 @@ export default {
         flex-wrap: wrap;
         >li{
           width: 50%;
+          height: 44px;
           margin-bottom: 15px;
           &:last-child{
             margin-bottom: 6px;
