@@ -70,12 +70,12 @@
                   row-key="id"
                   :table-columns-config="tableColumnsConfig"
                 >
-                  <template #warinigType="{ row }">
+                  <!-- <template #warinigType="{ row }">
                     {{ getWarinigTypeName(row.warinigType) }}
                   </template>
                   <template #warningLevel="{ row }">
                     {{ getWarningLevelName(row.warningLevel) }}
-                  </template>
+                  </template> -->
                   <template #deviceType="{ row }">
                     {{ getDeviceTypeName(row.deviceType) }}
                   </template>
@@ -146,6 +146,11 @@ export default {
   },
 
   computed: {},
+  watch: {
+    orgName(val) {
+      this.$refs.tree.filter(val);
+    },
+  },
 
   created() {
     this.deviceTypeList = warningConfig.deviceTypeList;
@@ -163,6 +168,7 @@ export default {
     this.getOrgHttp();
   },
 
+
   methods: {
     //请求组织树数据
     async getOrgHttp() {
@@ -177,9 +183,9 @@ export default {
       this.orgTreeData =
         orgRes.data.length > 0 ? orgRes.data[0].childrenOrgList : [];
       if (!this.orgTreeData.length > 0) return;
-      this.currCode = this.orgTreeData[0].code;
-      console.log("当前code", this.currCode);
-      //     this.searchQuery();
+      this.orgCode = this.orgTreeData[0].code;
+      console.log("当前code", this.orgCode);
+      this.searchQuery();
     },
     //过滤节点
     filterNode(value, data) {
@@ -206,6 +212,7 @@ export default {
     },
     //初始页数请求
     searchQuery() {
+      console.log(this.queryParams)
       this.queryParams.pageNum = 1;
       // this.queryParams.deviceType = this.queryParams.deviceType ? this.queryParams.deviceType : 0;
       if (this.tabIndex === "1") {
@@ -217,15 +224,37 @@ export default {
       this.warningDataReq();
       // this.vehicleHttpReq();
     },
-    warningDataReq() {
-      let curPageNum = this.queryParams.pageNum;
-      let endIndex = this.queryParams.pageSize * curPageNum;
-      let startIndex = this.queryParams.pageSize * (curPageNum - 1);
-      this.total = warningConfig.mockData.length;
-      console.log(curPageNum);
-      this.warningData = warningConfig.mockData.slice(startIndex, endIndex);
-
-      console.log(this.warningData);
+    async warningDataReq() {
+      this.loading = true;
+      const tmp = {
+        start: this.queryParams.pageNum,
+        limit: this.queryParams.pageSize,
+        bigAlarmTime: (this.queryParams.dateRange && this.queryParams.dateRange[0]) || null,
+        endAlarmTime: (this.queryParams.dateRange && this.queryParams.dateRange[1]) || null,
+        
+      };
+      if (this.tabIndex === "1") {
+        tmp.dimensionType = "vehicle";
+        tmp.licenseNumber = this.queryParams.vehicleCode || null; //车牌号
+      } else {
+        tmp.dimensionType = "driver";
+        tmp.nickName = this.queryParams.driver; //司机姓名
+      }
+      const obj = {
+        moduleName: "http_warning",
+        method: "get",
+        url_alias: "warning_list",
+        data: tmp
+      };
+      console.log("告警参数", obj);
+      const res = await http_request(obj);
+      this.loading = false;
+      console.log("告警列表==>", res);
+      if (res.code === 200) {
+        this.total = res.data.total;
+        this.warningData = res.data.rows;
+        console.log(this.warningData);
+      }
     },
     //告警类型表格项
     getWarinigTypeName(warningType) {
@@ -259,7 +288,7 @@ export default {
     },
     // 详情
     toDetail(obj) {
-      this.$router.push("warningDetail?driver=" + obj.driver);
+      this.$router.push("warningDetail?id=" + obj.id);
       // this.$router.push("/warning/warning/warningDetail/" + obj.driver);
     },
     //选项卡切换

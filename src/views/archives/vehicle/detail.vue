@@ -196,29 +196,40 @@
         <el-card class="box-card detail-right">
           <div class="maps"></div>
           <div class="tables">
-            <div class="table-title">告警信息 {{warningInfo.length ? '(' + warningInfo.length + ')' : ''}}</div>
+            <div class="table-title">
+              告警信息
+              {{ warningInfo.length ? "(" + warningInfo.length + ")" : "" }}
+            </div>
             <RefactorTable
-                  :loading="loading"
-                  :data="warningInfo"
-                  row-key="id"
-                  :table-columns-config="warningInfoTableColumnsConfig"
-                >
-                  <template #warinigType="{ row }">
+              :loading="loading"
+              :data="warningInfo"
+              row-key="id"
+              :table-columns-config="warningInfoTableColumnsConfig"
+            >
+              <!-- <template #warinigType="{ row }">
                     {{ getWarinigTypeName(row.warinigType) }}
                   </template>
                   <template #warningLevel="{ row }">
                     {{ getWarningLevelName(row.warningLevel) }}
-                  </template>
-                  <template #handle="{ row }">
-                    <el-button
-                      size="mini"
-                      type="text"
-                      icon="el-icon-tickets"
-                      @click="toWarningDetail(row)"
-                      >详情
-                    </el-button>
-                  </template>
-                </RefactorTable>
+                  </template> -->
+              <template #handle="{ row }">
+                <el-button
+                  size="mini"
+                  type="text"
+                  icon="el-icon-tickets"
+                  @click="toWarningDetail(row)"
+                  >详情
+                </el-button>
+              </template>
+            </RefactorTable>
+            <!-- 分页 -->
+            <pagination
+              v-show="warningTotal > 0"
+              :total="warningTotal"
+              :page.sync="warningQuerys.pageNum"
+              :limit.sync="warningQuerys.pageSize"
+              @pagination="warningDataReq"
+            />
           </div>
         </el-card>
       </el-col>
@@ -237,15 +248,21 @@ export default {
       code: "",
       vehicleInfo: {},
       orgName: "",
-      warningInfo: [],
+      warningInfo: [],  //告警列表信息
+      warningTotal: 0,
+      warningQuerys: {   //告警查询参数
+        pageNum: 1,
+        pageSize: 10,
+      },
       warningInfoTableColumnsConfig: [],
       loading: false
     };
   },
   mounted() {
     this.getVehicleDetailHttp();
-    this.warningInfo = vehicleConfig.warningInfo;
-    this.warningInfoTableColumnsConfig = vehicleConfig.warningInfoTableColumnsConfig;
+
+    this.warningInfoTableColumnsConfig =
+      vehicleConfig.warningInfoTableColumnsConfig;
   },
   created() {},
   computed: {},
@@ -262,7 +279,7 @@ export default {
         moduleName: "http_org",
         method: "get",
         url_alias: "infoOrg",
-        url_code: [val],
+        url_code: [val]
       };
       const res = await http_request(obj);
       return res.data.orgName;
@@ -275,44 +292,56 @@ export default {
         moduleName: "http_vehicle",
         method: "get",
         url_alias: "vehicle_detail",
-        url_code: [me.code],
+        url_code: [me.code]
       };
-      http_request(obj).then((res) => {
+      http_request(obj).then(res => {
         console.log("getVehicleDetailHttp res", res);
         me.vehicleInfo = res.data;
-        me.returnOrgcode(me.vehicleInfo.orgCode).then((name) => {
+        me.returnOrgcode(me.vehicleInfo.orgCode).then(name => {
           console.log("name", name);
           me.orgName = name;
         });
+        console.log("vehicleInfo----", me.vehicleInfo);
+        this.getWarningInfo();
       });
     },
-    //告警类型表格项
-    getWarinigTypeName(warningType) {
-      let warningName = "";
-      vehicleConfig.warningTypeList.map(item => {
-        if (item.warningType === warningType) {
-          warningName = item.warningName;
-        }
-      });
-      return warningName;
+
+    getWarningInfo() {
+      this.warningQuerys.pageNum = 1;
+      this.warningDataReq();
     },
-    // 告警级别
-    getWarningLevelName(level) {
-      let levelName = "";
-      vehicleConfig.warningLevelList.map(item => {
-        if (item.level === level) {
-          levelName = item.name;
-        }
-      });
-      return levelName;
+    async warningDataReq() {
+      this.loading = true;
+      let tmp = {
+        start: this.warningQuerys.pageNum,
+        limit: this.warningQuerys.pageSize,
+        licenseNumber: this.vehicleInfo.vehicleLicenseInf.licenseNumber,
+        // licenseNumber: "闽A124QW",
+        dimensionType: 'vehicle'
+      };
+      const obj = {
+        moduleName: "http_warning",
+        method: "get",
+        url_alias: "warning_list",
+        data: tmp
+      };
+      const res = await http_request(obj);
+      this.loading = false;
+      console.log("告警列表==>", res);
+      // warningTotal
+      if (res.code === 200) {
+        this.warningTotal = res.data.total;
+        this.warningInfo = res.data.rows;
+        console.log(this.warningInfo);
+      }
     },
-    // 告警详情
+
     // 详情
     toWarningDetail(obj) {
-      this.$router.push("../../warning/warningDetail?driver=" + obj.driver);
+      this.$router.push("../../warning/warningDetail?id=" + obj.id);
       // this.$router.push({name: "warningDetail", params: {driver: obj.driver}});
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -323,8 +352,9 @@ export default {
   justify-content: flex-start;
   flex-wrap: wrap;
   div {
+    width: 50%;
     min-width: 80px;
-    margin-right: 20px;
+    // margin-right: 20px;
     margin-bottom: 20px;
   }
 }

@@ -147,14 +147,14 @@ const vehicleColumn = [
   {
     isShow: true,
     label: "车辆",
-    prop: "vehicle",
+    prop: "licenseNumber",
     sortNum: 1,
     tooltip: true
   },
   {
     isShow: true,
     label: "司机",
-    prop: "driver",
+    prop: "nickName",
     sortNum: 2,
     tooltip: true
   }
@@ -164,14 +164,14 @@ const driverColumn = [
   {
     isShow: true,
     label: "司机",
-    prop: "driver",
+    prop: "nickName",
     sortNum: 1,
     tooltip: true
   },
   {
     isShow: true,
     label: "车辆",
-    prop: "vehicle",
+    prop: "licenseNumber",
     sortNum: 2,
     tooltip: true
   }
@@ -181,7 +181,7 @@ const tableColumnsConfig = [
   {
     isShow: true,
     label: "告警类型",
-    prop: "warinigType",
+    prop: "alarmTypeName",
     sortNum: 3,
     tooltip: true,
     width: 100
@@ -189,7 +189,7 @@ const tableColumnsConfig = [
   {
     isShow: true,
     label: "告警级别",
-    prop: "warningLevel",
+    prop: "alarmLevel",
     sortNum: 4,
     tooltip: true,
     width: 80
@@ -213,7 +213,7 @@ const tableColumnsConfig = [
   {
     isShow: true,
     label: "上报时间",
-    prop: "upTime",
+    prop: "alarmTime",
     sortNum: 7,
     tooltip: true,
     width: 120
@@ -221,7 +221,7 @@ const tableColumnsConfig = [
   {
     isShow: true,
     label: "上报位置",
-    prop: "upAddr",
+    prop: "alarmAddress",
     sortNum: 8,
     tooltip: true,
     width: 200

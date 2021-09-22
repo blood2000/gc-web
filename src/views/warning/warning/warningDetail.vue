@@ -4,43 +4,41 @@
     <el-row :gutter="15">
       <el-col :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
         <div class="device-info-right">
-          <div class="device-info-right-top">
-            <div class="top-title">告警详情</div>
-          </div>
-          <div class="device-info-right-bottom">
+          <div class="device-info-right-bottom main-box">
+            <div class="card-title">告警详情</div>
             <div class="detail-item item-line">
               <div>
                 <span>告警类型:</span>
-                <span class="warning">{{ detail.warningTypeName }}</span>
+                <span class="warning">{{ detail.alarmTypeName || '-' }}</span>
               </div>
               <div>
                 <span>告警级别:</span>
-                <span class="warning">{{ detail.warningLevelName }}</span>
+                <span class="warning">{{ detail.alarmLevel || '-' }}</span>
               </div>
             </div>
             <div class="detail-item ">
               <span>驾驶司机:</span>
-              <span>{{ detail.driver }}</span>
+              <span>{{ detail.nickName }}</span>
             </div>
             <div class="detail-item ">
               <span>驾驶车辆:</span>
-              <span>{{ detail.vehicle }}</span>
+              <span>{{ detail.licenseNumber }}</span>
             </div>
             <div class="detail-item ">
               <span>时速:</span>
-              <span>{{ detail.speed }}km/h</span>
+              <span>{{ detail.speed || '-' }}km/h</span>
             </div>
             <div class="detail-item ">
               <span>告警地址:</span>
-              <span>{{ detail.upAddr }}</span>
+              <span>{{ detail.alarmAddress || '-' }}</span>
             </div>
             <div class="detail-item ">
               <span>告警时间:</span>
-              <span>{{ detail.upTime }}</span>
+              <span>{{ detail.alarmTime }}</span>
             </div>
-            <div class="video-box" >
+            <!-- <div class="video-box" >
               <div class="video-item" v-for="item in videoList" :key="item.id">视频{{item.id * 1 + 1}}</div>
-            </div>
+            </div> -->
           </div>
         </div>
       </el-col>
@@ -57,8 +55,9 @@ export default {
   data() {
     return {
       detail: {},
-      driver: "",
+      id: "",
       videoList: [],
+      loading: false
     };
   },
 
@@ -72,21 +71,24 @@ export default {
   },
 
   methods: {
-    getWarningDetail() {
+    async getWarningDetail() {
+      this.loading = true;
       let option = document.location.search.split("=")[1];
-      this.driver = decodeURIComponent(option);
+      this.id = option;
+      console.log(this.id)
       // this.driver = this.$router.param.driver;
-      let detail = {};
-      let list = warningConfig.mockData;
-      list.map(item => {
-        if (item.driver === this.driver) {
-          detail = item;
-        }
-      });
-      detail.warningTypeName = this.getWarinigTypeName(detail.warinigType);
-      detail.deviceTypeName = this.getDeviceTypeName(detail.deviceType);
-      detail.warningLevelName = this.getWarningLevelName(detail.warningLevel);
-      this.detail = detail;
+      const obj = {
+        moduleName: "http_warning",
+        method: "get",
+        url_alias: "warning_detail",
+        url_code: [this.id],
+      };
+      const res = await http_request(obj);
+      this.loading = false;
+      console.log('告警详情-->', res);
+      if (res.code === 200) {
+        this.detail = res.data;
+      }
       console.log(this.detail);
     },
     //告警类型
@@ -147,35 +149,49 @@ export default {
     .device-info-right-bottom {
       @include box-shadow;
     }
+    .main-box {
+      padding: 10px 20px;
+    }
   }
 }
-.top-title {
+.card-title {
   position: relative;
-  font-size: 20px;
+  font-size: 14px;
   font-weight: bold;
-  height: 40px;
+  height: 30px;
 }
 
-.top-title::before {
+.card-title::before {
   position: absolute;
   content: "";
-  top: 1px;
-  left: -15px;
-  height: 26px;
-  width: 5px;
+  top: 2px;
+  left: -10px;
   background: #1890ff;
+  width: 2px;
+  height: 16px;
+  border-radius: 2px;
+}
+
+.card-title::after {
+    content: '';
+    height: 1px;
+    position: absolute;
+    left: -20px;
+    right: -20px;
+    bottom: 0;
+    background: #F3F3F3;
 }
 
 .detail-item {
   height: 50px;
   line-height: 50px;
   color: #666;
-  font-size: 16px;
+  font-size: 14px;
 }
 
-.detail-item > span:first-child,
-.item-line > div > span:first-child {
-  padding-right: 5px;
+.detail-item > span:last-child,
+.item-line > div > span:last-child {
+  padding-left: 5px;
   font-weight: bold;
 }
 
@@ -197,13 +213,13 @@ export default {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  justify-content: space-between;
+  // justify-content: space-between;
 }
 
 .video-item {
-  width: 420px;
-  height: 260px;
-  line-height: 258px;
+  width: 320px;
+  height: 180px;
+  line-height: 178px;
   text-align: center;
   margin: 0 10px 10px;
   font-size: 24px;
