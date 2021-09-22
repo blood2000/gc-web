@@ -2,20 +2,17 @@
 <template>
   <div class="device-info">
     <div class="device-info-right">
-      <div class="device-info-right-top" v-show="showSearch">
-        <!-- 我的账户 -->
-        <div class="top-title">我的账户</div>
-      </div>
-      <div class="device-info-right-bottom">
+      <div class="device-info-right-bottom main-box">
+        <div class="card-title">我的账户</div>
         <div class="overview-box">
           <div>
-            <div>{{ pageData.amount | priceFormat }}</div>
-            <div>余额</div>
+            <div>{{ pageData.amount | priceFormat }} <span>元</span></div>
+            <div class="overview-value">余额</div>
           </div>
 
           <div>
-            <div>{{ pageData.isWithdrawing | priceFormat }}</div>
-            <div>提现处理中金额</div>
+            <div>{{ pageData.isWithdrawing | priceFormat }} <span>元</span></div>
+            <div class="overview-value">提现处理中金额</div>
           </div>
         </div>
         <div class="btn-box">
@@ -169,11 +166,22 @@ export default {
 .card-title::before {
   position: absolute;
   content: "";
-  top: 1px;
-  left: -15px;
-  height: 26px;
-  width: 5px;
+  top: 2px;
+  left: -10px;
   background: #1890ff;
+  width: 2px;
+  height: 16px;
+  border-radius: 2px;
+}
+
+.card-title::after {
+    content: '';
+    height: 1px;
+    position: absolute;
+    left: -20px;
+    right: -20px;
+    bottom: 0;
+    background: #F3F3F3;
 }
 
 .overview-box {
@@ -206,7 +214,7 @@ export default {
 }
 
 .btn-box > div {
-  font-size: 16px;
+  font-size: 14px;
   color: #169bd5;
   cursor: pointer;
   margin-right: 30px;
