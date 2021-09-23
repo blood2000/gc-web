@@ -230,8 +230,27 @@ export default {
           cursor: default;
           padding: 12px 14px;
           overflow: hidden;
+          position: relative;
           &.active{
-            background: linear-gradient(90deg, rgba(239, 105, 105, 0.16) 0%, rgba(239, 105, 105, 0) 100%);
+            &::before{
+              content: '';
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              background: linear-gradient(90deg, rgba(239, 105, 105, 0.16) 0%, rgba(239, 105, 105, 0) 100%);
+              z-index: 0;
+              animation: show-linear 1s;
+              @keyframes show-linear {
+                0% {
+                  width: 0;
+                }
+                100%{
+                  width: 100%;
+                }
+              }
+            }
           }
           >h5{
             font-size: 20px;
@@ -239,6 +258,8 @@ export default {
             font-weight: bold;
             line-height: 24px;
             color: #3D4050;
+            position: relative;
+            z-index: 1;
           }
           .label{
             font-size: 14px;
@@ -246,6 +267,8 @@ export default {
             font-weight: 400;
             line-height: 26px;
             color: #A6A8AD;
+            position: relative;
+            z-index: 1;
           }
           .address{
             font-size: 14px;
@@ -253,6 +276,8 @@ export default {
             font-weight: bold;
             line-height: 20px;
             color: #3D4050;
+            position: relative;
+            z-index: 1;
           }
           .center-box{
             font-size: 12px;
@@ -261,6 +286,8 @@ export default {
             line-height: 24px;
             color: #3D4050;
             padding-right: 10px;
+            position: relative;
+            z-index: 1;
             img{
               width: 30px;
               height: 30px;
@@ -286,9 +313,6 @@ export default {
           cursor: pointer;
           padding: 6px 15px 12px;
           overflow: hidden;
-          &.active{
-            
-          }
           .label{
             font-size: 14px;
             font-family: PingFang SC;
@@ -329,7 +353,7 @@ export default {
             height: 68px;
             background: #EDF1F3;
             border-radius: 5px;
-            padding: 10px 12px;
+            padding: 10px 2px 10px 12px;
             margin-bottom: 6px;
             overflow: hidden;
             >div{
