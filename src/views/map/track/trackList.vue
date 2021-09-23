@@ -17,7 +17,11 @@
           @change="dateChoose"
         />
       </div>
-      <div class="form-item" style="text-align: right;">
+      <div class="form-item ly-flex ly-flex-pack-justify ly-flex-align-center">
+        <!-- 快捷选项 -->
+        <ul class="quick-time-group ly-flex ly-flex-pack-start">
+          <li v-for="item in timeGroup" :key="item.code+''" :class="{active: activeTime === item.code}" @click="chooseTimeGroup(item.code)">{{ item.label }}</li>
+        </ul>
         <el-button type="primary" size="mini" :loading="buttonLoading" @click="getJimi">查 询</el-button>
       </div>
       <!-- 播放器 -->
@@ -123,6 +127,13 @@ export default {
   },
   data() {
     return {
+      // 快捷选项时间
+      activeTime: 0,
+      timeGroup: [
+        { code: 0, label: '今日' },
+        { code: 1, label: '昨日' },
+        { code: 2, label: '前日' }
+      ],
       // jimi查询参数
       rangeTime: [],
       jimiQueryParams: {
@@ -161,14 +172,45 @@ export default {
   },
   mounted() {
     // 时间默认选中当天
-    this.rangeTime = [this.parseTime(new Date(), '{y}-{m}-{d}') + ' 00:00:00', this.parseTime(new Date())]
-    this.jimiQueryParams.startTime = this.parseTime(new Date(), '{y}-{m}-{d}') + ' 00:00:00';
-    this.jimiQueryParams.endTime = this.parseTime(new Date());
+    const startTime = this.parseTime(new Date(), '{y}-{m}-{d} 00:00:00');
+    const endTime = this.parseTime(new Date());
+    this.setTimeValue(startTime, endTime);
     // 假数据
     this.trackList = [{list: [{},{},{},{}]}, {list: [{},{}]}, {list: [{}]}];
     this.parkingList = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
   },
   methods: {
+    /** 快捷时间选中 */
+    chooseTimeGroup(code) {
+      this.activeTime = code;
+      let startTime, endTime;
+      switch (code) {
+        case 0:
+          // 今日
+          startTime = this.parseTime(new Date(), '{y}-{m}-{d} 00:00:00');
+          endTime = this.parseTime(new Date());
+          break;
+        case 1:
+          // 昨日
+          startTime = this.parseTime(new Date().getTime() - 3600 * 1000 * 24 * 1, '{y}-{m}-{d} 00:00:00');
+          endTime = this.parseTime(new Date().getTime() - 3600 * 1000 * 24 * 1, '{y}-{m}-{d} 23:59:59');
+          break;
+        case 2:
+          // 前日
+          startTime = this.parseTime(new Date().getTime() - 3600 * 1000 * 24 * 2, '{y}-{m}-{d} 00:00:00');
+          endTime = this.parseTime(new Date().getTime() - 3600 * 1000 * 24 * 2, '{y}-{m}-{d} 23:59:59');
+          break;
+        default:
+          break;
+      };
+      this.setTimeValue(startTime, endTime);
+    },
+    /** 时间赋值 */
+    setTimeValue(startTime, endTime) {
+      this.rangeTime = [startTime, endTime];
+      this.jimiQueryParams.startTime = startTime;
+      this.jimiQueryParams.endTime = endTime;
+    },
     /** 选择日期 */
     dateChoose(date) {
       if (date) {
@@ -359,16 +401,34 @@ export default {
     .form-item{
       margin-bottom: 12px;
     }
+    // 快捷选项
+    .quick-time-group{
+      >li{
+        cursor: pointer;
+        // width: 88px;
+        width: 70px;
+        height: 28px;
+        border: 1px solid #E4ECF4;
+        border-radius: 4px;
+        margin-right: 12px;
+        font-size: 14px;
+        font-family: PingFang SC;
+        font-weight: 400;
+        line-height: 26px;
+        color: #3D4050;
+        text-align: center;
+        &.active{
+          background: #4682FA;
+          border: 1px solid #4682FA;
+          color: #fff;
+        }
+      }
+    }
     // 进度条样式
     .device-slide-box{
       padding: 0 2px;
-      ::v-deep.el-slider{
-        ::v-deep.el-slider__button{
-          width: 16px;
-          height: 8px;
-          border: none;
-          box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.19);
-        }
+      ::v-deep.el-slider__bar{
+        background: #4682FA;
       }
     }
     // 播放器样式
@@ -620,6 +680,20 @@ export default {
     }
     .el-range-separator{
       padding: 0;
+    }
+
+    // 进度条样式
+    .device-slide-box{
+      .el-slider__runway{
+        background: #ECEFF6;
+      }
+      .el-slider__button{
+        width: 26px;
+        height: 18px;
+        border: none;
+        background: url('~@/assets/images/device/slide_icon.png') no-repeat;
+        background-size: 26px 18px;
+      }
     }
   }
 }
