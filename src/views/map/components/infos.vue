@@ -13,18 +13,12 @@
         <div class="info-box ly-flex-1">
           <h5>{{ vehicleInfo.plateNumber }}</h5>
           <p class="car-name">
-            <template v-if="vehicleInfo.driverName">
-              {{ vehicleInfo.driverName }}
-              <span style="margin: 0 10px">|</span>
-            </template>
+            {{ vehicleInfo.driverName ? vehicleInfo.driverName : '暂无' }}
+            <span style="margin: 0 10px">|</span>
             <!-- 无数据 -->
-            <template v-if="vehicleInfo.carrierTypeName">
-              {{ vehicleInfo.carrierTypeName }}
-            </template>
-            <template v-if="vehicleInfo.orgName">
-              <span style="margin: 0 10px">|</span>
-              {{ vehicleInfo.orgName }}
-            </template>
+            {{ vehicleInfo.carrierTypeName ? vehicleInfo.carrierTypeName : '暂无' }}
+            <span style="margin: 0 10px">|</span>
+            {{ vehicleInfo.orgName ? vehicleInfo.orgName : '暂无' }}
           </p>
           <p class="car-type">
             <span class="label">车辆类型</span>
@@ -64,7 +58,7 @@
           <img src="~@/assets/images/device/device.png">
         </div>
         <div class="info-box ly-flex-1">
-          <h5>{{ `${deviceInfo.modelName ? deviceInfo.modelName : ''} | ${deviceInfo.seriesName ? deviceInfo.seriesName : ''}` }}</h5>
+          <h5 class="g-single-row">{{ `${deviceInfo.modelName ? deviceInfo.modelName : ''} | ${deviceInfo.seriesName ? deviceInfo.seriesName : ''}` }}</h5>
           <p class="warn-text">
             今日告警
             <span class="count">{{ warnCount }}</span>
@@ -357,7 +351,7 @@ export default {
     &.info-device{
       padding-right: 0;
       min-height: 300px;
-      max-height: 440px;
+      max-height: 484px;
       .device-content{
         padding: 8px 12px 0 0;
         >.img-box{
@@ -371,6 +365,7 @@ export default {
         }
         >.info-box{
           padding-bottom: 15px;
+          width: 270px;
           @mixin font{
             font-size: 16px;
             font-family: PingFang SC;

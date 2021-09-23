@@ -6,7 +6,7 @@
     </ul>
 
     <div class="map-warning-table__content ly-flex-pack-justify">
-      <ul v-show="!isClose" class="warning-list ly-flex-pack-justify">
+      <ul v-show="!isClose" class="warning-list map-scroll-panel ly-flex-pack-justify">
         <!-- 实时报警 -->
         <template v-if="activeTab === '1'">
           <li class="warning-list-li" v-for="(item, index) in dataList" :key="index">
@@ -197,16 +197,21 @@ export default {
     background: rgba(255, 255, 255, 0.72);
     border-radius: 8px;
     z-index: 1;
-    padding: 20px 12px 12px 2px;
+    padding: 20px 12px 6px 12px;
     overflow: hidden;
     >.warning-list{
       width: calc(100% - 84px);
       height: 100%;
+      overflow-x: scroll;
       >.warning-list-li{
         width: 20%;
+        min-width: 270px;
         height: 100%;
         position: relative;
         padding: 0 10px;
+        &:first-child{
+          padding-left: 0px;
+        }
         &::after{
           content: '';
           right: 0;
@@ -271,15 +276,15 @@ export default {
       }
       >.warning-list-adas{
         width: 25%;
+        min-width: 354px;
         height: 100%;
         position: relative;
-        padding: 0 4px;
         // 告警卡片样式2
         .warning-card{
           height: 100%;
           border-radius: 6px;
           cursor: pointer;
-          padding: 6px 14px 12px;
+          padding: 6px 15px 12px;
           overflow: hidden;
           &.active{
             
