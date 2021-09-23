@@ -136,6 +136,10 @@ export default {
       // 当前轨迹点时间速度
       currentTrackTime: null,
       currentTrackSpeed: null,
+      // 当前轨迹总里程
+      currentTrackAllMileage: null,
+      // 当前轨迹总时间
+      currentTrackAllTime: null,
       // 播放进度条
       slideValue: 0,
       rateTime: 1,
@@ -241,6 +245,16 @@ export default {
           } else {
             this.msgInfo('暂无轨迹信息');
           }
+          // 设置当前轨迹总时间、总里程
+          if (this.jmTracklist.length >= 2) {
+            const startTime = this.jmTrackInfolist[0].gpsTime;
+            const endTime = this.jmTrackInfolist[this.jmTrackInfolist.length - 1].gpsTime;
+            const startMileage = Number(this.jmTrackInfolist[0].mileage || 0);
+            const endMileage = Number(this.jmTrackInfolist[this.jmTrackInfolist.length - 1].mileage || 0);
+            this.setCurrentTrackAllTimeAndMileage(this.getRemainderTime(startTime, endTime), endMileage - startMileage);
+          } else {
+            this.setCurrentTrackAllTimeAndMileage(0, 0);
+          }
         }
       }).catch(() => {
         this.buttonLoading = false;
@@ -258,6 +272,11 @@ export default {
     setCurrentTrackTimeAndSpeed(index) {
       this.currentTrackTime = this.jmTrackInfolist[index].gpsTime;
       this.currentTrackSpeed = this.jmTrackInfolist[index].gpsSpeed;
+    },
+    /** 设置当前轨迹总时间、总里程 */
+    setCurrentTrackAllTimeAndMileage(time, mileage) {
+      this.currentTrackAllTime = time;
+      this.currentTrackAllMileage = mileage;
     },
     /** 设置进度条值 */
     setSlideValue(value) {
@@ -287,6 +306,31 @@ export default {
       if (this.currentTab === code) return;
       this.currentTab = code;
     },
+    /** 获取相隔时间 */
+    getRemainderTime (s1, s2){
+      s1 = new Date(s1).getTime();
+      s2 = new Date(s2).getTime();
+      let runTime = parseInt((s2 - s1) / 1000);
+      const year = Math.floor(runTime / 86400 / 365);
+      runTime = runTime % (86400 * 365);
+      const month = Math.floor(runTime / 86400 / 30);
+      runTime = runTime % (86400 * 30);
+      const day = Math.floor(runTime / 86400);
+      runTime = runTime % 86400;
+      const hour = Math.floor(runTime / 3600);
+      runTime = runTime % 3600;
+      const minute = Math.floor(runTime / 60);
+      runTime = runTime % 60;
+      const second = runTime;
+      let result = '';
+      if (year) result += (year + '年');
+      if (month) result += (month + '月');
+      if (day) result += (day + '天');
+      if (hour) result += (hour + '小时');
+      if (minute) result += (minute + '分钟');
+      if (second) result += (second + '秒');
+    　return result;
+    }
   }
 }
 </script>
@@ -332,7 +376,8 @@ export default {
       padding: 0 2px 8px;
       .time-select ::v-deep.el-input__inner{
         border-radius: 16px;
-        color: #ADB5BD;
+        color: #3d4050;
+        border-color: #C9CFDB;
       }
       .play-button{
         width: 36px;
@@ -352,13 +397,13 @@ export default {
         width: 68px;
         height: 28px;
         line-height: 26px;
-        border: 1px solid #DCDFE6;
+        border: 1px solid #C9CFDB;
         opacity: 1;
         border-radius: 16px;
         font-size: 13px;
         font-family: PingFang SC;
         font-weight: 400;
-        color: #ADB5BD;
+        color: #3d4050;
         text-align: center;
         cursor: pointer;
         >i{

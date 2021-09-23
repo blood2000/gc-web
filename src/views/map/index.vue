@@ -313,7 +313,15 @@ export default {
       // 巡航终点
       endMarker: null,
       // 地图点位集合
-      markerList: {}
+      markerList: {},
+      // 不同承运类型车辆图片大小不同所以点位偏移不同
+      offsetList: {
+        'ztc': [-17, -38],
+        'jbc': [-17, -40],
+        'llc': [-14, -31],
+        'phc': [-15, -39],
+        'qt': [-15, -39]
+      }
     }
   },
   watch: {
@@ -536,15 +544,15 @@ export default {
           renderOptions: {
             // 轨迹线的样式
             pathLineStyle: {
-              strokeStyle: '#28F',
+              strokeStyle: '#4682FA',
               lineWidth: 8,
-              dirArrowStyle: true
+              dirArrowStyle: false
             },
             pathLineHoverStyle: null,
             pathLineSelectedStyle: {
-              strokeStyle: '#28F',
+              strokeStyle: '#4682FA',
               lineWidth: 8,
-              dirArrowStyle: true
+              dirArrowStyle: false
             },
             renderAllPointsIfNumberBelow: -1 // 绘制路线节点，如不需要可设置为-1
           }
@@ -577,7 +585,7 @@ export default {
             // 经过路径的样式
             pathLinePassedStyle: {
               lineWidth: 8,
-              strokeStyle: '#AF5',
+              strokeStyle: '#4682FA',
               dirArrowStyle: true
             }
           }
@@ -921,7 +929,7 @@ export default {
       // 绘制标记
       const styleObj = {
         content: '<div style="transform:rotate('+ ( direction.value || -30) +'deg)" class="own-device-marker-car '+ (carrier_type || 'qt') +'"></div>', 
-        offset: [0, 0], 
+        offset: this.offsetList[(carrier_type || 'qt')], 
         angle: 0
       }
       const marker = this.drawMarker(position, styleObj);

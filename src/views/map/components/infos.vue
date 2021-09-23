@@ -39,18 +39,18 @@
     <!-- 调度信息 -->
     <div class="info-box info-dispatch">
       <h5 class="info-box-title">调度信息</h5>
-      <div class="info-box-status"><strong class="mr8">·</strong>任务中</div>
+      <div class="info-box-status green" v-if="dispatchInfo.loadFormattedAddress"><strong class="mr8">·</strong>运输中</div>
       <!-- content -->
       <div class="address-node">
         <p class="g-single-row">
           <span class="start">起</span>
-          福建省福州市台江区东滨路1号富邦总部大楼
+          {{ dispatchInfo.loadFormattedAddress ? dispatchInfo.loadFormattedAddress : '暂无' }}
         </p>
       </div>
       <div class="address-node">
         <p class="g-single-row">
           <span class="end">终</span>
-          福建省福州市台江区东滨路1号富邦总部大楼
+          {{ dispatchInfo.unloadFormattedAddress ? dispatchInfo.unloadFormattedAddress : '暂无' }}
         </p>
       </div>
     </div>
@@ -67,7 +67,7 @@
           <h5>{{ `${deviceInfo.modelName ? deviceInfo.modelName : ''} | ${deviceInfo.seriesName ? deviceInfo.seriesName : ''}` }}</h5>
           <p class="warn-text">
             今日告警
-            <span class="count">5</span>
+            <span class="count">{{ warnCount }}</span>
           </p>
         </div>
       </div>
@@ -111,6 +111,8 @@ export default {
       deviceInfo: {},
       functionsInfo: [],
       attributesInfo: [],
+      dispatchInfo: {},
+      warnCount: 0,
       // 车辆状态字典
       vehicleStatusOptions: [
         { dictLabel: '空闲中', dictValue: 0, color: 'blue' },
@@ -125,6 +127,8 @@ export default {
       handler(val) {
         if (val) {
           this.getVehicleInfo();
+          this.getDispatchInfo();
+          this.getWarnCount();
         }
       },
       immediate: true
@@ -159,6 +163,33 @@ export default {
             this.$set(this.locationInfo, 'address', result);
           });
         }
+      });
+    },
+    // 获取调度信息
+    getDispatchInfo() {
+      const obj = {
+        moduleName: 'http_map',
+        method: 'get',
+        url_alias: 'getAppointCarOrderIng',
+        url_code: [this.vehicleCode]
+      }
+      http_request(obj).then(res => {
+        const { addressInfo } = res.data;
+        this.dispatchInfo = addressInfo || {};
+      });
+    },
+    // 获取告警条数
+    getWarnCount() {
+      const obj = {
+        moduleName: 'http_map',
+        method: 'get',
+        url_alias: 'getWarnCount',
+        data: {
+          vehicleCode: this.vehicleCode
+        }
+      }
+      http_request(obj).then(res => {
+        this.warnCount = res.data || 0;
       });
     },
     // 字典匹配颜色

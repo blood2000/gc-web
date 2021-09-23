@@ -70,7 +70,7 @@
           </li>
         </template>
       </ul>
-      <div class="more-button ly-flex-v ly-flex-pack-center ly-flex-align-center">
+      <div class="more-button ly-flex-v ly-flex-pack-center ly-flex-align-center" @click="handleMore">
         <img src="@/assets/images/device/icon_more.png">
         查看更多
       </div>
@@ -145,6 +145,10 @@ export default {
     /** 查看告警详情 */
     handleDetail(row) {
       this.detailOpen = true;
+    },
+    /** 查看更多 */
+    handleMore() {
+      this.$router.push('/warning/warning');
     }
   }
 }
