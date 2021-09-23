@@ -19,7 +19,7 @@
                   <p class="g-single-row text">车道偏离</p>
                 </div>
                 <div class="ly-flex-v ly-flex-align-center">
-                  <img src="~@/assets/images/device/warn_icon_2.png">
+                  <img src="~@/assets/images/device/warn_label_1.png">
                   <p class="g-single-row text">一级告警</p>
                 </div>
                 <div class="ly-flex-v ly-flex-align-center">
@@ -42,8 +42,8 @@
                   <p class="g-single-row text">车道偏离</p>
                 </div>
                 <div class="ly-flex-v ly-flex-align-center">
-                  <img src="~@/assets/images/device/warn_icon_2.png">
-                  <p class="g-single-row text">一级告警</p>
+                  <img src="~@/assets/images/device/warn_label_2.png">
+                  <p class="g-single-row text">二级告警</p>
                 </div>
                 <div class="ly-flex-v">
                   <p class="g-single-row count">53</p>
@@ -77,7 +77,7 @@
     </div>
 
     <!-- 收起按钮 -->
-    <img class="map-warning-table__pull" src="~@/assets/images/device/icon_pull.png" @click="handlePull">
+    <img class="map-warning-table__pull" :src="require(`@/assets/images/device/icon_pull${isClose ? '_rotate' : ''}.png`)" @click="handlePull">
 
     <!-- 轨迹详情 -->
     <WarnDetail

@@ -246,8 +246,8 @@ export default {
       vehicleStatusOptions: [
         { dictLabel: '空闲中', dictValue: 0, color: 'blue' },
         { dictLabel: '任务中', dictValue: 1, color: 'green' },
-        { dictLabel: '维修', dictValue: 2, color: 'gray' },
-        { dictLabel: '保养', dictValue: 3, color: 'gray' }
+        { dictLabel: '维修中', dictValue: 2, color: 'red' },
+        { dictLabel: '保养中', dictValue: 3, color: 'yellow' }
       ],
       // 车树
       vehicleTreeOptions: undefined,
@@ -435,9 +435,10 @@ export default {
      * @param {Array} position 经纬度必传
      *  */
     getAddressBylnglat(position) {
+      const _this = this;
       return new Promise((resolve, reject) => {
         let address;
-        geocoder.getAddress(position, function(status, result) {
+        _this.geocoder.getAddress(position, function(status, result) {
           if (status === 'complete' && result.info === 'OK') {
             if (result && result.regeocode) {
               const { formattedAddress } = result.regeocode;
@@ -1484,6 +1485,14 @@ export default {
       &.blue{
         color: #4682FA;  
         background: #E5ECF6;
+      }
+      &.red{
+        color: #EF6969;  
+        background: #FFEEEE;
+      }
+      &.yellow{
+        color: #FFBC00;  
+        background: rgba(255, 188, 0, 0.09);
       }
     }
   }

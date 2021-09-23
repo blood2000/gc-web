@@ -32,7 +32,7 @@
           </p>
         </div>
       </div>
-      <p class="address g-single-row">福建省福州市台江区东滨路1号富邦总部大楼</p>
+      <p class="address g-single-row">{{ locationInfo.address ? locationInfo.address : '' }}</p>
       <p class="time">{{ locationInfo.time ? locationInfo.time : '' }}</p>
     </div>
 
@@ -76,92 +76,17 @@
           <img :src="item.functionIcon">
           <p :title="item.functionName">{{ item.functionName }}</p>
         </li>
-        <!-- <li>
-          <img src="~@/assets/images/device/device_info_1.png">
-          <p>车辆状态</p>
-        </li>
-        <li>
-          <img src="~@/assets/images/device/device_info_2.png">
-          <p>实时告警</p>
-        </li>
-        <li>
-          <img src="~@/assets/images/device/device_info_3.png">
-          <p>轨迹</p>
-        </li>
-        <li>
-          <img src="~@/assets/images/device/device_info_4.png">
-          <p>四重定位</p>
-        </li>
-        <li>
-          <img src="~@/assets/images/device/device_info_5.png">
-          <p>里程统计</p>
-        </li>
-        <li>
-          <img src="~@/assets/images/device/device_info_6.png">
-          <p>电子围栏</p>
-        </li>
-        <li>
-          <img src="~@/assets/images/device/device_info_7.png">
-          <p>路线规划</p>
-        </li> -->
       </ul>
       <ul class="info-list ly-flex map-scroll-panel" :style="warnIsClose ? '' : 'height: calc(100% - 170px)'">
         <li class="ly-flex ly-flex-align-center" v-for="item in attributesInfo" :key="item.attributeCode">
-          <img src="~@/assets/images/device/device_type_1.png">
+          <div class="img-box ly-flex-align-center ly-flex-pack-center">
+            <img :src="item.attributeIcon">
+          </div>
           <div>
             <p class="label">{{ item.attributeLabel }}</p>
             <p class="count" :style="`color:${item.attributeColor ? item.attributeColor : '#3D4050'}`"><span>{{ item.attributeText }}</span> {{ item.attributeUnit ? item.attributeUnit : '' }}</p>
           </div>
         </li>
-        <!-- <li class="ly-flex ly-flex-align-center">
-          <img src="~@/assets/images/device/device_type_1.png">
-          <div>
-            <p class="label">时速</p>
-            <p class="count"><span>80</span> km/h</p>
-          </div>
-        </li>
-        <li class="ly-flex ly-flex-align-center">
-          <img src="~@/assets/images/device/device_type_2.png">
-          <div>
-            <p class="label">设备状态</p>
-            <p class="text green">设备在线</p>
-          </div>
-        </li>
-        <li class="ly-flex ly-flex-align-center">
-          <img src="~@/assets/images/device/device_type_3.png">
-          <div>
-            <p class="label">总里程</p>
-            <p class="count"><span>2000</span> km</p>
-          </div>
-        </li>
-        <li class="ly-flex ly-flex-align-center">
-          <img src="~@/assets/images/device/device_type_4.png">
-          <div>
-            <p class="label">日里程</p>
-            <p class="count"><span>300</span> km</p>
-          </div>
-        </li>
-        <li class="ly-flex ly-flex-align-center">
-          <img src="~@/assets/images/device/device_type_5.png">
-          <div>
-            <p class="label">设备电量</p>
-            <p class="text red">低电量</p>
-          </div>
-        </li>
-        <li class="ly-flex ly-flex-align-center">
-          <img src="~@/assets/images/device/device_type_6.png">
-          <div>
-            <p class="label">Acc状态</p>
-            <p class="text">点火</p>
-          </div>
-        </li>
-        <li class="ly-flex ly-flex-align-center">
-          <img src="~@/assets/images/device/device_type_7.png">
-          <div>
-            <p class="label">电瓶电压</p>
-            <p class="count"><span>5000</span> V</p>
-          </div>
-        </li> -->
       </ul>
     </div>
   </div>
@@ -190,8 +115,8 @@ export default {
       vehicleStatusOptions: [
         { dictLabel: '空闲中', dictValue: 0, color: 'blue' },
         { dictLabel: '任务中', dictValue: 1, color: 'green' },
-        { dictLabel: '维修', dictValue: 2, color: 'gray' },
-        { dictLabel: '保养', dictValue: 3, color: 'gray' }
+        { dictLabel: '维修中', dictValue: 2, color: 'red' },
+        { dictLabel: '保养中', dictValue: 3, color: 'yellow' }
       ]
     }
   },
@@ -228,6 +153,12 @@ export default {
         this.deviceInfo = device || {};
         this.functionsInfo = functions || [];
         this.attributesInfo = attributes || [];
+        // 根据经纬度获取点位
+        if (this.locationInfo && this.locationInfo.lng && this.locationInfo.lat) {
+          this.$parent.getAddressBylnglat([this.locationInfo.lng, this.locationInfo.lat]).then(result => {
+            this.$set(this.locationInfo, 'address', result);
+          });
+        }
       });
     },
     // 字典匹配颜色
@@ -277,17 +208,17 @@ export default {
       font-family: PingFang SC;
       font-weight: bold;
       line-height: 24px;
-      &.blue{
-        color: #4682FA;
-      }
       &.green{
-        color: rgba(67, 185, 30, 1);
+        color: #43B91E;
+      }
+      &.blue{
+        color: #4682FA;  
       }
       &.red{
-        color: rgba(239, 105, 105, 1);
+        color: #EF6969;  
       }
-      &.gray{
-        color: rgba(173, 181, 189, 1);
+      &.yellow{
+        color: #FFBC00;  
       }
     }
 
@@ -467,10 +398,16 @@ export default {
           &:last-child{
             margin-bottom: 6px;
           }
-          >img{
+          >.img-box{
             width: 44px;
             height: 44px;
             margin-right: 10px;
+            background: #ebeff3;
+            border-radius: 6px;
+            >img{
+              width: 28px;
+              height: 28px;
+            }
           }
           .label{
             font-size: 12px;

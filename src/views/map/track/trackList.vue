@@ -64,7 +64,7 @@
         <li v-for="item in tabList" :key="item.code" :class="{active: currentTab === item.code}" @click="handleTab(item.code)">{{ item.label }}</li>
       </ul>
       <div class="tab-box-content">
-        <!-- 轨迹明细 jmTrackInfolist -->
+        <!-- 轨迹明细 -->
         <div class="track-list map-scroll-panel" v-show="currentTab === 1" v-loading="trackLoading">
           <div class="card" v-for="(item, index) in trackList" :key="index">
             <p class="date">8月15日</p>
@@ -335,15 +335,15 @@ export default {
         color: #ADB5BD;
       }
       .play-button{
-        width: 34px;
-        height: 34px;
+        width: 36px;
+        height: 36px;
         background: url('~@/assets/images/device/icon_play.png') no-repeat;
         background-size: 100% 100%;
         cursor: pointer;
       }
       .pause-button{
-        width: 34px;
-        height: 34px;
+        width: 36px;
+        height: 36px;
         background: url('~@/assets/images/device/icon_pause.png') no-repeat;
         background-size: 100% 100%;
         cursor: pointer;
