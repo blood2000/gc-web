@@ -1,64 +1,197 @@
 <template>
   <div class="register">
-    <el-form ref="registerForm" :model="registerForm" :rules="registerRules" class="register-form">
-      <h3 class="title">智慧车队后台管理系统</h3>
-      <el-form-item prop="username">
-        <el-input v-model="registerForm.username" type="text" auto-complete="off" placeholder="账号">
-          <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
-        </el-input>
-      </el-form-item>
-      <el-form-item prop="password">
+    <el-form
+      v-if="registerStatus === 0"
+      ref="registerForm"
+      :model="registerForm"
+      :rules="registerRules"
+      class="register-form"
+    >
+      <h3 class="title">欢迎注册智慧车队</h3>
+      <el-form-item prop="telephone">
         <el-input
-          v-model="registerForm.password"
-          type="password"
+          v-model="registerForm.telephone"
+          type="text"
           auto-complete="off"
-          placeholder="密码"
-          @keyup.enter.native="handleRegister"
+          placeholder="手机号"
         >
-          <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
+          <svg-icon
+            slot="prefix"
+            icon-class="user"
+            class="el-input__icon input-icon"
+          />
         </el-input>
       </el-form-item>
-      <el-form-item prop="confirmPassword">
+      <el-form-item prop="captcha">
         <el-input
-          v-model="registerForm.confirmPassword"
-          type="password"
-          auto-complete="off"
-          placeholder="确认密码"
-          @keyup.enter.native="handleRegister"
-        >
-          <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
-        </el-input>
-      </el-form-item>
-      <el-form-item prop="code" v-if="captchaOnOff">
-        <el-input
-          v-model="registerForm.code"
+          v-model="registerForm.captcha"
           auto-complete="off"
           placeholder="验证码"
-          style="width: 63%"
-          @keyup.enter.native="handleRegister"
         >
-          <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
+          <svg-icon
+            slot="prefix"
+            icon-class="validCode"
+            class="el-input__icon input-icon"
+          />
         </el-input>
-        <div class="register-code">
-          <img :src="codeUrl" @click="getCode" class="register-code-img"/>
+        <div
+          class="register-code"
+          :class="sendCode ? 'no-send' : ''"
+          @click="getCode"
+        >
+          {{ verCodeText }}
         </div>
       </el-form-item>
-      <el-form-item style="width:100%;">
+      <el-form-item style="width: 100%">
         <el-button
           :loading="loading"
           size="medium"
           type="primary"
-          style="width:100%;"
+          style="width: 100%"
+          @click.native.prevent="checkCode"
+        >
+          <span>下一步</span>
+          <!-- <span v-if="!loading">注 册</span>
+          <span v-else>注 册 中...</span> -->
+        </el-button>
+      </el-form-item>
+      <div class="register-type">
+        <router-link class="link-type" :to="'/login'">
+          使用已有账户登录
+        </router-link>
+      </div>
+    </el-form>
+
+    <el-form
+      v-if="registerStatus === 1"
+      v-loading="loading"
+      ref="idCardForm"
+      :model="idCardForm"
+      :rules="idCardRules"
+      class="register-form"
+    >
+      <h3 class="title">完善身份信息</h3>
+      <div class="idcard">
+        <div class="img-title">
+          <span>身份证正面</span>
+          <span>身份证反面</span>
+        </div>
+        <div class="img-box">
+          <input
+            type="file"
+            @change="fileChange"
+            ref="import"
+            style="display: none"
+          />
+          <div class="img" @click="importIdCard(0)">
+            <img
+              v-if="idCardForm.idCardFaceImageUrl"
+              :src="idCardForm.idCardFaceImageUrl"
+              alt=""
+            />
+          </div>
+          <div class="img" @click="importIdCard(1)">
+            <img
+              v-if="idCardForm.idCardNationalEmblemImageUrl"
+              :src="idCardForm.idCardNationalEmblemImageUrl"
+              alt=""
+            />
+          </div>
+        </div>
+      </div>
+      <el-form-item prop="name">
+        <el-input
+          v-model="idCardForm.name"
+          type="text"
+          auto-complete="off"
+          placeholder="请输入姓名"
+        >
+          <svg-icon
+            slot="prefix"
+            icon-class="user"
+            class="el-input__icon input-icon"
+          />
+        </el-input>
+      </el-form-item>
+      <el-form-item prop="number">
+        <el-input
+          v-model="idCardForm.number"
+          type="text"
+          auto-complete="off"
+          placeholder="请输入身份证号码"
+        >
+          <svg-icon
+            slot="prefix"
+            icon-class="password"
+            class="el-input__icon input-icon"
+          />
+        </el-input>
+      </el-form-item>
+      <div class="input-title">身份证有效期</div>
+      <div class="input-box">
+        <el-form-item prop="validFrom">
+          <el-date-picker
+            popper-class="idcard-date"
+            v-model="idCardForm.validFrom"
+            type="date"
+            placeholder="有效起始日期"
+          >
+            <svg-icon
+              slot="prefix"
+              icon-class="date"
+              class="el-input__icon input-icon"
+            />
+          </el-date-picker>
+        </el-form-item>
+
+        <div>至</div>
+        <el-form-item prop="validTo">
+          <el-date-picker
+            popper-class="idcard-date"
+            v-model="idCardForm.validTo"
+            type="date"
+            placeholder="有效截至日期"
+          >
+            <svg-icon
+              slot="prefix"
+              icon-class="date"
+              class="el-input__icon input-icon"
+            />
+          </el-date-picker>
+        </el-form-item>
+      </div>
+      <el-form-item prop="orgName">
+        <el-input
+          v-model="idCardForm.orgName"
+          type="text"
+          auto-complete="off"
+          placeholder="请输入企业或车队全称"
+        >
+          <svg-icon
+            slot="prefix"
+            icon-class="build"
+            class="el-input__icon input-icon"
+          />
+        </el-input>
+      </el-form-item>
+      <el-form-item style="width: 100%">
+        <el-button
+          size="medium"
+          type="primary"
+          style="width: 100%"
           @click.native.prevent="handleRegister"
         >
-          <span v-if="!loading">注 册</span>
-          <span v-else>注 册 中...</span>
+          <span>注 册</span>
+          <!-- <span v-else>注 册 中...</span> -->
         </el-button>
-        <div style="float: right;">
-          <router-link class="link-type" :to="'/login'">使用已有账户登录</router-link>
-        </div>
       </el-form-item>
+      <div class="register-type">
+        <router-link class="link-type" :to="'/login'">
+          使用已有账户登录
+        </router-link>
+      </div>
     </el-form>
+
     <!--  底部  -->
     <div class="el-register-footer">
       <span>Copyright © 2018-2021 ruoyi.vip All Rights Reserved.</span>
@@ -68,7 +201,8 @@
 
 <script>
 import { getCodeImg, register } from "@/api/login";
-import {http_request} from '../api'
+import { http_request } from "../api";
+import formValidate from "../utils/formValidate";
 export default {
   name: "Register",
   data() {
@@ -81,79 +215,308 @@ export default {
     };
     return {
       codeUrl: "",
+      registerStatus: 0,
+      registerTitle: "欢迎注册智慧车队",
+      sendCode: true,
+      verCodeText: "获取验证码",
+      verCodeSecond: 60, //当前秒数
+      countdownSeconds: 60, //倒计时总秒数
+      countdownTimer: null,
       registerForm: {
-        username: "",
-        password: "",
-        confirmPassword: "",
-        code: "",
-        uuid: ""
+        captcha: "",
+        telephone: "",
+      },
+
+      idCardForm: {
+        name: "",
+        number: "",
+        validFrom: "",
+        validTo: "",
+        idCardFaceImageUrl: "",
+        idCardNationalEmblemImageUrl: "",
+        orgName: "",
       },
       registerRules: {
-        username: [
-          { required: true, trigger: "blur", message: "请输入您的账号" },
-          { min: 2, max: 20, message: '用户账号长度必须介于 2 和 20 之间', trigger: 'blur' }
+        telephone: [
+          {
+            required: true,
+            trigger: "change",
+            validator: formValidate.telphone,
+          },
         ],
-        password: [
-          { required: true, trigger: "blur", message: "请输入您的密码" },
-          { min: 5, max: 20, message: '用户密码长度必须介于 5 和 20 之间', trigger: 'blur' }
+        captcha: [
+          { required: true, trigger: "change", message: "请输入验证码" },
         ],
-        confirmPassword: [
-          { required: true, trigger: "blur", message: "请再次输入您的密码" },
-          { required: true, validator: equalToPassword, trigger: "blur" }
+      },
+      idCardRules: {
+        name: [
+          { required: true, trigger: "change", validator: formValidate.name },
         ],
-        code: [{ required: true, trigger: "change", message: "请输入验证码" }]
+        number: [
+          { required: true, trigger: "change", validator: formValidate.idCard },
+        ],
+        validFrom: [
+          { required: true, trigger: "change", message: "请输入身份证有效期" },
+        ],
+        validTo: [
+          { required: true, trigger: "change", message: "请输入身份证有效期" },
+        ],
+        orgName: [
+          {
+            required: true,
+            trigger: "change",
+            message: "请输入企业或车队全称",
+          },
+        ],
       },
       loading: false,
-      captchaOnOff: true
+      captchaOnOff: true,
+      idcardType: 0,
     };
   },
   created() {
-    this.getCode();
+    // this.getCode();
   },
+  mounted() {
+    // setTimeout(() => {
+    //   this.$refs.registerForm.clearValidate();
+    //   this.registerStatus = 1;
+    // }, 3000);
+  },
+
   methods: {
     getCode() {
-      const obj = {
-        moduleName:'http_login',
-        method:'get',
-        url_alias:'getCodeImg'
+      if (!this.sendCode) {
+        return;
       }
-      http_request().then(res => {
-        this.captchaOnOff = res.captchaOnOff === undefined ? true : res.captchaOnOff;
-        if (this.captchaOnOff) {
-          this.codeUrl = "data:image/gif;base64," + res.img;
-          this.registerForm.uuid = res.uuid;
+
+      // let leap = this.verifyTel();validateField
+      this.$refs.registerForm.validateField("telephone", (msg) => {
+        if (msg) {
+          return;
+        }
+        const data = {
+          telno: this.registerForm.telephone,
+          type: "register",
+        };
+        const obj = {
+          moduleName: "http_login",
+          method: "post",
+          url_alias: "getCode",
+          data: data,
+        };
+        http_request(obj)
+          .then((res) => {
+            if (res.code === 200) {
+              this.$message({
+                message: res.msg,
+                type: "success",
+              });
+              this.countdown();
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      });
+
+      // getCodeImg().then(res => {
+      // this.captchaOnOff =
+      //   res.captchaOnOff === undefined ? true : res.captchaOnOff;
+      // if (this.captchaOnOff) {
+      //   this.codeUrl = "data:image/gif;base64," + res.img;
+      //   this.loginForm.uuid = res.uuid;
+      // }
+      // });
+    },
+    //验证码倒计时
+    countdown() {
+      this.sendCode = false;
+      let that = this;
+      this.countdownTimer = setInterval(() => {
+        this.verCodeSecond--;
+        this.verCodeText = `再次发送(${this.verCodeSecond})`;
+      }, 1000);
+      setTimeout(() => {
+        this.sendCode = true;
+        this.verCodeSecond = this.countdownSeconds;
+        //this.countdownTimer = null;
+        this.verCodeText = "获取验证码";
+        clearInterval(that.countdownTimer);
+        console.log(this.countdownTimer);
+      }, that.countdownSeconds * 1000);
+    },
+
+    checkCode() {
+      this.$refs.registerForm.validate((valid) => {
+        if (valid) {
+          this.loading = true;
+          const data = {
+            type: "register",
+            telno: this.registerForm.telephone,
+            captcha: this.registerForm.captcha,
+          };
+          const obj = {
+            moduleName: "http_login",
+            method: "post",
+            url_alias: "checkCode",
+            data: data,
+          };
+          http_request(obj)
+            .then((res) => {
+              this.loading = false;
+              if (res.code === 200) {
+                // this.$refs.registerForm.clearValidate();
+                this.registerStatus = 1;
+              }
+            })
+            .catch((error) => {
+              this.loading = false;
+            });
         }
       });
     },
+
+    //上传身份证图片
+    importIdCard(type) {
+      this.idcardType = type;
+      this.$refs.import.dispatchEvent(new MouseEvent("click"));
+    },
+    //选取文件
+    fileChange(e) {
+      let file = e.currentTarget.files[0];
+      // let reader = new FileReader(); //读取文件
+      // reader.readAsText(file);
+      // reader.onload = function () {
+      //   let json = JSON.parse(this.result);
+      //   console.log(json);
+      // };
+      let formData = new window.FormData();
+      formData.append("file", file);
+      formData.append("type", "0");
+      //'Content-type': 'multipart/form-data',
+      const obj = {
+        moduleName: "http_login",
+        method: "post",
+        url_alias: "uploadImg",
+        data: formData,
+        Headers: {
+          "Content-type": "multipart/form-data",
+        },
+      };
+      this.loading = true;
+      http_request(obj)
+        .then((res) => {
+          this.loading = false;
+          if (res.code === 200) {
+            if (this.idcardType === 0) {
+              this.idCardForm.idCardFaceImageUrl = res.data.imageUrl;
+              this.idCardForm.name = res.data.result.name;
+              this.idCardForm.number = res.data.result.number;
+              let { sex, birth, address, ethnicity } = res.data.result;
+              this.idCardForm = Object.assign(this.idCardForm, {
+                sex,
+                birth,
+                address,
+                ethnicity,
+              });
+            } else {
+              this.idCardForm.idCardNationalEmblemImageUrl = res.data.imageUrl;
+              this.idCardForm.validFrom = res.data.result.valid_from;
+              this.idCardForm.validTo = res.data.result.valid_to;
+              this.idCardForm.issue = res.data.result.issue;
+            }
+          }
+          console.log(this.idCardForm);
+        })
+        .catch(() => {
+          this.loading = false;
+        });
+      // let localURL = "";
+      // if (window.createObjectURL != undefined) {
+      //   // basic
+      //   localURL = window.createObjectURL(file);
+      // } else if (window.URL != undefined) {
+      //   // mozilla(firefox)
+      //   localURL = window.URL.createObjectURL(file);
+      // } else if (window.webkitURL != undefined) {
+      //   // webkit or chrome
+      //   localURL = window.webkitURL.createObjectURL(file);
+      // }
+    },
+
     handleRegister() {
-      this.$refs.registerForm.validate(valid => {
+      this.$refs.idCardForm.validate((valid) => {
         if (valid) {
           this.loading = true;
           // register(this.registerForm)
-          const obj = {
-            moduleName:'http_login',
-            method: 'post',
-            url_alias:'register',
-            data:this.registerForm,
-            Headers:{isToken: false}
+          // let data1 = { ...this.registerForm, ...this.idCardForm };
+          let data = {
+            name: this.idCardForm.name,
+            number: this.idCardForm.number,
+            idCardFaceImageUrl: this.idCardForm.idCardFaceImageUrl,
+            idCardNationalEmblemImageUrl: this.idCardForm.idCardNationalEmblemImageUrl,
+            telephone: this.registerForm.telephone,
+            captcha: this.registerForm.captcha,
+            // telephone: '15586869898',
+            // captcha: '000000',
+            validFrom: this.idCardForm.validFrom,
+            validTo: this.idCardForm.validTo,
+            address: this.idCardForm.address,
+            issue: this.idCardForm.issue,
+            brith: this.idCardForm.birth,
+            ethnicity: this.idCardForm.ethnicity,
+            sex: this.idCardForm.sex,
+            orgName: this.idCardForm.orgName,
           }
-          http_request(obj).then(res => {
-            const username = this.registerForm.username;
-            this.$alert("<font color='red'>恭喜你，您的账号 " + username + " 注册成功！</font>", '系统提示', {
-              dangerouslyUseHTMLString: true
-            }).then(() => {
-              this.$router.push("/login");
-            }).catch(() => {});
-          }).catch(() => {
-            this.loading = false;
-            if (this.captchaOnOff) {
-              this.getCode();
-            }
-          })
+          console.log(data)
+          // let data = {
+          //   name: "车小菊",
+          //   issue: "啊是的发生的",
+          //   number: "11010119900307117X",
+          //   address: "详细地址",
+          //   idCardNationalEmblemImageUrl: "http://",
+          //   brith: "1973-01-12",
+          //   telephone: "13763848915",
+          //   validFrom: "1906-01-01",
+          //   captcha: "1234",
+          //   ethnicity: "汉",
+          //   sex: "女",
+          //   validTo: "1920-01-01",
+          //   orgName: "车小菊车队",
+          //   idCardFaceImageUrl: "http://",
+          // };
+          // console.log(data);
+          const obj = {
+            moduleName: "http_login",
+            method: "post",
+            url_alias: "register",
+            data: data,
+            // Headers: { isToken: false },
+          };
+          http_request(obj)
+            .then((res) => {
+              console.log(res);
+              this.loading = false;
+              // const username = this.idCardForm.name;
+              this.$alert(" 注册成功！</font>", "系统提示", {
+                dangerouslyUseHTMLString: true,
+              })
+                .then(() => {
+                  this.$router.push("/login");
+                })
+                .catch(() => {});
+            })
+            .catch(() => {
+              this.loading = false;
+              // if (this.captchaOnOff) {
+              //   this.getCode();
+              // }
+            });
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -175,7 +538,7 @@ export default {
 .register-form {
   border-radius: 6px;
   background: #ffffff;
-  width: 400px;
+  width: 500px;
   padding: 25px 25px 5px 25px;
   .el-input {
     height: 38px;
@@ -194,15 +557,42 @@ export default {
   text-align: center;
   color: #bfbfbf;
 }
+
+.register-type {
+  height: 40px;
+  text-align: center;
+}
+
 .register-code {
   width: 33%;
-  height: 38px;
+  height: 36px;
   float: right;
-  img {
-    cursor: pointer;
-    vertical-align: middle;
-  }
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  text-align: center;
+  background: #eee;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-left: 1px solid #dcdfe6;
+  cursor: pointer;
+  color: #999;
 }
+
+.no-send {
+  color: #fff;
+  background: #1890ff;
+  border-left: 1px solid #1890ff;
+}
+// .register-code {
+//   width: 33%;
+//   height: 38px;
+//   float: right;
+//   img {
+//     cursor: pointer;
+//     vertical-align: middle;
+//   }
+// }
 .el-register-footer {
   height: 40px;
   line-height: 40px;
@@ -217,5 +607,51 @@ export default {
 }
 .register-code-img {
   height: 38px;
+}
+
+.img-box,
+.img-title {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.img-title {
+  margin-bottom: 10px;
+  span {
+    width: 45%;
+    text-align: center;
+  }
+}
+
+.img {
+  width: 45%;
+  height: 100px;
+  background: #ddd;
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.input-title {
+  height: 30px;
+}
+
+.input-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  .el-form-item {
+    width: 180px;
+    margin-bottom: 0;
+  }
+  .el-date-editor.el-input,
+  .el-date-editor.el-input__inner {
+    width: 100%;
+  }
 }
 </style>

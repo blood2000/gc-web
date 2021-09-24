@@ -63,6 +63,29 @@ const user = {
           });
       });
     },
+    LoginBySms({ commit }, userInfo) {
+      userInfo.telephone = userInfo.telephone.trim();
+      return new Promise((resolve, reject) => {
+        const obj = {
+          moduleName: "http_login",
+          method: "post",
+          url_alias: "loginBySms",
+          data: userInfo
+        };
+        console.log('短信登录参数',obj)
+        http_request(obj)
+          .then(res => {
+            console.log(res)
+            if(!res.data.access_token) return resolve();
+            setToken(res.data.access_token);
+            commit("SET_TOKEN", res.data.access_token);
+            resolve();
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
 
     // 获取用户信息
     GetInfo({ commit, state }) {
