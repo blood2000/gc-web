@@ -7,7 +7,7 @@
       :rules="registerRules"
       class="register-form"
     >
-      <h3 class="title">欢迎注册智慧车队</h3>
+      <h3 class="title">欢迎注册</h3>
       <el-form-item prop="telephone">
         <el-input
           v-model="registerForm.telephone"
@@ -68,35 +68,36 @@
       ref="idCardForm"
       :model="idCardForm"
       :rules="idCardRules"
-      class="register-form"
+      class="register-form register-idcard"
     >
       <h3 class="title">完善身份信息</h3>
-      <div class="idcard">
+      <!-- <div class="idcard">
         <div class="img-title">
           <span>身份证正面</span>
           <span>身份证反面</span>
         </div>
-        <div class="img-box">
-          <input
-            type="file"
-            @change="fileChange"
-            ref="import"
-            style="display: none"
+        
+      </div> -->
+      <div class="img-box">
+        <input
+          type="file"
+          @change="fileChange"
+          ref="import"
+          style="display: none"
+        />
+        <div class="img face-img" @click="importIdCard(0)">
+          <img
+            v-if="idCardForm.idCardFaceImageUrl"
+            :src="idCardForm.idCardFaceImageUrl"
+            alt=""
           />
-          <div class="img" @click="importIdCard(0)">
-            <img
-              v-if="idCardForm.idCardFaceImageUrl"
-              :src="idCardForm.idCardFaceImageUrl"
-              alt=""
-            />
-          </div>
-          <div class="img" @click="importIdCard(1)">
-            <img
-              v-if="idCardForm.idCardNationalEmblemImageUrl"
-              :src="idCardForm.idCardNationalEmblemImageUrl"
-              alt=""
-            />
-          </div>
+        </div>
+        <div class="img emblem-img" @click="importIdCard(1)">
+          <img
+            v-if="idCardForm.idCardNationalEmblemImageUrl"
+            :src="idCardForm.idCardNationalEmblemImageUrl"
+            alt=""
+          />
         </div>
       </div>
       <el-form-item prop="name">
@@ -122,7 +123,7 @@
         >
           <svg-icon
             slot="prefix"
-            icon-class="password"
+            icon-class="textarea"
             class="el-input__icon input-icon"
           />
         </el-input>
@@ -169,7 +170,7 @@
         >
           <svg-icon
             slot="prefix"
-            icon-class="build"
+            icon-class="nav-enterprise"
             class="el-input__icon input-icon"
           />
         </el-input>
@@ -215,7 +216,7 @@ export default {
     };
     return {
       codeUrl: "",
-      registerStatus: 0,
+      registerStatus: 1,
       registerTitle: "欢迎注册智慧车队",
       sendCode: true,
       verCodeText: "获取验证码",
@@ -379,7 +380,7 @@ export default {
 
     //上传身份证图片
     importIdCard(type) {
-      this.idcardType = type;
+      this.idcardType = type;   //0-正面；1-反面
       this.$refs.import.dispatchEvent(new MouseEvent("click"));
     },
     //选取文件
@@ -394,7 +395,6 @@ export default {
       let formData = new window.FormData();
       formData.append("file", file);
       formData.append("type", "0");
-      //'Content-type': 'multipart/form-data',
       const obj = {
         moduleName: "http_login",
         method: "post",
@@ -455,7 +455,8 @@ export default {
             name: this.idCardForm.name,
             number: this.idCardForm.number,
             idCardFaceImageUrl: this.idCardForm.idCardFaceImageUrl,
-            idCardNationalEmblemImageUrl: this.idCardForm.idCardNationalEmblemImageUrl,
+            idCardNationalEmblemImageUrl:
+              this.idCardForm.idCardNationalEmblemImageUrl,
             telephone: this.registerForm.telephone,
             captcha: this.registerForm.captcha,
             // telephone: '15586869898',
@@ -468,8 +469,8 @@ export default {
             ethnicity: this.idCardForm.ethnicity,
             sex: this.idCardForm.sex,
             orgName: this.idCardForm.orgName,
-          }
-          console.log(data)
+          };
+          console.log(data);
           // let data = {
           //   name: "车小菊",
           //   issue: "啊是的发生的",
@@ -520,26 +521,28 @@ export default {
 };
 </script>
 
-<style rel="stylesheet/scss" lang="scss">
+<style lang="scss" scoped>
 .register {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   height: 100%;
-  background-image: url("../assets/images/login-background.jpg");
+  background-image: url("../assets/images/login-background.png");
   background-size: cover;
 }
 .title {
   margin: 0px auto 30px auto;
   text-align: center;
-  color: #707070;
+  color: #121212;
+  font-weight: bold;
 }
 
 .register-form {
   border-radius: 6px;
   background: #ffffff;
-  width: 500px;
+  width: 400px;
   padding: 25px 25px 5px 25px;
+  margin-right: 100px;
   .el-input {
     height: 38px;
     input {
@@ -552,6 +555,11 @@ export default {
     margin-left: 2px;
   }
 }
+
+.register-idcard {
+  width: 500px;
+}
+
 .register-tip {
   font-size: 13px;
   text-align: center;
@@ -627,13 +635,23 @@ export default {
 }
 
 .img {
-  width: 45%;
-  height: 100px;
-  background: #ddd;
+  width: 48%;
+  height: 120px;
+
   img {
     width: 100%;
     height: 100%;
   }
+}
+
+.face-img {
+  background: url("../assets/images/login/face.png") no-repeat center;
+  background-size: contain;
+}
+
+.emblem-img {
+  background: url("../assets/images/login/back.png") no-repeat center;
+  background-size: contain;
 }
 
 .input-title {

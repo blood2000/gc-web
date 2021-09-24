@@ -6,13 +6,13 @@
       :rules="loginRules"
       class="login-form"
     >
-      <h3 class="title">智慧车队后台管理系统</h3>
-      <div class="login-type">
-        <div :class="captchaOnOff ? 'link-type' : ''" @click="login(0)">
-          短信快捷登录
+      <!-- <h3 class="title">智慧车队后台管理系统</h3> -->
+      <div class="login-type" :class="captchaOnOff ? 'captcha-login' : 'acct-login'">
+        <div :class="captchaOnOff ? 'cur-login' : ''" @click="login(0)">
+          短信登录
         </div>
-        <div :class="!captchaOnOff ? 'link-type' : ''" @click="login(1)">
-          账号密码登录
+        <div :class="!captchaOnOff ? 'cur-login' : ''" @click="login(1)">
+          账号登录
         </div>
       </div>
       <el-form-item prop="telephone">
@@ -81,13 +81,11 @@
           <span v-if="!loading">登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
-        <div style="float: left">
+        <div class="form-bottom">
           <router-link class="link-type" :to="'/register'">
             立即注册
           </router-link>
-        </div>
-        <div style="float: right">
-          <router-link class="link-type" :to="'/resetPwd'">
+          <router-link class="link-type" :to="'/resetPwd'" v-show="!captchaOnOff">
             忘记密码
           </router-link>
         </div>
@@ -95,7 +93,7 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <span>Copyright © 2018-2021 ruoyi.vip All Rights Reserved.</span>
+      <span>Copyright © 2021- 至简至一</span>
     </div>
   </div>
 </template>
@@ -294,31 +292,68 @@ export default {
 };
 </script>
 
-<style rel="stylesheet/scss" lang="scss">
+<style lang="scss" scoped>
 .login {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   height: 100%;
-  background-image: url("../assets/images/login-background.jpg");
+  background-image: url("../assets/images/login-background.png");
   background-size: cover;
 }
 .title {
   margin: 0px auto 10px auto;
   text-align: center;
-  color: #707070;
+  color: #121212;
+  font-weight: bold;
 }
 
 .login-type {
+  position: relative;
+  width: 200px;
   height: 50px;
+  margin: 0 auto 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #999;
+  font-size: 16px;
+  color: #5f5f5f;
+}
+
+.login-type::before {
+  content: '';
+  transition: all .25s linear;
+}
+
+.captcha-login::before {
+  position: absolute;
+  content: '';
+  width: 40px;
+  height: 2px;
+  background: #4682FA;
+  left: 30px;
+  bottom: 5px;
+}
+
+.acct-login::before {
+  position: absolute;
+  content: '';
+  width: 40px;
+  height: 2px;
+  background: #4682FA;
+  left: 130px;
+  bottom: 5px;
+}
+
+.cur-login {
+  font-weight: bold;
+  color: #121212;
 }
 
 .login-type > div {
   cursor: pointer;
+  width: 100px;
+  text-align: center;
 }
 
 .login-form {
@@ -326,6 +361,7 @@ export default {
   background: #ffffff;
   width: 400px;
   height: 380px;
+  margin-right: 100px;
   padding: 25px 25px 5px 25px;
   .el-input {
     height: 38px;
@@ -364,6 +400,14 @@ export default {
   color: #fff;
   background: #1890ff;
   border-left: 1px solid #1890ff;
+}
+
+.form-bottom {
+  height: 40px;
+  margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .el-login-footer {

@@ -4,7 +4,7 @@
       ref="resetForm"
       :model="resetForm"
       :rules="resetRules"
-      class="register-form"
+      class="reset-form"
     >
       <h3 class="title">忘记密码</h3>
       <el-form-item prop="telephone">
@@ -246,26 +246,28 @@ export default {
 };
 </script>
 
-<style rel="stylesheet/scss" lang="scss">
+<style scoped lang="scss">
 .reset {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   height: 100%;
-  background-image: url("../assets/images/login-background.jpg");
+  background-image: url("../assets/images/login-background.png");
   background-size: cover;
 }
 .title {
   margin: 0px auto 30px auto;
   text-align: center;
-  color: #707070;
+  color: #121212;
+  font-weight: bold;
 }
 
-.register-form {
+.reset-form {
   border-radius: 6px;
   background: #ffffff;
-  width: 500px;
+  width: 400px;
   padding: 25px 25px 5px 25px;
+   margin-right: 100px;
   .el-input {
     height: 38px;
     input {
