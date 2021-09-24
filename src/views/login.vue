@@ -81,7 +81,8 @@
           <span v-if="!loading">登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
-        <div class="form-bottom">
+      </el-form-item>
+      <div class="form-bottom">
           <router-link class="link-type" :to="'/register'">
             立即注册
           </router-link>
@@ -89,11 +90,11 @@
             忘记密码
           </router-link>
         </div>
-      </el-form-item>
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <span>Copyright © 2021- 至简至一</span>
+      <div>福建至简至一信息科技有限公司 版权所有</div>
+      <span>CopyRight@ 2021 All Rights Reserved 闽ICP备19023755号-2</span>
     </div>
   </div>
 </template>
@@ -311,8 +312,8 @@ export default {
 .login-type {
   position: relative;
   width: 200px;
-  height: 50px;
-  margin: 0 auto 10px;
+  // height: 50px;
+  margin: 0 auto 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -332,7 +333,7 @@ export default {
   height: 2px;
   background: #4682FA;
   left: 30px;
-  bottom: 5px;
+  bottom: -10px;
 }
 
 .acct-login::before {
@@ -342,7 +343,7 @@ export default {
   height: 2px;
   background: #4682FA;
   left: 130px;
-  bottom: 5px;
+  bottom: -10px;
 }
 
 .cur-login {
@@ -404,16 +405,15 @@ export default {
 
 .form-bottom {
   height: 40px;
-  margin-top: 5px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
 
 .el-login-footer {
-  height: 40px;
-  line-height: 40px;
+  // height: 40px;
+  // line-height: 40px;
   position: fixed;
+  padding: 10px 0;
   bottom: 0;
   width: 100%;
   text-align: center;

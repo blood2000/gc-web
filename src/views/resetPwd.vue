@@ -76,7 +76,8 @@
 
     <!--  底部  -->
     <div class="el-register-footer">
-      <span>Copyright © 2018-2021 ruoyi.vip All Rights Reserved.</span>
+      <div>福建至简至一信息科技有限公司 版权所有</div>
+      <span>CopyRight@ 2021 All Rights Reserved 闽ICP备19023755号-2</span>
     </div>
   </div>
 </template>
@@ -322,9 +323,8 @@ export default {
 //   }
 // }
 .el-register-footer {
-  height: 40px;
-  line-height: 40px;
   position: fixed;
+  padding: 10px 0;
   bottom: 0;
   width: 100%;
   text-align: center;
