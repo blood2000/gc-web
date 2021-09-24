@@ -360,7 +360,7 @@ export default {
   border-radius: 6px;
   background: #ffffff;
   width: 400px;
-  height: 380px;
+  // height: 380px;
   margin-right: 100px;
   padding: 25px 25px 5px 25px;
   .el-input {
@@ -382,7 +382,7 @@ export default {
 }
 .login-code {
   width: 33%;
-  height: 36px;
+  height: 34px;
   float: right;
   position: absolute;
   top: 1px;

@@ -216,7 +216,7 @@ export default {
     };
     return {
       codeUrl: "",
-      registerStatus: 1,
+      registerStatus: 0,
       registerTitle: "欢迎注册智慧车队",
       sendCode: true,
       verCodeText: "获取验证码",
@@ -573,7 +573,7 @@ export default {
 
 .register-code {
   width: 33%;
-  height: 36px;
+  height: 34px;
   float: right;
   position: absolute;
   top: 1px;

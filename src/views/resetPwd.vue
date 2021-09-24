@@ -293,7 +293,7 @@ export default {
 
 .register-code {
   width: 33%;
-  height: 36px;
+  height: 34px;
   float: right;
   position: absolute;
   top: 1px;
