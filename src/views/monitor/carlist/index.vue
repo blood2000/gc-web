@@ -75,6 +75,10 @@
               <template #vehicle_status="{ row }">
                 <span>{{ dealVehicleStatus(row.vehicle_status) }}</span>
               </template>
+             <!-- model_name -->
+             <template #model_name="{ row }">
+                <span>{{row.model_name? `${row.model_name}(${row.series_name})`:null}}</span>
+              </template>
             </RefactorTable>
             <!-- 分页 -->
             <pagination
@@ -130,7 +134,6 @@ export default {
     dealVehicleStatus(status) {
       let result = "";
       vehicleStatusList.forEach((element) => {
-        console.log("element", element);
         if (element.value == status) {
           result = element.label;
         }

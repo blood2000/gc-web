@@ -32,9 +32,9 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="分组" prop="group">
+      <el-form-item label="分组" prop="groupName">
         <el-select
-          v-model="queryParams.group"
+          v-model="queryParams.groupName"
           clearable
           filterable
           style="width: 185px"

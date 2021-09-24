@@ -168,6 +168,13 @@
                   @click="handleDetail(row)"
                   >详情</el-button
                 >
+                <el-button
+                  size="mini"
+                  type="text"
+                  icon="el-icon-tickets"
+                  @click="handleDevice(row)"
+                  >绑定设备</el-button
+                >
               </template>
             </RefactorTable>
             <!-- 分页 -->
@@ -183,7 +190,11 @@
       </el-col>
     </el-row>
     <VehicleDialog
-      :options="{ editType: editType, code: vehicleCode,defaultDriverList:defaultDriverList }"
+      :options="{
+        editType: editType,
+        code: vehicleCode,
+        defaultDriverList: defaultDriverList,
+      }"
       :open="open"
       :title="title"
       @colseDialog="colseDialog"
@@ -192,6 +203,9 @@
       :group-open="groupOpen"
       @colseGroupDialog="colseGroupDialog"
     ></GroupDialog>
+    <DeviceDialog :open="deviceOpen"
+    :options="deviceOptions"
+     @colseDeviceDialog="colseDeviceDialog" />
   </div>
 </template>
 
@@ -200,12 +214,13 @@ import vehicleConfig from "./vehicle_config";
 import QueryForm from "./components/queryForm.vue";
 import VehicleDialog from "./components/vehicle_dialog.vue";
 import GroupDialog from "./components/group_dialog.vue";
+import DeviceDialog from "./components/device_dialog.vue";
 import { http_request } from "@/api";
 import store from "@/store";
 // import { mapState, mapMutations } from "vuex";
 export default {
   name: "vehicle", // 车辆管理
-  components: { QueryForm, VehicleDialog, GroupDialog },
+  components: { QueryForm, VehicleDialog, GroupDialog, DeviceDialog },
   data() {
     return {
       showSearch: true, //搜索显隐
@@ -222,7 +237,7 @@ export default {
         pageSize: 10,
         licenseNumber: null, //车牌号
         vehicleStatus: null, //车辆状态
-        groupCode: null, //分组
+        groupName: null, //分组
         dateRange: [], //日期范围
         enabled: null, //是否停用
         orgCode: null,
@@ -243,6 +258,10 @@ export default {
         label: "orgName",
       },
       orgTreeData: [],
+      deviceOpen: false,
+      deviceOptions:{
+        title:''
+      }
     };
   },
   created() {},
@@ -377,10 +396,12 @@ export default {
         pageSize: this.queryParams.pageSize,
         licenseNumber: this.queryParams.licenseNumber || null, //车牌号
         vehicleStatus: this.queryParams.vehicleStatus || null, //车辆状态
-        groupCode: this.queryParams.groupCode || null, //分组
+        groupName: this.queryParams.groupName || null, //分组
         enabled: this.queryParams.enabled || null, //是否停用
-        createBeginTime: (this.queryParams.dateRange && this.queryParams.dateRange[0]) || null,
-        createEndTime: (this.queryParams.dateRange && this.queryParams.dateRange[1]) || null,
+        createBeginTime:
+          (this.queryParams.dateRange && this.queryParams.dateRange[0]) || null,
+        createEndTime:
+          (this.queryParams.dateRange && this.queryParams.dateRange[1]) || null,
         orgCode: this.queryParams.orgCode,
       };
       if (tmp.createBeginTime)
@@ -469,6 +490,17 @@ export default {
       console.log(" index code", code);
       this.$router.push("detail?code=" + code);
     },
+    handleDevice(obj) {
+      console.log("ckc obj", obj);
+      
+      this.deviceOptions = {
+        title:obj.seriesCode?'更换设备':'绑定设备',
+        vehicleCode:obj.code,
+        isbang:obj.seriesCode?true:false
+      }
+      this.deviceOpen = true 
+
+    },
     colseDialog(e) {
       console.log("关闭。。。", e);
       this.open = false;
@@ -477,6 +509,11 @@ export default {
     colseGroupDialog() {
       console.log("group关闭。。。");
       this.groupOpen = false;
+    },
+    colseDeviceDialog() {
+      console.log("device关闭。。。");
+      this.deviceOpen = false;
+      this.vehicleHttpReq()
     },
   },
 };
