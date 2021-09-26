@@ -20,5 +20,6 @@ const getters = {
   vehicleTypeCodeList:state => state.dict.vehicleTypeCodeList,
   carrierTypeList:state => state.dict.carrierTypeList,
   vehicleLicenseColorCodeList:state => state.dict.vehicleLicenseColorCodeList,
+  showDispatchVehicle:state => state.map.showDispatchVehicle,
 }
 export default getters

@@ -11,22 +11,49 @@
         </div>
       </div>
       <ul class="map-tab">
-        <li v-for="item in headerTabList" :key="item.code" :class="{active: item.code === headerTab}" @click="handleHeaderTab(item.code)">{{ item.label }}</li>
+        <li
+          v-for="item in headerTabList"
+          :key="item.code"
+          :class="{ active: item.code === headerTab }"
+          @click="handleHeaderTab(item.code)"
+        >
+          {{ item.label }}
+        </li>
       </ul>
       <div class="return-button" @click="backPage">返回</div>
     </div>
 
     <div class="left-tree-panel">
       <ul class="left-tree-panel__tab ly-flex-pack-justify">
-        <li :class="{active: currentType === '1'}" @click="handleType('1')">{{ `车辆（${countVehicle.countAll ? countVehicle.countAll : 0}）` }}</li>
-        <li :class="{active: currentType === '2'}" @click="handleType('2')">{{ `司机（${countDriver.countAll ? countDriver.countAll : 0}）` }}</li>
+        <li :class="{ active: currentType === '1' }" @click="handleType('1')">
+          {{ `车辆（${countVehicle.countAll ? countVehicle.countAll : 0}）` }}
+        </li>
+        <li :class="{ active: currentType === '2' }" @click="handleType('2')">
+          {{ `司机（${countDriver.countAll ? countDriver.countAll : 0}）` }}
+        </li>
       </ul>
       <div class="left-tree-panel__content">
         <!-- 车辆树 -->
         <div v-show="currentType === '1'">
           <ul class="btn-list-box">
-            <li :class="{active: vehicleActiveTab === '0'}" @click="handleVehicleTab('0')">{{ `全部（${countVehicle.countAll ? countVehicle.countAll : 0}）` }}</li>
-            <li :class="{active: vehicleActiveTab === '1'}" @click="handleVehicleTab('1')">{{ `在线（${countVehicle.countOnline ? countVehicle.countOnline : 0}）` }}</li>
+            <li
+              :class="{ active: vehicleActiveTab === '0' }"
+              @click="handleVehicleTab('0')"
+            >
+              {{
+                `全部（${countVehicle.countAll ? countVehicle.countAll : 0}）`
+              }}
+            </li>
+            <li
+              :class="{ active: vehicleActiveTab === '1' }"
+              @click="handleVehicleTab('1')"
+            >
+              {{
+                `在线（${
+                  countVehicle.countOnline ? countVehicle.countOnline : 0
+                }）`
+              }}
+            </li>
           </ul>
           <div class="device-search-box">
             <el-input
@@ -37,7 +64,15 @@
               class="device-search-input"
             />
             <div class="ly-flex-pack-justify">
-              <el-select v-model="vehicleParams.carrierType" class="device-search-select" @change="vehicleQuery" placeholder="车辆类型" size="small" clearable filterable>
+              <el-select
+                v-model="vehicleParams.carrierType"
+                class="device-search-select"
+                @change="vehicleQuery"
+                placeholder="车辆类型"
+                size="small"
+                clearable
+                filterable
+              >
                 <el-option
                   v-for="dict in vehicleCarrierTypeOptions"
                   :key="dict.dictValue"
@@ -45,7 +80,15 @@
                   :value="dict.dictValue"
                 />
               </el-select>
-              <el-select v-model="vehicleParams.vehicleStatus" class="device-search-select" @change="vehicleQuery" placeholder="车辆状态" size="small" clearable filterable>
+              <el-select
+                v-model="vehicleParams.vehicleStatus"
+                class="device-search-select"
+                @change="vehicleQuery"
+                placeholder="车辆状态"
+                size="small"
+                clearable
+                filterable
+              >
                 <el-option
                   v-for="dict in vehicleStatusOptions"
                   :key="dict.dictValue"
@@ -78,19 +121,55 @@
                 </template>
                 <template v-if="data.vehicleFlag">
                   <div class="tree-node-car-box ly-flex ly-flex-align-center">
-                    <img class="img-box" :src="require('@/assets/images/device/car_type_'+ (data.carrierType || 'qt') +'.png')">
+                    <img
+                      class="img-box"
+                      :src="
+                        require('@/assets/images/device/car_type_' +
+                          (data.carrierType || 'qt') +
+                          '.png')
+                      "
+                    />
                     <div class="info-box ly-flex-1">
                       <h5>
                         {{ data.orgOrlicenseNumber }}
-                        <span class="type">{{ selectDictLabel(vehicleCarrierTypeOptions, data.carrierType) }}</span>
+                        <span class="type">{{
+                          selectDictLabel(
+                            vehicleCarrierTypeOptions,
+                            data.carrierType
+                          )
+                        }}</span>
                       </h5>
                       <p>
                         <!-- 在线/离线 -->
-                        <span v-if="data.deviceStatus === 1" class="status green"><strong>· </strong>设备在线</span>
-                        <span v-if="data.deviceStatus === 0" class="status gray"><strong>· </strong>设备离线</span>
+                        <span
+                          v-if="data.deviceStatus === 1"
+                          class="status green"
+                          ><strong>· </strong>设备在线</span
+                        >
+                        <span v-if="data.deviceStatus === 0" class="status gray"
+                          ><strong>· </strong>设备离线</span
+                        >
                         <!-- 设备状态 -->
-                        <span v-if="data.vehicleStatus !== null && data.vehicleStatus !== undefined" class="status" :class="selectDictColor(vehicleStatusOptions, data.vehicleStatus)">
-                          <strong>· </strong>{{ selectDictLabel(vehicleStatusOptions, data.vehicleStatus) }}
+                        <span
+                          v-if="
+                            data.vehicleStatus !== null &&
+                            data.vehicleStatus !== undefined
+                          "
+                          class="status"
+                          :class="
+                            selectDictColor(
+                              vehicleStatusOptions,
+                              data.vehicleStatus
+                            )
+                          "
+                        >
+                          <strong>· </strong
+                          >{{
+                            selectDictLabel(
+                              vehicleStatusOptions,
+                              data.vehicleStatus
+                            )
+                          }}
                         </span>
                       </p>
                     </div>
@@ -113,7 +192,16 @@
               size="small"
               class="device-search-input"
             />
-            <el-select v-model="driverParams.driverStatus" class="device-search-select" style="width:100%" @change="driverQuery" placeholder="司机状态" size="small" clearable filterable>
+            <el-select
+              v-model="driverParams.driverStatus"
+              class="device-search-select"
+              style="width: 100%"
+              @change="driverQuery"
+              placeholder="司机状态"
+              size="small"
+              clearable
+              filterable
+            >
               <el-option
                 v-for="dict in driverStatusOptions"
                 :key="dict.dictValue"
@@ -137,18 +225,32 @@
               @node-click="driverNodeClick"
             >
               <span slot-scope="{ data }">
-                <template v-if="!data.driverFlag	">
+                <template v-if="!data.driverFlag">
                   <span class="node-label">
                     <i class="tree-node-icon" :class="data.icon" />
                     {{ data.orgOrDriverName }}
                   </span>
                 </template>
-                <template v-if="data.driverFlag	">
-                  <div class="tree-node-driver-box ly-flex ly-flex-align-center">
+                <template v-if="data.driverFlag">
+                  <div
+                    class="tree-node-driver-box ly-flex ly-flex-align-center"
+                  >
                     <span class="mr8">{{ data.orgOrDriverName }}</span>
                     <!-- 司机状态 -->
-                    <span v-if="data.driverStatus !== null && data.driverStatus !== undefined" class="status" :class="selectDictColor(driverStatusOptions, data.driverStatus)">
-                      <strong>· </strong>{{ selectDictLabel(driverStatusOptions, data.driverStatus) }}
+                    <span
+                      v-if="
+                        data.driverStatus !== null &&
+                        data.driverStatus !== undefined
+                      "
+                      class="status"
+                      :class="
+                        selectDictColor(driverStatusOptions, data.driverStatus)
+                      "
+                    >
+                      <strong>· </strong
+                      >{{
+                        selectDictLabel(driverStatusOptions, data.driverStatus)
+                      }}
                     </span>
                   </div>
                 </template>
@@ -178,7 +280,18 @@
     />
 
     <!-- 调度指派 -->
+    <DispatchList
+      v-if="headerTab === 2"
+      ref="DispatchListRef"
+      class="dispatch-list-panel"
+    />
 
+    <!-- 派车 -->
+    <DispatchVehicle
+      v-if="showDispatchVehicle"
+      class="dispatch-vehicle-panel"
+    />
+    <!-- 车辆详情 -->
 
     <!-- 轨迹回放 -->
     <TrackList
@@ -198,16 +311,24 @@
 </template>
 
 <script>
-import Infos from './components/infos.vue';
-import WarnList from './warning/warnList.vue';
-import TrackList from './track/trackList.vue';
-import { http_request } from '@/api';
+import Infos from "./components/infos.vue";
+import WarnList from "./warning/warnList.vue";
+import DispatchList from "./dispatch/dispatchList.vue";
+import DispatchVehicle from "./dispatch/dispatchVehicle";
+import VehicleDetail from "./dispatch/vehicleDetail";
+import TrackList from "./track/trackList.vue";
+import { http_request } from "@/api";
+import store from "@/store";
+import { mapState } from "vuex";
 export default {
-  name: 'MapInfo',
+  name: "MapInfo",
   components: {
     Infos,
     WarnList,
-    TrackList
+    DispatchList,
+    DispatchVehicle,
+    VehicleDetail,
+    TrackList,
   },
   data() {
     return {
@@ -216,13 +337,13 @@ export default {
       geocoder: null,
       // 时间
       timer: null,
-      currentday: '',
-      currentDate: '',
-      currentTime: '',
+      currentday: "",
+      currentDate: "",
+      currentTime: "",
       // 树切换
-      currentType: '1',
+      currentType: "1",
       // 车小tab
-      vehicleActiveTab: '0',
+      vehicleActiveTab: "0",
       // 车各个状态统计值
       countVehicle: {
         countAll: 0, // 所有
@@ -231,65 +352,68 @@ export default {
         countIdle: 0, // 空闲
         countInTask: 0, // 任务
         countRepair: 0, // 维修
-        countMaintenance: 0 // 保养
+        countMaintenance: 0, // 保养
       },
       // 车树查询
       vehicleParams: {
         deviceStatus: undefined,
         licenseNumber: undefined,
         carrierType: undefined,
-        vehicleStatus: undefined
+        vehicleStatus: undefined,
       },
       // 车辆承运类型字典
       vehicleCarrierTypeOptions: [],
       // 车辆状态字典
       vehicleStatusOptions: [
-        { dictLabel: '空闲中', dictValue: 0, color: 'blue' },
-        { dictLabel: '任务中', dictValue: 1, color: 'green' },
-        { dictLabel: '维修中', dictValue: 2, color: 'red' },
-        { dictLabel: '保养中', dictValue: 3, color: 'yellow' }
+        { dictLabel: "空闲中", dictValue: 0, color: "blue" },
+        { dictLabel: "任务中", dictValue: 1, color: "green" },
+        { dictLabel: "维修中", dictValue: 2, color: "red" },
+        { dictLabel: "保养中", dictValue: 3, color: "yellow" },
       ],
       // 车树
       vehicleTreeOptions: undefined,
       vehicleTreeProps: {
-        children: 'children',
-        label: 'orgOrlicenseNumber'
+        children: "children",
+        label: "orgOrlicenseNumber",
       },
       // 当前选中的车节点
       orgOrVehicleCode: undefined,
       orgOrVehicleInfo: null,
       // 司机小tab
-      driverActiveTab: '0',
-      driverTablist: [{
-        code: '0',
-        tabName: '空闲'
-      }, {
-        code: '1',
-        tabName: '任务'
-      }],
+      driverActiveTab: "0",
+      driverTablist: [
+        {
+          code: "0",
+          tabName: "空闲",
+        },
+        {
+          code: "1",
+          tabName: "任务",
+        },
+      ],
       // 司机各个状态统计值
       countDriver: {
         countAll: 0, // 全部
         countIdle: 0, // 空闲
         countInTask: 0, // 任务中
-        countUnavailable: 0 // 不可用
+        countUnavailable: 0, // 不可用
       },
       // 司机树查询
       driverParams: {
         driverName: undefined,
-        driverStatus: undefined
+        driverStatus: undefined,
       },
       // 司机状态字典
       driverStatusOptions: [
-        { dictLabel: '任务中', dictValue: 0, color: 'green' },
-        { dictLabel: '空闲中', dictValue: 1, color: 'blue' },
-        { dictLabel: '不可用', dictValue: 2, color: 'gray' }
+        { dictLabel: "任务中", dictValue: 0, color: "green" },
+        { dictLabel: "空闲中", dictValue: 1, color: "blue" },
+        { dictLabel: "不可用", dictValue: 2, color: "gray" },
       ],
       // 司机树
       driverTreeOptions: undefined,
       driverTreeProps: {
-        children: 'children',
-        label: 'orgOrDriverName'
+        children: "children",
+        label: "orgOrDriverName",
       },
       // 当前选中的司机节点
       driverCode: undefined,
@@ -298,9 +422,9 @@ export default {
       // 地图切换
       headerTab: 1,
       headerTabList: [
-        {code: 1, label: '车辆监控'},
-        {code: 2, label: '调度指派'},
-        {code: 3, label: '轨迹回放'}
+        { code: 1, label: "车辆监控" },
+        { code: 2, label: "调度指派" },
+        { code: 3, label: "轨迹回放" },
       ],
       // 巡航器轨迹
       pathSimplifierIns: null,
@@ -316,25 +440,32 @@ export default {
       markerList: {},
       // 不同承运类型车辆图片大小不同所以点位偏移不同
       offsetList: {
-        'ztc': [-17, -38],
-        'jbc': [-17, -40],
-        'llc': [-14, -31],
-        'phc': [-15, -39],
-        'qt': [-15, -39]
-      }
-    }
+        ztc: [-17, -38],
+        jbc: [-17, -40],
+        llc: [-14, -31],
+        phc: [-15, -39],
+        qt: [-15, -39],
+      },
+      // showVehicleDetail: false,  //车辆详情组件显示
+    };
   },
+
   watch: {
-    'vehicleParams.licenseNumber': {
+    "vehicleParams.licenseNumber": {
       handler() {
         this.vehicleQuery();
-      }
+      },
     },
-    'driverParams.driverName': {
+    "driverParams.driverName": {
       handler() {
         this.driverQuery();
-      }
-    }
+      },
+    },
+  },
+  computed: {
+    showDispatchVehicle() {
+      return this.$store.getters.showDispatchVehicle;
+    },
   },
   mounted() {
     // 时间
@@ -343,7 +474,7 @@ export default {
     // 地图
     this.$nextTick(() => {
       this.initMap();
-    })
+    });
     // 字典
     this.getDictData();
     // 统计值
@@ -362,18 +493,18 @@ export default {
     /** 初始化地图 */
     initMap() {
       if (!AMap) {
-        this.msgWarning('地图加载失败，请刷新页面重试');
+        this.msgWarning("地图加载失败，请刷新页面重试");
         return;
       }
-      this.map = new AMap.Map('device-map-container', {
-        mapStyle: 'amap://styles/2fe468ae95b55caa76404a537353e63a', //设置地图的显示样式
+      this.map = new AMap.Map("device-map-container", {
+        mapStyle: "amap://styles/2fe468ae95b55caa76404a537353e63a", //设置地图的显示样式
         resizeEnable: true,
         center: [119.358267, 26.04577],
         zoom: 11,
       });
       this.geocoder = new AMap.Geocoder({
         radius: 1000,
-        extensions: 'all'
+        extensions: "all",
       });
     },
     /** 绘制标记
@@ -382,8 +513,16 @@ export default {
      * @param {string} content 图标
      * @param {Array} offset 图标偏移量
      * @param {number} angle 旋转角度
-    */
-    drawMarker(position, {clickable = true, content = '<div class="own-device-marker-car qt"></div>', offset = [0, 0], angle = 0}) {
+     */
+    drawMarker(
+      position,
+      {
+        clickable = true,
+        content = '<div class="own-device-marker-car qt"></div>',
+        offset = [0, 0],
+        angle = 0,
+      }
+    ) {
       const marker = new AMap.Marker({
         map: this.map,
         position,
@@ -393,7 +532,7 @@ export default {
         offset: new AMap.Pixel(offset[0], offset[1]),
         angle,
         clickable,
-        topWhenClick: true // 鼠标点击时marker置顶
+        topWhenClick: true, // 鼠标点击时marker置顶
       });
       return marker;
     },
@@ -410,12 +549,15 @@ export default {
      * @param {Array} offset 文本标签偏移量
      * @param {string} direction 文本标签出现位置 top'|'right'|'bottom'|'left'|'center
      */
-    setLabelContent(info = [], {offset = [0, -8], direction = 'top'}) {
-      const option = info.length > 0 ? {
-        offset: new AMap.Pixel(offset[0], offset[1]),
-        content: info.join(''),
-        direction
-      } : {};
+    setLabelContent(info = [], { offset = [0, -8], direction = "top" }) {
+      const option =
+        info.length > 0
+          ? {
+              offset: new AMap.Pixel(offset[0], offset[1]),
+              content: info.join(""),
+              direction,
+            }
+          : {};
       return option;
     },
     /** 实例化窗体并打开
@@ -424,12 +566,15 @@ export default {
      * @param {string} anchor 图标锚点
      * @param {Array} offset 窗体偏移量
      */
-    markerInfoInit(position, {info = [], offset = [10, -12] , anchor = 'bottom-center'}) {
+    markerInfoInit(
+      position,
+      { info = [], offset = [10, -12], anchor = "bottom-center" }
+    ) {
       const infoWindow = new AMap.InfoWindow({
         isCustom: false, // 使用自定义窗体
-        content: info.join(''),
+        content: info.join(""),
         offset: new AMap.Pixel(offset[0], offset[1]),
-        anchor
+        anchor,
       });
       infoWindow.open(this.map, position);
       return infoWindow;
@@ -446,8 +591,8 @@ export default {
       const _this = this;
       return new Promise((resolve, reject) => {
         let address;
-        _this.geocoder.getAddress(position, function(status, result) {
-          if (status === 'complete' && result.info === 'OK') {
+        _this.geocoder.getAddress(position, function (status, result) {
+          if (status === "complete" && result.info === "OK") {
             if (result && result.regeocode) {
               const { formattedAddress } = result.regeocode;
               address = formattedAddress;
@@ -455,22 +600,25 @@ export default {
             resolve(address);
           }
         });
-      })
+      });
     },
     /** 绘制线
      * @param {Array} path 组成轨迹的点数组必传
      * @param {Array} strokeColor 轨迹线颜色
      * @param {Array} strokeWeight 轨迹粗细
      * @param {Array} showDir 线内是否显示箭头
-    */
-    drawLine(path = [], {strokeColor = '#1990FF', strokeWeight = 8, showDir = true}) {
+     */
+    drawLine(
+      path = [],
+      { strokeColor = "#1990FF", strokeWeight = 8, showDir = true }
+    ) {
       const polyline = new window.AMap.Polyline({
         map: this.map,
         path,
         strokeColor,
         strokeWeight,
         showDir,
-        lineJoin: 'round'
+        lineJoin: "round",
       });
       return polyline;
     },
@@ -484,7 +632,17 @@ export default {
      * @param {string} fillColor 填充色
      * @param {Number} fillOpacity 填充透明度
      */
-    drawCircle(center, radius, {strokeColor = '#ff4d4d', strokeOpacity = 1, strokeWeight = 3, fillColor = '#ff4d4d', fillOpacity = 0.3}) {
+    drawCircle(
+      center,
+      radius,
+      {
+        strokeColor = "#ff4d4d",
+        strokeOpacity = 1,
+        strokeWeight = 3,
+        fillColor = "#ff4d4d",
+        fillOpacity = 0.3,
+      }
+    ) {
       const circle = new AMap.Circle({
         map: this.map,
         center: center,
@@ -493,7 +651,7 @@ export default {
         strokeOpacity,
         strokeWeight,
         fillColor,
-        fillOpacity
+        fillOpacity,
       });
       return circle;
     },
@@ -516,16 +674,21 @@ export default {
       const SouthWest = bounds.getSouthWest();
       const SouthEast = [NorthEast.lng, SouthWest.lat];
       const NorthWest = [SouthWest.lng, NorthEast.lat];
-      const path = [[NorthEast.lng, NorthEast.lat], SouthEast, [SouthWest.lng, SouthWest.lat], NorthWest]; // 将地图可视区域四个角位置按照顺序放入path，用于判断point是否在可视区域
+      const path = [
+        [NorthEast.lng, NorthEast.lat],
+        SouthEast,
+        [SouthWest.lng, SouthWest.lat],
+        NorthWest,
+      ]; // 将地图可视区域四个角位置按照顺序放入path，用于判断point是否在可视区域
       const isPointInRing = AMap.GeometryUtil.isPointInRing(position, path); // 判断point是否在可视区域
       return isPointInRing;
     },
     /** 绘制巡航轨迹 */
     initPathSimplifier() {
       const that = this;
-      AMapUI.load(['ui/misc/PathSimplifier'], (PathSimplifier) => {
+      AMapUI.load(["ui/misc/PathSimplifier"], (PathSimplifier) => {
         if (!PathSimplifier.supportCanvas) {
-          alert('当前环境不支持 Canvas！');
+          alert("当前环境不支持 Canvas！");
           return;
         }
         // 创建一个巡航轨迹路线
@@ -536,33 +699,35 @@ export default {
           getPath: (pathData, pathIndex) => {
             return pathData.path;
           },
-          getHoverTitle: function(pathData, pathIndex, pointIndex) {
-            return '';
+          getHoverTitle: function (pathData, pathIndex, pointIndex) {
+            return "";
           },
           // 自定义样式，可设置巡航器样式，巡航轨迹样式，巡航轨迹点击、hover等不同状态下的样式，不设置则用默认样式，详情请参考api文档 renderOptions:{}
           // 绘制路线节点
           renderOptions: {
             // 轨迹线的样式
             pathLineStyle: {
-              strokeStyle: '#4682FA',
+              strokeStyle: "#4682FA",
               lineWidth: 8,
-              dirArrowStyle: false
+              dirArrowStyle: false,
             },
             pathLineHoverStyle: null,
             pathLineSelectedStyle: {
-              strokeStyle: '#4682FA',
+              strokeStyle: "#4682FA",
               lineWidth: 8,
-              dirArrowStyle: false
+              dirArrowStyle: false,
             },
-            renderAllPointsIfNumberBelow: -1 // 绘制路线节点，如不需要可设置为-1
-          }
+            renderAllPointsIfNumberBelow: -1, // 绘制路线节点，如不需要可设置为-1
+          },
         });
         // 设置数据
-        that.pathSimplifierIns.setData([{
-          path: that.$refs.TrackListRef.jmTracklist
-        }]);
+        that.pathSimplifierIns.setData([
+          {
+            path: that.$refs.TrackListRef.jmTracklist,
+          },
+        ]);
         // 对线路创建一个巡航器
-        const icon = that.orgOrVehicleInfo.carrierType || 'qt';
+        const icon = that.orgOrVehicleInfo.carrierType || "qt";
         const contentImg = require(`@/assets/images/device/map_car_${icon}.png`);
         that.navgtr = that.pathSimplifierIns.createPathNavigator(0, {
           loop: false, // 循环播放
@@ -571,13 +736,14 @@ export default {
             width: 30,
             height: 78,
             // 使用图片
-            content: PathSimplifier.Render.Canvas.getImageContent(contentImg,
+            content: PathSimplifier.Render.Canvas.getImageContent(
+              contentImg,
               function onload() {
                 // 图片加载成功，重新绘制一次
                 that.pathSimplifierIns.renderLater();
               },
               function onerror(e) {
-                that.msgError('图片加载失败！');
+                that.msgError("图片加载失败！");
               }
             ),
             strokeStyle: null,
@@ -585,20 +751,31 @@ export default {
             // 经过路径的样式
             pathLinePassedStyle: {
               lineWidth: 8,
-              strokeStyle: '#4682FA',
-              dirArrowStyle: true
-            }
-          }
+              strokeStyle: "#4682FA",
+              dirArrowStyle: true,
+            },
+          },
         });
         // 创建信息窗
         const info = [];
         info.push("<div class='own-map-navgtr-info-window'>");
-        info.push("<p class='input-item'><span class='speed'>速度：</span>" + that.$refs.TrackListRef.jmTrackInfolist[0].gpsSpeed + ' km/h</p>');
-        info.push("<p class='input-item'><span class='time'>时间：</span>" + that.$refs.TrackListRef.jmTrackInfolist[0].gpsTime + '</p>');
-        info.push('</div>');
-        const infoWindow = that.markerInfoInit(that.$refs.TrackListRef.jmTracklist[0], {info, offset: [0, -20]});
+        info.push(
+          "<p class='input-item'><span class='speed'>速度：</span>" +
+            that.$refs.TrackListRef.jmTrackInfolist[0].gpsSpeed +
+            " km/h</p>"
+        );
+        info.push(
+          "<p class='input-item'><span class='time'>时间：</span>" +
+            that.$refs.TrackListRef.jmTrackInfolist[0].gpsTime +
+            "</p>"
+        );
+        info.push("</div>");
+        const infoWindow = that.markerInfoInit(
+          that.$refs.TrackListRef.jmTracklist[0],
+          { info, offset: [0, -20] }
+        );
         // 巡航器移动事件
-        that.navgtr.on('move', function(data, position) {
+        that.navgtr.on("move", function (data, position) {
           const path = position.dataItem.pathData.path;
           const idx = position.dataItem.pointIndex; // 走到了第几个点
           const tail = position.tail; // 至下一个节点的比例位置
@@ -608,7 +785,9 @@ export default {
           that.$refs.TrackListRef.setCurrentTrackTimeAndSpeed(idx);
           // 计算下一个距离速度
           if (idx < len - 1) {
-            that.navgtr.setSpeed(that.navgtrSpeed * that.$refs.TrackListRef.rateTime);
+            that.navgtr.setSpeed(
+              that.navgtrSpeed * that.$refs.TrackListRef.rateTime
+            );
           }
           // 进度条实时展示tail
           that.$refs.TrackListRef.setSlideValue((totalIdx / len) * 100);
@@ -621,10 +800,18 @@ export default {
           // 重新设置信息窗体内容
           const nweInfo = [];
           nweInfo.push("<div class='own-map-navgtr-info-window'>");
-          nweInfo.push("<p class='input-item'><span class='speed'>速度：</span>" + that.$refs.TrackListRef.jmTrackInfolist[idx].gpsSpeed + ' km/h</p>');
-          nweInfo.push("<p class='input-item'><span class='time'>时间：</span>" + that.$refs.TrackListRef.jmTrackInfolist[idx].gpsTime + '</p>');
-          nweInfo.push('</div>');
-          infoWindow.setContent(nweInfo.join(''));
+          nweInfo.push(
+            "<p class='input-item'><span class='speed'>速度：</span>" +
+              that.$refs.TrackListRef.jmTrackInfolist[idx].gpsSpeed +
+              " km/h</p>"
+          );
+          nweInfo.push(
+            "<p class='input-item'><span class='time'>时间：</span>" +
+              that.$refs.TrackListRef.jmTrackInfolist[idx].gpsTime +
+              "</p>"
+          );
+          nweInfo.push("</div>");
+          infoWindow.setContent(nweInfo.join(""));
           // 车超出视野范围后重新定位
           if (!that.isPointInRing(path[idx])) {
             that.map.setCenter(path[idx]);
@@ -636,20 +823,24 @@ export default {
         });
         // 绘制起点
         this.startMarker = this.drawMarker(
-          this.$refs.TrackListRef.jmTracklist[0], 
+          this.$refs.TrackListRef.jmTracklist[0],
           {
             clickable: false,
-            content: '<div class="own-device-line-icon start"><div>起</div></div>',
-            offset: [-58, -58]
+            content:
+              '<div class="own-device-line-icon start"><div>起</div></div>',
+            offset: [-58, -58],
           }
         );
         // 绘制终点
         this.endMarker = this.drawMarker(
-          this.$refs.TrackListRef.jmTracklist[this.$refs.TrackListRef.jmTracklist.length - 1], 
+          this.$refs.TrackListRef.jmTracklist[
+            this.$refs.TrackListRef.jmTracklist.length - 1
+          ],
           {
             clickable: false,
-            content: '<div class="own-device-line-icon end"><div>终</div></div>',
-            offset: [-58, -58]
+            content:
+              '<div class="own-device-line-icon end"><div>终</div></div>',
+            offset: [-58, -58],
           }
         );
       });
@@ -679,44 +870,50 @@ export default {
     /** 进度条滑块触发改变巡航轨迹 */
     handleSlideChange(value) {
       if (!this.navgtr) return;
-      const newVal = typeof (value) === 'number' ? value : this.$refs.TrackListRef.slideValue;
-      const num = parseInt((newVal / 100) * this.$refs.TrackListRef.jmTracklist.length);
-      const decimal = String((newVal / 100) * this.$refs.TrackListRef.jmTracklist.length).split('.')[1] || 0;
-      this.navgtr.moveToPoint(num, Number('0.' + decimal));
+      const newVal =
+        typeof value === "number" ? value : this.$refs.TrackListRef.slideValue;
+      const num = parseInt(
+        (newVal / 100) * this.$refs.TrackListRef.jmTracklist.length
+      );
+      const decimal =
+        String(
+          (newVal / 100) * this.$refs.TrackListRef.jmTracklist.length
+        ).split(".")[1] || 0;
+      this.navgtr.moveToPoint(num, Number("0." + decimal));
       this.pathSimplifierIns.renderLater();
     },
-    // 返回上一页 
+    // 返回上一页
     backPage() {
       this.$router.go(-1);
     },
     // 实时获取当前时间
     getCurrentTime() {
-      const date = new Date(); 
+      const date = new Date();
       const day = date.getDay();
       if (day === 0) {
-        this.currentday = '星期天';
+        this.currentday = "星期天";
       } else if (day === 1) {
-        this.currentday = '星期一';
+        this.currentday = "星期一";
       } else if (day === 2) {
-        this.currentday = '星期二';
+        this.currentday = "星期二";
       } else if (day === 3) {
-        this.currentday = '星期三';
+        this.currentday = "星期三";
       } else if (day === 4) {
-        this.currentday = '星期四';
+        this.currentday = "星期四";
       } else if (day === 5) {
-        this.currentday = '星期五';
+        this.currentday = "星期五";
       } else if (day === 6) {
-        this.currentday = '星期六';
+        this.currentday = "星期六";
       }
-      this.currentDate = this.parseTime(date, '{y} / {m} / {d}');
-      this.currentTime = this.parseTime(date, '{h}:{i}')
+      this.currentDate = this.parseTime(date, "{y} / {m} / {d}");
+      this.currentTime = this.parseTime(date, "{h}:{i}");
     },
     // 定时刷新时间
     refreshTime() {
       this.clearTimer();
       this.timer = setInterval(() => {
         this.getCurrentTime();
-      }, 60 * 1000)
+      }, 60 * 1000);
     },
     // 清除定时器
     clearTimer() {
@@ -735,12 +932,12 @@ export default {
     selectDictColor(datas, value) {
       var actions = [];
       Object.keys(datas).some((key) => {
-        if (datas[key].dictValue == ('' + value)) {
+        if (datas[key].dictValue == "" + value) {
           actions.push(datas[key].color);
           return true;
         }
-      })
-      return actions.join('');
+      });
+      return actions.join("");
     },
     // 切换车辆/司机
     handleType(code) {
@@ -751,10 +948,10 @@ export default {
     handleVehicleTab(code) {
       if (this.vehicleActiveTab === code) return;
       this.vehicleActiveTab = code;
-      if (code === '0') {
+      if (code === "0") {
         // 全部
         this.vehicleParams.deviceStatus = undefined;
-      } else if (code === '1') {
+      } else if (code === "1") {
         // 在线
         this.vehicleParams.deviceStatus = 1;
       }
@@ -763,23 +960,23 @@ export default {
     // 获取车辆各个状态统计值
     getCountVehicle() {
       const obj = {
-        moduleName: 'http_map',
-        method: 'get',
-        url_alias: 'countVehicle'
-      }
-      http_request(obj).then(res => {
+        moduleName: "http_map",
+        method: "get",
+        url_alias: "countVehicle",
+      };
+      http_request(obj).then((res) => {
         this.countVehicle = res.data;
       });
     },
     // 获取车辆树数据
     getOrgVehicleTree() {
       const obj = {
-        moduleName: 'http_map',
-        method: 'get',
-        url_alias: 'orgVehicleTree',
-        data: this.vehicleParams
+        moduleName: "http_map",
+        method: "get",
+        url_alias: "orgVehicleTree",
+        data: this.vehicleParams,
       };
-      http_request(obj).then(res => {
+      http_request(obj).then((res) => {
         this.vehicleTreeOptions = res.data;
       });
     },
@@ -789,20 +986,42 @@ export default {
     },
     // 车树节点筛选
     vehicleFilterNode(vehicleParams, data) {
-      console.log(vehicleParams)
-      const { licenseNumber, carrierType, vehicleStatus, deviceStatus } = vehicleParams;
-      if (!licenseNumber && !carrierType && (vehicleStatus === undefined || vehicleStatus === null) && (deviceStatus === undefined || deviceStatus === null)) return true;
-      let flag1 = true, flag2 = true, flag3 = true, flag4 = true;
-      if (licenseNumber && licenseNumber !== '') flag1 = data.orgOrlicenseNumber.indexOf(licenseNumber) !== -1;
-      if (carrierType && carrierType !== '') flag2 = data.carrierType === carrierType;
-      if (vehicleStatus !== undefined && vehicleStatus !== null && vehicleStatus !== '') flag3 = data.vehicleStatus === vehicleStatus;
-      if (deviceStatus !== undefined && deviceStatus !== null && deviceStatus !== '') flag3 = data.deviceStatus === deviceStatus;
-      return (flag1 && flag2 && flag3 && flag4);
+      console.log(vehicleParams);
+      const { licenseNumber, carrierType, vehicleStatus, deviceStatus } =
+        vehicleParams;
+      if (
+        !licenseNumber &&
+        !carrierType &&
+        (vehicleStatus === undefined || vehicleStatus === null) &&
+        (deviceStatus === undefined || deviceStatus === null)
+      )
+        return true;
+      let flag1 = true,
+        flag2 = true,
+        flag3 = true,
+        flag4 = true;
+      if (licenseNumber && licenseNumber !== "")
+        flag1 = data.orgOrlicenseNumber.indexOf(licenseNumber) !== -1;
+      if (carrierType && carrierType !== "")
+        flag2 = data.carrierType === carrierType;
+      if (
+        vehicleStatus !== undefined &&
+        vehicleStatus !== null &&
+        vehicleStatus !== ""
+      )
+        flag3 = data.vehicleStatus === vehicleStatus;
+      if (
+        deviceStatus !== undefined &&
+        deviceStatus !== null &&
+        deviceStatus !== ""
+      )
+        flag3 = data.deviceStatus === deviceStatus;
+      return flag1 && flag2 && flag3 && flag4;
     },
     // 车树节点选中
     vehicleNodeClick(data) {
       if (this.orgOrVehicleCode === data.orgOrVehicleCode) return;
-      console.log('tree-node: ', data)
+      console.log("tree-node: ", data);
       this.orgOrVehicleCode = data.orgOrVehicleCode;
       this.orgOrVehicleInfo = data;
       if (data.vehicleFlag) {
@@ -823,23 +1042,23 @@ export default {
     // 获取司机各个状态统计值
     getCountDriver() {
       const obj = {
-        moduleName: 'http_map',
-        method: 'get',
-        url_alias: 'countDriver'
-      }
-      http_request(obj).then(res => {
+        moduleName: "http_map",
+        method: "get",
+        url_alias: "countDriver",
+      };
+      http_request(obj).then((res) => {
         this.countDriver = res.data;
       });
     },
     // 获取司机树数据
     getOrgDriverTree() {
       const obj = {
-        moduleName: 'http_map',
-        method: 'get',
-        url_alias: 'orgDriverTree',
-        data: this.driverParams
+        moduleName: "http_map",
+        method: "get",
+        url_alias: "orgDriverTree",
+        data: this.driverParams,
       };
-      http_request(obj).then(res => {
+      http_request(obj).then((res) => {
         this.driverTreeOptions = res.data;
       });
     },
@@ -850,68 +1069,88 @@ export default {
     // 司机树节点筛选
     driverFilterNode(driverParams, data) {
       const { driverName, driverStatus } = driverParams;
-      if (!driverName && (driverStatus === undefined || driverStatus === null)) return true;
-      let flag1 = true, flag2 = true;
-      if (driverName && driverName !== '') flag1 = data.orgOrDriverName.indexOf(driverName) !== -1;
-      if (driverStatus !== undefined && driverStatus !== null && driverStatus !== '') flag2 = data.driverStatus === driverStatus;
-      return (flag1 && flag2);
+      if (!driverName && (driverStatus === undefined || driverStatus === null))
+        return true;
+      let flag1 = true,
+        flag2 = true;
+      if (driverName && driverName !== "")
+        flag1 = data.orgOrDriverName.indexOf(driverName) !== -1;
+      if (
+        driverStatus !== undefined &&
+        driverStatus !== null &&
+        driverStatus !== ""
+      )
+        flag2 = data.driverStatus === driverStatus;
+      return flag1 && flag2;
     },
     // 司机节点选中
-    driverNodeClick(data) {
-      
-    },
+    driverNodeClick(data) {},
     // 获取车辆定位列表
     getVehicleLoLocations(orgCode) {
       const params = orgCode ? { orgCode } : {};
       const obj = {
-        moduleName: 'http_map',
-        method: 'post',
-        url_alias: 'getVehicleLoLocations',
-        data: params
-      }
-      http_request(obj).then(res => {
+        moduleName: "http_map",
+        method: "post",
+        url_alias: "getVehicleLoLocations",
+        data: params,
+      };
+      http_request(obj).then((res) => {
         // 绘制前先清空之前的绘制, 避免重复绘制
         this.clearMarkerList();
         if (res.data.rows && res.data.rows.length > 0) {
           // 绘制全部车辆点位
-          res.data.rows.forEach(el => {
+          res.data.rows.forEach((el) => {
             const { attribute } = el;
-            if (attribute && attribute.coordinate && attribute.coordinate.value && attribute.coordinate.value.length === 2 && attribute.coordinate.value[0] && attribute.coordinate.value[1]) {
+            if (
+              attribute &&
+              attribute.coordinate &&
+              attribute.coordinate.value &&
+              attribute.coordinate.value.length === 2 &&
+              attribute.coordinate.value[0] &&
+              attribute.coordinate.value[1]
+            ) {
               this.drawVehicleMarker(el);
             }
           });
           this.$nextTick(() => {
             this.map.setFitView();
-          })
+          });
         } else {
-          this.msgWarning('该组织下暂无车辆定位信息');
+          this.msgWarning("该组织下暂无车辆定位信息");
         }
       });
     },
     // 获取设备定位信息
     getDeviceLocationInfo(plateNumber) {
       const obj = {
-        moduleName: 'http_map',
-        method: 'get',
-        url_alias: 'getDeviceLocationInfo',
-        url_code: [plateNumber]
-      }
-      http_request(obj).then(res => {
+        moduleName: "http_map",
+        method: "get",
+        url_alias: "getDeviceLocationInfo",
+        url_code: [plateNumber],
+      };
+      http_request(obj).then((res) => {
         const { data } = res;
         // 绘制前先清空之前的绘制, 避免重复绘制
         this.clearMarkerList();
         if (data) {
           // 绘制全部车辆点位
           const { attribute } = data;
-          if (attribute && attribute.coordinate && attribute.coordinate.value && attribute.coordinate.value.length === 2 && attribute.coordinate.value[0] && attribute.coordinate.value[1]) {
+          if (
+            attribute &&
+            attribute.coordinate &&
+            attribute.coordinate.value &&
+            attribute.coordinate.value.length === 2 &&
+            attribute.coordinate.value[0] &&
+            attribute.coordinate.value[1]
+          ) {
             this.drawVehicleMarker(data);
             this.$nextTick(() => {
               this.map.setZoomAndCenter(13, attribute.coordinate.value);
-            })
+            });
             return;
           }
         }
-        this.msgWarning('该车辆暂无定位信息');
+        this.msgWarning("该车辆暂无定位信息");
       });
     },
     // 绘制车辆定位marder
@@ -922,35 +1161,50 @@ export default {
       const onlineStatus = attribute.onlineStatus || {};
       const speed = attribute.speed || {};
       const position = attribute.coordinate.value;
-      const statusColor = onlineStatus === 1 ? 'green' : 'gray'; // 设备状态 0离线 1在线
+      const statusColor = onlineStatus === 1 ? "green" : "gray"; // 设备状态 0离线 1在线
       const contentValue = [];
-      if (speed.text) contentValue.push(speed.text + ' km/h');
-      if (direction.text) contentValue.push(direction.text + '°');
+      if (speed.text) contentValue.push(speed.text + " km/h");
+      if (direction.text) contentValue.push(direction.text + "°");
       // 绘制标记
       const styleObj = {
-        content: '<div style="transform:rotate('+ ( direction.value || -30) +'deg)" class="own-device-marker-car '+ (carrier_type || 'qt') +'"></div>', 
-        offset: this.offsetList[(carrier_type || 'qt')], 
-        angle: 0
-      }
+        content:
+          '<div style="transform:rotate(' +
+          (direction.value || -30) +
+          'deg)" class="own-device-marker-car ' +
+          (carrier_type || "qt") +
+          '"></div>',
+        offset: this.offsetList[carrier_type || "qt"],
+        angle: 0,
+      };
       const marker = this.drawMarker(position, styleObj);
       this.markerList[vehicle_code] = marker;
       // 绘制文本框
       const info = [];
       info.push("<div class='own-map-vehicle-marker-label'>");
-      info.push("<h5>"+ plate_number);
-      if (onlineStatus.text) info.push("<span class='status "+ statusColor +"'><strong class='mr5'>· </strong>"+ onlineStatus.text +"</span>");
+      info.push("<h5>" + plate_number);
+      if (onlineStatus.text)
+        info.push(
+          "<span class='status " +
+            statusColor +
+            "'><strong class='mr5'>· </strong>" +
+            onlineStatus.text +
+            "</span>"
+        );
       info.push("</h5>");
-      if (contentValue.length > 0) info.push("<p class='input-item'>"+ contentValue.join('  |  ') +"</p>");
-      info.push('</div>');
-      const content = this.setLabelContent(info, {offset: [0, -10]});
+      if (contentValue.length > 0)
+        info.push(
+          "<p class='input-item'>" + contentValue.join("  |  ") + "</p>"
+        );
+      info.push("</div>");
+      const content = this.setLabelContent(info, { offset: [0, -10] });
       this.setLabel(marker, content);
       // 双击定位
-      marker.on('dblclick', function(e) {
+      marker.on("dblclick", function (e) {
         _this.map.setFitView(marker);
       });
       // 单击
-      marker.on('click', function(e) {
-        if (JSON.stringify(marker.getLabel()) === '{}') {
+      marker.on("click", function (e) {
+        if (JSON.stringify(marker.getLabel()) === "{}") {
           _this.setLabel(marker, content);
         } else {
           _this.setLabel(marker, {});
@@ -965,40 +1219,44 @@ export default {
       this.clearPathSimplifierIns();
       // 关闭地图信息窗体
       this.closeInfoWindow();
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-.map-container{
+.map-container {
   margin: 0;
   height: 100%;
   overflow-x: auto;
   overflow-y: hidden !important;
-  $header-height: 68px; 
+  $header-height: 68px;
   $left-tree-width: 300px;
   $bottom: 16px;
   $right: 16px;
 
-  >.header-panel{
+  > .header-panel {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: $header-height;
     z-index: 999;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, #FFFFFF 100%);
-    border-bottom: 1px solid #E4ECF4;
-    >.logo{
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.28) 0%,
+      #ffffff 100%
+    );
+    border-bottom: 1px solid #e4ecf4;
+    > .logo {
       width: 136px;
       height: 46px;
       margin: 12px 2px 10px 16px;
     }
-    >.time-box{
+    > .time-box {
       padding: 4px 0 0 16px;
       position: relative;
-      .time{
+      .time {
         font-size: 30px;
         font-family: Bahnschrift;
         font-weight: 600;
@@ -1007,25 +1265,25 @@ export default {
         padding-top: 2px;
         margin-right: 8px;
       }
-      .date{
+      .date {
         font-size: 12px;
         font-family: PingFang SC;
         font-weight: 400;
         line-height: 14px;
         color: #505361;
       }
-      &::before{
-        content: '';
+      &::before {
+        content: "";
         height: 24px;
         width: 1px;
-        background: #6A6D79;
+        background: #6a6d79;
         position: absolute;
         left: 4px;
         top: 24px;
       }
     }
     // tab
-    .map-tab{
+    .map-tab {
       font-size: 0;
       position: absolute;
       top: 0;
@@ -1033,33 +1291,33 @@ export default {
       transform: translateX(-50%);
       z-index: 2;
       height: 100%;
-      >li{
+      > li {
         position: relative;
         display: inline-block;
         width: 90px;
         height: 100%;
         line-height: $header-height;
-        color: #A7AABB;
+        color: #a7aabb;
         font-size: 16px;
         font-family: PingFang SC;
         font-weight: bold;
         text-align: center;
         cursor: pointer;
         margin: 0 26px;
-        &::after{
+        &::after {
           content: "";
           width: 0;
           height: 4px;
-          background: #4682FA;
+          background: #4682fa;
           position: absolute;
           bottom: 0;
           left: 50%;
-          transition: all .3s;
+          transition: all 0.3s;
         }
-        &.active{
-          color: #3A3D4D;
+        &.active {
+          color: #3a3d4d;
           font-size: 20px;
-          &::after{
+          &::after {
             left: 8px;
             width: 74px;
           }
@@ -1067,7 +1325,7 @@ export default {
       }
     }
     // 返回按钮
-    .return-button{
+    .return-button {
       width: 72px;
       height: 32px;
       line-height: 32px;
@@ -1080,13 +1338,14 @@ export default {
       font-size: 14px;
       font-family: PingFang SC;
       font-weight: 400;
-      color: #3D4050;
+      color: #3d4050;
       cursor: pointer;
-      background: #EEF1F3 url('~@/assets/images/device/return.png') no-repeat 8px center;
+      background: #eef1f3 url("~@/assets/images/device/return.png") no-repeat
+        8px center;
     }
   }
 
-  >.left-tree-panel{
+  > .left-tree-panel {
     $tab-height: 48px;
     position: absolute;
     top: calc(#{$header-height} + #{$tab-height} + 18px);
@@ -1096,32 +1355,32 @@ export default {
     z-index: 998;
 
     // 大tab样式
-    >.left-tree-panel__tab{
+    > .left-tree-panel__tab {
       position: absolute;
       left: 0;
       right: 0;
       top: calc(-#{$tab-height});
-      >li{
+      > li {
         width: 50%;
         height: $tab-height;
-        background: #E3E7F0;
+        background: #e3e7f0;
         border-radius: 6px 6px 0 0;
         font-size: 16px;
         font-family: PingFang SC;
         font-weight: 700;
         line-height: 36px;
-        color: #8592AD;
+        color: #8592ad;
         cursor: pointer;
         text-align: center;
         box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.16);
         z-index: 0;
         transform: translateY(12px);
         transition: transform 0.4s;
-        &:first-child{
+        &:first-child {
           margin-right: 8px;
         }
-        &.active{
-          color: #3D4050;
+        &.active {
+          color: #3d4050;
           font-weight: 700;
           line-height: 48px;
           background: rgba(255, 255, 255, 0.72);
@@ -1130,7 +1389,7 @@ export default {
         }
       }
     }
-    >.left-tree-panel__content{
+    > .left-tree-panel__content {
       position: relative;
       height: 100%;
       z-index: 1;
@@ -1138,21 +1397,21 @@ export default {
       box-shadow: 6px 3px 10px rgba(0, 0, 0, 0.1);
       border-radius: 0 8px 8px 0;
       padding: 18px 0;
-      >div{
+      > div {
         height: 100%;
       }
     }
 
     // 小tab样式
-    .btn-list-box{
+    .btn-list-box {
       font-size: 0;
-      background: #E3E7F0;
+      background: #e3e7f0;
       opacity: 1;
       border-radius: 5px;
       overflow: hidden;
       margin: 0 16px 12px;
       width: calc(100% - 32px);
-      >li{
+      > li {
         display: inline-block;
         width: 50%;
         height: 36px;
@@ -1160,45 +1419,45 @@ export default {
         font-size: 14px;
         font-family: PingFang SC;
         font-weight: bold;
-        color: #8592AD;
+        color: #8592ad;
         text-align: center;
         cursor: pointer;
-        border: 2px solid #E3E7F0;
+        border: 2px solid #e3e7f0;
         border-radius: 4px;
-        &.active{
-          background: #FFFFFF;
-          color: #3D4050;
+        &.active {
+          background: #ffffff;
+          color: #3d4050;
         }
       }
     }
 
     // 搜索样式
-    .device-search-box{
+    .device-search-box {
       padding: 0 16px;
-      .label{
+      .label {
         font-size: 14px;
         font-family: PingFang SC;
         font-weight: bold;
-        color: #8592AD;
+        color: #8592ad;
         line-height: 32px;
       }
-      .device-search-input{
+      .device-search-input {
         margin-bottom: 12px;
       }
-      .device-search-select{
+      .device-search-select {
         margin-bottom: 12px;
         width: calc(50% - 4px);
       }
     }
     // 树盒子
-    .device-info-list-box{
+    .device-info-list-box {
       height: calc(100% - 124px);
       overflow: auto;
     }
   }
 
   // 信息
-  >.map-info-panel{
+  > .map-info-panel {
     position: absolute;
     top: calc(#{$header-height} + 12px);
     bottom: 254px;
@@ -1208,7 +1467,7 @@ export default {
   }
 
   // 报警列表
-  >.warn-list-panel{
+  > .warn-list-panel {
     position: absolute;
     bottom: $bottom;
     left: calc(#{$left-tree-width} + 10px);
@@ -1216,9 +1475,33 @@ export default {
     z-index: 1000;
     height: 226px;
   }
+  // 调度指派
+  > .dispatch-list-panel {
+    position: absolute;
+    top: calc(#{$header-height} + 12px);
+    right: $right;
+    z-index: 1000;
+    width: 380px;
+    height: calc(100% - #{$header-height} - #{$bottom} - 12px);
+  }
+
+  //车辆详情
+  > .dispatch-vehicle-panel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 780px;
+    height: 636px;
+    background: #ffffff;
+    border: 1px solid #e4ecf4;
+    box-shadow: 0px 12px 48px rgba(0, 0, 0, 0.03);
+    border-radius: 4px;
+    z-index: 1000;
+  }
 
   // 行车轨迹
-  >.track-list-panel{
+  > .track-list-panel {
     position: absolute;
     top: calc(#{$header-height} + 12px);
     bottom: $bottom;
@@ -1228,24 +1511,24 @@ export default {
   }
 
   // 地图
-  >#device-map-container{
+  > #device-map-container {
     width: 100%;
     height: 100%;
     // 地图信息窗体样式-覆盖
-    ::v-deep.amap-info-sharp{
+    ::v-deep.amap-info-sharp {
       display: none;
     }
-    ::v-deep.amap-info-content{
+    ::v-deep.amap-info-content {
       background: transparent;
       box-shadow: 0px 3px 5px rgba(206, 206, 206, 0.7);
       padding: 0;
-      .amap-info-close{
+      .amap-info-close {
         top: 6px;
         right: 6px !important;
       }
     }
     // 地图标记label样式-覆盖
-    ::v-deep.amap-marker-label{
+    ::v-deep.amap-marker-label {
       border: none;
       font-size: 12px;
       line-height: 14px;
@@ -1265,43 +1548,43 @@ export default {
       // }
     }
     // 车标记的信息样式
-    ::v-deep.own-map-vehicle-marker-label{
+    ::v-deep.own-map-vehicle-marker-label {
       min-width: 218px;
       min-height: 40px;
       background: rgba(255, 255, 255, 0.7);
       box-shadow: 0px 3px 5px rgba(206, 206, 206, 0.7);
       border-radius: 4px;
       padding: 8px 12px;
-      >h5{
+      > h5 {
         font-size: 20px;
         font-family: PingFang SC;
         font-weight: bold;
         line-height: 24px;
-        color: #3D4050;
-        >.status{
+        color: #3d4050;
+        > .status {
           float: right;
           font-size: 12px;
           font-family: PingFang SC;
           font-weight: bold;
           line-height: 24px;
-          &.blue{
-            color: #4682FA;
+          &.blue {
+            color: #4682fa;
           }
-          &.green{
+          &.green {
             color: rgba(67, 185, 30, 1);
           }
-          &.red{
+          &.red {
             color: rgba(239, 105, 105, 1);
           }
-          &.gray{
+          &.gray {
             color: rgba(173, 181, 189, 1);
           }
         }
       }
-      >.input-item{
+      > .input-item {
         height: 26px;
         line-height: 26px;
-        background: #E4ECF4;
+        background: #e4ecf4;
         opacity: 1;
         border-radius: 5px;
         margin-top: 8px;
@@ -1309,51 +1592,53 @@ export default {
         font-size: 14px;
         font-family: PingFang SC;
         font-weight: 600;
-        color: #3D4050;
+        color: #3d4050;
       }
     }
     // 巡航信息窗体样式
-    ::v-deep.own-map-navgtr-info-window{
+    ::v-deep.own-map-navgtr-info-window {
       min-width: 216px;
       max-width: 246px;
       min-height: 68px;
       background: rgba(255, 255, 255, 0.7);
       border-radius: 4px;
       padding: 10px 18px 10px 14px;
-      .input-item{
+      .input-item {
         font-size: 14px;
         font-family: PingFang SC;
         font-weight: bold;
         line-height: 24px;
-        color: #3D4050;
-        >span{
+        color: #3d4050;
+        > span {
           font-size: 14px;
           font-family: PingFang SC;
           font-weight: 400;
           line-height: 24px;
-          color: #A6A8AD;
+          color: #a6a8ad;
           margin-right: 2px;
           padding-left: 22px;
-          &.speed{
-            background: url('~@/assets/images/device/icon_speed.png') no-repeat 0px 1px;
+          &.speed {
+            background: url("~@/assets/images/device/icon_speed.png") no-repeat
+              0px 1px;
             background-size: 16px 16px;
           }
-          &.time{
-            background: url('~@/assets/images/device/icon_time.png') no-repeat 0px 2px;
+          &.time {
+            background: url("~@/assets/images/device/icon_time.png") no-repeat
+              0px 2px;
             background-size: 16px 16px;
           }
         }
       }
     }
     // 轨迹起点终点样式
-    ::v-deep.own-device-line-icon{
+    ::v-deep.own-device-line-icon {
       width: 118px;
       height: 118px;
       background: rgba(255, 255, 255, 0.25);
       border-radius: 50%;
       padding: 31px;
       position: relative;
-      >div{
+      > div {
         width: 24px;
         height: 24px;
         line-height: 24px;
@@ -1362,13 +1647,13 @@ export default {
         font-size: 12px;
         font-family: PingFang SC;
         font-weight: bold;
-        color: #FFFFFF;
+        color: #ffffff;
         text-align: center;
         position: relative;
         z-index: 1;
       }
-      &::after{
-        content: '';
+      &::after {
+        content: "";
         position: absolute;
         width: 56px;
         height: 56px;
@@ -1378,50 +1663,50 @@ export default {
         border-radius: 50%;
         z-index: 0;
       }
-      &.start{
-        >div{
-          background: linear-gradient(180deg, #FFBC00 0%, #FF9405 100%);
+      &.start {
+        > div {
+          background: linear-gradient(180deg, #ffbc00 0%, #ff9405 100%);
           box-shadow: 0px 0px 6px rgba(241, 184, 25, 0.35);
         }
       }
-      &.end{
-        >div{
-          background: linear-gradient(180deg, #4682FA 0%, #1359E6 100%);
+      &.end {
+        > div {
+          background: linear-gradient(180deg, #4682fa 0%, #1359e6 100%);
           box-shadow: 0px 0px 6px rgba(70, 130, 250, 0.49);
         }
       }
     }
     // 标记物车样式
-    ::v-deep.own-device-marker-car{
+    ::v-deep.own-device-marker-car {
       transform-origin: center center;
-      &.ztc{
+      &.ztc {
         width: 34px;
         height: 76px;
-        background: url('~@/assets/images/device/map_car_ztc.png') no-repeat;
+        background: url("~@/assets/images/device/map_car_ztc.png") no-repeat;
         background-size: 100% 100%;
       }
-      &.jbc{
+      &.jbc {
         width: 34px;
         height: 80px;
-        background: url('~@/assets/images/device/map_car_jbc.png') no-repeat;
+        background: url("~@/assets/images/device/map_car_jbc.png") no-repeat;
         background-size: 100% 100%;
       }
-      &.llc{
+      &.llc {
         width: 28px;
         height: 62px;
-        background: url('~@/assets/images/device/map_car_llc.png') no-repeat;
+        background: url("~@/assets/images/device/map_car_llc.png") no-repeat;
         background-size: 100% 100%;
       }
-      &.phc{
+      &.phc {
         width: 31px;
         height: 79px;
-        background: url('~@/assets/images/device/map_car_phc.png') no-repeat;
+        background: url("~@/assets/images/device/map_car_phc.png") no-repeat;
         background-size: 100% 100%;
       }
-      &.qt{
+      &.qt {
         width: 31px;
         height: 79px;
-        background: url('~@/assets/images/device/map_car_qt.png') no-repeat;
+        background: url("~@/assets/images/device/map_car_qt.png") no-repeat;
         background-size: 100% 100%;
       }
     }
@@ -1431,50 +1716,51 @@ export default {
 
 <style lang="scss">
 // elementui 覆盖tab样式
-.own-map-panel-tab{
-  .el-tabs__item{
+.own-map-panel-tab {
+  .el-tabs__item {
     color: #ccc;
     font-weight: 700;
-    &.is-active{
+    &.is-active {
       color: #000;
     }
   }
-  .el-tabs__nav-wrap::after{
+  .el-tabs__nav-wrap::after {
     background: transparent;
   }
 }
 
 // elementui 覆盖tree样式
-.own-map-panel-tree{
-  .el-tree{
+.own-map-panel-tree {
+  .el-tree {
     background: transparent;
   }
-  .el-tree-node:before{
+  .el-tree-node:before {
     display: none;
   }
-  .el-tree-node:after{
+  .el-tree-node:after {
     border-top: none;
   }
-  .el-tree-node__children{
+  .el-tree-node__children {
     padding-left: 0;
   }
-  .el-tree-node{
+  .el-tree-node {
     padding-left: 0;
   }
-  .el-tree-node__content{
+  .el-tree-node__content {
     height: auto;
     min-height: 32px;
-    .el-tree-node__expand-icon{
+    .el-tree-node__expand-icon {
       padding: 6px;
       color: #ccc;
     }
-    .tree-node-icon{
+    .tree-node-icon {
       margin-left: -2px;
     }
   }
   // 树节点状态标签
-  .tree-node-car-box, .tree-node-driver-box{
-    .status{
+  .tree-node-car-box,
+  .tree-node-driver-box {
+    .status {
       display: inline-block;
       margin-right: 8px;
       height: 20px;
@@ -1482,78 +1768,78 @@ export default {
       font-size: 12px;
       border-radius: 4px;
       padding: 0 8px;
-      &.green{
-        color: #43B91E;
-        background: #E5F0E4;
+      &.green {
+        color: #43b91e;
+        background: #e5f0e4;
       }
-      &.gray{
-        color: #959AA4;  
-        background: #F1F1F1;
+      &.gray {
+        color: #959aa4;
+        background: #f1f1f1;
       }
-      &.blue{
-        color: #4682FA;  
-        background: #E5ECF6;
+      &.blue {
+        color: #4682fa;
+        background: #e5ecf6;
       }
-      &.red{
-        color: #EF6969;  
-        background: #FFEEEE;
+      &.red {
+        color: #ef6969;
+        background: #ffeeee;
       }
-      &.yellow{
-        color: #FFBC00;  
+      &.yellow {
+        color: #ffbc00;
         background: rgba(255, 188, 0, 0.09);
       }
     }
   }
   // 车的树节点
-  .tree-node-car-box{
-    .img-box{
+  .tree-node-car-box {
+    .img-box {
       width: 48px;
       height: 48px;
-      background: #F1F1F1;
+      background: #f1f1f1;
       border-radius: 3px;
       margin: 6px 8px 6px 0;
     }
-    .info-box{
-      >h5{
+    .info-box {
+      > h5 {
         font-size: 14px;
         font-family: PingFang SC;
         font-weight: bold;
         line-height: 24px;
-        color: #3D4050;
-        >.type{
+        color: #3d4050;
+        > .type {
           font-size: 12px;
           font-family: PingFang SC;
           font-weight: 400;
           line-height: 20px;
-          color: #959AA4;
+          color: #959aa4;
           margin-top: -4px;
         }
       }
-      >p{
+      > p {
         font-size: 12px;
         font-family: PingFang SC;
         font-weight: 400;
-        color: #959AA4;
+        color: #959aa4;
         line-height: 24px;
       }
     }
   }
   // 司机的树节点
-  .tree-node-driver-box{
-
+  .tree-node-driver-box {
   }
 }
 
 // 滚动条样式
 .map-scroll-panel::-webkit-scrollbar {
-	width: 6px;     /*高宽分别对应横竖滚动条的尺寸*/
-	height: 6px;
+  width: 6px; /*高宽分别对应横竖滚动条的尺寸*/
+  height: 6px;
 }
-.map-scroll-panel::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
-	border-radius: 6px;
-	background: rgba(0, 0, 0, 0.2);
+.map-scroll-panel::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.2);
 }
 .map-scroll-panel::-webkit-scrollbar-thumb:hover {
-	background:rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.25);
 }
 </style>
