@@ -196,17 +196,25 @@ const tableColumnsConfig = [
   },
   {
     isShow: true,
-    label: "上报时速(km/h)",
-    prop: "speed",
+    label: "告警描述",
+    prop: "alarmContent",
     sortNum: 5,
     tooltip: true,
-    width: 100
+    width: 120
   },
+  // {
+  //   isShow: true,
+  //   label: "上报时速(km/h)",
+  //   prop: "alarmValue",
+  //   sortNum: 6,
+  //   tooltip: true,
+  //   width: 100
+  // },
   {
     isShow: true,
     label: "设备类型",
     prop: "deviceType",
-    sortNum: 6,
+    sortNum: 7,
     tooltip: true,
     width: 100
   },
@@ -214,7 +222,7 @@ const tableColumnsConfig = [
     isShow: true,
     label: "上报时间",
     prop: "alarmTime",
-    sortNum: 7,
+    sortNum: 8,
     tooltip: true,
     width: 120
   },
@@ -222,7 +230,7 @@ const tableColumnsConfig = [
     isShow: true,
     label: "上报位置",
     prop: "alarmAddress",
-    sortNum: 8,
+    sortNum: 9,
     tooltip: true,
     width: 200
   },
@@ -230,7 +238,8 @@ const tableColumnsConfig = [
     isShow: true,
     label: "操作",
     prop: "handle",
-    sortNum: 9,
+    fixed: 'right',
+    sortNum: 10,
     tooltip: true,
     width: 80
   }

@@ -7,7 +7,7 @@
       label-width="80px"
       size="small"
     >
-      <el-form-item label="车牌号" prop="vehicleCode" v-if="warningTab ==='1'">
+      <el-form-item label="车牌号" prop="vehicleCode" v-if="warningTab === '1'">
         <el-input
           v-model="queryParams.vehicleCode"
           placeholder="请输入车牌号"
@@ -16,7 +16,7 @@
           @keyup.enter.native="$emit('handleQuery')"
         />
       </el-form-item>
-      <el-form-item label="司机" prop="driver" v-if="warningTab ==='2'">
+      <el-form-item label="司机" prop="driver" v-if="warningTab === '2'">
         <el-input
           v-model="queryParams.driver"
           placeholder="请输入司机姓名"
@@ -89,32 +89,48 @@
       :before-close="cancel"
       :destroy-on-close="true"
     >
-      <div>
+      <div v-for="(item, index) in warningTypes" :key="index">
+        <div class="types-title">{{ item.alarmObjectName }}</div>
+        <div class="types-box">
+          <div
+            class="types-item"
+            v-for="(cItem, cIndex) in item.alarmTypeInfoList"
+            :title="cItem.isChoose ? '单击取消' : '单击选中'"
+            :key="cIndex"
+            :class="cItem.isChoose ? 'choosed' : ''"
+            @click="changeWarningType(cItem)"
+          >
+            {{ cItem.alarmTypeName }}
+          </div>
+        </div>
         <!-- <div class="types-title">设备异常警告</div>
         <div class="types-box">
           <div
             class="types-item"
             v-for="(item, index) in warningTypes"
+            :title="item.isChoose ? '单击取消' : '单击选中'"
             :key="index"
-            v-show="item.type === 0"
-            :class="item.isChoose ? 'choosed' : ''"
-            @click="changeWarningType(item)"
-          >
-            {{ item.warningName }}
-          </div>
-        </div> -->
-        <div class="types-title">车辆警告</div>
-        <div class="types-box">
-          <div
-            class="types-item"
-            v-for="(item, index) in warningTypes"
-            :key="index"
+            v-show="item.alarmObject === 'device'"
             :class="item.isChoose ? 'choosed' : ''"
             @click="changeWarningType(item)"
           >
             {{ item.alarmTypeName }}
           </div>
         </div>
+        <div class="types-title">车辆警告</div>
+        <div class="types-box">
+          <div
+            class="types-item"
+            v-for="(item, index) in warningTypes"
+            :title="item.isChoose ? '单击取消' : '单击选中'"
+            :key="index"
+            v-show="item.alarmObject === 'vehicle'"
+            :class="item.isChoose ? 'choosed' : ''"
+            @click="changeWarningType(item)"
+          >
+            {{ item.alarmTypeName }}
+          </div>
+        </div> -->
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="confirm" :loading="loading">
@@ -170,50 +186,44 @@ export default {
         this.$emit("input", value);
       },
     },
+  },
+  created() {},
+  mounted() {},
 
-  },
-  created() {
-    
-  },
-  mounted() {
-    
-    
-    
-  },
-  
   methods: {
     reset() {
       this.queryParams.pageNum = 1;
       // this.resetForm('queryForm');
-      this.queryParams.vehicleCode = '';
-      this.warningNames = '';
+      this.queryParams.vehicleCode = "";
+      this.warningNames = "";
       this.queryParams.warningTypes = [];
       this.queryParams.dateRange = [];
       this.queryParams.deviceType = null;
-      console.log(this.queryParams)
+      console.log(this.queryParams);
       this.$emit("handleQuery");
     },
 
     chooseWarningTypes() {
       this.open = true;
       this.warningTypes = JSON.parse(JSON.stringify(this.warningTypeList));
+      console.log(this.warningTypes);
     },
-    changeWarningType (item) {
-      console.log(item)
+    changeWarningType(item) {
+      // console.log(item)
       item.isChoose = !item.isChoose;
     },
     confirm() {
       console.log(this.queryParams);
-      this.warningNames = '';
-      this.warningTypes.map(item => {
-        if (item.isChoose) {
-          this.warningNames += item.alarmTypeName + ',';
-        }
-      })
-      this.$emit('updateWarningTypeList', this.warningTypes)
+      this.warningNames = "";
+      this.warningTypes.map((item) => {
+        item.alarmTypeInfoList.map((cItem) => {
+          if (cItem.isChoose) {
+            this.warningNames += cItem.alarmTypeName + ",";
+          }
+        });
+      });
+      this.$emit("updateWarningTypeList", this.warningTypes);
       this.open = false;
-
-      
     },
     cancel() {
       this.open = false;

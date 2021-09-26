@@ -40,8 +40,7 @@ const driverCardReg = /^[1-8]\d{11}$/;
 // 统一社会信用代码
 const organizationReg = /(^(?:(?![IOZSV])[\dA-Z]){2}\d{6}(?:(?![IOZSV])[\dA-Z]){10}$)|(^\d{15}$)/;
 // 纳税人识别号
-
-export const formValidate = {
+const formValidate = {
   // 数字验证
   number: function(rule, value, callback) {
     if (value === undefined || value === null || value === '') {
@@ -67,7 +66,7 @@ export const formValidate = {
   // 姓名验证
   name: function(rule, value, callback) {
     if (value === undefined || value === null || value === '') {
-      callback();
+      callback(new Error('请输入姓名'));
     }
     if (!nameReg.test(value)) {
       callback(new Error('请输入正确的格式(1-10个中文字符)'));
@@ -89,7 +88,7 @@ export const formValidate = {
   // 手机验证
   telphone: function(rule, value, callback) {
     if (value === undefined || value === null || value === '') {
-      callback();
+      callback(new Error('请输入手机号码'));
     }
     if (!phoneReg.test(value)) {
       callback(new Error('请输入正确的手机号码'));
@@ -111,7 +110,7 @@ export const formValidate = {
   // 身份证验证
   idCard: function(rule, value, callback) {
     if (value === undefined || value === null || value === '') {
-      callback();
+      callback(new Error('请输入身份证号'));
     }
     if (!idCardReg.test(value)) {
       callback(new Error('请输入正确的身份证号'));
@@ -260,3 +259,5 @@ export const formValidate = {
     }
   }
 };
+
+export default formValidate;

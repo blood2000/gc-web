@@ -2,7 +2,7 @@
 <template>
   <div class="device-info">
     <el-row :gutter="15">
-      <el-col :xl="5" :lg="6" :md="8" :sm="9" :xs="24">
+      <!-- <el-col :xl="5" :lg="6" :md="8" :sm="9" :xs="24">
         <div class="device-info-left">
           <div class="head-container">
             <el-input
@@ -37,8 +37,9 @@
             </el-tree>
           </div>
         </div>
-      </el-col>
-      <el-col :xl="19" :lg="18" :md="16" :sm="15" :xs="24">
+      </el-col> -->
+      <!-- <el-col :xl="19" :lg="18" :md="16" :sm="15" :xs="24"> -->
+      <el-col :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
         <div class="device-info-right">
           <div class="device-info-right-top" v-show="showSearch">
             <!-- 上：搜索 -->
@@ -79,6 +80,9 @@
                   <template #deviceType="{ row }">
                     {{ getDeviceTypeName(row.deviceType) }}
                   </template>
+                  <!-- <template #alarmValue="{ row }">
+                    {{ row.alarmValue || '-' }}
+                  </template> -->
                   <template #handle="{ row }">
                     <el-button
                       size="mini"
@@ -149,7 +153,7 @@ export default {
   watch: {
     orgName(val) {
       this.$refs.tree.filter(val);
-    },
+    }
   },
 
   created() {
@@ -166,10 +170,9 @@ export default {
   },
 
   mounted() {
-    this.getOrgHttp();
-    
+    // this.getOrgHttp();
+    this.searchQuery();
   },
-
 
   methods: {
     //请求组织树数据
@@ -207,9 +210,11 @@ export default {
       this.warningTypeList = list;
       let warningTypes = [];
       this.warningTypeList.map(item => {
-        if (item.isChoose) {
-          warningTypes.push(item.id);
-        }
+        item.alarmTypeInfoList.map((cItem) => {
+          if (cItem.isChoose) {
+            warningTypes.push(cItem.id);
+          }
+        });
       });
       this.queryParams.warningTypes = warningTypes;
       this.searchQuery();
@@ -219,24 +224,34 @@ export default {
       const obj = {
         moduleName: "http_warning",
         method: "get",
-        url_alias: "warningType_list",
+        url_alias: "warningType_list"
       };
       const res = await http_request(obj);
-      console.log('告警类型列表', res);
+      console.log("告警类型列表", res);
       let warningTypeList = [];
       if (res.code === 200) {
-        let obj = {};
-        res.data.map(item => {
-          obj = item;
-          obj.isChoose = true;
-          warningTypeList.push(obj)
+        warningTypeList = res.data;
+        warningTypeList.map(item => {
+          item.alarmTypeInfoList.map(aItem => {
+            aItem.isChoose = true;
+          })
         })
+        // let list = res.data.device;
+        // list = list.concat(res.data.vehicle);
+        // console.log(list);
+        // let obj = {};
+        // list.map(item => {
+        //   obj = item;
+        //   obj.isChoose = true;
+        //   warningTypeList.push(obj);
+        // });
         this.warningTypeList = warningTypeList;
+        console.log(this.warningTypeList)
       }
     },
     //初始页数请求
     searchQuery() {
-      console.log(this.queryParams)
+      console.log(this.queryParams);
       this.queryParams.pageNum = 1;
       // this.queryParams.deviceType = this.queryParams.deviceType ? this.queryParams.deviceType : 0;
       if (this.tabIndex === "1") {
@@ -253,9 +268,11 @@ export default {
       const tmp = {
         start: this.queryParams.pageNum,
         limit: this.queryParams.pageSize,
-        bigAlarmTime: (this.queryParams.dateRange && this.queryParams.dateRange[0]) || null,
-        endAlarmTime: (this.queryParams.dateRange && this.queryParams.dateRange[1]) || null,
-        alarmTypeInfoId: this.queryParams.warningTypes.join(',')
+        bigAlarmTime:
+          (this.queryParams.dateRange && this.queryParams.dateRange[0]) || null,
+        endAlarmTime:
+          (this.queryParams.dateRange && this.queryParams.dateRange[1]) || null,
+        alarmTypeInfoId: this.queryParams.warningTypes.join(",")
       };
       if (this.tabIndex === "1") {
         tmp.dimensionType = "vehicle";
