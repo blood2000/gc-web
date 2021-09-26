@@ -65,10 +65,12 @@
         :label-name="'开户城市'"
         :prop-province-code="form.province"
         :prop-city-code="form.city"
-        @refresh="(data) => {
-          form.province = data.provinceCode;
-          form.city = data.cityCode;
-        }"
+        @refresh="
+          (data) => {
+            form.province = data.provinceCode;
+            form.city = data.cityCode;
+          }
+        "
       />
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -83,10 +85,10 @@
 <script>
 import { http_request } from "../../../../api";
 import NoImageUpload from "@/components/ImageUpload/noImage.vue";
-import ProvinceCityCounty from '@/components/ProvinceCityCounty';
+import ProvinceCityCounty from "@/components/ProvinceCityCounty";
 
 export default {
-  components: { NoImageUpload,ProvinceCityCounty },
+  components: { NoImageUpload, ProvinceCityCounty },
   data() {
     return {
       loading: false,
@@ -97,8 +99,8 @@ export default {
         bankName: null, //开户银行姓名
         mobile: null, //银行预留手机
         name: null, //开户姓名
-        province:null,//开户省份	
-        city:null//开户行城市	
+        province: null, //开户省份
+        city: null, //开户行城市
       },
       rules: {
         account: [
@@ -115,15 +117,15 @@ export default {
       bankList: [],
     };
   },
-  computed:{
-      visible: {
+  computed: {
+    visible: {
       get() {
         return this.open;
       },
       set(v) {
-        this.$emit('update:open', v);
-      }
-    }
+        this.$emit("update:open", v);
+      },
+    },
   },
   props: {
     addOpen: {
@@ -148,17 +150,18 @@ export default {
       const me = this;
       console.log("e", e);
       const obj = {
-        moduleName: "http_common",
+        moduleName: "http_purse",
         method: "post",
-        url_alias: "ocr",
+        url_alias: "certificates",
         data: {
           imgPath: e,
           type: 3,
-          side: "front",
+          // side: "front",
         },
       };
       http_request(obj).then((res) => {
         console.log("res ocr", res);
+        if (res.data.error_code) return this.msgError("证件识别失败");
         const result = res.data.result;
         if (result.bank_name) me.form.bankName = result.bank_name;
         if (result.card_number) me.form.account = result.card_number;

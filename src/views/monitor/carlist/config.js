@@ -20,31 +20,31 @@ export const tableColumnsConfig = [
         sortNum: 3,
         tooltip: true,
     },
-    {
-        isShow: true,
-        label: "行驶状态",
-        prop: "driverStatus",
-        sortNum: 4,
-        tooltip: true,
-    },
+    // {
+    //     isShow: true,
+    //     label: "行驶状态",
+    //     prop: "driverStatus",
+    //     sortNum: 4,
+    //     tooltip: true,
+    // },
     {
         isShow: true,
         label: "当前位置",
-        prop: "realStatus",
+        prop: "attribute",
         sortNum: 5,
         tooltip: true,
     },
     {
         isShow: true,
         label: "上报时间",
-        prop: "enabled",
+        prop: "update_time",
         sortNum: 6,
         tooltip: true,
     },
     {
         isShow: true,
         label: "设备类型",
-        prop: "createTime",
+        prop: "model_name",
         sortNum: 7,
         tooltip: true,
     },
@@ -75,7 +75,7 @@ export const tableColumnsConfig = [
         prop: "edit",
         sortNum: 8,
         tooltip: true,
-        width: 200
+        // width: 200
     },
 ]
 

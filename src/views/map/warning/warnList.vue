@@ -6,7 +6,7 @@
     </ul>
 
     <div class="map-warning-table__content ly-flex-pack-justify">
-      <ul v-show="!isClose" class="warning-list ly-flex-pack-justify">
+      <ul v-show="!isClose" class="warning-list map-scroll-panel ly-flex-pack-justify">
         <!-- 实时报警 -->
         <template v-if="activeTab === '1'">
           <li class="warning-list-li" v-for="(item, index) in dataList" :key="index">
@@ -19,7 +19,7 @@
                   <p class="g-single-row text">车道偏离</p>
                 </div>
                 <div class="ly-flex-v ly-flex-align-center">
-                  <img src="~@/assets/images/device/warn_icon_2.png">
+                  <img src="~@/assets/images/device/warn_label_1.png">
                   <p class="g-single-row text">一级告警</p>
                 </div>
                 <div class="ly-flex-v ly-flex-align-center">
@@ -42,8 +42,8 @@
                   <p class="g-single-row text">车道偏离</p>
                 </div>
                 <div class="ly-flex-v ly-flex-align-center">
-                  <img src="~@/assets/images/device/warn_icon_2.png">
-                  <p class="g-single-row text">一级告警</p>
+                  <img src="~@/assets/images/device/warn_label_2.png">
+                  <p class="g-single-row text">二级告警</p>
                 </div>
                 <div class="ly-flex-v">
                   <p class="g-single-row count">53</p>
@@ -70,14 +70,14 @@
           </li>
         </template>
       </ul>
-      <div class="more-button ly-flex-v ly-flex-pack-center ly-flex-align-center">
+      <div class="more-button ly-flex-v ly-flex-pack-center ly-flex-align-center" @click="handleMore">
         <img src="@/assets/images/device/icon_more.png">
         查看更多
       </div>
     </div>
 
     <!-- 收起按钮 -->
-    <img class="map-warning-table__pull" src="~@/assets/images/device/icon_pull.png" @click="handlePull">
+    <img class="map-warning-table__pull" :src="require(`@/assets/images/device/icon_pull${isClose ? '_rotate' : ''}.png`)" @click="handlePull">
 
     <!-- 轨迹详情 -->
     <WarnDetail
@@ -145,6 +145,10 @@ export default {
     /** 查看告警详情 */
     handleDetail(row) {
       this.detailOpen = true;
+    },
+    /** 查看更多 */
+    handleMore() {
+      this.$router.push('/warning/warning');
     }
   }
 }
@@ -193,16 +197,21 @@ export default {
     background: rgba(255, 255, 255, 0.72);
     border-radius: 8px;
     z-index: 1;
-    padding: 20px 12px 12px 2px;
+    padding: 20px 12px 6px 12px;
     overflow: hidden;
     >.warning-list{
       width: calc(100% - 84px);
       height: 100%;
+      overflow-x: scroll;
       >.warning-list-li{
         width: 20%;
+        min-width: 270px;
         height: 100%;
         position: relative;
         padding: 0 10px;
+        &:first-child{
+          padding-left: 0px;
+        }
         &::after{
           content: '';
           right: 0;
@@ -221,8 +230,27 @@ export default {
           cursor: default;
           padding: 12px 14px;
           overflow: hidden;
+          position: relative;
           &.active{
-            background: linear-gradient(90deg, rgba(239, 105, 105, 0.16) 0%, rgba(239, 105, 105, 0) 100%);
+            &::before{
+              content: '';
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              background: linear-gradient(90deg, rgba(239, 105, 105, 0.16) 0%, rgba(239, 105, 105, 0) 100%);
+              z-index: 0;
+              animation: show-linear 1s;
+              @keyframes show-linear {
+                0% {
+                  width: 0;
+                }
+                100%{
+                  width: 100%;
+                }
+              }
+            }
           }
           >h5{
             font-size: 20px;
@@ -230,6 +258,8 @@ export default {
             font-weight: bold;
             line-height: 24px;
             color: #3D4050;
+            position: relative;
+            z-index: 1;
           }
           .label{
             font-size: 14px;
@@ -237,6 +267,8 @@ export default {
             font-weight: 400;
             line-height: 26px;
             color: #A6A8AD;
+            position: relative;
+            z-index: 1;
           }
           .address{
             font-size: 14px;
@@ -244,6 +276,8 @@ export default {
             font-weight: bold;
             line-height: 20px;
             color: #3D4050;
+            position: relative;
+            z-index: 1;
           }
           .center-box{
             font-size: 12px;
@@ -252,6 +286,8 @@ export default {
             line-height: 24px;
             color: #3D4050;
             padding-right: 10px;
+            position: relative;
+            z-index: 1;
             img{
               width: 30px;
               height: 30px;
@@ -267,19 +303,16 @@ export default {
       }
       >.warning-list-adas{
         width: 25%;
+        min-width: 354px;
         height: 100%;
         position: relative;
-        padding: 0 4px;
         // 告警卡片样式2
         .warning-card{
           height: 100%;
           border-radius: 6px;
           cursor: pointer;
-          padding: 6px 14px 12px;
+          padding: 6px 15px 12px;
           overflow: hidden;
-          &.active{
-            
-          }
           .label{
             font-size: 14px;
             font-family: PingFang SC;
@@ -320,7 +353,7 @@ export default {
             height: 68px;
             background: #EDF1F3;
             border-radius: 5px;
-            padding: 10px 12px;
+            padding: 10px 2px 10px 12px;
             margin-bottom: 6px;
             overflow: hidden;
             >div{

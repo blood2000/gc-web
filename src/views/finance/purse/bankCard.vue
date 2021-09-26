@@ -29,7 +29,7 @@
           <div class="card-list-item-bank">{{ item.bankName }}</div>
           <div>
             <span class="card-list-item-name">{{ item.name }}</span
-            ><span>{{ item.phonenumber }}</span>
+            ><span>{{ item.mobile }}</span>
           </div>
           <div class="card-list-item-number">
             {{ showBankCard(item.account) }}
@@ -65,7 +65,7 @@ export default {
         pageSize: 1000,
         bankName: null,
         account: null,
-        userPhone: null,
+        mobile: null,
         userName: null,
       },
       tableColumnsConfig: [],
@@ -143,6 +143,7 @@ export default {
     },
 
     formToList() {
+      console.log('this.queryParams',this.queryParams)
       return {
         mobile: this.queryParams.mobile, //银行预留手机
         name: this.queryParams.name, //开户姓名
@@ -150,7 +151,7 @@ export default {
         pageSize: 1000,
         bankName: this.queryParams.bankName,
         account: this.queryParams.account,
-        userPhone: this.queryParams.userPhone,
+        mobile: this.queryParams.mobile,
         userName: this.queryParams.userName,
       };
     },

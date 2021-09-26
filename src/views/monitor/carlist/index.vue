@@ -72,8 +72,19 @@
                   >轨迹查看</el-button
                 >
               </template>
+              <!-- <template #attribute="{ row }">
+                <span>{{ getDetailAddress(row) }}</span>
+              </template> -->
               <template #vehicle_status="{ row }">
                 <span>{{ dealVehicleStatus(row.vehicle_status) }}</span>
+              </template>
+              <!-- model_name -->
+              <template #model_name="{ row }">
+                <span>{{
+                  row.model_name
+                    ? `${row.model_name}(${row.series_name})`
+                    : null
+                }}</span>
               </template>
             </RefactorTable>
             <!-- 分页 -->
@@ -94,6 +105,7 @@
 import { http_request } from "../../../api";
 import { tableColumnsConfig, vehicleStatusList } from "./config";
 import QueryForm from "./components/queryForm.vue";
+import axios from "axios";
 export default {
   name: "carlist",
   components: { QueryForm },
@@ -121,16 +133,42 @@ export default {
       },
       orgTreeData: [],
       snList: [],
+      geocoder: null,
     };
   },
   mounted() {
     this.getList();
+    this.geocoder = new AMap.Geocoder({
+      radius: 1000,
+      extensions: "all",
+    });
   },
   methods: {
+    /**
+     * 通过经纬度获取详细点位信息
+     * @param {Array} position 经纬度必传
+     *  */
+    getAddressBylnglat(position) {
+      const _this = this;
+      return new Promise((resolve, reject) => {
+        let address;
+        _this.geocoder.getAddress(position, function (status, result) {
+          if (status === "complete" && result.info === "OK") {
+            if (result && result.regeocode) {
+              const { formattedAddress } = result.regeocode;
+              address = formattedAddress;
+            }
+            console.log("111address", address);
+            resolve(address);
+          }
+        });
+      });
+    },
+
+    //处理车辆状态
     dealVehicleStatus(status) {
       let result = "";
       vehicleStatusList.forEach((element) => {
-        console.log("element", element);
         if (element.value == status) {
           result = element.label;
         }
@@ -185,8 +223,25 @@ export default {
       };
       const res = await http_request(obj);
       console.log("res getList", res);
+      res.data.rows.forEach((el) => {
+        console.log("el", el.attribute);
+        if (
+          el.attribute &&
+          el.attribute.coordinate &&
+          el.attribute.coordinate.value.length > 1
+        ) {
+          this.getAddressBylnglat(el.attribute.coordinate.value).then((val) => {
+            el.attribute = val;
+            console.log(val);
+            this.list.push(el);
+          });
+        } else {
+          el.attribute = "";
+          this.list.push(el);
+        }
+      });
+      console.log("this.list", this.list);
       this.total = res.data.total;
-      this.list = res.data.rows;
       this.loading = false;
     },
     formToList() {

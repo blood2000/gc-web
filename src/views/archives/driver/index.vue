@@ -144,14 +144,14 @@
                   @click="handleReset(row)"
                   >密码重置</el-button
                 >
-                <el-button
+                <!-- <el-button
                   size="mini"
                   type="text"
                   icon="el-icon-position"
                   @click="handlePermission(row)"
                 >
                   数据权限</el-button
-                >
+                > -->
                 <el-button
                   size="mini"
                   type="text"

@@ -8,5 +8,10 @@ export default {
   }, //车辆详情
   vehicle_list_page:'/fmsweb/basic/vehicle/v1/paging',//获取分页 
   vehicle_enabled:'/fmsweb/basic/vehicle/v1/updateEnabled', //修改停用状态
-  paging_de_driver: '/fmsweb/basic/vehicle/v1/pagingDefaultDriver'
+  paging_de_driver: '/fmsweb/basic/vehicle/v1/pagingDefaultDriver',
+  device_list:'/fmsweb/basic/org/device/v1/list',//获取当前组织所有设备列表
+  device_paging:'/fmsweb/basic/org/device/v1/paging',//获取当前组织所有设备分页列表
+  device_bind:'/fmsweb/vehicle/device/v1/binding',//绑定设备
+  device_unbind:'/fmsweb/vehicle/device/v1/unbinding',//解除绑定
+  qrcode_decode:(type)=>`/fmsweb/basic/common/v1/qrcode/decode/${type}`
 }

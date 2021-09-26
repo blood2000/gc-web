@@ -57,6 +57,7 @@ Vue.use(VideoPlayer);
 import "videojs-flash";
 
 // 全局方法挂载
+Vue.prototype.amapKey = '2066cb0dafaa492aee47fa1090227a38'
 Vue.prototype.getDicts = getDicts
 Vue.prototype.getConfigKey = getConfigKey
 Vue.prototype.parseTime = parseTime

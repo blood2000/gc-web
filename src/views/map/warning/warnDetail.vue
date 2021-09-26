@@ -17,8 +17,8 @@
           <p class="g-single-row text">车道偏离</p>
         </li>
         <li class="ly-flex-v ly-flex-align-center ly-flex-pack-center">
-          <img src="~@/assets/images/device/warn_icon_2.png">
-          <p class="g-single-row text">一级告警</p>
+          <img src="~@/assets/images/device/warn_label_3.png">
+          <p class="g-single-row text">三级告警</p>
         </li>
         <li class="ly-flex-v ly-flex-align-center ly-flex-pack-center">
           <p class="g-single-row count">53</p>
@@ -44,7 +44,12 @@
         <el-table-column label="驾驶司机" prop="name" :show-overflow-tooltip="true" />
         <el-table-column label="告警时速(km/h)" prop="name" :show-overflow-tooltip="true" />
         <el-table-column label="告警位置" prop="name" :show-overflow-tooltip="true" />
-        <el-table-column label="告警图片/视频" prop="name" :show-overflow-tooltip="true" />
+        <el-table-column label="告警图片/视频" prop="name" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <img class="mr5" src="~@/assets/images/device/warn_detail_image.png">
+            <img src="~@/assets/images/device/warn_detail_camera_d.png">
+          </template>
+        </el-table-column>
         <!-- 展开行 -->
         <el-table-column type="expand">
           <template slot-scope="scope">
