@@ -1,7 +1,13 @@
 <!-- 调度单列表 -->
 <template>
   <div class="dispatch-list-container">
-    <div class="list-box" v-for="(item, index) in dispatchList" :key="index">
+    <div
+      class="list-box"
+      :class="item.isChoosed ? 'choosed' : ''"
+      v-for="(item, index) in dispatchList"
+      :key="index"
+      @click="chooseItem(index)"
+    >
       <div class="first-line">
         <div>{{ item.dispatchType }}</div>
         <div>
@@ -10,19 +16,18 @@
       </div>
       <div class="second-line">{{ item.company }}</div>
       <div class="addr-box">
-        <div class="addr-icon start"></div>
+        <div class="addr-icon start">起</div>
         <div>{{ item.start }}</div>
       </div>
       <div class="addr-box">
-        <div class="addr-icon end"></div>
-        <div>{{ item.start }}</div>
+        <div class="addr-icon end">终</div>
+        <div>{{ item.end }}</div>
       </div>
       <div class="btn-box">
-        <div class="btn dispatch" @click="toDispatchVehicle">派车</div>
-        <div class="btn detail" @click="toDispatchDetail">详情</div>
+        <div class="btn dispatch" @click.stop="toDispatchVehicle">派车</div>
+        <div class="btn detail" @click.stop="toDispatchDetail">详情</div>
       </div>
     </div>
-    
   </div>
 </template>
 
@@ -33,28 +38,43 @@ export default {
     return {
       dispatchList: [],
       showDispatchVehicle: false,
+      vehicleInfo: {},
     };
   },
 
-  components: {
-    
-  },
+  components: {},
 
   created() {},
 
   mounted() {
-    this.dispatchList = config.dispatchList;
-    console.log(this.dispatchList);
+    let dispatchList = config.dispatchList;
+    dispatchList.map((item) => {
+      item.isChoosed = false;
+    });
+    this.dispatchList = dispatchList;
+    this.vehicleInfo = config.vehicleInfo;
   },
 
   methods: {
     toDispatchVehicle() {
       this.showDispatchVehicle = true;
-      this.$store.commit('set_dispatchVehicle', true);
+      this.$store.commit("set_dispatchVehicle", true);
     },
     //跳转调度单详情
-    toDispatchDetail() {
-      
+    toDispatchDetail() {},
+
+    //选择调度单
+    chooseItem(index) {
+      this.$store.commit("set_showVehicleDetail", true);
+      this.vehicleInfo.vehicleCode = this.dispatchList[index].vehicleCode;
+      this.$store.commit("set_vehicleInfo", this.vehicleInfo);
+      this.dispatchList.map((dItem, dIndex) => {
+        if (dIndex === index) {
+          dItem.isChoosed = true;
+        } else {
+          dItem.isChoosed = false;
+        }
+      })
     },
   },
 };
@@ -84,7 +104,9 @@ export default {
   color: #3d4050;
   background: rgba(255, 255, 255, 0.7);
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid transparent;
   border-radius: 6px;
+  transition: all .25s linear;
   .first-line {
     height: 28px;
     padding: 0 5px;
@@ -162,9 +184,24 @@ export default {
     .detail {
       background: #fff;
       color: #4682fa;
-      border: 1px solid #4682FA;
+      border: 1px solid #4682fa;
       line-height: 30px;
     }
   }
+}
+
+.choosed {
+  background: #ffffff;
+  border: 1px solid #4682fa;
+  box-shadow: 0px 3px 8px rgba(70, 130, 250, 0.51);
+}
+
+::-webkit-scrollbar {
+	width: 0;
+	height: 20px;
+	background-color: #0E1013;
+}
+::-webkit-scrollbar-thumb {
+	background: #333;
 }
 </style>
