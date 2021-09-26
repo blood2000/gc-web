@@ -53,6 +53,29 @@ const dispatchList = [{
     vehicleCode: '闽A112233'
   },
 ];
+
+const vehicleInfo = {
+  vehicleCode: '闽A112233',
+  driver: '杜工部',
+  machineType: '渣土车',
+  team: '车队1',
+  vehicleType: '重型自卸卡车',
+  addr: '福建省福州市台江区东滨路1号富邦总部大楼',
+  curDate: '2021-06-01 13:13:13',
+  status: 2
+};
+
+
+
+const travelStatus = [
+  {id: 0, status: '空闲中'},
+  {id: 1, status: '装货中'},
+  {id: 2, status: '行驶中'},
+  {id: 3, status: '卸货中'},
+  {id: 4, status: '停用'},
+];
 export default {
-  dispatchList
+  dispatchList,
+  vehicleInfo,
+  travelStatus
 };

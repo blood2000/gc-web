@@ -292,7 +292,10 @@
       class="dispatch-vehicle-panel"
     />
     <!-- 车辆详情 -->
-
+    <VehicleDetail
+      v-if="showVehicleDetail"
+      class="vehicle-detail-panel"
+    />
     <!-- 轨迹回放 -->
     <TrackList
       v-if="headerTab === 3"
@@ -466,6 +469,12 @@ export default {
     showDispatchVehicle() {
       return this.$store.getters.showDispatchVehicle;
     },
+    showVehicleDetail() {
+      return this.$store.getters.showVehicleDetail;
+    },
+    // vehicleInfo() {
+    //   return this.$store.getters.vehicleInfo;
+    // },
   },
   mounted() {
     // 时间
@@ -1485,7 +1494,7 @@ export default {
     height: calc(100% - #{$header-height} - #{$bottom} - 12px);
   }
 
-  //车辆详情
+  //派车
   > .dispatch-vehicle-panel {
     position: absolute;
     top: 50%;
@@ -1497,6 +1506,17 @@ export default {
     border: 1px solid #e4ecf4;
     box-shadow: 0px 12px 48px rgba(0, 0, 0, 0.03);
     border-radius: 4px;
+    z-index: 1000;
+  }
+
+  //车辆详情
+  > .vehicle-detail-panel {
+    position: absolute;
+    top: calc(#{$header-height} + 12px);
+    right: calc(#{$right} + 390px);
+    width: 380px;
+    height: calc(100% - #{$header-height} - #{$bottom} - 12px);
+    background: rgba(0, 0, 0, 0.12);
     z-index: 1000;
   }
 
