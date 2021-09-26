@@ -36,14 +36,20 @@
         </el-col>
       </el-row>
       <div v-else class="device-content-header unbind-to-bind">
-        <span> 暂未绑定</span>
-        <NoImageUpload
-          class="uploiad-to-bind"
-          v-model="uploadImage"
-          @input="chooseImg"
-        >
-          <img src="@/assets/images/uploadImage/upload_icon.png" alt="" />
-        </NoImageUpload>
+        <span class="unbind-to-bind-text"> 暂未绑定</span>
+        <!-- chooseImg -->
+        <input
+          type="file"
+          class="upload-to-bind"
+          name="file"
+          @change="chooseImg"
+          placeholder="上传文件"
+        />
+        <img
+          class="unbind-to-bind-img"
+          src="@/assets/images/uploadImage/upload_icon.png"
+          alt=""
+        />
       </div>
       <div class="device-content-content" :style="{ height: '465px' }">
         <div>剩余{{ total }}台未绑定设备</div>
@@ -95,6 +101,9 @@
 <script>
 import NoImageUpload from "@/components/ImageUpload/noImage.vue";
 import { http_request } from "../../../../api";
+import Axios from "axios";
+import { getToken } from "@/utils/auth";
+import { defaultH } from "@/api";
 
 export default {
   components: { NoImageUpload },
@@ -218,7 +227,38 @@ export default {
       this.getBindInfo();
       this.getUnbindList();
     },
-    chooseImg(e) {},
+    //绑定图片上传
+    async chooseImg(e) {
+      let fileList = e.target.files;
+      console.log("fileList", fileList);
+      if (fileList.length > 0) {
+        let file = fileList[0];
+        let formData = new FormData();
+        formData.append("file", file);
+        const obj = {
+          moduleName: "http_vehicle",
+          method: "post",
+          url_alias: "qrcode_decode",
+          data: formData,
+          url_code: ["device"],
+          header: { "Content-Type": "multipart/form-data" },
+        };
+        const res = await http_request(obj);
+        console.log("res", res);
+        if (!res.data) return this.msgError("无效二维码");
+        const addObj = {
+          moduleName: "http_vehicle",
+          method: "post",
+          url_alias: "device_bind",
+          data: { sn: res.data, vehicleCode: this.options.vehicleCode },
+        };
+        const addres = await http_request(addObj);
+        console.log("add res===>", addres);
+        //刷新
+        this.getBindInfo();
+        this.getUnbindList();
+      }
+    },
   },
 };
 </script>
@@ -226,20 +266,10 @@ export default {
 <style lang="scss" scoped>
 .device-content {
   height: 700px;
-//   flex-direction: column;
-//   display: flex;
+  //   flex-direction: column;
+  //   display: flex;
 }
-.unbind-to-bind {
-  text-align: center;
-  display: flex;
-  flex-direction: row;
-  font-size: 24px;
-  line-height: 70px;
-  justify-content: center;
-}
-.unbind-to-bind span {
-  margin-right: 30px;
-}
+
 .device-content-header {
   // margin: 20px;
   border-radius: 5px;
@@ -287,11 +317,33 @@ export default {
   width: 100%;
   height: 100%;
 }
+.unbind-to-bind {
+  display: flex;
+  flex-direction: row;
+  align-self: center;
+  justify-content: center;
+  position: relative;
+}
+.unbind-to-bind-text {
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 95px;
+}
+.unbind-to-bind-img {
+  display: inline-block;
+  vertical-align: middle;
+}
+.upload-to-bind {
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+}
 /deep/ .el-dialog .el-dialog__body {
   overflow: hidden !important;
-}
-/deep/ .el-upload--picture-card {
-  width: 50px !important;
-  height: 50px !important;
 }
 </style>

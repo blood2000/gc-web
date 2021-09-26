@@ -30,7 +30,7 @@ export const tableColumnsConfig = [
     {
         isShow: true,
         label: "当前位置",
-        prop: "realStatus",
+        prop: "attribute",
         sortNum: 5,
         tooltip: true,
     },

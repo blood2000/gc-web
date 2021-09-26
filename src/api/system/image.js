@@ -23,6 +23,7 @@ export function uploadOcr(data) {
 }
 
 export function uploadImg(data) {
+  console.log('uploadImg data',data)
   return request({
     url: uploadImgApi,
     method: 'post',
