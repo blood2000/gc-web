@@ -15,7 +15,9 @@ const map = {
     set_vehicleInfo: (state, info) => {
       state.vehicleInfo = info;
     },
-    
+    set_dispatchInfo: (state, info) => {
+      state.dispatchInfo = info;
+    },
   },
   actions: {
     setShowDispatchVehicle({
