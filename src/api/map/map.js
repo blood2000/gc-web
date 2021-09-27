@@ -8,5 +8,6 @@ export default {
   getVehicleInfo:(vehicleCode,type)=>`/fmsweb/vehicle/device/v1/detail/${vehicleCode}/${type}`, // 获取车辆信息接口
   getAppointCarOrderIng:(vehicleCode)=>`/fmsweb/basic/appointCarOrder/v1/detailAppointCarOrderIngByVehicleCode/${vehicleCode}`, // 获取当前正在运行中的派车单
   getWarnCount:'/fmsweb/alarmTypeInfo/v1/getTodayVehicleAlarmNotification', // 获取告警条数
+  getRealWarnList:'/fmsweb/alarm/v1/realTimeNotificationList', // 实时获取车辆告警通知列表
   getVehicleTrack:'/fmsweb/vehicle/device/v1/track', // 查询车辆历史轨迹
 }

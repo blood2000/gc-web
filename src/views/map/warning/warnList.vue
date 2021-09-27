@@ -9,65 +9,79 @@
       <ul v-show="!isClose" class="warning-list map-scroll-panel ly-flex-pack-justify">
         <!-- 实时报警 -->
         <template v-if="activeTab === '1'">
-          <li class="warning-list-li" v-for="(item, index) in dataList" :key="index">
-            <div class="warning-card" :class="{active: index === 0}">
-              <h5 class="g-single-row">闽A12345</h5>
-              <p class="label mb10 g-single-row">杨洋洋<span style="margin: 0 10px">|</span>车队1</p>
-              <div class="center-box ly-flex-pack-justify ly-flex-align-end mb5">
-                <div class="ly-flex-v ly-flex-align-center">
-                  <img src="~@/assets/images/device/warn_icon_1.png">
-                  <p class="g-single-row text">车道偏离</p>
+          <template v-if="dataList.length > 0">
+            <li class="warning-list-li" v-for="(item, index) in dataList" :key="index">
+              <div class="warning-card" :class="{active: index === 0}">
+                <h5 class="g-single-row">{{ item.licenseNumber }}</h5>
+                <p class="label mb10 g-single-row">{{ item.nickName ? itemnickName : '暂无' }}<span style="margin: 0 10px">|</span>{{ item.teamName ? teamName : '暂无' }}</p>
+                <div class="center-box ly-flex-pack-justify ly-flex-align-end mb5">
+                  <div class="ly-flex-v ly-flex-align-center">
+                    <img src="~@/assets/images/device/warn_icon_1.png">
+                    <p class="g-single-row text">{{ item.alarmTypeName }}</p>
+                  </div>
+                  <div class="ly-flex-v ly-flex-align-center">
+                    <img src="~@/assets/images/device/warn_label_1.png">
+                    <p class="g-single-row text">{{ item.alarmLevel }}</p>
+                  </div>
+                  <div class="ly-flex-v ly-flex-align-center">
+                    <p class="g-single-row"><strong>{{ item.alarmValue }}</strong> km/h</p>
+                    <p class="g-single-row text">报警时速</p>
+                  </div>
                 </div>
-                <div class="ly-flex-v ly-flex-align-center">
-                  <img src="~@/assets/images/device/warn_label_1.png">
-                  <p class="g-single-row text">一级告警</p>
-                </div>
-                <div class="ly-flex-v ly-flex-align-center">
-                  <p class="g-single-row"><strong>108</strong> km/h</p>
-                  <p class="g-single-row text">报警时速</p>
-                </div>
+                <p class="label g-single-row">报警位置</p>
+                <p class="address g-single-row">{{ item.alarmAddress ? item.alarmAddress : '暂无' }}</p>
               </div>
-              <p class="label g-single-row">报警位置</p>
-              <p class="address g-single-row">福州市台江区东滨路1号副班总部大楼</p>
-            </div>
-          </li>
+            </li>
+          </template>
+          <template v-else>
+            <li class="warning-list-none ly-flex-pack-center ly-flex-align-center">
+              <p>暂无数据</p>
+            </li>
+          </template>
         </template>
         <!-- ADAS报警、异常驾驶报警、特殊报警 -->
         <template v-else>
-          <li class="warning-list-adas" v-for="(item, index) in adasDataList" :key="index" @click="handleDetail(item)">
-            <div class="warning-card" :class="{active: index === 0}">
-              <div class="center-box ly-flex-pack-justify ly-flex-align-end mb5">
-                <div class="ly-flex-v ly-flex-align-center">
-                  <img src="~@/assets/images/device/warn_icon_1.png">
-                  <p class="g-single-row text">车道偏离</p>
+          <template v-if="adasDataList.length > 0">
+            <li class="warning-list-adas" v-for="(item, index) in adasDataList" :key="index" @click="handleDetail(item)">
+              <div class="warning-card" :class="{active: index === 0}">
+                <div class="center-box ly-flex-pack-justify ly-flex-align-end mb5">
+                  <div class="ly-flex-v ly-flex-align-center">
+                    <img src="~@/assets/images/device/warn_icon_1.png">
+                    <p class="g-single-row text">车道偏离</p>
+                  </div>
+                  <div class="ly-flex-v ly-flex-align-center">
+                    <img src="~@/assets/images/device/warn_label_2.png">
+                    <p class="g-single-row text">二级告警</p>
+                  </div>
+                  <div class="ly-flex-v">
+                    <p class="g-single-row count">53</p>
+                    <p class="g-single-row text">告警次数</p>
+                  </div>
+                  <div class="ly-flex-v">
+                    <p class="g-single-row count">闽A54772</p>
+                    <p class="g-single-row text">车牌号</p>
+                  </div>
                 </div>
-                <div class="ly-flex-v ly-flex-align-center">
-                  <img src="~@/assets/images/device/warn_label_2.png">
-                  <p class="g-single-row text">二级告警</p>
+                <div class="time-box ly-flex-pack-justify">
+                  <div>
+                    <p class="label g-single-row">首次告警时间</p>
+                    <p class="time g-single-row">2021-06-15 13:46:58</p>
+                  </div>
+                  <div>
+                    <p class="label g-single-row">末次告警时间</p>
+                    <p class="time g-single-row">2021-06-15 13:46:58</p>
+                  </div>
                 </div>
-                <div class="ly-flex-v">
-                  <p class="g-single-row count">53</p>
-                  <p class="g-single-row text">告警次数</p>
-                </div>
-                <div class="ly-flex-v">
-                  <p class="g-single-row count">闽A54772</p>
-                  <p class="g-single-row text">车牌号</p>
-                </div>
+                <p class="label g-single-row">报警位置</p>
+                <p class="address g-single-row">福州市台江区东滨路1号副班总部大楼</p>
               </div>
-              <div class="time-box ly-flex-pack-justify">
-                <div>
-                  <p class="label g-single-row">首次告警时间</p>
-                  <p class="time g-single-row">2021-06-15 13:46:58</p>
-                </div>
-                <div>
-                  <p class="label g-single-row">末次告警时间</p>
-                  <p class="time g-single-row">2021-06-15 13:46:58</p>
-                </div>
-              </div>
-              <p class="label g-single-row">报警位置</p>
-              <p class="address g-single-row">福州市台江区东滨路1号副班总部大楼</p>
-            </div>
-          </li>
+            </li>
+          </template>
+          <template v-else>
+            <li class="warning-list-none ly-flex-pack-center ly-flex-align-center">
+              <p>暂无数据</p>
+            </li>
+          </template>
         </template>
       </ul>
       <div class="more-button ly-flex-v ly-flex-pack-center ly-flex-align-center" @click="handleMore">
@@ -96,8 +110,22 @@ export default {
   components: {
     WarnDetail
   },
+  props: {
+    vehicleCode: {
+      type: String,
+      default: null
+    },
+    orgOrVehicleInfo: {
+      type: Object,
+      default: () => {
+        return {};
+      }
+    }
+  },
   data() {
     return {
+      // 定时器
+      timer: null,
       // 当前选中tab
       activeTab: '1',
       // tab
@@ -115,7 +143,7 @@ export default {
         tabName: '特殊报警'
       }],
       // 实时报警列表
-      dataList: [{}, {}, {}, {}, {}],
+      dataList: [],
       // adas报警列表
       adasDataList: [{}, {}, {}, {}],
       // 面板是否收起
@@ -124,18 +152,88 @@ export default {
       detailOpen: false
     }
   },
+  watch: {
+    vehicleCode: {
+      handler(val) {
+        if (val) {
+          this.getList();
+        }
+      },
+      immediate: true
+    }
+  },
   mounted() {
-    
+    this.getList();
+  },
+  beforeDestroy() {
+    this.clearTimer();
   },
   methods: {
     /** 切换tab */
     handleTab(code) {
       if (this.activeTab === code) return;
       this.activeTab = code;
+      this.getList();
     },
-    /** 获取告警列表 */
     getList() {
+      const code = this.activeTab;
+      if (code === '1') {
+        this.getRealList();
+      } else if (code === '2') {
 
+      } else if (code === '3') {
+        
+      } else if (code === '4') {
+        
+      }
+      this.refreshTime();
+    },
+    /** 获取实时告警列表 */
+    getRealList() {
+      const params = {
+        start: 1,
+        limit: 5,
+        teamCode: undefined,
+        orgCode: undefined,
+        vehicleCode: undefined
+      };
+      if (this.orgOrVehicleInfo) {
+        if (this.orgOrVehicleInfo.vehicleFlag) {
+          params.vehicleCode = this.orgOrVehicleInfo.orgOrVehicleCode;
+        } else {
+          params.orgCode = this.orgOrVehicleInfo.orgOrVehicleCode;
+          // 判断是否是树节点的最顶层
+          if (this.orgOrVehicleInfo.icon && this.orgOrVehicleInfo.icon === 'second') {
+            params.teamCode = this.orgOrVehicleInfo.orgOrVehicleCode;
+          }
+        }
+      }
+      const obj = {
+        moduleName: 'http_map',
+        method: 'get',
+        url_alias: 'getRealWarnList',
+        data: params
+      }
+      http_request(obj).then(response => {
+        if (response.data && response.data.rows) {
+          this.dataList = response.data.rows;
+        } else {
+          this.dataList = [];
+        }
+      });
+    },
+    /** 定时刷新 */
+    refreshTime() {
+      this.clearTimer();
+      this.timer = setInterval(() => {
+        this.getList();
+      }, 30 * 1000);
+    },
+    /** 清除定时器 */
+    clearTimer() {
+      if (this.timer) {
+        clearInterval(this.timer);
+      }
     },
     /** 展开收起面板 */
     handlePull() {
@@ -375,6 +473,15 @@ export default {
             }
           }
         }
+      }
+      >.warning-list-none{
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        font-size: 14px;
+        font-family: PingFang SC;
+        font-weight: 400;
+        color: #8592AD;
       }
     }
     >.more-button{

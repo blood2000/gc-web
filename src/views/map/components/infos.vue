@@ -22,7 +22,7 @@
           </p>
           <p class="car-type">
             <span class="label">车辆类型</span>
-            重型自卸货车
+            {{ vehicleInfo.classificationName ? vehicleInfo.classificationName : '暂无' }}
           </p>
         </div>
       </div>
@@ -55,7 +55,7 @@
       <!-- content -->
       <div class="device-content ly-flex ly-flex-align-center">
         <div class="img-box ly-flex-pack-center ly-flex-align-center">
-          <img src="~@/assets/images/device/device.png">
+          <img :src="deviceInfo.modelImageUrl">
         </div>
         <div class="info-box ly-flex-1">
           <h5 class="g-single-row">{{ `${deviceInfo.modelName ? deviceInfo.modelName : ''} | ${deviceInfo.seriesName ? deviceInfo.seriesName : ''}` }}</h5>
@@ -168,8 +168,12 @@ export default {
         url_code: [this.vehicleCode]
       }
       http_request(obj).then(res => {
-        const { addressInfo } = res.data;
-        this.dispatchInfo = addressInfo || {};
+        if (res.data) {
+          const { addressInfo } = res.data;
+          this.dispatchInfo = addressInfo || {};
+        } else {
+          this.dispatchInfo = {};
+        }
       });
     },
     // 获取告警条数
