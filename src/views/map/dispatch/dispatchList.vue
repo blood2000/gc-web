@@ -1,36 +1,44 @@
 <!-- 调度单列表 -->
 <template>
   <div class="dispatch-list-container" v-loading="loading">
-    <div
-      class="list-box"
-      :class="item.isChoosed ? 'choosed' : ''"
-      v-for="(item, index) in dispatchList"
-      :key="index"
-      @click="chooseItem(index)"
-    >
-      <div class="first-line">
-        <div>{{ item.goodsBigTypeName }}</div>
-        <div>
-          {{ item.freightStr }} 
-          <!-- <span>{{ "元/" + item.unit }}</span> -->
+    <div class="list-main">
+      <div
+        class="list-box"
+        :class="item.isChoosed ? 'choosed' : ''"
+        v-for="(item, index) in dispatchList"
+        :key="index"
+        @click="chooseItem(index)"
+      >
+        <div class="first-line">
+          <div>{{ item.goodsBigTypeName }}</div>
+          <div>
+            {{ parseFloat(item.freightStr) }}
+            <span>{{ "元/" + item.freightStr.split("/")[1] }}</span>
+          </div>
         </div>
-      </div>
-      <div class="second-line">{{ item.companyName }}</div>
-      <div class="addr-box">
-        <div class="addr-icon start">起</div>
-        <div class="addr">{{ item.loadFormattedAddress }}</div>
-      </div>
-      <div class="addr-box">
-        <div class="addr-icon end">终</div>
-        <div class="addr">{{ item.unloadFormattedAddress }}</div>
-      </div>
-      <div class="btn-box">
-        <div class="btn dispatch" @click.stop="toDispatchVehicle">派车</div>
-        <div class="btn detail" @click.stop="toDispatchDetail">详情</div>
+        <div class="second-line">{{ item.companyName }}</div>
+        <div class="addr-box">
+          <div class="addr-icon start">起</div>
+          <div class="addr start-addr">{{ item.loadFormattedAddress }}</div>
+        </div>
+        <div class="addr-box">
+          <div class="addr-icon end">终</div>
+          <div class="addr end-addr">{{ item.unloadFormattedAddress }}</div>
+        </div>
+        <div class="btn-box">
+          <div class="btn dispatch" @click.stop="toDispatchVehicle(item)">
+            派车
+          </div>
+          <div class="btn detail" @click.stop="toDispatchDetail(item)">
+            详情
+          </div>
+        </div>
       </div>
     </div>
     <pagination
       :total="total"
+      hide-on-single-page
+      layout="prev, pager, next"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
@@ -76,16 +84,20 @@ export default {
   },
 
   methods: {
-    toDispatchVehicle() {
+    toDispatchVehicle(item) {
       this.showDispatchVehicle = true;
       this.$store.commit("set_dispatchVehicle", true);
+      this.$store.commit("set_dispatchInfo", item);
     },
     //跳转调度单详情
-    toDispatchDetail() {},
+    toDispatchDetail(item) {
+      const code = item.dispatchOrderCode;
+      this.$router.push("../../dispatch/order/detail?code=" + code);
+    },
 
     //选择调度单
     chooseItem(index) {
-      this.$store.commit("set_showVehicleDetail", true);
+      // this.$store.commit("set_showVehicleDetail", true);
       this.vehicleInfo.vehicleCode = this.dispatchList[index].vehicleCode;
       this.$store.commit("set_vehicleInfo", this.vehicleInfo);
       this.$emit("getVehicleInfo", this.vehicleInfo);
@@ -118,7 +130,7 @@ export default {
       });
       this.dispatchList = dispatchList;
       this.loading = false;
-      console.log(this.dispatchList)
+      console.log(this.dispatchList);
     },
     searchQuery() {
       this.queryParams.pageNum = 1;
@@ -129,12 +141,25 @@ export default {
 </script>
 <style lang='scss' scoped>
 .dispatch-list-container {
+  box-sizing: border-box;
+
+  // background: rgba(0, 0, 0, 0.2);
+}
+.list-main {
   height: 100%;
   overflow-y: auto;
-  // background: rgba(0, 0, 0, 0.2);
 }
 .map-container .show-detail {
   width: 780px;
+}
+
+.pagination-container {
+  position: fixed;
+  // width: 100%;
+  margin: 0;
+  bottom: 15px;
+  right: 9px;
+  background: rgba(0, 0, 0, 0);
 }
 .detail-box {
   position: absolute;
@@ -145,13 +170,13 @@ export default {
   right: 400px;
 }
 .list-box {
-  // height: 184px;
-  padding: 10px;
+  // height: 884px;
+  padding: 15px;
   margin-bottom: 20px;
   font-size: 14px;
   color: #3d4050;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 5px 3px 10px rgba(0, 0, 0, 0.25);
   border: 1px solid transparent;
   border-radius: 6px;
   transition: all 0.25s linear;
@@ -196,21 +221,41 @@ export default {
       font-size: 12px;
     }
     .addr {
+      position: relative;
       flex: 1;
+    }
+
+    .start-addr::before {
+      content: "";
+      position: absolute;
+      top: calc(50% + 11px);
+      left: -20px;
+      width: 0px;
+      height: calc(50% - 5px);
+      border: 1px solid #c7cbd2;
+    }
+    .end-addr::before {
+      content: "";
+      position: absolute;
+      bottom: calc(50% + 11px);
+      left: -20px;
+      width: 0px;
+      height: calc(50% - 5px);
+      border: 1px solid #c7cbd2;
     }
     .start {
       position: relative;
       background: #ffbc00;
     }
-    .start::after {
-      content: "";
-      position: absolute;
-      top: 19px;
-      left: 8px;
-      width: 0px;
-      height: 8px;
-      border: 1px solid #c7cbd2;
-    }
+    // .start::after {
+    //   content: "";
+    //   position: absolute;
+    //   top: 19px;
+    //   left: 8px;
+    //   width: 0px;
+    //   height: 8px;
+    //   border: 1px solid #c7cbd2;
+    // }
     .end {
       background: #4682fa;
     }

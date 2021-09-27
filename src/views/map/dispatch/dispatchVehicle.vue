@@ -253,7 +253,7 @@ export default {
   computed: {
     showDispatchVehicle() {
       if (this.$store.getters.showDispatchVehicle) {
-        this.renderPageObj;
+        this.renderPageObj();
       }
       return this.$store.getters.showDispatchVehicle;
     },
@@ -266,7 +266,7 @@ export default {
 
   methods: {
     renderPageObj() {
-      this.pageObj = this.$$store.map.dispatchInfo
+      this.pageObj = this.$store.getters.dispatchInfo
       const pageObj = this.pageObj;
       if (pageObj.vehicleCode && pageObj.driverCode) {
         me.carForm.vehicleDrivers[0].vehicleCode = pageObj.vehicleCode;
