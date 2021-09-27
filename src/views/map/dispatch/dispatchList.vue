@@ -1,6 +1,6 @@
 <!-- 调度单列表 -->
 <template>
-  <div class="dispatch-list-container">
+  <div class="dispatch-list-container" v-loading="loading">
     <div
       class="list-box"
       :class="item.isChoosed ? 'choosed' : ''"
@@ -9,29 +9,37 @@
       @click="chooseItem(index)"
     >
       <div class="first-line">
-        <div>{{ item.dispatchType }}</div>
+        <div>{{ item.goodsBigTypeName }}</div>
         <div>
-          {{ item.price }} <span>{{ "元/" + item.unit }}</span>
+          {{ item.freightStr }} 
+          <!-- <span>{{ "元/" + item.unit }}</span> -->
         </div>
       </div>
-      <div class="second-line">{{ item.company }}</div>
+      <div class="second-line">{{ item.companyName }}</div>
       <div class="addr-box">
         <div class="addr-icon start">起</div>
-        <div>{{ item.start }}</div>
+        <div class="addr">{{ item.loadFormattedAddress }}</div>
       </div>
       <div class="addr-box">
         <div class="addr-icon end">终</div>
-        <div>{{ item.end }}</div>
+        <div class="addr">{{ item.unloadFormattedAddress }}</div>
       </div>
       <div class="btn-box">
         <div class="btn dispatch" @click.stop="toDispatchVehicle">派车</div>
         <div class="btn detail" @click.stop="toDispatchDetail">详情</div>
       </div>
     </div>
+    <pagination
+      :total="total"
+      :page.sync="queryParams.pageNum"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getList"
+    />
   </div>
 </template>
 
 <script>
+import { http_request } from "../../../api";
 import config from "./config";
 export default {
   data() {
@@ -39,6 +47,22 @@ export default {
       dispatchList: [],
       showDispatchVehicle: false,
       vehicleInfo: {},
+      total: 0,
+      loading: false,
+      queryParams: {
+        pageNum: 1, //页码
+        pageSize: 10, //每页显示条数
+        shipmentNameOrCompanyName: null, //下单用户
+        loadFormattedAddress: null, //装货地址
+        unloadFormattedAddress: null, //卸货地址
+        dispatchOrderNo: null, //调度单号
+        goodsType: null, //货品类型
+        source: null, //来源
+        startDate: "", //创建开始时间 yyyy-MM-dd
+        endDate: "", //创建结束时间 yyyy-MM-dd
+        remark: null, //备注
+        dispatchOrderStatus: [1, 2], //状态为非关闭的调度单
+      },
     };
   },
 
@@ -47,11 +71,7 @@ export default {
   created() {},
 
   mounted() {
-    let dispatchList = config.dispatchList;
-    dispatchList.map((item) => {
-      item.isChoosed = false;
-    });
-    this.dispatchList = dispatchList;
+    this.searchQuery();
     this.vehicleInfo = config.vehicleInfo;
   },
 
@@ -68,14 +88,41 @@ export default {
       this.$store.commit("set_showVehicleDetail", true);
       this.vehicleInfo.vehicleCode = this.dispatchList[index].vehicleCode;
       this.$store.commit("set_vehicleInfo", this.vehicleInfo);
-      this.$emit('getVehicleInfo', this.vehicleInfo);
+      this.$emit("getVehicleInfo", this.vehicleInfo);
       this.dispatchList.map((dItem, dIndex) => {
         if (dIndex === index) {
           dItem.isChoosed = true;
         } else {
           dItem.isChoosed = false;
         }
-      })
+      });
+    },
+    // 获取调度单列表
+    async getList() {
+      this.loading = true;
+      const tmp = { ...this.queryParams };
+      console.log("tmp", tmp);
+      const obj = {
+        //paging_dispatch
+        moduleName: "http_dispatch",
+        method: "post",
+        url_alias: "paging_dispatch",
+        data: tmp,
+      };
+      const res = await http_request(obj);
+      console.log("geatlist ===>", res);
+      this.total = res.data.total;
+      let dispatchList = res.data.rows;
+      dispatchList.map((item) => {
+        item.isChoosed = false;
+      });
+      this.dispatchList = dispatchList;
+      this.loading = false;
+      console.log(this.dispatchList)
+    },
+    searchQuery() {
+      this.queryParams.pageNum = 1;
+      this.getList();
     },
   },
 };
@@ -98,16 +145,16 @@ export default {
   right: 400px;
 }
 .list-box {
-  height: 184px;
+  // height: 184px;
   padding: 10px;
   margin-bottom: 20px;
   font-size: 14px;
   color: #3d4050;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.9);
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.05);
   border: 1px solid transparent;
   border-radius: 6px;
-  transition: all .25s linear;
+  transition: all 0.25s linear;
   .first-line {
     height: 28px;
     padding: 0 5px;
@@ -147,6 +194,9 @@ export default {
       line-height: 18px;
       color: #fff;
       font-size: 12px;
+    }
+    .addr {
+      flex: 1;
     }
     .start {
       position: relative;
@@ -198,11 +248,11 @@ export default {
 }
 
 ::-webkit-scrollbar {
-	width: 0;
-	height: 20px;
-	background-color: #0E1013;
+  width: 0;
+  height: 20px;
+  background-color: #0e1013;
 }
 ::-webkit-scrollbar-thumb {
-	background: #333;
+  background: #333;
 }
 </style>
