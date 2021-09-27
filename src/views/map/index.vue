@@ -277,6 +277,8 @@
       v-if="headerTab === 1"
       ref="WarnListRef"
       class="warn-list-panel"
+      :vehicleCode="orgOrVehicleCode"
+      :orgOrVehicleInfo="orgOrVehicleInfo"
     />
 
     <!-- 调度指派 -->
@@ -288,11 +290,13 @@
 
     <!-- 派车 -->
     <DispatchVehicle/>
+
     <!-- 车辆详情 -->
     <VehicleDetail
       v-if="showVehicleDetail"
       class="vehicle-detail-panel"
     />
+    
     <!-- 轨迹回放 -->
     <TrackList
       v-if="headerTab === 3"
