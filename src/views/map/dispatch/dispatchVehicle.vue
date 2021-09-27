@@ -302,10 +302,10 @@ export default {
         http_request(obj1).then((res) => {
           console.log("获取司机列表 res", res.data);
           me.$set(me.driverList, index, res.data);
-          // me.carForm.vehicleDrivers[index].driverCode = me.searchDefaultDriverCode(
-          //   e,
-          //   index
-          // );
+          me.carForm.vehicleDrivers[index].driverCode = me.searchDefaultDriverCode(
+            e,
+            index
+          );
           console.log(
             me.driverList,
             me.carForm.vehicleDrivers[index].driverCode
