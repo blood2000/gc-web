@@ -409,7 +409,6 @@ export default {
     colse() {
       //重置
       this.$refs["ruleForm"].resetFields();
-      this.$store.commit("set_isFresh", true);
       this.$store.commit("set_dispatchVehicle", false);
     },
   },
