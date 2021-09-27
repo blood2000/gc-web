@@ -289,10 +289,7 @@
     />
 
     <!-- 派车 -->
-    <DispatchVehicle
-      v-if="showDispatchVehicle"
-      class="dispatch-vehicle-panel"
-    />
+    <DispatchVehicle/>
     <!-- 车辆详情 -->
     <VehicleDetail
       v-if="showVehicleDetail"
@@ -1501,20 +1498,6 @@ export default {
     height: calc(100% - #{$header-height} - #{$bottom} - 12px);
   }
 
-  //派车
-  > .dispatch-vehicle-panel {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 780px;
-    height: 636px;
-    background: #ffffff;
-    border: 1px solid #e4ecf4;
-    box-shadow: 0px 12px 48px rgba(0, 0, 0, 0.03);
-    border-radius: 4px;
-    z-index: 1000;
-  }
 
   //车辆详情
   > .vehicle-detail-panel {
