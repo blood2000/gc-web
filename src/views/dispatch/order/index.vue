@@ -178,6 +178,9 @@ export default {
     async getList() {
       this.loading = true
       const tmp = { ...this.queryParams };
+      const statusList = []
+      statusList.push(tmp.dispatchOrderStatus)
+      tmp.dispatchOrderStatus = statusList
       tmp.startDate = tmp.dateRange[0];
       tmp.endDate = tmp.dateRange[1];
       delete tmp.dateRange;
