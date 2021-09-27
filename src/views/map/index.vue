@@ -266,10 +266,10 @@
 
     <!-- 设备信息 -->
     <Infos
-      v-if="(headerTab === 1 && isShowVehicleInfo) || showVehicleDetail"
+      v-if="(headerTab === 1 && isShowVehicleInfo) || (headerTab === 2 && showVehicleDetail)"
       ref="InfosRef"
       class="map-info-panel"
-      :class="showVehicleDetail ? 'vehicle-detail-panel' : ''"
+      :class="(headerTab === 2 && showVehicleDetail) ? 'vehicle-detail-panel' : ''"
       :vehicleCode="orgOrVehicleCode"
     />
 
@@ -287,18 +287,15 @@
       v-if="headerTab === 2"
       ref="DispatchListRef"
       class="dispatch-list-panel"
-      @getVehicleInfo="getVehicleInfo"
     />
 
     <!-- 派车 -->
-    <DispatchVehicle 
-    :class="isFresh"
-    />
+    <DispatchVehicle />
     <!-- 车辆详情 -->
-    <VehicleDetail
+    <!-- <VehicleDetail
       v-if="showVehicleDetail"
       class="vehicle-detail-panel"
-    />
+    /> -->
     
     <!-- 轨迹回放 -->
     <TrackList
@@ -476,12 +473,14 @@ export default {
     showVehicleDetail() {
       return this.$store.getters.showVehicleDetail;
     },
-    isFresh() {
-      if(this.$store.getters.isFresh){
-        this.$store.commit('set_isFresh',false)
-      }
-      return this.$store.getters.isFresh;
-    },
+    // isFresh() {
+    //   if(this.$store.getters.isFresh){
+    //     //TODO...
+
+    //     this.$store.commit('set_isFresh',false);
+    //   }
+    //   return this.$store.getters.isFresh;
+    // },
     // vehicleInfo() {
     //   console.log(123)
     //   return this.$store.getters.vehicleInfo;
@@ -1047,10 +1046,12 @@ export default {
       if (data.vehicleFlag) {
         // 选中车
         this.isShowVehicleInfo = true;
+        this.$store.commit('set_showVehicleDetail', true);
         this.getDeviceLocationInfo(data.orgOrlicenseNumber);
       } else {
         // 选中组织
         this.isShowVehicleInfo = false;
+        this.$store.commit('set_showVehicleDetail', false);
         this.getVehicleLoLocations(data.orgOrVehicleCode);
       }
     },
@@ -1239,10 +1240,6 @@ export default {
       this.clearPathSimplifierIns();
       // 关闭地图信息窗体
       this.closeInfoWindow();
-    },
-    //获取车辆详情（调度组件）
-    getVehicleInfo(info) {
-      this.orgOrVehicleCode = info.vehicleCode;
     },
   },
 };
@@ -1502,11 +1499,12 @@ export default {
   // 调度指派
   > .dispatch-list-panel {
     position: absolute;
+    padding-bottom: 32px;
     top: calc(#{$header-height} + 12px);
     right: $right;
     z-index: 1000;
     width: 380px;
-    height: calc(100% - #{$header-height} - #{$bottom} - 12px);
+    max-height: calc(100% - #{$header-height} - #{$bottom} - 12px);
   }
 
 
@@ -1515,10 +1513,9 @@ export default {
     position: absolute;
     top: calc(#{$header-height} + 12px);
     right: calc(#{$right} + 390px);
-    width: 380px;
-    height: calc(100% - #{$header-height} - #{$bottom} - 12px);
-    background: rgba(0, 0, 0, 0.12);
-    z-index: 1000;
+    // width: 380px;
+    // height: calc(100% - #{$header-height} - #{$bottom} - 12px);
+    // z-index: 1000;
   }
 
   // 行车轨迹
