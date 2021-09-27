@@ -9,5 +9,6 @@ export default {
     car_order:'/fmsweb/basic/appointCarOrder/v1/pagingAppointCarOrder', //派车单列表 派车单管理
     del_by_codes:(codes)=>`/fmsweb/basic/appointCarRecord/v1/deleteAppointCarRecordByCodes/${codes}`,//删除派车单
     detail_record:(code)=>`/fmsweb/basic/appointCarRecord/v1/detailAppointCarRecordByCode/${code}`,//派车记录详情
-    detail_manage:(appointCarOrderCode)=>`/fmsweb/basic/appointCarOrder/v1/detailAppointCarOrderByCode/${appointCarOrderCode}`//派车单详情
+    detail_manage:(appointCarOrderCode)=>`/fmsweb/basic/appointCarOrder/v1/detailAppointCarOrderByCode/${appointCarOrderCode}`,//派车单详情
+    CarOrderIng_ByVehicleCode:(code)=>`/fmsweb/basic/appointCarOrder/v1/detailAppointCarOrderIngByVehicleCode/${code}`,//根据车辆Code获取当前正在运行中的派车单
 }
