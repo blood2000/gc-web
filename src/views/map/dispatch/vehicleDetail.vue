@@ -33,6 +33,7 @@ export default {
 
   computed: {
     vehicleInfo() {
+      console.log(123, this.$sotre.getters.vehicleInfo.vehicleCode)
       return this.$store.getters.vehicleInfo;
     },
   },

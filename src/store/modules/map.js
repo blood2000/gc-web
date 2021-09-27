@@ -30,6 +30,11 @@ const map = {
     }, leap) {
       commit('set_vehicleDetail', leap)
     },
+    setVehicleInfo({
+      commit
+    }, info) {
+      commit('set_vehicleInfo', info)
+    },
   }
 
 }

@@ -68,6 +68,7 @@ export default {
       this.$store.commit("set_showVehicleDetail", true);
       this.vehicleInfo.vehicleCode = this.dispatchList[index].vehicleCode;
       this.$store.commit("set_vehicleInfo", this.vehicleInfo);
+      this.$emit('getVehicleInfo', this.vehicleInfo);
       this.dispatchList.map((dItem, dIndex) => {
         if (dIndex === index) {
           dItem.isChoosed = true;

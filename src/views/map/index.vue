@@ -266,9 +266,10 @@
 
     <!-- 设备信息 -->
     <Infos
-      v-if="headerTab === 1 && isShowVehicleInfo"
+      v-if="(headerTab === 1 && isShowVehicleInfo) || showVehicleDetail"
       ref="InfosRef"
       class="map-info-panel"
+      :class="showVehicleDetail ? 'vehicle-detail-panel' : ''"
       :vehicleCode="orgOrVehicleCode"
     />
 
@@ -286,6 +287,7 @@
       v-if="headerTab === 2"
       ref="DispatchListRef"
       class="dispatch-list-panel"
+      @getVehicleInfo="getVehicleInfo"
     />
 
     <!-- 派车 -->
@@ -474,6 +476,7 @@ export default {
       return this.$store.getters.showVehicleDetail;
     },
     // vehicleInfo() {
+    //   console.log(123)
     //   return this.$store.getters.vehicleInfo;
     // },
   },
@@ -1229,6 +1232,10 @@ export default {
       this.clearPathSimplifierIns();
       // 关闭地图信息窗体
       this.closeInfoWindow();
+    },
+    //获取车辆详情（调度组件）
+    getVehicleInfo(info) {
+      this.orgOrVehicleCode = info.vehicleCode;
     },
   },
 };
