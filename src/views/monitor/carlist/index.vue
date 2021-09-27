@@ -57,6 +57,14 @@
               :table-columns-config="tableColumnsConfig"
             >
               <template #edit="{ row }">
+                  <el-button
+                  v-show="row.vehicle_status == 1"
+                  size="mini"
+                  type="text"
+                  icon="el-icon-edit"
+                  @click="lookCarOrder(row)"
+                  >查看派车单</el-button
+                >
                 <el-button
                   size="mini"
                   type="text"
@@ -144,6 +152,9 @@ export default {
     });
   },
   methods: {
+    lookCarOrder(obj){
+      console.log('obj',obj)
+    },
     /**
      * 通过经纬度获取详细点位信息
      * @param {Array} position 经纬度必传

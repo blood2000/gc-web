@@ -298,6 +298,7 @@ import ImageUploadSimple from "@/components/ImageUpload/simple.vue";
 import { http_request } from "../../../../api";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+import formValidate from '../../../../utils/formValidate'
 export default {
   name: "vehicleDialog",
   components: { ImageUploadSimple, Treeselect },
@@ -350,7 +351,7 @@ export default {
         ],
         licenseNumber: [
           { required: true, message: "车牌号不能为空", trigger: "blur" },
-          { validator: this.formValidate.plateNo, trigger: "blur" },
+          { validator: formValidate.plateNo, trigger: "blur" },
         ],
         vehicleTypeCode: [
           {
