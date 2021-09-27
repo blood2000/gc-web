@@ -138,7 +138,7 @@ export default {
     };
   },
   created() {
-      const me = this;
+    const me = this;
     console.log("tableColumnsConfig", tableColumnsConfig);
     me.getDicts("goodsType").then((res) => {
       console.log("res", res);
@@ -161,9 +161,9 @@ export default {
       return result;
     },
     handleCarlog(data) {
-       const code = data.dispatchOrderCode;
-       console.log(this.$router)
-       this.$router.push("/dispatch/recode?code=" + code);
+      const code = data.dispatchOrderCode;
+      console.log(this.$router);
+      this.$router.push("/dispatch/recode?code=" + code);
     },
     handleDetail(data) {
       const code = data.dispatchOrderCode;
@@ -176,11 +176,13 @@ export default {
       this.$router.push("order/car?code=" + code);
     },
     async getList() {
-      this.loading = true
+      this.loading = true;
       const tmp = { ...this.queryParams };
-      const statusList = []
-      statusList.push(tmp.dispatchOrderStatus)
-      tmp.dispatchOrderStatus = statusList
+      if (tmp.dispatchOrderStatus != null) {
+        const statusList = [];
+        statusList.push(tmp.dispatchOrderStatus);
+        tmp.dispatchOrderStatus = statusList;
+      }
       tmp.startDate = tmp.dateRange[0];
       tmp.endDate = tmp.dateRange[1];
       delete tmp.dateRange;
@@ -196,7 +198,7 @@ export default {
       console.log("geatlist ===>", res);
       this.tableData = res.data.rows;
       this.total = res.data.total;
-      this.loading = false
+      this.loading = false;
     },
     searchQuery() {
       this.queryParams.pageNum = 1;
