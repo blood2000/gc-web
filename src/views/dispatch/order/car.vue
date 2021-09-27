@@ -443,10 +443,10 @@ export default {
         http_request(obj1).then((res) => {
           console.log("获取司机列表 res", res.data);
           me.$set(me.driverList, index, res.data);
-          // me.form.vehicleDrivers[index].driverCode = me.searchDefaultDriverCode(
-          //   e,
-          //   index
-          // );
+          me.form.vehicleDrivers[index].driverCode = me.searchDefaultDriverCode(
+            e,
+            index
+          );
           console.log(me.driverList, me.form.vehicleDrivers[index].driverCode);
           me.oldkey[index] = e;
         });
