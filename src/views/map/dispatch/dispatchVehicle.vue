@@ -37,11 +37,11 @@
         </el-row>
         <div class="addr">
           <div class="addr-box">
-            <div class="addr-icon start"></div>
+            <div class="addr-icon start">起</div>
             <div>{{ 111 }}</div>
           </div>
           <div class="addr-box">
-            <div class="addr-icon end"></div>
+            <div class="addr-icon end">终</div>
             <div>{{ 222 }}</div>
           </div>
         </div>
@@ -378,12 +378,9 @@ export default {
           };
           http_request(obj).then((res) => {
             if (res.code == 200) {
-              this.$confirm(res.msg, "提示", {
-                confirmButtonText: "确定",
-                type: "success",
-              }).then(() => {
                 this.$router.push("/dispatch/order");
-              });
+                this.$store.commit('set_isFresh', true);
+                this.colse();
             }
           });
         } else {
@@ -393,9 +390,8 @@ export default {
     },
     colse() {
       //重置
-
       this.$refs["ruleForm"].resetFields();
-
+      this.$store.commit('set_isFresh', true);
       this.$store.commit("set_dispatchVehicle", false);
     },
   },
@@ -454,7 +450,7 @@ export default {
 .addr-box {
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   .addr-icon {
     width: 18px;
     height: 18px;

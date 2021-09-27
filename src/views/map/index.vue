@@ -291,8 +291,9 @@
     />
 
     <!-- 派车 -->
-    <DispatchVehicle/>
-
+    <DispatchVehicle 
+    :class="isFresh"
+    />
     <!-- 车辆详情 -->
     <VehicleDetail
       v-if="showVehicleDetail"
@@ -474,6 +475,12 @@ export default {
     },
     showVehicleDetail() {
       return this.$store.getters.showVehicleDetail;
+    },
+    isFresh() {
+      if(this.$store.getters.isFresh){
+        this.$store.commit('set_isFresh',false)
+      }
+      return this.$store.getters.isFresh;
     },
     // vehicleInfo() {
     //   console.log(123)
