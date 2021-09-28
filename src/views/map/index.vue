@@ -266,10 +266,15 @@
 
     <!-- 设备信息 -->
     <Infos
-      v-if="(headerTab === 1 && isShowVehicleInfo) || (headerTab === 2 && showVehicleDetail)"
+      v-if="
+        (headerTab === 1 && isShowVehicleInfo) ||
+        (headerTab === 2 && showVehicleDetail)
+      "
       ref="InfosRef"
       class="map-info-panel"
-      :class="(headerTab === 2 && showVehicleDetail) ? 'vehicle-detail-panel' : ''"
+      :class="
+        headerTab === 2 && showVehicleDetail ? 'vehicle-detail-panel' : ''
+      "
       :vehicleCode="orgOrVehicleCode"
     />
 
@@ -296,7 +301,7 @@
       v-if="showVehicleDetail"
       class="vehicle-detail-panel"
     /> -->
-    
+
     <!-- 轨迹回放 -->
     <TrackList
       v-if="headerTab === 3"
@@ -452,6 +457,7 @@ export default {
         qt: [-15, -39],
       },
       // showVehicleDetail: false,  //车辆详情组件显示
+      locationProp: null, //路由上有参数时
     };
   },
 
@@ -488,6 +494,11 @@ export default {
     // },
   },
   mounted() {
+    if (document.location.search.includes("trackType")) {
+      console.log('document.location.search.split("=")', document.location);
+      this.locationProp = this.locationQueryDeal();
+      this.headerTab = Number(this.locationProp.trackType);
+    }
     // 时间
     this.getCurrentTime();
     this.refreshTime();
@@ -510,6 +521,20 @@ export default {
     this.clearTimer();
   },
   methods: {
+    locationQueryDeal() {
+      const url = location.search; //获取url中"?"符后的字串 ('?modFlag=business&role=1')
+      const theRequest = new Object();
+      if (url.indexOf("?") != -1) {
+        const str = url.substr(1); //substr()方法返回从参数值开始到结束的字符串；
+        const strs = str.split("&");
+        for (let i = 0; i < strs.length; i++) {
+          theRequest[strs[i].split("=")[0]] = strs[i].split("=")[1];
+        }
+      }
+      console.log("theRequest", theRequest);
+      return theRequest;
+    },
+
     /** 初始化地图 */
     initMap() {
       if (!AMap) {
@@ -522,6 +547,13 @@ export default {
         center: [119.358267, 26.04577],
         zoom: 11,
       });
+      console.log(
+        "==========>",
+        new AMap.Geocoder({
+          radius: 1000,
+          extensions: "all",
+        })
+      );
       this.geocoder = new AMap.Geocoder({
         radius: 1000,
         extensions: "all",
@@ -844,9 +876,12 @@ export default {
           if (that.$refs.TrackListRef.jmTrackInfolist[idx].event_type) {
             const marker = that.drawMarker(path[idx], {
               clickable: false,
-              content: '<div class="own-navgtr-marker '+ that.$refs.TrackListRef.jmTrackInfolist[idx].event_type +'"></div>',
+              content:
+                '<div class="own-navgtr-marker ' +
+                that.$refs.TrackListRef.jmTrackInfolist[idx].event_type +
+                '"></div>',
               offset: [-15, -40],
-              angle: 0
+              angle: 0,
             });
             setTimeout(() => {
               marker.setMap(null);
@@ -1009,8 +1044,35 @@ export default {
         data: this.vehicleParams,
       };
       http_request(obj).then((res) => {
+        console.log("车 树 查询res", res);
         this.vehicleTreeOptions = res.data;
+        let result = { row: null, isTure: false };
+        if (this.locationProp) {
+          this.recursionVehicleTree(res.data, result);
+          console.log("result", result);
+          if (result.isTure) this.vehicleNodeClick(result.row);
+        }
       });
+    },
+    recursionVehicleTree(data, result) {
+      const me = this;
+      for (const el of data) {
+        console.log(el);
+        if (
+          el.vehicleFlag &&
+          el.orgOrVehicleCode &&
+          el.orgOrVehicleCode == me.locationProp.vehicleCode
+        ) {
+          console.log("1221", el);
+          result.row = el;
+          result.isTure = true;
+          return;
+        } else {
+          if (el.children) {
+            me.recursionVehicleTree(el.children, result);
+          }
+        }
+      }
     },
     // 车树查询
     vehicleQuery() {
@@ -1058,12 +1120,12 @@ export default {
       if (data.vehicleFlag) {
         // 选中车
         this.isShowVehicleInfo = true;
-        this.$store.commit('set_showVehicleDetail', true);
+        this.$store.commit("set_showVehicleDetail", true);
         this.getDeviceLocationInfo(data.orgOrlicenseNumber);
       } else {
         // 选中组织
         this.isShowVehicleInfo = false;
-        this.$store.commit('set_showVehicleDetail', false);
+        this.$store.commit("set_showVehicleDetail", false);
         this.getVehicleLoLocations(data.orgOrVehicleCode);
       }
     },
@@ -1253,7 +1315,6 @@ export default {
       // 关闭地图信息窗体
       this.closeInfoWindow();
       // 清除装卸货停车点
-      
     },
   },
 };
@@ -1521,7 +1582,6 @@ export default {
     max-height: calc(100% - #{$header-height} - #{$bottom} - 12px);
   }
 
-
   //车辆详情
   > .vehicle-detail-panel {
     position: absolute;
@@ -1748,29 +1808,32 @@ export default {
       height: 48px;
       animation: show-marker 3s;
       @keyframes show-marker {
-        0%{
+        0% {
           opacity: 0;
         }
-        10%{
+        10% {
           opacity: 1;
         }
-        90%{
+        90% {
           opacity: 1;
         }
-        100%{
+        100% {
           opacity: 0;
         }
       }
       &.loading {
-        background: url("~@/assets/images/device/map_icon_loading.png") no-repeat;
+        background: url("~@/assets/images/device/map_icon_loading.png")
+          no-repeat;
         background-size: 100% 100%;
       }
       &.unloading {
-        background: url("~@/assets/images/device/map_icon_unloading.png") no-repeat;
+        background: url("~@/assets/images/device/map_icon_unloading.png")
+          no-repeat;
         background-size: 100% 100%;
       }
       &.vehicle-stop {
-        background: url("~@/assets/images/device/map_icon_vehicle-stop.png") no-repeat;
+        background: url("~@/assets/images/device/map_icon_vehicle-stop.png")
+          no-repeat;
         background-size: 100% 100%;
       }
     }

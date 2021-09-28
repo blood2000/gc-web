@@ -199,7 +199,14 @@ export default {
       return result;
     },
     mapSearch() {},
-    travelSeach() {},
+    travelSeach(obj) {
+      console.log("obj", obj);
+      const vehicleCode = obj.vehicle_code;
+      const trackType = 3;
+      this.$router.push(
+        `/map/mapInfo?vehicleCode=${vehicleCode}&trackType=${trackType}`
+      );
+    },
     //获取组织树
     async getOrgHttp() {
       const obj = {
