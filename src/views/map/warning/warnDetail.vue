@@ -12,16 +12,16 @@
   >
     <div class="map-warning-detail">
       <ul class="block-list ly-flex ly-flex-pack-start">
-        <li class="ly-flex-v ly-flex-align-center ly-flex-pack-center">
+        <li v-if="alarmDetail.alarmTypeName" class="ly-flex-v ly-flex-align-center ly-flex-pack-center">
           <img src="~@/assets/images/device/warn_icon_1.png">
-          <p class="g-single-row text">车道偏离</p>
+          <p class="g-single-row text">{{ alarmDetail.alarmTypeName }}</p>
         </li>
-        <li class="ly-flex-v ly-flex-align-center ly-flex-pack-center">
+        <li v-if="alarmDetail.alarmLevel" class="ly-flex-v ly-flex-align-center ly-flex-pack-center">
           <img src="~@/assets/images/device/warn_label_3.png">
-          <p class="g-single-row text">三级告警</p>
+          <p class="g-single-row text">{{ alarmDetail.alarmLevel }}</p>
         </li>
-        <li class="ly-flex-v ly-flex-align-center ly-flex-pack-center">
-          <p class="g-single-row count">53</p>
+        <li v-if="alarmDetail.number" class="ly-flex-v ly-flex-align-center ly-flex-pack-center">
+          <p class="g-single-row count">{{ alarmDetail.number }}</p>
           <p class="g-single-row text">告警次数</p>
         </li>
       </ul>
@@ -36,15 +36,11 @@
         @row-click="clickRowHandle"
       >
         <el-table-column label="序号" type="index" width="50" />
-        <el-table-column label="告警时间" prop="createTime">
-          <template slot-scope="scope">
-            <span>{{ parseTime(scope.row.createTime) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="驾驶司机" prop="name" :show-overflow-tooltip="true" />
-        <el-table-column label="告警时速(km/h)" prop="name" :show-overflow-tooltip="true" />
-        <el-table-column label="告警位置" prop="name" :show-overflow-tooltip="true" />
-        <el-table-column label="告警图片/视频" prop="name" :show-overflow-tooltip="true">
+        <el-table-column label="告警时间" prop="alarmTime" width="150" />
+        <el-table-column label="驾驶司机" prop="nickName" :show-overflow-tooltip="true" width="100" />
+        <el-table-column label="告警时速(km/h)" prop="alarmValue" :show-overflow-tooltip="true" width="140" />
+        <el-table-column label="告警位置" prop="alarmAddress" :show-overflow-tooltip="true" />
+        <el-table-column label="告警图片/视频" width="110">
           <template slot-scope="scope">
             <img class="mr5" src="~@/assets/images/device/warn_detail_image.png">
             <img src="~@/assets/images/device/warn_detail_camera_d.png">
@@ -90,10 +86,21 @@
 import { http_request } from '@/api';
 export default {
   props: {
-    open: Boolean
+    open: Boolean,
+    alarmObject: {
+      type: String,
+      default: undefined
+    },
+    vehicleParams: {
+      type: Object,
+      default: () => {
+        return {};
+      }
+    }
   },
   data() {
     return {
+      alarmDetail: {},
       // 查询参数
       queryParams: {
         start: 1,
@@ -102,7 +109,7 @@ export default {
       // 报警列表
       total: 0,
       loading: false,
-      dataList: [{id: 1, name: 123}, {id: 2, name: 123}, {id: 3, name: 123}, {id: 4, name: 123}, {id: 5, name: 123}],
+      dataList: [],
       // 获取row的key值
       getRowKeys(row) {
         return row.id;
@@ -138,7 +145,8 @@ export default {
   watch: {
     open(val) {
       if (val) {
-        console.log('open');
+        this.queryParams.start = 1;
+        this.getList();
       }
     }
   },
@@ -147,7 +155,26 @@ export default {
   },
   methods: {
     getList() {
-
+      this.loading = true;
+      const params = {
+        alarmObject: this.alarmObject // 告警对象(vehicle 车辆，device 设备，person 人员)
+      };
+      const obj = {
+        moduleName: 'http_map',
+        method: 'get',
+        url_alias: 'getOtherWarnDetail',
+        data: Object.assign({}, params, this.queryParams, this.vehicleParams)
+      }
+      http_request(obj).then(response => {
+        this.loading = false;
+        if (response.data && response.data.rows) {
+          this.dataList = response.data.rows;
+          this.total = response.data.total || 0;
+        } else {
+          this.dataList = [];
+          this.total = 0;
+        }
+      });
     },
     // 点击行事件
     clickRowHandle(row, column, event) {
@@ -165,6 +192,10 @@ export default {
     // 关闭弹窗
     close() {
       this.$emit('update:open', false);
+    },
+    // 告警详情赋值
+    setData(data) {
+      this.alarmDetail = data;
     }
   }
 }

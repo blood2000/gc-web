@@ -304,6 +304,7 @@
       class="track-list-panel"
       :isShowVehicleInfo="isShowVehicleInfo"
       :orgOrVehicleCode="orgOrVehicleCode"
+      :orgOrVehicleInfo="orgOrVehicleInfo"
       @initPathSimplifier="initPathSimplifier"
       @startPathSimplifier="startPathSimplifier"
       @resumePathSimplifier="resumePathSimplifier"
@@ -440,6 +441,8 @@ export default {
       startMarker: null,
       // 巡航终点
       endMarker: null,
+      // 巡航装/卸/停车点
+      navgtrMarkerList: {},
       // 地图点位集合
       markerList: {},
       // 不同承运类型车辆图片大小不同所以点位偏移不同
@@ -669,13 +672,13 @@ export default {
     clearMap() {
       this.map.clearMap();
     },
-    /** 清除地图点位 */
-    clearMarkerList() {
-      for (const key in this.markerList) {
-        this.markerList[key].setMap(null);
-        this.markerList[key] = null;
+    /** 清除指定的地图点位集合 */
+    clearMarkerList(markerList) {
+      for (const key in markerList) {
+        markerList[key].setMap(null);
+        markerList[key] = null;
       }
-      this.markerList = {};
+      markerList = {};
     },
     /** 判断当前位置是否在可视区域 */
     isPointInRing(position) {
@@ -830,6 +833,19 @@ export default {
           if (that.navgtr.isCursorAtPathEnd()) {
             that.$refs.TrackListRef.setPlayStatus(0);
           }
+          // 显示装\卸\停车点
+          if (that.$refs.TrackListRef.jmTrackInfolist[idx].event_type) {
+            console.log(that.$refs.TrackListRef.jmTrackInfolist[idx].event_type)
+            const marker = that.drawMarker(path[idx], {
+              clickable: false,
+              content: '<div class="own-navgtr-marker '+ that.$refs.TrackListRef.jmTrackInfolist[idx].event_type +'"></div>',
+              offset: [-15, -46],
+              angle: 0
+            });
+            setTimeout(() => {
+              marker.setMap(null);
+            }, 3 * 1000);
+          }
         });
         // 绘制起点
         this.startMarker = this.drawMarker(
@@ -858,7 +874,7 @@ export default {
     /** 巡航轨迹事件 */
     startPathSimplifier() {
       this.$refs.TrackListRef.setPlayStatus(1);
-      this.map.setZoomAndCenter(12, this.$refs.TrackListRef.jmTracklist[0]);
+      // this.map.setZoomAndCenter(12, this.$refs.TrackListRef.jmTracklist[0]);
       this.navgtr.start();
     },
     pausePathSimplifier() {
@@ -996,7 +1012,6 @@ export default {
     },
     // 车树节点筛选
     vehicleFilterNode(vehicleParams, data) {
-      console.log(vehicleParams);
       const { licenseNumber, carrierType, vehicleStatus, deviceStatus } =
         vehicleParams;
       if (
@@ -1106,7 +1121,7 @@ export default {
       };
       http_request(obj).then((res) => {
         // 绘制前先清空之前的绘制, 避免重复绘制
-        this.clearMarkerList();
+        this.clearMarkerList(this.markerList);
         if (res.data.rows && res.data.rows.length > 0) {
           // 绘制全部车辆点位
           res.data.rows.forEach((el) => {
@@ -1141,7 +1156,7 @@ export default {
       http_request(obj).then((res) => {
         const { data } = res;
         // 绘制前先清空之前的绘制, 避免重复绘制
-        this.clearMarkerList();
+        this.clearMarkerList(this.markerList);
         if (data) {
           // 绘制全部车辆点位
           const { attribute } = data;
@@ -1229,6 +1244,8 @@ export default {
       this.clearPathSimplifierIns();
       // 关闭地图信息窗体
       this.closeInfoWindow();
+      // 清除装卸货停车点
+      
     },
   },
 };
@@ -1714,6 +1731,23 @@ export default {
         width: 31px;
         height: 79px;
         background: url("~@/assets/images/device/map_car_qt.png") no-repeat;
+        background-size: 100% 100%;
+      }
+    }
+    // 巡航装卸货停车点样式
+    ::v-deep.own-navgtr-marker {
+      width: 30px;
+      height: 48px;
+      &.loading {
+        background: url("~@/assets/images/device/map_icon_loading.png") no-repeat;
+        background-size: 100% 100%;
+      }
+      &.unloading {
+        background: url("~@/assets/images/device/map_icon_unloading.png") no-repeat;
+        background-size: 100% 100%;
+      }
+      &.vehicle-stop {
+        background: url("~@/assets/images/device/map_icon_vehicle-stop.png") no-repeat;
         background-size: 100% 100%;
       }
     }

@@ -6,24 +6,24 @@
     </ul>
 
     <div class="map-warning-table__content ly-flex-pack-justify">
-      <ul v-show="!isClose" class="warning-list map-scroll-panel ly-flex-pack-justify">
+      <ul v-show="!isClose" class="warning-list map-scroll-panel ly-flex-pack-start">
         <!-- 实时报警 -->
-        <template v-if="activeTab === '1'">
+        <template v-if="activeTab === 'real'">
           <template v-if="dataList.length > 0">
             <li class="warning-list-li" v-for="(item, index) in dataList" :key="index">
               <div class="warning-card" :class="{active: index === 0}">
                 <h5 class="g-single-row">{{ item.licenseNumber }}</h5>
-                <p class="label mb10 g-single-row">{{ item.nickName ? itemnickName : '暂无' }}<span style="margin: 0 10px">|</span>{{ item.teamName ? teamName : '暂无' }}</p>
+                <p class="label mb10 g-single-row">{{ item.nickName ? item.nickName : '暂无' }}<span style="margin: 0 10px">|</span>{{ item.teamName ? item.teamName : '暂无' }}</p>
                 <div class="center-box ly-flex-pack-justify ly-flex-align-end mb5">
-                  <div class="ly-flex-v ly-flex-align-center">
+                  <div v-if="item.alarmTypeName" class="ly-flex-v ly-flex-align-center">
                     <img src="~@/assets/images/device/warn_icon_1.png">
                     <p class="g-single-row text">{{ item.alarmTypeName }}</p>
                   </div>
-                  <div class="ly-flex-v ly-flex-align-center">
+                  <div v-if="item.alarmLevel" class="ly-flex-v ly-flex-align-center">
                     <img src="~@/assets/images/device/warn_label_1.png">
                     <p class="g-single-row text">{{ item.alarmLevel }}</p>
                   </div>
-                  <div class="ly-flex-v ly-flex-align-center">
+                  <div v-if="item.alarmValue" class="ly-flex-v ly-flex-align-center">
                     <p class="g-single-row"><strong>{{ item.alarmValue }}</strong> km/h</p>
                     <p class="g-single-row text">报警时速</p>
                   </div>
@@ -39,41 +39,41 @@
             </li>
           </template>
         </template>
-        <!-- ADAS报警、异常驾驶报警、特殊报警 -->
+        <!-- vehicle 车辆，device 设备，person 人员 -->
         <template v-else>
-          <template v-if="adasDataList.length > 0">
-            <li class="warning-list-adas" v-for="(item, index) in adasDataList" :key="index" @click="handleDetail(item)">
+          <template v-if="otherDataList.length > 0">
+            <li class="warning-list-adas" v-for="(item, index) in otherDataList" :key="index" @click="handleDetail(item)">
               <div class="warning-card" :class="{active: index === 0}">
                 <div class="center-box ly-flex-pack-justify ly-flex-align-end mb5">
-                  <div class="ly-flex-v ly-flex-align-center">
+                  <div v-if="item.alarmTypeName" class="ly-flex-v ly-flex-align-center">
                     <img src="~@/assets/images/device/warn_icon_1.png">
-                    <p class="g-single-row text">车道偏离</p>
+                    <p class="g-single-row text">{{ item.alarmTypeName }}</p>
                   </div>
-                  <div class="ly-flex-v ly-flex-align-center">
+                  <div v-if="item.alarmLevel" class="ly-flex-v ly-flex-align-center">
                     <img src="~@/assets/images/device/warn_label_2.png">
-                    <p class="g-single-row text">二级告警</p>
+                    <p class="g-single-row text">{{ item.alarmLevel }}</p>
                   </div>
-                  <div class="ly-flex-v">
-                    <p class="g-single-row count">53</p>
+                  <div v-if="item.number || item.number == 0" class="ly-flex-v">
+                    <p class="g-single-row count">{{ item.number }}</p>
                     <p class="g-single-row text">告警次数</p>
                   </div>
                   <div class="ly-flex-v">
-                    <p class="g-single-row count">闽A54772</p>
+                    <p class="g-single-row count">{{ item.licenseNumber }}</p>
                     <p class="g-single-row text">车牌号</p>
                   </div>
                 </div>
                 <div class="time-box ly-flex-pack-justify">
                   <div>
                     <p class="label g-single-row">首次告警时间</p>
-                    <p class="time g-single-row">2021-06-15 13:46:58</p>
+                    <p class="time g-single-row">{{ item.maxAlarmTime ? item.maxAlarmTime : '暂无' }}</p>
                   </div>
                   <div>
                     <p class="label g-single-row">末次告警时间</p>
-                    <p class="time g-single-row">2021-06-15 13:46:58</p>
+                    <p class="time g-single-row">{{ item.minAlarmTime ? item.minAlarmTime : '暂无' }}</p>
                   </div>
                 </div>
                 <p class="label g-single-row">报警位置</p>
-                <p class="address g-single-row">福州市台江区东滨路1号副班总部大楼</p>
+                <p class="address g-single-row">{{ item.alarmAddress ? item.alarmAddress : '暂无' }}</p>
               </div>
             </li>
           </template>
@@ -96,6 +96,8 @@
     <!-- 轨迹详情 -->
     <WarnDetail
       :open.sync="detailOpen"
+      :alarmObject="activeTab"
+      :vehicleParams="queryParams"
       ref="WarnDetailRef"
       class="warn-detail-panel"
     />
@@ -127,29 +129,35 @@ export default {
       // 定时器
       timer: null,
       // 当前选中tab
-      activeTab: '1',
+      activeTab: 'real',
       // tab
       tabList: [{
-        code: '1',
+        code: 'real',
         tabName: '实时报警'
       }, {
-        code: '2',
-        tabName: 'ADAS报警'
+        code: 'vehicle',
+        tabName: '车辆报警'
       }, {
-        code: '3',
-        tabName: '异常驾驶报警'
+        code: 'device',
+        tabName: '设备报警'
       }, {
-        code: '4',
-        tabName: '特殊报警'
+        code: 'person',
+        tabName: '人员报警'
       }],
       // 实时报警列表
       dataList: [],
       // adas报警列表
-      adasDataList: [{}, {}, {}, {}],
+      otherDataList: [],
       // 面板是否收起
       isClose: false,
       // 告警详情开关
-      detailOpen: false
+      detailOpen: false,
+      // 公共请求参数
+      queryParams: {
+        teamCode: undefined,
+        orgCode: undefined,
+        vehicleCode: undefined
+      }
     }
   },
   watch: {
@@ -158,8 +166,7 @@ export default {
         if (val) {
           this.getList();
         }
-      },
-      immediate: true
+      }
     }
   },
   mounted() {
@@ -177,14 +184,23 @@ export default {
     },
     getList() {
       const code = this.activeTab;
-      if (code === '1') {
+      // 构造公共参数
+      if (this.orgOrVehicleInfo) {
+        if (this.orgOrVehicleInfo.vehicleFlag) {
+          this.queryParams.vehicleCode = this.orgOrVehicleInfo.orgOrVehicleCode;
+        } else {
+          this.queryParams.orgCode = this.orgOrVehicleInfo.orgOrVehicleCode;
+          // 判断是否是树节点的最顶层
+          if (this.orgOrVehicleInfo.icon && this.orgOrVehicleInfo.icon === 'second') {
+            this.queryParams.teamCode = this.orgOrVehicleInfo.orgOrVehicleCode;
+          }
+        }
+      }
+      // 根据不同tab请求不同接口
+      if (code === 'real') {
         this.getRealList();
-      } else if (code === '2') {
-
-      } else if (code === '3') {
-        
-      } else if (code === '4') {
-        
+      } else {
+        this.getOtherList(code);
       }
       this.refreshTime();
     },
@@ -192,33 +208,40 @@ export default {
     getRealList() {
       const params = {
         start: 1,
-        limit: 5,
-        teamCode: undefined,
-        orgCode: undefined,
-        vehicleCode: undefined
+        limit: 5
       };
-      if (this.orgOrVehicleInfo) {
-        if (this.orgOrVehicleInfo.vehicleFlag) {
-          params.vehicleCode = this.orgOrVehicleInfo.orgOrVehicleCode;
-        } else {
-          params.orgCode = this.orgOrVehicleInfo.orgOrVehicleCode;
-          // 判断是否是树节点的最顶层
-          if (this.orgOrVehicleInfo.icon && this.orgOrVehicleInfo.icon === 'second') {
-            params.teamCode = this.orgOrVehicleInfo.orgOrVehicleCode;
-          }
-        }
-      }
       const obj = {
         moduleName: 'http_map',
         method: 'get',
         url_alias: 'getRealWarnList',
-        data: params
+        data: Object.assign({}, params, this.queryParams)
       }
       http_request(obj).then(response => {
         if (response.data && response.data.rows) {
           this.dataList = response.data.rows;
         } else {
           this.dataList = [];
+        }
+      });
+    },
+    /** 获取 车辆/设备/人员 告警 */
+    getOtherList(alarmObject) {
+      const params = {
+        start: 1,
+        limit: 4,
+        alarmObject // 告警对象(vehicle 车辆，device 设备，person 人员)
+      };
+      const obj = {
+        moduleName: 'http_map',
+        method: 'get',
+        url_alias: 'getOtherWarnList',
+        data: Object.assign({}, params, this.queryParams)
+      }
+      http_request(obj).then(response => {
+        if (response.data && response.data.rows) {
+          this.otherDataList = response.data.rows;
+        } else {
+          this.otherDataList = [];
         }
       });
     },
@@ -243,6 +266,7 @@ export default {
     /** 查看告警详情 */
     handleDetail(row) {
       this.detailOpen = true;
+      this.$refs.WarnDetailRef.setData(row);
     },
     /** 查看更多 */
     handleMore() {

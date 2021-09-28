@@ -61,6 +61,20 @@
         </div>
       </template>
     </div>
+
+    <!-- 总时间数里程数 -->
+    <div class="time-card" v-if="currentTrackAllTime || currentTrackAllMileage">
+      <ul>
+        <li class="input-item">
+          <span class='time'>总时间：</span>
+          {{ currentTrackAllTime }}
+        </li>
+        <li class="input-item">
+          <span class='mileage'>里程数：</span>
+          {{ currentTrackAllMileage.toFixed(2) }}km
+        </li>
+      </ul>
+    </div>
   
     <div class="tab-box">
       <!-- tab -->
@@ -70,43 +84,63 @@
       <div class="tab-box-content">
         <!-- 轨迹明细 -->
         <div class="track-list map-scroll-panel" v-show="currentTab === 1" v-loading="trackLoading">
-          <div class="card" v-for="(item, index) in trackList" :key="index">
-            <p class="date">8月15日</p>
-            <div class="ly-flex ly-flex-pack-justify">
-              <div class="time">13:00:00</div>
-              <div class="box">
-                <div class="info-box" v-for="(value, vIndex) in item.list" :key="vIndex">
-                  <h5>
-                    <img src="@/assets/images/device/icon_track_xs.png">
-                    行驶
-                    <!-- <img src="@/assets/images/device/icon_track_ds.png">
-                    怠速 -->
-                  </h5>
-                  <div class="content">
-                    <p class="address g-double-row">河南省平顶山市湛河区荆山街道润建代维公司驻点(黄河路29号北239米)</p>
-                    <div class="ly-flex ly-flex-pack-justify">
-                      <p class="p speed">55km/h</p>
-                      <p class="p gps">GPS定位</p>
+          <template v-if="JSON.stringify(trackList) !== '{}'">
+            <div class="card" v-for="(item, key, index) in trackList" :key="index">
+              <p class="date">{{ item.formatDate }}</p>
+              <div class="ly-flex ly-flex-pack-justify" v-for="(value, vIndex) in item.list" :key="vIndex">
+                <div class="time">{{ value.formatTime }}</div>
+                <div class="box">
+                  <div class="info-box">
+                    <h5>
+                      <template v-if="value.event_type === 'vehicle-stop'">
+                        <img src="@/assets/images/device/icon_track_ds.png">
+                        停车
+                      </template>
+                      <template v-else-if="value.event_type === 'loading'">
+                        <img src="@/assets/images/device/icon_track_zh.png">
+                        装货
+                      </template>
+                      <template v-else-if="value.event_type === 'unloading'">
+                        <img src="@/assets/images/device/icon_track_xh.png">
+                        卸货
+                      </template>
+                      <template v-else>
+                        <img src="@/assets/images/device/icon_track_xs.png">
+                        行驶
+                      </template>
+                    </h5>
+                    <div class="content">
+                      <p class="address g-double-row">{{ value.event_address }}</p>
+                      <!-- <div class="ly-flex ly-flex-pack-justify">
+                        <p class="p speed">55km/h</p>
+                        <p class="p gps">GPS定位</p>
+                      </div> -->
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          </template>
+          <div v-else class="card-none ly-flex-pack-center ly-flex-align-center">
+            <p>暂无数据</p>
           </div>
         </div>
 
         <!-- 停车详情 -->
         <div class="parking-list map-scroll-panel" v-show="currentTab === 2" v-loading="parkingLoading">
           <div class="card" v-for="(item, index) in parkingList" :key="index">
-            <h5>闽A12345</h5>
+            <h5>{{ currentLicenseNumber }}</h5>
             <div class="status">
               <img src="@/assets/images/device/icon_park.png">
               静止
             </div>
-            <p class="address g-double-row">河南省平顶山市湛河区荆山街道润建代维公司驻点(黄河路29号北239米)</p>
-            <p class="time"><span>开始时间</span>2021-09-17 10:00:00</p>
-            <p class="time"><span>结束时间</span>2021-09-17 10:00:00</p>
-            <p class="time"><span>停留时长</span>3小时35分0秒</p>
+            <p class="address g-double-row">{{ item.event_address }}</p>
+            <p class="time"><span>开始时间</span>{{ item.event_begin_time ? item.event_begin_time : '-' }}</p>
+            <p class="time"><span>结束时间</span>{{ item.event_end_time ? item.event_end_time : '-' }}</p>
+            <p class="time"><span>停留时长</span>{{ getRemainderTime(item.event_begin_time, item.event_end_time) }}</p>
+          </div>
+          <div v-if="parkingList.length === 0" class="card-none ly-flex-pack-center ly-flex-align-center">
+            <p>暂无数据</p>
           </div>
         </div>
       </div>
@@ -122,6 +156,12 @@ export default {
     orgOrVehicleCode: {
       type: String,
       default: null
+    },
+    orgOrVehicleInfo: {
+      type: Object,
+      default: () => {
+        return {};
+      }
     },
     isShowVehicleInfo: Boolean
   },
@@ -162,12 +202,16 @@ export default {
         {code: 1, label: '轨迹明细'},
         {code: 2, label: '停车详情'}
       ],
+      // 事件轨迹(用来碰撞轨迹回放)
+      eventTrackList: [],
       // 轨迹明细列表
       trackLoading: false,
-      trackList: [],
+      trackList: {},
       // 停车详情列表
       parkingLoading: false,
-      parkingList: []
+      parkingList: [],
+      // 当前车牌号
+      currentLicenseNumber: ''
     }
   },
   mounted() {
@@ -175,9 +219,6 @@ export default {
     const startTime = this.parseTime(new Date(), '{y}-{m}-{d} 00:00:00');
     const endTime = this.parseTime(new Date());
     this.setTimeValue(startTime, endTime);
-    // 假数据
-    this.trackList = [{list: [{},{},{},{}]}, {list: [{},{}]}, {list: [{}]}];
-    this.parkingList = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
   },
   methods: {
     /** 快捷时间选中 */
@@ -216,21 +257,13 @@ export default {
       if (date) {
         this.jimiQueryParams.startTime = this.parseTime(date[0]);
         this.jimiQueryParams.endTime = this.parseTime(date[1]);
-        // this.getJimi();
       } else {
         this.jimiQueryParams.startTime = null;
         this.jimiQueryParams.endTime = null;
       }
     },
     /** 获取硬件轨迹 */
-    getJimi() {
-      // this.jmTrackInfolist = jmTrackInfolist;
-      // this.jmTracklist = jmTracklist;
-      // this.$emit('clearPathSimplifierIns'); // 绘制前先清除
-      // this.setCurrentTrackTimeAndSpeed(0);
-      // this.$emit('initPathSimplifier');
-      // return;
-      
+    async getJimi() {
       const _this = this;
       // 参数不能为空
       if (!this.isShowVehicleInfo || !this.orgOrVehicleCode || this.orgOrVehicleCode === '') {
@@ -247,6 +280,44 @@ export default {
       }
       this.buttonLoading = true;
       this.jimiQueryParams.vehicleCode = this.orgOrVehicleCode;
+      // 获取事件轨迹
+      const evenTrackRes = await http_request({
+        moduleName: 'http_map',
+        method: 'post',
+        url_alias: 'getVehicleEventTrack',
+        data: {
+          vehicleCode: this.jimiQueryParams.vehicleCode,
+          beginTime: this.jimiQueryParams.startTime, 
+          endTime: this.jimiQueryParams.endTime
+        }
+      });
+      this.eventTrackList = [];
+      this.trackList = {};
+      if (evenTrackRes.data && evenTrackRes.data.rows) {
+        // 构造事件轨迹
+        this.eventTrackList = evenTrackRes.data.rows.filter((el) => {
+          return el.event_type !== 'vehicle-run';
+        });
+        this.trackList = this.setTrackListMap(evenTrackRes.data.rows);
+      }
+      // 获取停车事件轨迹
+      const parkEvenTrackRes = await http_request({
+        moduleName: 'http_map',
+        method: 'post',
+        url_alias: 'getVehicleEventTrack',
+        data: {
+          vehicleCode: this.jimiQueryParams.vehicleCode,
+          beginTime: this.jimiQueryParams.startTime, 
+          endTime: this.jimiQueryParams.endTime,
+          eventType: 'vehicle-stop'
+        }
+      });
+      this.currentLicenseNumber = this.orgOrVehicleInfo.orgOrlicenseNumber;
+      this.parkingList = [];
+      if (parkEvenTrackRes.data && parkEvenTrackRes.data.rows) {
+        this.parkingList = parkEvenTrackRes.data.rows;
+      }
+      // 获取几米轨迹
       const obj = {
         moduleName: 'http_map',
         method: 'post',
@@ -256,30 +327,28 @@ export default {
       http_request(obj).then(response => {
         this.buttonLoading = false;
         if (response.data) {
-          this.buttonLoading = false;
           this.jmTracklist = [];
-          this.jmTrackInfolist = response.data.map(el => {
-            // el "119.27744340468621|25.43044766673091|7|94|0.0|2021-09-13 08:14:16"
-            // el {经度}|{纬度}|{时速}|{方向}|{里程}|{时间}
+          this.jmTrackInfolist = [];
+          response.data.forEach(el => {
+            // el "119.27744340468621|25.43044766673091|7|94|0.0|2021-09-13 08:14:16|1631492056000"
+            // el {经度}|{纬度}|{时速}|{方向}|{里程}|{时间}|{时间戳}
             const arr = el.split('|');
-            return {
+            const item = {
               lng: arr[0],
               lat: arr[1],
               gpsSpeed: arr[2],
               direction: arr[3],
               mileage: arr[4],
-              gpsTime: arr[5]
-            }
-          })
-          for (var i = 0; i < this.jmTrackInfolist.length; i++) {
-            var dataItem = _this.jmTrackInfolist[i];
-            var item = [];
-            item.push(dataItem.lng);
-            item.push(dataItem.lat);
-            _this.jmTracklist[i] = item;
-          }
+              gpsTime: arr[5],
+              timestamp: Number(arr[6])
+            };
+            this.jmTracklist.push([item.lng, item.lat]);
+            this.jmTrackInfolist.push(item);
+          });
           this.$emit('clearPathSimplifierIns'); // 绘制前先清除
           if (this.jmTracklist.length > 0) {
+            // 轨迹碰撞装卸货停车点
+            this.trackClash();
             // 设置当前轨迹点时间、速度
             this.setCurrentTrackTimeAndSpeed(0);
             // 创建巡航
@@ -301,6 +370,24 @@ export default {
       }).catch(() => {
         this.buttonLoading = false;
       });;
+    },
+    /** 构造事件轨迹格式 */
+    setTrackListMap(data) {
+      if (data.length === 0) return [];
+      const obj = {};
+      data.forEach(el => {
+        const formatDate = this.parseTime(el.event_begin_time, '{m}月{d}日');
+        const formatTime = this.parseTime(el.event_begin_time, '{h}:{i}:{s}');
+        if (!obj[formatDate]) {
+          obj[formatDate] = {};
+          obj[formatDate].formatDate = formatDate;
+          obj[formatDate].list = [];
+          obj[formatDate].list.push({...el, ...{formatTime}});
+        } else {
+          obj[formatDate].list.push({...el, ...{formatTime}});
+        }
+      });
+      return obj;
     },
     /** 进度条滑块触发 */
     handleSlideChange(value) {
@@ -350,6 +437,7 @@ export default {
     },
     /** 获取相隔时间 */
     getRemainderTime (s1, s2){
+      if (!s1 || !s2) return '-';
       s1 = new Date(s1).getTime();
       s2 = new Date(s2).getTime();
       let runTime = parseInt((s2 - s1) / 1000);
@@ -372,6 +460,19 @@ export default {
       if (minute) result += (minute + '分钟');
       if (second) result += (second + '秒');
     　return result;
+    },
+    /** 轨迹碰撞装卸货停车点 */
+    trackClash() {
+      const _this = this;
+      const minute = 5 * 60 * 1000;
+      for (let i = 0; i < _this.eventTrackList.length - 1; i++) {
+        for (let j = 0; j < _this.jmTrackInfolist.length - 1; j++) {
+          if (Math.abs(_this.jmTrackInfolist[j].timestamp - new Date(_this.eventTrackList[i].event_begin_time).getTime()) < minute) {
+            _this.jmTrackInfolist[j].event_type = _this.eventTrackList[i].event_type;
+            break;
+          }
+        }
+      }
     }
   }
 }
@@ -381,6 +482,7 @@ export default {
 .map-track-list{
   width: 380px;
   height: 100%;
+  position: relative;
   .time-box{
     width: 100%;
     width: 380px;
@@ -477,6 +579,41 @@ export default {
       margin-bottom: -10px;
       color: #ADB5BD;
       font-size: 13px;
+    }
+  }
+
+  .time-card{
+    position: absolute;
+    left: -300px;
+    top: 0;
+    width: 244px;
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: 0px 3px 5px rgba(206, 206, 206, 0.7);
+    border-radius: 4px;
+    padding: 12px 16px;
+    .input-item {
+      font-size: 14px;
+      font-family: PingFang SC;
+      font-weight: bold;
+      line-height: 24px;
+      color: #3d4050;
+      >span {
+        font-size: 14px;
+        font-family: PingFang SC;
+        font-weight: 400;
+        line-height: 24px;
+        color: #a6a8ad;
+        margin-right: 2px;
+        padding-left: 22px;
+        &.time {
+          background: url("~@/assets/images/device/icon_time.png") no-repeat 0px 2px;
+          background-size: 16px 16px;
+        }
+        &.mileage {
+          background: url("~@/assets/images/device/icon_mileage.png") no-repeat -1px 1px;
+          background-size: 18px 18px;
+        }
+      }
     }
   }
 
@@ -612,7 +749,7 @@ export default {
       // 停车详情
       .parking-list{
         height: 100%;
-        padding: 0 0 0 24px;
+        padding: 0 0 0 20px;
         overflow-y: scroll;
         >.card{
           position: relative;
@@ -663,6 +800,16 @@ export default {
             }
           }
         }
+      }
+      // 暂无数据
+      .card-none{
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        font-size: 14px;
+        font-family: PingFang SC;
+        font-weight: 400;
+        color: #8592AD;
       }
     }
   }
