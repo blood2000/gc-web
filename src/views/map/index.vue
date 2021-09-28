@@ -441,8 +441,6 @@ export default {
       startMarker: null,
       // 巡航终点
       endMarker: null,
-      // 巡航装/卸/停车点
-      navgtrMarkerList: {},
       // 地图点位集合
       markerList: {},
       // 不同承运类型车辆图片大小不同所以点位偏移不同
@@ -844,11 +842,10 @@ export default {
           }
           // 显示装\卸\停车点
           if (that.$refs.TrackListRef.jmTrackInfolist[idx].event_type) {
-            console.log(that.$refs.TrackListRef.jmTrackInfolist[idx].event_type)
             const marker = that.drawMarker(path[idx], {
               clickable: false,
               content: '<div class="own-navgtr-marker '+ that.$refs.TrackListRef.jmTrackInfolist[idx].event_type +'"></div>',
-              offset: [-15, -46],
+              offset: [-15, -40],
               angle: 0
             });
             setTimeout(() => {
@@ -1749,6 +1746,21 @@ export default {
     ::v-deep.own-navgtr-marker {
       width: 30px;
       height: 48px;
+      animation: show-marker 3s;
+      @keyframes show-marker {
+        0%{
+          opacity: 0;
+        }
+        10%{
+          opacity: 1;
+        }
+        90%{
+          opacity: 1;
+        }
+        100%{
+          opacity: 0;
+        }
+      }
       &.loading {
         background: url("~@/assets/images/device/map_icon_loading.png") no-repeat;
         background-size: 100% 100%;
