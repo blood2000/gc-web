@@ -210,6 +210,7 @@ import { http_request } from "../../../../api";
 import { pickerOptions } from "@/utils/dateRange";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+import formValidate from '../../../../utils/formValidate'
 
 export default {
   name: "vehicleDialog",
@@ -263,7 +264,7 @@ export default {
         ],
         password: [
           { required: true, message: "密码不能为空", trigger: "blur" },
-          { validator: this.formValidate.password, trigger: "blur" },
+          { validator: formValidate.password, trigger: "blur" },
         ],
         identificationImage: [
           { required: true, message: "请上传身份证正面照", trigger: "change" },
@@ -273,15 +274,15 @@ export default {
         ],
         name: [
           { required: true, message: "姓名不能为空", trigger: "blur" },
-          { validator: this.formValidate.name, trigger: "blur" },
+          { validator: formValidate.name, trigger: "blur" },
         ],
         telphone: [
           { required: true, message: "手机不能为空", trigger: "blur" },
-          { validator: this.formValidate.telphone, trigger: "blur" },
+          { validator: formValidate.telphone, trigger: "blur" },
         ],
         identificationNumber: [
           { required: true, message: "身份证号不能为空", trigger: "blur" },
-          { validator: this.formValidate.idCard, trigger: "blur" },
+          { validator: formValidate.idCard, trigger: "blur" },
         ],
         driverLicenseImage: [
           { required: true, message: "请上传驾驶证照", trigger: "change" },

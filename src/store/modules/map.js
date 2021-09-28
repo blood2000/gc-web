@@ -2,6 +2,7 @@ const map = {
   state: {
     showDispatchVehicle: false,  //显示派车弹窗
     showVehicleDetail: false,  //显示车辆详情
+    isFresh: false,  //刷新
     vehicleInfo: {},  //车辆信息
     dispatchInfo: {},   //
   },
@@ -18,6 +19,9 @@ const map = {
     set_dispatchInfo: (state, info) => {
       state.dispatchInfo = info;
     },
+    set_isFresh: (state, leap) => {
+      state.isFresh = leap;
+    },
   },
   actions: {
     setShowDispatchVehicle({
@@ -29,6 +33,11 @@ const map = {
       commit
     }, leap) {
       commit('set_vehicleDetail', leap)
+    },
+    setVehicleInfo({
+      commit
+    }, info) {
+      commit('set_vehicleInfo', info)
     },
   }
 

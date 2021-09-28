@@ -16,7 +16,7 @@
 
 <script>
 import { http_request } from '@/api';
-import { sha1 } from '@/utils/sha1';
+import formValidate from '../../../../utils/formValidate'
 export default {
   props: {
     open: Boolean,
@@ -34,7 +34,7 @@ export default {
       rules: {
         password: [
           { required: true, trigger: 'blur', message: '密码不能为空' },
-          { validator: this.formValidate.passWord, trigger: 'blur' }
+          { validator: formValidate.passWord, trigger: 'blur' }
         ]
       }
     };

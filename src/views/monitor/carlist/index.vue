@@ -57,6 +57,15 @@
               :table-columns-config="tableColumnsConfig"
             >
               <template #edit="{ row }">
+                <!--   -->
+                <el-button
+                  v-show="row.vehicle_status == 1"
+                  size="mini"
+                  type="text"
+                  icon="el-icon-edit"
+                  @click="lookCarOrder(row)"
+                  >查看派车单</el-button
+                >
                 <el-button
                   size="mini"
                   type="text"
@@ -144,6 +153,20 @@ export default {
     });
   },
   methods: {
+    async lookCarOrder(obj) {
+      console.log("obj", obj);
+      const tmp = {
+        moduleName: "http_dispatch",
+        method: "get",
+        url_alias: "CarOrderIng_ByVehicleCode",
+        url_code: [obj.vehicle_code],
+      };
+      const res = await http_request(tmp);
+      console.log("res", res);
+      if (res.data == null) return this.msgError("没有派车单");
+      const code = res.data.appointCarOrderCode;
+      this.$router.push("/dispatch/manage/detail?code=" + code);
+    },
     /**
      * 通过经纬度获取详细点位信息
      * @param {Array} position 经纬度必传

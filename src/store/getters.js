@@ -23,5 +23,7 @@ const getters = {
   showDispatchVehicle:state => state.map.showDispatchVehicle,
   showVehicleDetail:state => state.map.showVehicleDetail,
   vehicleInfo:state => state.map.vehicleInfo,
+  isFresh:state => state.map.isFresh,
+  dispatchInfo:state => state.map.dispatchInfo,
 }
 export default getters

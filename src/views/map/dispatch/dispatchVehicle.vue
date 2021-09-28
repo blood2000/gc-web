@@ -22,27 +22,27 @@
         <el-row>
           <el-col :span="8">
             <div class="content-info-label">用车企业：</div>
-            <div class="content-info-value">建平县融信矿业有限公司</div>
+            <div class="content-info-value">{{ pageObj.companyName }}</div>
           </el-col>
 
           <el-col :span="8">
             <div class="content-info-label">调度单来源：</div>
-            <div class="content-info-value">超好运</div>
+            <div class="content-info-value">{{ pageObj.source }}</div>
           </el-col>
 
           <el-col :span="8">
             <div class="content-info-label">货物类型：</div>
-            <div class="content-info-value">金属矿石</div>
+            <div class="content-info-value">{{ pageObj.goodsTypeName }}</div>
           </el-col>
         </el-row>
         <div class="addr">
           <div class="addr-box">
-            <div class="addr-icon start"></div>
-            <div>{{ 111 }}</div>
+            <div class="addr-icon start">起</div>
+            <div>{{ pageObj.loadFormattedAddress }}</div>
           </div>
           <div class="addr-box">
-            <div class="addr-icon end"></div>
-            <div>{{ 222 }}</div>
+            <div class="addr-icon end">终</div>
+            <div>{{ pageObj.unloadFormattedAddress }}</div>
           </div>
         </div>
       </div>
@@ -236,6 +236,15 @@ export default {
           }
         },
       },
+      pageObj: {
+        companyName: "",
+        source: "",
+        goodsTypeName: "",
+        loadFormattedAddress: "",
+        unloadFormattedAddress: "",
+        vehicleCode: null,
+        driverCode: null,
+      },
     };
   },
 
@@ -243,6 +252,9 @@ export default {
 
   computed: {
     showDispatchVehicle() {
+      if (this.$store.getters.showDispatchVehicle) {
+        this.renderPageObj();
+      }
       return this.$store.getters.showDispatchVehicle;
     },
   },
@@ -253,6 +265,14 @@ export default {
   },
 
   methods: {
+    renderPageObj() {
+      this.pageObj = this.$store.getters.dispatchInfo
+      const pageObj = this.pageObj;
+      if (pageObj.vehicleCode && pageObj.driverCode) {
+        me.carForm.vehicleDrivers[0].vehicleCode = pageObj.vehicleCode;
+        me.carForm.vehicleDrivers[0].driverCode = pageObj.driverCode;
+      }
+    },
     //获取派车的车辆Select
     async listVehicleSelect() {
       const me = this;
@@ -302,10 +322,8 @@ export default {
         http_request(obj1).then((res) => {
           console.log("获取司机列表 res", res.data);
           me.$set(me.driverList, index, res.data);
-          // me.carForm.vehicleDrivers[index].driverCode = me.searchDefaultDriverCode(
-          //   e,
-          //   index
-          // );
+          me.carForm.vehicleDrivers[index].driverCode =
+            me.searchDefaultDriverCode(e, index);
           console.log(
             me.driverList,
             me.carForm.vehicleDrivers[index].driverCode
@@ -378,12 +396,9 @@ export default {
           };
           http_request(obj).then((res) => {
             if (res.code == 200) {
-              this.$confirm(res.msg, "提示", {
-                confirmButtonText: "确定",
-                type: "success",
-              }).then(() => {
-                this.$router.push("/dispatch/order");
-              });
+              this.$router.push("/dispatch/order");
+              this.$store.commit("set_isFresh", true);
+              this.colse();
             }
           });
         } else {
@@ -393,9 +408,7 @@ export default {
     },
     colse() {
       //重置
-
       this.$refs["ruleForm"].resetFields();
-
       this.$store.commit("set_dispatchVehicle", false);
     },
   },
@@ -454,7 +467,7 @@ export default {
 .addr-box {
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   .addr-icon {
     width: 18px;
     height: 18px;
