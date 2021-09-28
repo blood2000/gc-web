@@ -20,7 +20,7 @@ import { getConfigKey } from "@/api/system/config";
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from "@/utils/ruoyi";
 import { download } from "@/utils/request";
 // 表单校验
-import { formValidate } from '@/utils/formValidate';
+import formValidate from '@/utils/formValidate';
 // 分页组件
 import Pagination from "@/components/Pagination";
 // 自定义表格工具组件
