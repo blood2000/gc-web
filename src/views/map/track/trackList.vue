@@ -305,16 +305,14 @@ export default {
   },
   computed:{
     changeLocationProp(){
-      console.log('ddddd')
-      if(JSON.stringify(this.locationProp) != "{}"){
+      console.log('ddddd',this.locationProp)
+      if(this.isShowVehicleInfo&&this.locationProp){
         this.getJimi()
       }
-      return this.locationProp
     }
   },
 
   mounted() {
-    console.log("locationProp", this.locationProp);
     // 时间默认选中当天
     const startTime = this.parseTime(new Date(), "{y}-{m}-{d} 00:00:00");
     const endTime = this.parseTime(new Date());
@@ -378,10 +376,11 @@ export default {
     async getJimi() {
       const _this = this;
       // 参数不能为空
+      console.log('参数不能为空',this.isShowVehicleInfo,this.orgOrVehicleCode)
       if (
         !this.isShowVehicleInfo ||
-        !this.orgOrVehicleCode ||
-        this.orgOrVehicleCode === ""
+        !this.orgOrVehicleCode 
+      
       ) {
         this.msgWarning("请选择车辆");
         return;
