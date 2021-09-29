@@ -1,5 +1,4 @@
 <template>
-  <!-- 设备管理-电子围栏 -->
   <div class="map-container">
     <div class="header-panel ly-flex-pack-start">
       <img class="logo" src="~@/assets/images/device/logo.png" />
@@ -235,7 +234,8 @@
                   <div
                     class="tree-node-driver-box ly-flex ly-flex-align-center"
                   >
-                    <span class="mr8">{{ data.orgOrDriverName }}</span>
+                    <img class="driver-avatar" src="~@/assets/images/device/driver_avatar.png" />
+                    <span class="driver-name">{{ data.orgOrDriverName }}</span>
                     <!-- 司机状态 -->
                     <span
                       v-if="
@@ -449,6 +449,8 @@ export default {
       endMarker: null,
       // 地图点位集合
       markerList: {},
+      // 定时刷新地图点位
+      refreshMarkerTimer: null,
       // 不同承运类型车辆图片大小不同所以点位偏移不同
       offsetList: {
         ztc: [-17, -38],
@@ -517,9 +519,12 @@ export default {
     this.getOrgDriverTree();
     // 获取全部车定位
     this.getVehicleLoLocations();
+    // 开启车辆位置定时刷新
+    this.refreshMarker();
   },
   beforeDestroy() {
     this.clearTimer();
+    this.clearRefreshMarkerTimer();
   },
   methods: {
     locationQueryDeal() {
@@ -713,12 +718,12 @@ export default {
       this.map.clearMap();
     },
     /** 清除指定的地图点位集合 */
-    clearMarkerList(markerList) {
-      for (const key in markerList) {
-        markerList[key].setMap(null);
-        markerList[key] = null;
+    clearMarkerList() {
+      for (const key in this.markerList) {
+        this.markerList[key].setMap(null);
+        this.markerList[key] = null;
       }
-      markerList = {};
+      this.markerList = {};
     },
     /** 判断当前位置是否在可视区域 */
     isPointInRing(position) {
@@ -1192,7 +1197,7 @@ export default {
       };
       http_request(obj).then((res) => {
         // 绘制前先清空之前的绘制, 避免重复绘制
-        this.clearMarkerList(this.markerList);
+        this.clearMarkerList();
         if (res.data.rows && res.data.rows.length > 0) {
           // 绘制全部车辆点位
           res.data.rows.forEach((el) => {
@@ -1208,9 +1213,12 @@ export default {
               this.drawVehicleMarker(el);
             }
           });
-          this.$nextTick(() => {
-            this.map.setFitView();
-          });
+          // 只有在监控页，刷新点位后才有重新设置视野
+          if(this.headerTab === 1) {
+            this.$nextTick(() => {
+              this.map.setFitView();
+            }); 
+          }
         } else {
           this.msgWarning("该组织下暂无车辆定位信息");
         }
@@ -1227,7 +1235,7 @@ export default {
       http_request(obj).then((res) => {
         const { data } = res;
         // 绘制前先清空之前的绘制, 避免重复绘制
-        this.clearMarkerList(this.markerList);
+        this.clearMarkerList();
         if (data) {
           // 绘制全部车辆点位
           const { attribute } = data;
@@ -1240,16 +1248,19 @@ export default {
             attribute.coordinate.value[1]
           ) {
             this.drawVehicleMarker(data);
-            this.$nextTick(() => {
-              this.map.setZoomAndCenter(13, attribute.coordinate.value);
-            });
+            // 只有在监控页，刷新点位后才有重新设置视野
+            if(this.headerTab === 1) {
+              this.$nextTick(() => {
+                this.map.setZoomAndCenter(13, attribute.coordinate.value);
+              });
+            }
             return;
           }
         }
         this.msgWarning("该车辆暂无定位信息");
       });
     },
-    // 绘制车辆定位marder
+    // 绘制车辆定位marker
     drawVehicleMarker(row) {
       const _this = this;
       const { vehicle_code, carrier_type, plate_number, attribute } = row;
@@ -1316,9 +1327,25 @@ export default {
       this.clearPathSimplifierIns();
       // 关闭地图信息窗体
       this.closeInfoWindow();
-      // 清除装卸货停车点
     },
-  },
+    // 定时刷新车位置
+    refreshMarker() {
+      this.clearRefreshMarkerTimer();
+      this.refreshMarkerTimer = setInterval(() => {
+        if (this.isShowVehicleInfo) {
+          // 选中车
+          this.getDeviceLocationInfo(this.orgOrVehicleInfo.orgOrlicenseNumber);
+        } else {
+          // 选中组织
+          this.getVehicleLoLocations(this.orgOrVehicleCode);
+        }
+      }, 60 * 1000);
+    },
+    // 清除定时刷新车位置
+    clearRefreshMarkerTimer() {
+      if (this.refreshMarkerTimer) clearInterval(this.refreshMarkerTimer);
+    }
+  }
 };
 </script>
 
@@ -1955,6 +1982,19 @@ export default {
   }
   // 司机的树节点
   .tree-node-driver-box {
+    margin: 8px 0;
+    .driver-avatar{
+      width: 28px;
+      height: 28px;
+    }
+    .driver-name{
+      font-size: 14px;
+      font-family: PingFang SC;
+      font-weight: bold;
+      line-height: 24px;
+      color: #3D4050;
+      margin: 0 18px 0 8px;
+    }
   }
 }
 
