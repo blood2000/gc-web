@@ -594,17 +594,21 @@ export default {
     /** 轨迹碰撞装卸货停车点 */
     trackClash() {
       const _this = this;
-      const minute = 5 * 60 * 1000;
-      for (let i = 0; i < _this.eventTrackList.length - 1; i++) {
-        for (let j = 0; j < _this.jmTrackInfolist.length - 1; j++) {
-          if (
-            Math.abs(
-              _this.jmTrackInfolist[j].timestamp -
-                new Date(_this.eventTrackList[i].event_begin_time).getTime()
-            ) < minute
-          ) {
-            _this.jmTrackInfolist[j].event_type =
-              _this.eventTrackList[i].event_type;
+      let lastTrackIndex = 0;
+      for (let i = 0; i < _this.eventTrackList.length; i++) {
+        const parkItem = _this.eventTrackList[i];
+        const currentParkTimestamp = new Date(parkItem.event_begin_time).getTime();
+        console.log(currentParkTimestamp, typeof currentParkTimestamp)
+        for (let j = lastTrackIndex; j < _this.jmTrackInfolist.length - 1; j++) {
+          let trackItem1 = _this.jmTrackInfolist[j];
+          let trackItem2 = _this.jmTrackInfolist[j + 1];
+          // 两种情况判断停车点
+          // 1. 停车时间在两个轨迹时间之前，选择前一个插入停车点
+          // 2. 停车时间比第一个轨迹时间还小，判断是否超过5分钟，没有则插入
+          if ((currentParkTimestamp >= trackItem1.timestamp && currentParkTimestamp <= trackItem2.timestamp) ||
+            (currentParkTimestamp < trackItem1.timestamp && currentParkTimestamp + 5 * 60 * 100 >= trackItem1.timestamp)) {
+            trackItem1.event_type = parkItem.event_type;
+            lastTrackIndex = j + 1;
             break;
           }
         }
