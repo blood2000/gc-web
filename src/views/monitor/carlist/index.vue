@@ -146,7 +146,7 @@ export default {
     };
   },
   mounted() {
-    this.getList();
+    this.getOrgHttp();
     this.geocoder = new AMap.Geocoder({
       radius: 1000,
       extensions: "all",
@@ -227,6 +227,9 @@ export default {
       this.orgTreeData = orgRes.data.length > 0 ? orgRes.data : [];
       console.log("orgRes.data[0]", orgRes.data);
       this.queryParams.orgCode = this.orgTreeData[0].code;
+         this.$nextTick(() => {
+        this.$refs.tree.setCurrentKey(this.queryParams.orgCode);
+      });
       console.log("当前code", this.queryParams.orgCode);
       this.searchQuery();
     },

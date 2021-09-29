@@ -366,6 +366,9 @@ export default {
       console.log("orgRes res", orgRes);
       this.orgTreeData = orgRes.data.length > 0 ? orgRes.data : [];
       this.queryParams.orgCode = this.orgTreeData[0].code;
+         this.$nextTick(() => {
+        this.$refs.tree.setCurrentKey(this.queryParams.orgCode);
+      });
       console.log("当前code", this.queryParams.orgCode);
       this.getDefaultDriver();
       this.searchQuery();

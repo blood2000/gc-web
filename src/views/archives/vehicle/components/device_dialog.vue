@@ -168,14 +168,14 @@ export default {
         url_code: [this.options.vehicleCode, "device"],
       };
       const result = await http_request(obj);
-      console.log("ckc result bind", result);
+      console.log("ckc result bind", result,this.deviceInfo);
       if (result.code != 200) return;
       result.data.device.deviceSN
         ? (this.isbang = true)
         : (this.isbang = false);
-      this.$nextTick(() => {
+      // this.$nextTick(() => {
         this.deviceInfo = Object.assign(this.deviceInfo, result.data.device);
-      });
+      // });
 
       console.log("this.isbang ", this.isbang);
     },

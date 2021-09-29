@@ -268,7 +268,7 @@ export default {
       this.addCancel();
     },
     filterMethod(query, item) {
-      console.log("item", item, query);
+      console.log("item", item.vehicleCode, query);
       return item.licenseNumber.indexOf(query) > -1;
     },
     //发生变化操作

@@ -20,9 +20,12 @@
               ref="tree"
               :data="deptOptions"
               :props="defaultProps"
-              :expand-on-click-node="false"
+              :expand-on-click-node="true"
               :filter-node-method="filterNode"
               :indent="0"
+              highlight-current
+              node-key="code"
+              :current-node-key="queryParams.orgCode"
               default-expand-all
               @node-click="handleNodeClick"
             >
@@ -39,7 +42,12 @@
       <!-- 职员数据 -->
       <el-col :lg="19" :md="18" :sm="17" :xs="24">
         <div v-show="showSearch" class="app-container app-container--search">
-          <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+          <el-form
+            ref="queryForm"
+            :model="queryParams"
+            :inline="true"
+            label-width="68px"
+          >
             <el-form-item label="姓名" prop="nickName">
               <el-input
                 v-model="queryParams.nickName"
@@ -98,8 +106,21 @@
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-              <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+              <el-button
+                type="primary"
+                icon="el-icon-search"
+                size="mini"
+                @click="handleQuery"
+                >搜索</el-button
+              >
+              <el-button
+                type="primary"
+                plain
+                icon="el-icon-refresh"
+                size="mini"
+                @click="resetQuery"
+                >重置</el-button
+              >
             </el-form-item>
           </el-form>
         </div>
@@ -112,7 +133,8 @@
                 icon="el-icon-plus"
                 size="mini"
                 @click="handleAdd"
-              >新增</el-button>
+                >新增</el-button
+              >
             </el-col>
             <el-col :span="1.5">
               <el-button
@@ -122,7 +144,8 @@
                 size="mini"
                 :disabled="multiple"
                 @click="handleDeleteMultiple"
-              >删除</el-button>
+                >删除</el-button
+              >
             </el-col>
             <el-col :span="1.5">
               <el-button
@@ -132,19 +155,63 @@
                 size="mini"
                 :loading="exportLoading"
                 @click="handleExport"
-              >导出</el-button>
+                >导出</el-button
+              >
             </el-col>
-            <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+            <right-toolbar
+              :show-search.sync="showSearch"
+              @queryTable="getList"
+            />
           </el-row>
-          <el-table v-loading="loading" highlight-current-row border :data="dataList" @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="50" align="center" :selectable="checkboxSelectable"  />
-            <el-table-column label="序号" type="index" width="50" align="center" />
-            <el-table-column label="姓名" align="center" prop="nickName" :show-overflow-tooltip="true" />
-            <el-table-column label="手机号" align="center" prop="phonenumber" :show-overflow-tooltip="true" />
-            <el-table-column label="所属组织" align="center" prop="orgName" :show-overflow-tooltip="true" />
-            <el-table-column label="所属角色" align="center" prop="roleNames" :show-overflow-tooltip="true" />
+          <el-table
+            v-loading="loading"
+            highlight-current-row
+            border
+            :data="dataList"
+            @selection-change="handleSelectionChange"
+          >
+            <el-table-column
+              type="selection"
+              width="50"
+              align="center"
+              :selectable="checkboxSelectable"
+            />
+            <el-table-column
+              label="序号"
+              type="index"
+              width="50"
+              align="center"
+            />
+            <el-table-column
+              label="姓名"
+              align="center"
+              prop="nickName"
+              :show-overflow-tooltip="true"
+            />
+            <el-table-column
+              label="手机号"
+              align="center"
+              prop="phonenumber"
+              :show-overflow-tooltip="true"
+            />
+            <el-table-column
+              label="所属组织"
+              align="center"
+              prop="orgName"
+              :show-overflow-tooltip="true"
+            />
+            <el-table-column
+              label="所属角色"
+              align="center"
+              prop="roleNames"
+              :show-overflow-tooltip="true"
+            />
             <!-- 0 启用 1 禁用 -->
-            <el-table-column label="账号状态" align="center" prop="employeeStatus">
+            <el-table-column
+              label="账号状态"
+              align="center"
+              prop="employeeStatus"
+            >
               <template slot-scope="scope">
                 <el-switch
                   v-model="scope.row.employeeStatus"
@@ -154,7 +221,12 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column label="创建时间" align="center" prop="createTime" width="160">
+            <el-table-column
+              label="创建时间"
+              align="center"
+              prop="createTime"
+              width="160"
+            >
               <template slot-scope="scope">
                 <span>{{ parseTime(scope.row.createTime) }}</span>
               </template>
@@ -171,7 +243,8 @@
                   size="mini"
                   type="text"
                   @click="handleUpdate(scope.row)"
-                >修改</el-button>
+                  >修改</el-button
+                >
                 <!-- <el-button
                   v-hasPermi="['employee:rel:role']"
                   size="mini"
@@ -189,19 +262,21 @@
                   size="mini"
                   type="text"
                   @click="handleResetPwd(scope.row)"
-                >重置密码</el-button>
+                  >重置密码</el-button
+                >
                 <el-button
                   v-if="!scope.row.teamLeaderFlag"
                   v-hasPermi="['employee:delete']"
                   size="mini"
                   type="text"
                   @click="handleDelete(scope.row)"
-                >删除</el-button>
+                  >删除</el-button
+                >
               </template>
             </el-table-column>
           </el-table>
           <pagination
-            v-show="total>0"
+            v-show="total > 0"
             :total="total"
             :page.sync="queryParams.start"
             :limit.sync="queryParams.limit"
@@ -212,21 +287,31 @@
     </el-row>
 
     <!-- 新增/编辑 -->
-    <EmployeeDialog ref="employeeDialog" :open.sync="open" :title="title" @refresh="getList" />
+    <EmployeeDialog
+      ref="employeeDialog"
+      :open.sync="open"
+      :title="title"
+      @refresh="getList"
+    />
     <!-- 重置密码 -->
-    <ResetPwdDialog ref="resetPwdDialog" :open.sync="resetPwdOpen" :title="title" @refresh="getList" />
+    <ResetPwdDialog
+      ref="resetPwdDialog"
+      :open.sync="resetPwdOpen"
+      :title="title"
+      @refresh="getList"
+    />
   </div>
 </template>
 
-<script> 
-import EmployeeDialog from './employeeDialog.vue';
-import ResetPwdDialog from './resetPwdDialog.vue';
-import { http_request } from '@/api';
+<script>
+import EmployeeDialog from "./employeeDialog.vue";
+import ResetPwdDialog from "./resetPwdDialog.vue";
+import { http_request } from "@/api";
 export default {
-  name: 'Employee',
+  name: "Employee",
   components: {
     EmployeeDialog,
-    ResetPwdDialog
+    ResetPwdDialog,
   },
   data() {
     return {
@@ -245,8 +330,8 @@ export default {
       // 部门树选项
       deptOptions: undefined,
       defaultProps: {
-        children: 'childrenOrgList',
-        label: 'orgName'
+        children: "childrenOrgList",
+        label: "orgName",
       },
       // 查询参数
       queryParams: {
@@ -257,7 +342,7 @@ export default {
         phonenumber: undefined,
         employeeStatus: undefined,
         startTime: undefined,
-        endTime: undefined
+        endTime: undefined,
       },
       // 职员列表数据
       dataList: [],
@@ -268,21 +353,21 @@ export default {
       orgOpen: false,
       resetPwdOpen: false,
       // 弹窗标题
-      title: '',
+      title: "",
       // 字典
       employeeStatusOptions: [
-        { dictLabel: '启用', dictValue: '0' },
-        { dictLabel: '禁用', dictValue: '1' }
+        { dictLabel: "启用", dictValue: "0" },
+        { dictLabel: "禁用", dictValue: "1" },
       ],
       // 导出按钮
-      exportLoading: false
-    }
+      exportLoading: false,
+    };
   },
   watch: {
     // 根据名称筛选部门树
     orgName(val) {
       this.$refs.tree.filter(val);
-    }
+    },
   },
   created() {
     this.getTree();
@@ -292,12 +377,17 @@ export default {
     /** 获取组织树 */
     getTree() {
       const obj = {
-        moduleName: 'http_org',
-        method: 'get',
-        url_alias: 'orgTree'
-      }
-      http_request(obj).then(res => {
+        moduleName: "http_org",
+        method: "get",
+        url_alias: "orgTree",
+      };
+      http_request(obj).then((res) => {
         this.deptOptions = res.data;
+        this.queryParams.orgCode = this.deptOptions[0].code;
+        this.$nextTick(() => {
+          this.$refs.tree.setCurrentKey(this.queryParams.orgCode);
+          this.handleQuery();
+        });
       });
     },
     /** 筛选节点 */
@@ -321,7 +411,7 @@ export default {
       this.queryParams.orgCode = undefined;
       this.queryParams.startTime = undefined;
       this.queryParams.endTime = undefined;
-      this.resetForm('queryForm');
+      this.resetForm("queryForm");
       this.handleQuery();
     },
     /** 获取职员列表 */
@@ -329,16 +419,18 @@ export default {
       this.loading = true;
       // 构造参数
       const params = Object.assign({}, this.queryParams);
-      if(params.startTime && params.startTime !== '') params.startTime = params.startTime + ' 00:00:00';
-      if(params.endTime && params.endTime !== '') params.endTime = params.endTime + ' 23:59:59';
+      if (params.startTime && params.startTime !== "")
+        params.startTime = params.startTime + " 00:00:00";
+      if (params.endTime && params.endTime !== "")
+        params.endTime = params.endTime + " 23:59:59";
       // 构造参数end
       const obj = {
-        moduleName: 'http_employee',
-        method: 'post',
-        url_alias: 'listEmployee',
-        data: params
-      }
-      http_request(obj).then(res => {
+        moduleName: "http_employee",
+        method: "post",
+        url_alias: "listEmployee",
+        data: params,
+      };
+      http_request(obj).then((res) => {
         this.loading = false;
         this.dataList = res.data.rows;
         this.total = res.data.total;
@@ -346,8 +438,8 @@ export default {
     },
     /** 多选框选中数据 */
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.employeeCode);
-      this.nickNames = selection.map(item => item.nickName);
+      this.ids = selection.map((item) => item.employeeCode);
+      this.nickNames = selection.map((item) => item.nickName);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
@@ -355,56 +447,59 @@ export default {
     handleAdd() {
       this.$refs.employeeDialog.reset(this.queryParams.orgCode);
       this.open = true;
-      this.title = '添加职员';
+      this.title = "添加职员";
     },
     /** 编辑职员 */
     handleUpdate(row) {
       this.$refs.employeeDialog.reset();
       const obj = {
-        moduleName: 'http_employee',
-        method: 'get',
-        url_alias: 'infoEmployee',
-        url_code: [row.employeeCode]
-      }
-      http_request(obj).then(res => {
+        moduleName: "http_employee",
+        method: "get",
+        url_alias: "infoEmployee",
+        url_code: [row.employeeCode],
+      };
+      http_request(obj).then((res) => {
         this.open = true;
-        this.title = '编辑职员';
-        this.$refs.employeeDialog.setForm(res.data)
+        this.title = "编辑职员";
+        this.$refs.employeeDialog.setForm(res.data);
       });
     },
     /** 授予角色 */
     handleRole(row) {
       this.roleOpen = true;
-      this.title = '授予角色';
+      this.title = "授予角色";
     },
     /** 调整组织 */
     handleOrg(row) {
       this.orgOpen = true;
-      this.title = '调整组织';
+      this.title = "调整组织";
     },
     /** 用户状态修改 */
     handleStatusChange(row) {
-      const text = row.employeeStatus === '0' ? '启用' : '停用';
-      this.$confirm('确认要' + text + '"' + row.nickName + '"用户吗?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(function() {
-        const obj = {
-          moduleName: 'http_employee',
-          method: 'put',
-          url_alias: 'changeEmployeeStatus',
-          data: {
-            employeeCode: row.employeeCode,
-            employeeStatus: row.employeeStatus
-          }
-        }
-        return http_request(obj);
-      }).then(() => {
-        this.msgSuccess(text + '成功');
-      }).catch(function() {
-        row.employeeStatus = row.employeeStatus === '1' ? '0' : '1';
-      });
+      const text = row.employeeStatus === "0" ? "启用" : "停用";
+      this.$confirm("确认要" + text + '"' + row.nickName + '"用户吗?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(function () {
+          const obj = {
+            moduleName: "http_employee",
+            method: "put",
+            url_alias: "changeEmployeeStatus",
+            data: {
+              employeeCode: row.employeeCode,
+              employeeStatus: row.employeeStatus,
+            },
+          };
+          return http_request(obj);
+        })
+        .then(() => {
+          this.msgSuccess(text + "成功");
+        })
+        .catch(function () {
+          row.employeeStatus = row.employeeStatus === "1" ? "0" : "1";
+        });
     },
     /** 重置密码 */
     handleResetPwd(row) {
@@ -414,44 +509,48 @@ export default {
     },
     /** 删除 */
     handleDelete(row) {
-      this.$confirm('是否确认删除"' + row.nickName + '"的账号?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(function() {
-        const obj = {
-          moduleName: 'http_employee',
-          method: 'delete',
-          url_alias: 'deleteEmployee',
-          url_code: [row.employeeCode]
-        }
-        return http_request(obj);
-      }).then(() => {
-        this.getList();
-        this.msgSuccess('删除成功');
-      });
+      this.$confirm('是否确认删除"' + row.nickName + '"的账号?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(function () {
+          const obj = {
+            moduleName: "http_employee",
+            method: "delete",
+            url_alias: "deleteEmployee",
+            url_code: [row.employeeCode],
+          };
+          return http_request(obj);
+        })
+        .then(() => {
+          this.getList();
+          this.msgSuccess("删除成功");
+        });
     },
     /** 删除多个 */
     handleDeleteMultiple() {
       const _this = this;
-      this.$confirm('删除操作不可恢复，确认要删除选中的账号吗?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(function() {
-        const obj = {
-          moduleName: 'http_employee',
-          method: 'delete',
-          url_alias: 'deleteEmployeeList',
-          data: {
-            employeeCodeList: _this.ids
-          }
-        }
-        return http_request(obj);
-      }).then(() => {
-        this.getList();
-        this.msgSuccess('删除成功');
-      });
+      this.$confirm("删除操作不可恢复，确认要删除选中的账号吗?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(function () {
+          const obj = {
+            moduleName: "http_employee",
+            method: "delete",
+            url_alias: "deleteEmployeeList",
+            data: {
+              employeeCodeList: _this.ids,
+            },
+          };
+          return http_request(obj);
+        })
+        .then(() => {
+          this.getList();
+          this.msgSuccess("删除成功");
+        });
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -459,9 +558,11 @@ export default {
       const params = Object.assign({}, this.queryParams);
       params.limit = undefined;
       params.start = undefined;
-      if(params.startTime && params.startTime !== '') params.startTime = params.startTime + ' 00:00:00';
-      if(params.endTime && params.endTime !== '') params.endTime = params.endTime + ' 23:59:59';
-      this.download('/fmsweb/basic/teamEmployee/v1/export', params, `职员信息`);
+      if (params.startTime && params.startTime !== "")
+        params.startTime = params.startTime + " 00:00:00";
+      if (params.endTime && params.endTime !== "")
+        params.endTime = params.endTime + " 23:59:59";
+      this.download("/fmsweb/basic/teamEmployee/v1/export", params, `职员信息`);
       this.exportLoading = false;
     },
     /** 车队长的checkbox不可选 */
@@ -470,12 +571,10 @@ export default {
         return true;
       }
       return false;
-    }
-    
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 </style>
