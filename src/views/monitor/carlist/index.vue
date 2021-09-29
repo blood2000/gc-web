@@ -198,7 +198,14 @@ export default {
       });
       return result;
     },
-    mapSearch() {},
+    mapSearch(obj) {
+      console.log("obj", obj);
+         const vehicleCode = obj.vehicle_code;
+      const trackType = 1;
+      this.$router.push(
+        `/map/mapInfo?vehicleCode=${vehicleCode}&trackType=${trackType}`
+      );
+    },
     travelSeach(obj) {
       console.log("obj", obj);
       const vehicleCode = obj.vehicle_code;

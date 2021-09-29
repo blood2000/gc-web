@@ -1309,6 +1309,7 @@ export default {
     },
     // 切换地图tab
     handleHeaderTab(code) {
+      console.log('切换地图tab',code)
       if (this.headerTab === code) return;
       this.headerTab = code;
       // 清除巡航轨迹

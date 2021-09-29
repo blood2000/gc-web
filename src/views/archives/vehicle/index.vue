@@ -484,7 +484,14 @@ export default {
       this.open = true;
       this.vehicleCode = obj.code;
     },
-    handlePosition(obj) {},
+    handlePosition(obj) {
+        console.log("obj", obj);
+         const vehicleCode = obj.code;
+      const trackType = 1;
+      this.$router.push(
+        `/map/mapInfo?vehicleCode=${vehicleCode}&trackType=${trackType}`
+      );
+    },
     handleDetail(obj) {
       const code = obj.code;
       console.log(" index code", code);
