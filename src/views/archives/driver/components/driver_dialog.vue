@@ -29,7 +29,7 @@
             />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item label="用户密码" prop="password">
             <el-input
               v-model="form.password"
@@ -38,7 +38,7 @@
             />
             <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
           </el-form-item>
-        </el-col>
+        </el-col> -->
       </el-row>
       <!-- 图片上传类 -->
       <el-row>
@@ -239,7 +239,7 @@ export default {
       pickerOptions,
       form: {
         orgCode: null, //所属组织
-        password: null, //用户密码
+       // password: null, //用户密码
         identificationImage: null, //身份证正面
         identificationBackImage: null, //身份证背面照
         name: null, //司机姓名
@@ -262,10 +262,10 @@ export default {
             trigger: ["change", "blur"],
           },
         ],
-        password: [
-          { required: true, message: "密码不能为空", trigger: "blur" },
-          { validator: formValidate.password, trigger: "blur" },
-        ],
+        // password: [
+        //   { required: true, message: "密码不能为空", trigger: "blur" },
+        //   { validator: formValidate.password, trigger: "blur" },
+        // ],
         identificationImage: [
           { required: true, message: "请上传身份证正面照", trigger: "change" },
         ],
@@ -289,7 +289,7 @@ export default {
         ],
       },
       // 初始密码
-      initialPassword: "abcd1234@",
+      // initialPassword: "abcd1234@",
       // 部门树选项
       deptOptions: [],
       isDetail: false,
@@ -423,7 +423,7 @@ export default {
     reset(orgCode = null) {
       this.form = {
         orgCode: orgCode, //所属组织
-        password: null, //用户密码
+        // password: null, //用户密码
         identificationImage: null, //身份证正面
         identificationBackImage: null, //身份证背面照
         name: null, //司机姓名
@@ -495,7 +495,7 @@ export default {
     detailToForm(data) {
       this.form = {
         orgCode: data.orgCode, //所属组织
-        password: data.password, //用户密码
+        // password: data.password, //用户密码
         identificationImage: data.identificationInf.identificationImage, //身份证正面
         identificationBackImage: data.identificationInf.identificationBackImage, //身份证背面照
         name: data.identificationInf.name, //司机姓名
@@ -525,7 +525,7 @@ export default {
         telphone: form.telphone,
         // userCode: form.userCode, //????用户编码
         code: this.options.code, //司机编码
-        password: form.password, //用户密码
+        // password: form.password, //用户密码
         orgCode: form.orgCode, //归属组织
         // name: form.name, //司机姓名
         remark: form.remark, //备注
@@ -571,7 +571,7 @@ export default {
           identificationEffective: form.identificationEffective ? "1" : "0",
         },
         telphone: form.telphone,
-        password: form.password, //用户密码
+        // password: form.password, //用户密码
         orgCode: form.orgCode, //归属组织
         remark: form.remark, //备注
       };
