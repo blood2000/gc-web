@@ -21,9 +21,9 @@
               :expand-on-click-node="true"
               :filter-node-method="filterNode"
               :indent="0"
-              :highlight-current="true"
               node-key="code"
               :current-node-key="queryParams.orgCode"
+              :highlight-current="true"
               default-expand-all
               @node-click="handleNodeClick"
             >
@@ -194,9 +194,9 @@ import { http_request } from "@/api";
 import driverConfig from "./driver_config";
 import DriverDialog from "./components/driver_dialog.vue";
 import QueryForm from "./components/queryForm.vue";
-import ResetPwdDialog from './components/resetPwdDialog.vue'
+import ResetPwdDialog from "./components/resetPwdDialog.vue";
 export default {
-  components: { QueryForm, DriverDialog ,ResetPwdDialog},
+  components: { QueryForm, DriverDialog, ResetPwdDialog },
   data() {
     return {
       showSearch: true, //搜索显隐
@@ -220,7 +220,7 @@ export default {
         driverStatus: null, //司机状态
         realStatus: null, //实名状态
         dateRange: [], //日期范围
-        orgCode:null
+        orgCode: null,
       },
       orgName: "", //组织查询
       defaultTreeProps: {
@@ -236,17 +236,17 @@ export default {
       orgList: [],
       driverConfig: {},
       orgNmaetable: "",
-      dialogCode:null
+      dialogCode: null,
     };
   },
   watch: {
     orgName(val) {
       this.$refs.tree.filter(val);
-    },
+    }
   },
   created() {
     this.tableColumnsConfig = driverConfig.tableColumnsConfig;
-    this.driverStatusList = driverConfig.driverStatusCongfigArr
+    this.driverStatusList = driverConfig.driverStatusCongfigArr;
     this.driverConfig = driverConfig;
   },
   mounted() {
@@ -321,14 +321,14 @@ export default {
       this.title = "修改司机弹窗";
       this.editType = "update";
       this.open = true;
-      console.log('修改司机弹窗 ckc obj ', obj.code)
+      console.log("修改司机弹窗 ckc obj ", obj.code);
       this.dialogCode = obj.code;
     },
     handleDetail(obj) {
       this.editType = "detail";
       const code = obj.code;
       this.open = true;
-            console.log('司机详情弹窗 ckc obj ', obj.code)
+      console.log("司机详情弹窗 ckc obj ", obj.code);
       this.dialogCode = obj.code;
       this.title = "司机详情弹窗";
       console.log("index code", code);
@@ -350,17 +350,22 @@ export default {
       if (this.orgName) obj.data = { orgName: this.orgName };
       const orgRes = await http_request(obj);
       console.log("orgRes res", orgRes);
-      this.orgTreeData =
-        orgRes.data.length > 0 ? orgRes.data : [];
-        console.log('orgRes.data[0]',orgRes.data)
+      this.orgTreeData = orgRes.data.length > 0 ? orgRes.data : [];
+      console.log("orgRes.data[0]", orgRes.data);
       this.queryParams.orgCode = this.orgTreeData[0].code;
+      this.$nextTick(() => {
+        this.$refs.tree.setCurrentKey(this.queryParams.orgCode);
+      });
       console.log("当前code ckc", this.queryParams.orgCode);
       this.searchQuery();
     },
     //组织树节点过滤
     filterNode(value, data) {
       if (!value) return true;
-      console.log('data.orgName.indexOf(value) !== -1',data.orgName.indexOf(value) !== -1)
+      console.log(
+        "data.orgName.indexOf(value) !== -1",
+        data.orgName.indexOf(value) !== -1
+      );
       return data.orgName.indexOf(value) !== -1;
     },
     handleNodeClick(data) {
@@ -404,21 +409,21 @@ export default {
 
     //请求分页数据
     async driverHttpReq() {
-      console.log('this.queryParams.orgCode',this.queryParams.orgCode)
+      console.log("this.queryParams.orgCode", this.queryParams.orgCode);
       this.loading = true;
       const tmp = {
-          startIndex: this.queryParams.startIndex,
-          pageSize: this.queryParams.pageSize,
-          name: this.queryParams.name,
-          telphone: this.queryParams.telphone,
-          enabled: this.queryParams.enabled, //分组
-          driverStatus: this.queryParams.driverStatus ||null, //是否停用
-          realStatus: this.queryParams.realStatus, //是否停用
-          createBeginTime: this.queryParams.dateRange[0] || null,
-          createEndTime: this.queryParams.dateRange[1] || null,
-          orgCode:this.queryParams.orgCode
-        }
-         if (tmp.createBeginTime)
+        startIndex: this.queryParams.startIndex,
+        pageSize: this.queryParams.pageSize,
+        name: this.queryParams.name,
+        telphone: this.queryParams.telphone,
+        enabled: this.queryParams.enabled, //分组
+        driverStatus: this.queryParams.driverStatus || null, //是否停用
+        realStatus: this.queryParams.realStatus, //是否停用
+        createBeginTime: this.queryParams.dateRange[0] || null,
+        createEndTime: this.queryParams.dateRange[1] || null,
+        orgCode: this.queryParams.orgCode,
+      };
+      if (tmp.createBeginTime)
         tmp.createBeginTime = tmp.createBeginTime + " " + "00:00:00";
       if (tmp.createEndTime)
         tmp.createEndTime = tmp.createEndTime + " " + "23:59:59";

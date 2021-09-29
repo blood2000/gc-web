@@ -95,7 +95,11 @@ export default {
     },
 
     //关闭弹窗
-    colseDialog() {
+    colseDialog(e) {
+      console.log('e',e)
+      if(e == 'ok'){
+        this.getPurseInfo()
+      }
       this.open = false;
     },
 

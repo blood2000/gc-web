@@ -263,7 +263,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item label="绑定设备编号" prop="deviceNumber	">
             <el-input
               v-model="form.deviceNumber"
@@ -271,7 +271,7 @@
               clearable
             />
           </el-form-item>
-        </el-col>
+        </el-col> -->
       </el-row>
       <div class="form-remark">
         <span>备注:</span>
@@ -338,7 +338,7 @@ export default {
         roadTransportCertificateImg: null, //道路运输证
         orgCode: null, //归属组织编码
         carrierType: null, //车辆承运类型
-        deviceNumber: null, //绑定设备的编号
+        // deviceNumber: null, //绑定设备的编号
         remark: null, //备注
         defaultDriverCode: null, //默认司机
       },
@@ -536,7 +536,7 @@ export default {
         roadTransportCertificateImg: null, //道路运输证
         orgCode: orgCode, //组织
         carrierType: null, //车辆承运类型
-        deviceNumber: null, //绑定设备的编号
+        // deviceNumber: null, //绑定设备的编号
         remark: null, //备注
         defaultDriverCode: null,
       };
@@ -626,7 +626,7 @@ export default {
       this.form.roadTransportCertificateImg = data.roadTransportCertificateImg; //道路运输证
       this.form.orgCode = data.orgCode; //组织
       this.form.carrierType = data.carrierType; //车辆承运类型*
-      this.form.deviceNumber = data.deviceNumber; //绑定设备的编号
+      // this.form.deviceNumber = data.deviceNumber; //绑定设备的编号
       this.form.remark = data.remark; //备注
       this.form.defaultDriverCode = data.defaultDriverCode;
     },
@@ -651,7 +651,7 @@ export default {
           vehicleLicenseImg: me.form.vehicleLicenseImg,
           vehicleLicenseColorCode: me.form.vehicleLicenseColorCode,
         },
-        deviceNumber: me.form.deviceNumber,
+        // deviceNumber: me.form.deviceNumber,
         orgCode: me.form.orgCode,
         code: me.code,
         id: me.id,
@@ -682,7 +682,7 @@ export default {
         roadTransportCertificateImg: me.form.roadTransportCertificateImg,
         vehicleEnergyType: me.form.vehicleEnergyType,
         // driverCode: me.form.driverCode,
-        deviceNumber: me.form.deviceNumber,
+        // deviceNumber: me.form.deviceNumber,
         orgCode: me.form.orgCode,
         remark: me.form.remark,
         defaultDriverCode: me.form.defaultDriverCode,

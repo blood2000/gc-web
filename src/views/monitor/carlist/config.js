@@ -75,7 +75,8 @@ export const tableColumnsConfig = [
         prop: "edit",
         sortNum: 8,
         tooltip: true,
-        width: 200
+        width: 200,
+        fixed:'right'
     },
 ]
 
