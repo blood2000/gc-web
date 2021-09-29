@@ -1,5 +1,4 @@
 <template>
-  <!-- 设备管理-电子围栏 -->
   <div class="map-container">
     <div class="header-panel ly-flex-pack-start">
       <img class="logo" src="~@/assets/images/device/logo.png" />

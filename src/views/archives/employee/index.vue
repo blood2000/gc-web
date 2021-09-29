@@ -167,6 +167,7 @@
             >
               <template slot-scope="scope">
                 <el-button
+                  v-if="!scope.row.teamLeaderFlag"
                   v-hasPermi="['employee:edit']"
                   size="mini"
                   type="text"

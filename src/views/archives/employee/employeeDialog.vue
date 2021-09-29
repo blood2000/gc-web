@@ -139,7 +139,7 @@ export default {
       const obj = {
         moduleName: 'http_role',
         method: 'get',
-        url_alias: 'listExcludeDriver'
+        url_alias: 'roleList'
       }
       http_request(obj).then(res => {
         this.roleOptions = res.data;
