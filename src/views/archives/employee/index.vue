@@ -20,7 +20,7 @@
               ref="tree"
               :data="deptOptions"
               :props="defaultProps"
-              :expand-on-click-node="true"
+              :expand-on-click-node="false"
               :filter-node-method="filterNode"
               :indent="0"
               highlight-current
@@ -409,7 +409,6 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.queryParams.orgCode = undefined;
       this.queryParams.startTime = undefined;
       this.queryParams.endTime = undefined;
       this.resetForm("queryForm");
