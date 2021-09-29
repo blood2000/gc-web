@@ -234,7 +234,8 @@
                   <div
                     class="tree-node-driver-box ly-flex ly-flex-align-center"
                   >
-                    <span class="mr8">{{ data.orgOrDriverName }}</span>
+                    <img class="driver-avatar" src="~@/assets/images/device/driver_avatar.png" />
+                    <span class="driver-name">{{ data.orgOrDriverName }}</span>
                     <!-- 司机状态 -->
                     <span
                       v-if="
@@ -1954,6 +1955,19 @@ export default {
   }
   // 司机的树节点
   .tree-node-driver-box {
+    margin: 8px 0;
+    .driver-avatar{
+      width: 28px;
+      height: 28px;
+    }
+    .driver-name{
+      font-size: 14px;
+      font-family: PingFang SC;
+      font-weight: bold;
+      line-height: 24px;
+      color: #3D4050;
+      margin: 0 18px 0 8px;
+    }
   }
 }
 
