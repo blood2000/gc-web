@@ -310,6 +310,7 @@
       :isShowVehicleInfo="isShowVehicleInfo"
       :orgOrVehicleCode="orgOrVehicleCode"
       :orgOrVehicleInfo="orgOrVehicleInfo"
+      :locationProp="locationProp"
       @initPathSimplifier="initPathSimplifier"
       @startPathSimplifier="startPathSimplifier"
       @resumePathSimplifier="resumePathSimplifier"

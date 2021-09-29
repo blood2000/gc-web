@@ -63,7 +63,6 @@ const selModuleName = (name) => {
  */
 export const http_request = async  (obj) =>  {
   const tmp = {};
-  console.log('objobjobjobj',obj)
   if (!obj.moduleName || !obj.method || !obj.url_alias) return console.error('请填写请求必要条件')
   const request_url = selModuleName(obj.moduleName)
   // get url
