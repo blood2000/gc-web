@@ -449,6 +449,8 @@ export default {
       endMarker: null,
       // 地图点位集合
       markerList: {},
+      // 定时刷新地图点位
+      refreshMarkerTimer: null,
       // 不同承运类型车辆图片大小不同所以点位偏移不同
       offsetList: {
         ztc: [-17, -38],
@@ -517,9 +519,12 @@ export default {
     this.getOrgDriverTree();
     // 获取全部车定位
     this.getVehicleLoLocations();
+    // 开启车辆位置定时刷新
+    this.refreshMarker();
   },
   beforeDestroy() {
     this.clearTimer();
+    this.clearRefreshMarkerTimer();
   },
   methods: {
     locationQueryDeal() {
@@ -1208,9 +1213,12 @@ export default {
               this.drawVehicleMarker(el);
             }
           });
-          this.$nextTick(() => {
-            this.map.setFitView();
-          });
+          // 只有在监控页，刷新点位后才有重新设置视野
+          if(this.headerTab === 1) {
+            this.$nextTick(() => {
+              this.map.setFitView();
+            }); 
+          }
         } else {
           this.msgWarning("该组织下暂无车辆定位信息");
         }
@@ -1240,16 +1248,19 @@ export default {
             attribute.coordinate.value[1]
           ) {
             this.drawVehicleMarker(data);
-            this.$nextTick(() => {
-              this.map.setZoomAndCenter(13, attribute.coordinate.value);
-            });
+            // 只有在监控页，刷新点位后才有重新设置视野
+            if(this.headerTab === 1) {
+              this.$nextTick(() => {
+                this.map.setZoomAndCenter(13, attribute.coordinate.value);
+              });
+            }
             return;
           }
         }
         this.msgWarning("该车辆暂无定位信息");
       });
     },
-    // 绘制车辆定位marder
+    // 绘制车辆定位marker
     drawVehicleMarker(row) {
       const _this = this;
       const { vehicle_code, carrier_type, plate_number, attribute } = row;
@@ -1316,9 +1327,25 @@ export default {
       this.clearPathSimplifierIns();
       // 关闭地图信息窗体
       this.closeInfoWindow();
-      // 清除装卸货停车点
     },
-  },
+    // 定时刷新车位置
+    refreshMarker() {
+      this.clearRefreshMarkerTimer();
+      this.refreshMarkerTimer = setInterval(() => {
+        if (this.isShowVehicleInfo) {
+          // 选中车
+          this.getDeviceLocationInfo(this.orgOrVehicleInfo.orgOrlicenseNumber);
+        } else {
+          // 选中组织
+          this.getVehicleLoLocations(this.orgOrVehicleCode);
+        }
+      }, 60 * 1000);
+    },
+    // 清除定时刷新车位置
+    clearRefreshMarkerTimer() {
+      if (this.refreshMarkerTimer) clearInterval(this.refreshMarkerTimer);
+    }
+  }
 };
 </script>
 
