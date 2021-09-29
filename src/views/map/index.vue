@@ -712,12 +712,12 @@ export default {
       this.map.clearMap();
     },
     /** 清除指定的地图点位集合 */
-    clearMarkerList(markerList) {
-      for (const key in markerList) {
-        markerList[key].setMap(null);
-        markerList[key] = null;
+    clearMarkerList() {
+      for (const key in this.markerList) {
+        this.markerList[key].setMap(null);
+        this.markerList[key] = null;
       }
-      markerList = {};
+      this.markerList = {};
     },
     /** 判断当前位置是否在可视区域 */
     isPointInRing(position) {
@@ -1191,7 +1191,7 @@ export default {
       };
       http_request(obj).then((res) => {
         // 绘制前先清空之前的绘制, 避免重复绘制
-        this.clearMarkerList(this.markerList);
+        this.clearMarkerList();
         if (res.data.rows && res.data.rows.length > 0) {
           // 绘制全部车辆点位
           res.data.rows.forEach((el) => {
@@ -1226,7 +1226,7 @@ export default {
       http_request(obj).then((res) => {
         const { data } = res;
         // 绘制前先清空之前的绘制, 避免重复绘制
-        this.clearMarkerList(this.markerList);
+        this.clearMarkerList();
         if (data) {
           // 绘制全部车辆点位
           const { attribute } = data;
