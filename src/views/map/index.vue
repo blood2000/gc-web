@@ -1636,7 +1636,7 @@ export default {
   // 调度指派
   > .dispatch-list-panel {
     position: absolute;
-    padding-bottom: 32px;
+    // padding-bottom: 32px;
     top: calc(#{$header-height} + 12px);
     right: $right;
     z-index: 1000;
