@@ -213,10 +213,10 @@ const tableColumnsConfig = [
   {
     isShow: true,
     label: "设备类型",
-    prop: "deviceType",
+    prop: "name",
     sortNum: 7,
     tooltip: true,
-    width: 100
+    width: 110
   },
   {
     isShow: true,

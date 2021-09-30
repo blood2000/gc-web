@@ -61,8 +61,8 @@
           <el-option
             v-for="(item, index) in deviceTypeList"
             :key="index"
-            :label="item.label"
-            :value="item.value"
+            :label="item.name"
+            :value="item.code"
           />
         </el-select>
       </el-form-item>
