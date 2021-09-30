@@ -224,11 +224,6 @@ export default {
         //结束时间过滤
         disabledDate: (time) => {
           if (this.carForm.startDate) {
-            console.log(" time.getTime()", time.getTime());
-            console.log(
-              "  orm.startDate",
-              new Date(this.carForm.startDate).getTime()
-            );
             return (
               time.getTime() <
               new Date(this.carForm.startDate).getTime() - 24 * 60 * 60 * 1000
@@ -252,6 +247,10 @@ export default {
 
   computed: {
     showDispatchVehicle() {
+      console.log(
+        "this.$store.getters.showDispatchVehicle",
+        this.$store.getters.showDispatchVehicle
+      );
       if (this.$store.getters.showDispatchVehicle) {
         this.renderPageObj();
       }
@@ -266,12 +265,12 @@ export default {
 
   methods: {
     renderPageObj() {
-      this.pageObj = this.$store.getters.dispatchInfo
+      this.pageObj = this.$store.getters.dispatchInfo;
+      this.pageObj.dispatchOrderCode =
+        this.$store.getters.dispatchInfo.dispatchOrderCode;
       const pageObj = this.pageObj;
-      if (pageObj.vehicleCode && pageObj.driverCode) {
-        me.carForm.vehicleDrivers[0].vehicleCode = pageObj.vehicleCode;
-        me.carForm.vehicleDrivers[0].driverCode = pageObj.driverCode;
-      }
+      console.log("pageObj", pageObj, this.$store.getters.dispatchInfo);
+       this.carForm.dispatchOrderCode = pageObj.dispatchOrderCode;
     },
     //获取派车的车辆Select
     async listVehicleSelect() {
