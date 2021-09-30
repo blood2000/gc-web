@@ -161,6 +161,7 @@ export default {
     // this.warningTypeList = warningConfig.warningTypeList;
     this.warningLevelList = warningConfig.warningLevelList;
     this.getWarningTypes();
+    this.getDeviceTypes();
     this.tableColumnsConfig = [
       ...warningConfig.vehicleColumn,
       ...warningConfig.tableColumnsConfig
@@ -219,6 +220,19 @@ export default {
       this.queryParams.warningTypes = warningTypes;
       this.searchQuery();
     },
+    //设备类型获取
+    async getDeviceTypes() {
+      const obj = {
+        moduleName: "http_warning",
+        method: "get",
+        url_alias: "deviceType_list"
+      };
+      const res = await http_request(obj);
+      console.log("设备类型列表", res);
+      if (res.code === 200) {
+        this.deviceTypeList = res.data;
+      }
+    },
     //告警类型获取
     async getWarningTypes() {
       const obj = {
@@ -272,7 +286,8 @@ export default {
           (this.queryParams.dateRange && this.queryParams.dateRange[0]) || null,
         endAlarmTime:
           (this.queryParams.dateRange && this.queryParams.dateRange[1]) || null,
-        alarmTypeInfoId: this.queryParams.warningTypes.join(",")
+        alarmTypeInfoId: this.queryParams.warningTypes.join(","),
+        deviceSeriesModelInfoCode: this.queryParams.deviceType
       };
       if (this.tabIndex === "1") {
         tmp.dimensionType = "vehicle";
