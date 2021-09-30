@@ -1196,6 +1196,7 @@ export default {
         data: params,
       };
       http_request(obj).then((res) => {
+        console.log('res',res)
         // 绘制前先清空之前的绘制, 避免重复绘制
         this.clearMarkerList();
         if (res.data.rows && res.data.rows.length > 0) {
@@ -1239,6 +1240,7 @@ export default {
         if (data) {
           // 绘制全部车辆点位
           const { attribute } = data;
+          console.log('attribute',attribute)
           if (
             attribute &&
             attribute.coordinate &&

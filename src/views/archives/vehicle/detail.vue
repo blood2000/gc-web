@@ -194,7 +194,10 @@
       </el-col>
       <el-col :span="15">
         <el-card class="box-card detail-right">
-          <div class="maps"></div>
+          <div class="maps">
+            <!-- 地图 -->
+            <div id="device-map-container" />
+          </div>
           <div class="tables">
             <div class="table-title">
               告警信息
@@ -245,28 +248,200 @@ export default {
   components: {},
   data() {
     return {
+      // 地图
+      map: null,
+      geocoder: null,
+      marker: null,
       code: "",
       vehicleInfo: {},
       orgName: "",
-      warningInfo: [],  //告警列表信息
+      warningInfo: [], //告警列表信息
       warningTotal: 0,
-      warningQuerys: {   //告警查询参数
+      warningQuerys: {
+        //告警查询参数
         pageNum: 1,
         pageSize: 10,
       },
       warningInfoTableColumnsConfig: [],
-      loading: false
+      loading: false,
+      offsetList: null,
     };
   },
   mounted() {
+    this.offsetList = vehicleConfig.offsetList;
     this.getVehicleDetailHttp();
-
     this.warningInfoTableColumnsConfig =
       vehicleConfig.warningInfoTableColumnsConfig;
+    // 地图
+    this.$nextTick(() => {
+      this.initMap();
+    });
   },
   created() {},
   computed: {},
   methods: {
+    /** 初始化地图 */
+    initMap() {
+      console.log("AMap", AMap);
+      if (!AMap) {
+        this.msgWarning("地图加载失败，请刷新页面重试");
+        return;
+      }
+      this.map = new AMap.Map("device-map-container", {
+        mapStyle: "amap://styles/2fe468ae95b55caa76404a537353e63a", //设置地图的显示样式
+        resizeEnable: true,
+        center: [119.358267, 26.04577],
+        zoom: 11,
+      });
+      console.log(
+        "==========>",
+        new AMap.Geocoder({
+          radius: 1000,
+          extensions: "all",
+        })
+      );
+      this.geocoder = new AMap.Geocoder({
+        radius: 1000,
+        extensions: "all",
+      });
+    },
+    // 获取车辆定位列表
+    async getVehicleLoLocations() {
+      const me = this;
+      console.log("me.vehicleInfo", me.vehicleInfo);
+      const params = {
+        orgCode: me.vehicleInfo.orgCode,
+        groupCode: me.vehicleInfo.vehicleInf.group,
+        plateNumber: me.vehicleInfo.vehicleInf.licenseNumber,
+      };
+      const obj = {
+        moduleName: "http_map",
+        method: "post",
+        url_alias: "getVehicleLoLocations",
+        data: params,
+      };
+      const res = await http_request(obj);
+      console.log("获取车辆定位列表   res", res);
+      if (res.data.total !== 1) return this.msgWarning("车辆异常");
+      const attribute = res.data.rows[0].attribute;
+      console.log("attribute", attribute);
+      if (
+        attribute &&
+        attribute.coordinate &&
+        attribute.coordinate.value &&
+        attribute.coordinate.value.length === 2 &&
+        attribute.coordinate.value[0] &&
+        attribute.coordinate.value[1]
+      ) {
+        console.log("res.data.rows[0]", res.data.rows[0]);
+        this.drawVehicleMarker(res.data.rows[0]);
+        this.$nextTick(() => {
+          this.map.setFitView();
+        });
+      }
+    },
+    drawVehicleMarker(row) {
+      const me = this;
+      const { carrier_type, plate_number, attribute } = row;
+      const direction = attribute.direction || {};
+      const onlineStatus = attribute.onlineStatus || {};
+      const speed = attribute.speed || {};
+      const position = attribute.coordinate.value;
+      const statusColor = onlineStatus === 1 ? "green" : "gray"; // 设备状态 0离线 1在线
+      const contentValue = [];
+      if (speed.text) contentValue.push(`${speed.text}km/h`);
+      if (direction.text) contentValue.push(`${direction.text}°`);
+      // 绘制标记
+      const styleObjContent = `<div style="transform:rotate(${(direction.value || -30)}deg)" class="own-device-marker-car ${(carrier_type || "qt")}"></div>`
+      const styleObj = {
+        content:
+         styleObjContent,
+        offset: this.offsetList[carrier_type || "qt"],
+        angle: 0,
+      };
+      const marker = this.drawMarker(position, styleObj);
+      // 绘制文本框
+      const info = [];
+      info.push("<div class='own-map-vehicle-marker-label'>");
+      info.push("<h5>" + plate_number);
+      if (onlineStatus.text)
+        info.push(
+          "<span class='status " +
+            statusColor +
+            "'><strong class='mr5'>· </strong>" +
+            onlineStatus.text +
+            "</span>"
+        );
+      info.push("</h5>");
+      if (contentValue.length > 0)
+        info.push(
+          "<p class='input-item'>" + contentValue.join("  |  ") + "</p>"
+        );
+      info.push("</div>");
+      const content = this.setLabelContent(info, { offset: [0, -10] });
+      this.setLabel(marker, content);
+      // 单击
+      marker.on("click", function (e) {
+        if (JSON.stringify(marker.getLabel()) === "{}") {
+          me.setLabel(marker, content);
+        } else {
+          me.setLabel(marker, {});
+        }
+      });
+    },
+    /** 设置点标记的文本标签
+     * @param {Object} marker 标记点对象
+     * @param {Object} content 文本内容,没有就不传
+     */
+    setLabel(marker, content = {}) {
+      if (!marker) return;
+      marker.setLabel(content);
+    },
+    /** 生成文本标签内容
+     * @param {string} info 文本标签内容,没有就不传
+     * @param {Array} offset 文本标签偏移量
+     * @param {string} direction 文本标签出现位置 top'|'right'|'bottom'|'left'|'center
+     */
+    setLabelContent(info = [], { offset = [0, -8], direction = "top" }) {
+      const option =
+        info.length > 0
+          ? {
+              offset: new AMap.Pixel(offset[0], offset[1]),
+              content: info.join(""),
+              direction,
+            }
+          : {};
+      return option;
+    },
+    /** 绘制标记
+     * @param {Array} position 经纬度必传
+     * @param {Object} labelText 信息窗内容,没有就不传
+     * @param {string} content 图标
+     * @param {Array} offset 图标偏移量
+     * @param {number} angle 旋转角度
+     */
+    drawMarker(
+      position,
+      {
+        clickable = true,
+        content = '<div class="own-device-marker-car qt"></div>',
+        offset = [0, 0],
+        angle = 0,
+      }
+    ) {
+      const marker = new AMap.Marker({
+        map: this.map,
+        position,
+        content,
+        autoFitView: true,
+        autoRotation: true,
+        offset: new AMap.Pixel(offset[0], offset[1]),
+        angle,
+        clickable,
+        topWhenClick: true, // 鼠标点击时marker置顶
+      });
+      return marker;
+    },
     isPageShow(info, val) {
       return (
         this.vehicleInfo &&
@@ -279,7 +454,7 @@ export default {
         moduleName: "http_org",
         method: "get",
         url_alias: "infoOrg",
-        url_code: [val]
+        url_code: [val],
       };
       const res = await http_request(obj);
       return res.data.orgName;
@@ -292,17 +467,18 @@ export default {
         moduleName: "http_vehicle",
         method: "get",
         url_alias: "vehicle_detail",
-        url_code: [me.code]
+        url_code: [me.code],
       };
-      http_request(obj).then(res => {
+      http_request(obj).then((res) => {
         console.log("getVehicleDetailHttp res", res);
         me.vehicleInfo = res.data;
-        me.returnOrgcode(me.vehicleInfo.orgCode).then(name => {
+        me.returnOrgcode(me.vehicleInfo.orgCode).then((name) => {
           console.log("name", name);
           me.orgName = name;
         });
         console.log("vehicleInfo----", me.vehicleInfo);
         this.getWarningInfo();
+        this.getVehicleLoLocations();
       });
     },
 
@@ -317,13 +493,13 @@ export default {
         limit: this.warningQuerys.pageSize,
         licenseNumber: this.vehicleInfo.vehicleLicenseInf.licenseNumber,
         // licenseNumber: "闽A124QW",
-        dimensionType: 'vehicle'
+        dimensionType: "vehicle",
       };
       const obj = {
         moduleName: "http_warning",
         method: "get",
         url_alias: "warning_list",
-        data: tmp
+        data: tmp,
       };
       const res = await http_request(obj);
       this.loading = false;
@@ -340,8 +516,8 @@ export default {
     toWarningDetail(obj) {
       this.$router.push("../../warning/warningDetail?id=" + obj.id);
       // this.$router.push({name: "warningDetail", params: {driver: obj.driver}});
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -402,9 +578,246 @@ export default {
   }
 }
 .detail-right {
-  min-height: 700px;
+  min-height: 829px;
   .maps {
-    height: 450px;
+    height: 580px;
+    width: 100%;
+    // 地图
+    > #device-map-container {
+      width: 100%;
+      height: 100%;
+      // 地图信息窗体样式-覆盖
+      ::v-deep.amap-info-sharp {
+        display: none;
+      }
+      ::v-deep.amap-info-content {
+        background: transparent;
+        box-shadow: 0px 3px 5px rgba(206, 206, 206, 0.7);
+        padding: 0;
+        .amap-info-close {
+          top: 6px;
+          right: 6px !important;
+        }
+      }
+      // 地图标记label样式-覆盖
+      ::v-deep.amap-marker-label {
+        border: none;
+        font-size: 12px;
+        line-height: 14px;
+        background: transparent;
+        color: #262626;
+        box-shadow: none;
+        padding: 0;
+        // &::after{
+        //   content: '';
+        //   position: absolute;
+        //   bottom: -6px;
+        //   left: 50%;
+        //   transform: translateX(-50%);
+        //   border-left: 6px solid transparent;
+        //   border-top: 6px solid #fff;
+        //   border-right: 6px solid transparent;
+        // }
+      }
+      // 车标记的信息样式
+      ::v-deep.own-map-vehicle-marker-label {
+        min-width: 218px;
+        min-height: 40px;
+        background: rgba(255, 255, 255, 0.7);
+        box-shadow: 0px 3px 5px rgba(206, 206, 206, 0.7);
+        border-radius: 4px;
+        padding: 8px 12px;
+        > h5 {
+          font-size: 20px;
+          font-family: PingFang SC;
+          font-weight: bold;
+          line-height: 24px;
+          color: #3d4050;
+          > .status {
+            float: right;
+            font-size: 12px;
+            font-family: PingFang SC;
+            font-weight: bold;
+            line-height: 24px;
+            &.blue {
+              color: #4682fa;
+            }
+            &.green {
+              color: rgba(67, 185, 30, 1);
+            }
+            &.red {
+              color: rgba(239, 105, 105, 1);
+            }
+            &.gray {
+              color: rgba(173, 181, 189, 1);
+            }
+          }
+        }
+        > .input-item {
+          height: 26px;
+          line-height: 26px;
+          background: #e4ecf4;
+          opacity: 1;
+          border-radius: 5px;
+          margin-top: 8px;
+          padding: 0 8px;
+          font-size: 14px;
+          font-family: PingFang SC;
+          font-weight: 600;
+          color: #3d4050;
+        }
+      }
+      // 巡航信息窗体样式
+      ::v-deep.own-map-navgtr-info-window {
+        min-width: 216px;
+        max-width: 246px;
+        min-height: 68px;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 4px;
+        padding: 10px 18px 10px 14px;
+        .input-item {
+          font-size: 14px;
+          font-family: PingFang SC;
+          font-weight: bold;
+          line-height: 24px;
+          color: #3d4050;
+          > span {
+            font-size: 14px;
+            font-family: PingFang SC;
+            font-weight: 400;
+            line-height: 24px;
+            color: #a6a8ad;
+            margin-right: 2px;
+            padding-left: 22px;
+            &.speed {
+              background: url("~@/assets/images/device/icon_speed.png")
+                no-repeat 0px 1px;
+              background-size: 16px 16px;
+            }
+            &.time {
+              background: url("~@/assets/images/device/icon_time.png") no-repeat
+                0px 2px;
+              background-size: 16px 16px;
+            }
+          }
+        }
+      }
+      // 轨迹起点终点样式
+      ::v-deep.own-device-line-icon {
+        width: 118px;
+        height: 118px;
+        background: rgba(255, 255, 255, 0.25);
+        border-radius: 50%;
+        padding: 31px;
+        position: relative;
+        > div {
+          width: 24px;
+          height: 24px;
+          line-height: 24px;
+          border-radius: 50%;
+          margin: 16px;
+          font-size: 12px;
+          font-family: PingFang SC;
+          font-weight: bold;
+          color: #ffffff;
+          text-align: center;
+          position: relative;
+          z-index: 1;
+        }
+        &::after {
+          content: "";
+          position: absolute;
+          width: 56px;
+          height: 56px;
+          top: 31px;
+          left: 31px;
+          background: rgba(255, 255, 255, 0.72);
+          border-radius: 50%;
+          z-index: 0;
+        }
+        &.start {
+          > div {
+            background: linear-gradient(180deg, #ffbc00 0%, #ff9405 100%);
+            box-shadow: 0px 0px 6px rgba(241, 184, 25, 0.35);
+          }
+        }
+        &.end {
+          > div {
+            background: linear-gradient(180deg, #4682fa 0%, #1359e6 100%);
+            box-shadow: 0px 0px 6px rgba(70, 130, 250, 0.49);
+          }
+        }
+      }
+      // 标记物车样式
+      ::v-deep.own-device-marker-car {
+        transform-origin: center center;
+        &.ztc {
+          width: 34px;
+          height: 76px;
+          background: url("~@/assets/images/device/map_car_ztc.png") no-repeat;
+          background-size: 100% 100%;
+        }
+        &.jbc {
+          width: 34px;
+          height: 80px;
+          background: url("~@/assets/images/device/map_car_jbc.png") no-repeat;
+          background-size: 100% 100%;
+        }
+        &.llc {
+          width: 28px;
+          height: 62px;
+          background: url("~@/assets/images/device/map_car_llc.png") no-repeat;
+          background-size: 100% 100%;
+        }
+        &.phc {
+          width: 31px;
+          height: 79px;
+          background: url("~@/assets/images/device/map_car_phc.png") no-repeat;
+          background-size: 100% 100%;
+        }
+        &.qt {
+          width: 31px;
+          height: 79px;
+          background: url("~@/assets/images/device/map_car_qt.png") no-repeat;
+          background-size: 100% 100%;
+        }
+      }
+      // 巡航装卸货停车点样式
+      ::v-deep.own-navgtr-marker {
+        width: 30px;
+        height: 48px;
+        animation: show-marker 3s;
+        @keyframes show-marker {
+          0% {
+            opacity: 0;
+          }
+          10% {
+            opacity: 1;
+          }
+          90% {
+            opacity: 1;
+          }
+          100% {
+            opacity: 0;
+          }
+        }
+        &.loading {
+          background: url("~@/assets/images/device/map_icon_loading.png")
+            no-repeat;
+          background-size: 100% 100%;
+        }
+        &.unloading {
+          background: url("~@/assets/images/device/map_icon_unloading.png")
+            no-repeat;
+          background-size: 100% 100%;
+        }
+        &.vehicle-stop {
+          background: url("~@/assets/images/device/map_icon_vehicle-stop.png")
+            no-repeat;
+          background-size: 100% 100%;
+        }
+      }
+    }
   }
 }
 // 告警信息表格标题

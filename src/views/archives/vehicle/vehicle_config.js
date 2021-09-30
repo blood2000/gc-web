@@ -91,6 +91,13 @@ const tableColumnsConfig = [
   },
 ]
 
+const offsetList =  {
+  ztc: [-17, -38],
+  jbc: [-17, -40],
+  llc: [-14, -31],
+  phc: [-15, -39],
+  qt: [-15, -39],
+}
 
 
 const warningInfoTableColumnsConfig = [
@@ -159,4 +166,5 @@ export default {
   vehicleStatusList,
   tableColumnsConfig,
   warningInfoTableColumnsConfig,
+  offsetList
 }
