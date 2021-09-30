@@ -84,6 +84,8 @@
 import { tableColumnsConfig } from "./recode_config";
 import QueryForm from "./components/queryForm.vue";
 import { http_request } from "../../../api";
+import { listByDict } from "../../../api/system/dict/data.js";
+
 export default {
   name: "order",
   components: { QueryForm },
@@ -117,7 +119,10 @@ export default {
   created() {
     const me = this;
     console.log("tableColumnsConfig", tableColumnsConfig);
-    me.getDicts("goodsType").then((res) => {
+    listByDict({
+      // dictPid: "344",
+      dictType: "goodsType",
+    }).then((res) => {
       console.log("res", res);
       me.$store.commit("set_goodsTypeList", res.data);
       console.log(111, me.$store.state.dict.goodsTypeList);
@@ -149,8 +154,7 @@ export default {
     },
     handleDel(data) {
       console.log("data", data);
-      const codes = data.appointCarOrderCode;
-
+      const codes = data.appointCarRecordCode;
       this.$confirm("是否确认删除此项数据?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -195,14 +199,24 @@ export default {
       console.log("????", code);
       this.$router.push("recode/detail?code=" + code);
     },
+    formToPaging() {
+      const tmp = JSON.parse(JSON.stringify(this.queryParams));
+      for (const item in tmp) {
+        if (!tmp[item]) {
+          delete tmp[item];
+        }
+      }
+      return tmp
+    },
     async getList() {
       this.loading = true;
+
       const obj = {
         //paging_dispatch
         moduleName: "http_dispatch",
         method: "post",
         url_alias: "paging_appoint_car_record",
-        data: this.queryParams,
+        data: this.formToPaging(),
       };
       const res = await http_request(obj);
       console.log("geatlist ===>", res);

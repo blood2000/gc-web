@@ -54,6 +54,7 @@ export const tableColumnsConfig = [
         prop: "shipmentNameAndPhone",
         sortNum: 1,
         tooltip: true,
+        width:200
     },
     {
         isShow: true,
@@ -64,7 +65,7 @@ export const tableColumnsConfig = [
     },
     {
         isShow: true,
-        label: "货物小类",
+        label: "货物类型",
         prop: "goodsSmallTypeName",
         sortNum: 1,
         tooltip: true,
@@ -96,6 +97,8 @@ export const tableColumnsConfig = [
         prop: "edit",
         sortNum: 1,
         tooltip: true,
+        fixed:'right'
+
     },
 ]
 //10已接单 20已出车 30已回车 40已失效 50待付款 60 已付款

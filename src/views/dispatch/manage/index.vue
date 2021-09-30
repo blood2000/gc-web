@@ -23,6 +23,7 @@
         border
         default-expand-all
         :data="tableData"
+        
       >
         <template v-for="(item, index) in tableColumnsConfig">
           <el-table-column
@@ -32,6 +33,7 @@
             :label="item.label"
             :show-overflow-tooltip="item.tooltip"
             :width="item.width || '180'"
+            :fixed="item.fixed"
           >
             <template slot-scope="scope">
               <el-button

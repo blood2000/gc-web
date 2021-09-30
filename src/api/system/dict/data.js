@@ -1,4 +1,7 @@
 import request from '@/utils/request'
+import { getToken } from '@/utils/auth'
+import {defaultH} from '@/api'
+
 
 // 查询字典数据列表
 export function listData(query) {
@@ -23,6 +26,22 @@ export function getDicts(dictType) {
     url: '/system/dict/data/type/' + dictType,
     method: 'get'
   })
+}
+
+// 查询字典类
+export function listByDict(data) {
+  return request({
+    url: '/system/dict/data/listDataByDict',
+    method: 'post',
+    data: data,
+    headers: {
+      'Authorization': getToken(),
+      'Produce-Code': defaultH['Produce-Code'],
+      'App-Code': defaultH['App-Code'],
+      'App-Version':defaultH['App-Version'],
+      'Terminal-Type': defaultH['Terminal-Type']
+    },
+  });
 }
 
 // 新增字典数据

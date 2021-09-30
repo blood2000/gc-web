@@ -62,16 +62,16 @@ export const tableColumnsConfig = [
         sortNum: 9,
         tooltip: true,
     },
+    // {
+    //     isShow: true,
+    //     label: "货物大类",
+    //     prop: "goodsBigTypeName",
+    //     sortNum: 10,
+    //     tooltip: true,
+    // },
     {
         isShow: true,
-        label: "货物大类",
-        prop: "goodsBigTypeName",
-        sortNum: 10,
-        tooltip: true,
-    },
-    {
-        isShow: true,
-        label: "货物小类",
+        label: "货物类型",
         prop: "goodsSmallTypeName",
         sortNum: 11,
         tooltip: true,
@@ -82,7 +82,8 @@ export const tableColumnsConfig = [
         prop: "edit",
         sortNum: 12,
         tooltip: true,
-        width:'150px'
+        width:'200px',
+        fixed:'right'
     },
    
 

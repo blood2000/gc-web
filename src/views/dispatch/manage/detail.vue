@@ -32,7 +32,7 @@
         :disabled="true"
         ref="form"
         :model="addressInfo"
-        label-width="120px"
+        label-width="100px"
         label-position="left"
       >
         <div class="title-item">出发地信息</div>

@@ -33,6 +33,7 @@
             :label="item.label"
             :show-overflow-tooltip="item.tooltip"
             :width="item.width || '180'"
+            :fixed="item.fixed"
           >
             <template slot-scope="scope">
               <el-button
@@ -108,6 +109,7 @@
 import { dispatchOrderStatusList, tableColumnsConfig } from "./order_config";
 import QueryForm from "./components/queryForm.vue";
 import { http_request } from "../../../api";
+import { listByDict } from "../../../api/system/dict/data.js";
 export default {
   name: "order",
   components: { QueryForm },
@@ -140,7 +142,10 @@ export default {
   created() {
     const me = this;
     console.log("tableColumnsConfig", tableColumnsConfig);
-    me.getDicts("goodsType").then((res) => {
+    listByDict({
+      // dictPid: "344",
+      dictType: "goodsType",
+    }).then((res) => {
       console.log("res", res);
       me.$store.commit("set_goodsTypeList", res.data);
       console.log(111, me.$store.state.dict.goodsTypeList);
@@ -175,24 +180,42 @@ export default {
       const code = data.dispatchOrderCode;
       this.$router.push("order/car?code=" + code);
     },
-    async getList() {
-      this.loading = true;
+    formToPaging() {
       const tmp = { ...this.queryParams };
       if (tmp.dispatchOrderStatus != null) {
         const statusList = [];
         statusList.push(tmp.dispatchOrderStatus);
         tmp.dispatchOrderStatus = statusList;
       }
-      tmp.startDate = tmp.dateRange[0];
-      tmp.endDate = tmp.dateRange[1];
-      delete tmp.dateRange;
+      if (tmp.dateRange) {
+        tmp.startDate = tmp.dateRange[0];
+        tmp.endDate = tmp.dateRange[1];
+        delete tmp.dateRange;
+      }
+      if (
+        tmp.dispatchOrderStatus &&
+        tmp.dispatchOrderStatus.length == 1 &&
+        !tmp.dispatchOrderStatus[0]
+      ) {
+        delete tmp.dispatchOrderStatus;
+      }
+
+      for (const item in tmp) {
+        if (!tmp[item]) {
+          delete tmp[item];
+        }
+      }
       console.log("tmp", tmp);
+      return tmp;
+    },
+    async getList() {
+      this.loading = true;
       const obj = {
         //paging_dispatch
         moduleName: "http_dispatch",
         method: "post",
         url_alias: "paging_dispatch",
-        data: tmp,
+        data: this.formToPaging(),
       };
       const res = await http_request(obj);
       console.log("geatlist ===>", res);

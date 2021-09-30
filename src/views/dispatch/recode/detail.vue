@@ -28,7 +28,7 @@
         :disabled="true"
         ref="form"
         :model="form"
-        label-width="120px"
+        label-width="80px"
         label-position="left"
       >
           <div class="dispatch-contents-box">
