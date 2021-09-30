@@ -18,7 +18,7 @@
               ref="tree"
               :data="orgTreeData"
               :props="defaultTreeProps"
-              :expand-on-click-node="true"
+              :expand-on-click-node="false"
               :filter-node-method="filterNode"
               :indent="0"
               :highlight-current="true"
@@ -200,7 +200,7 @@ export default {
     },
     mapSearch(obj) {
       console.log("obj", obj);
-         const vehicleCode = obj.vehicle_code;
+      const vehicleCode = obj.vehicle_code;
       const trackType = 1;
       this.$router.push(
         `/map/mapInfo?vehicleCode=${vehicleCode}&trackType=${trackType}`
@@ -227,7 +227,7 @@ export default {
       this.orgTreeData = orgRes.data.length > 0 ? orgRes.data : [];
       console.log("orgRes.data[0]", orgRes.data);
       this.queryParams.orgCode = this.orgTreeData[0].code;
-         this.$nextTick(() => {
+      this.$nextTick(() => {
         this.$refs.tree.setCurrentKey(this.queryParams.orgCode);
       });
       console.log("当前code", this.queryParams.orgCode);
@@ -254,6 +254,7 @@ export default {
     },
     async getList() {
       this.loading = true;
+      this.list = []
       const obj = {
         //http_monitor
         moduleName: "http_monitor",
@@ -296,7 +297,11 @@ export default {
         driverName: this.queryParams.driverName,
         orgCode: this.queryParams.orgCode,
       };
-
+      for (const item in obj) {
+        if (!obj[item]) {
+          delete obj[item];
+        }
+      }
       return obj;
     },
   },

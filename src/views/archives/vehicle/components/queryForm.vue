@@ -38,14 +38,14 @@
           clearable
           filterable
           style="width: 185px"
-          placeholder="请选择车辆所属组织"
+          placeholder="请选择车辆所属分组"
           @change="$emit('handleQuery')"
         >
           <el-option
             v-for="(item, index) in groupList"
             :key="index"
-            :label="item.dictLabel"
-            :value="item.dictValue"
+            :label="item.name"
+            :value="item.name"
           />
         </el-select>
       </el-form-item>
@@ -136,6 +136,11 @@ export default {
       set(value) {
         this.$emit('input', value);
       }
+    }
+  },
+  watch:{
+    groupList(){
+      console.log(this.groupList)
     }
   },
   created() {

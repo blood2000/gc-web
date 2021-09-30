@@ -6,7 +6,7 @@
     label-width="120px"
     size="small"
   >
-    <el-form-item label="车牌号" prop="plateNumber	">
+    <el-form-item label="车牌号" prop="plateNumber">
       <el-input
         v-model="queryParams.plateNumber"
         placeholder=" 请输入车牌号"
@@ -59,7 +59,7 @@
       </el-select>
     </el-form-item>
 
-    <el-form-item label="在线状态" prop="onlineStatus">
+    <!-- <el-form-item label="在线状态" prop="onlineStatus">
       <el-select
         v-model="queryParams.onlineStatus"
         clearable
@@ -75,7 +75,7 @@
           :value="item.value"
         />
       </el-select>
-    </el-form-item>
+    </el-form-item> -->
 
     <el-form-item label="设备号" prop="sn">
       <el-input
@@ -144,6 +144,7 @@ export default {
       // this.resetForm('queryForm');
       console.log("qqq", this.$refs["queryForm"]);
       this.$refs["queryForm"].resetFields();
+      this.queryParams.vehicleStatus = null
       this.$emit("handleQuery");
     },
   },

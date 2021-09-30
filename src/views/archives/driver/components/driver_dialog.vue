@@ -210,7 +210,7 @@ import { http_request } from "../../../../api";
 import { pickerOptions } from "@/utils/dateRange";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import formValidate from '../../../../utils/formValidate'
+import formValidate from "../../../../utils/formValidate";
 
 export default {
   name: "vehicleDialog",
@@ -239,7 +239,7 @@ export default {
       pickerOptions,
       form: {
         orgCode: null, //所属组织
-       // password: null, //用户密码
+        // password: null, //用户密码
         identificationImage: null, //身份证正面
         identificationBackImage: null, //身份证背面照
         name: null, //司机姓名
@@ -312,11 +312,12 @@ export default {
     };
   },
   watch: {
-    options() {
+    open() {
+      console.log(" this.options.editType", this.options.editType);
+      if(!this.open) return
       if (
-        (this.options.editType == "update" ||
-          this.options.editType == "detail") &&
-        this.open
+        this.options.editType == "update" ||
+        this.options.editType == "detail"
       ) {
         console.log("this.options", this.options, this.open);
         //请求
@@ -328,18 +329,6 @@ export default {
     },
   },
   created() {},
-  watch: {
-    options() {
-      console.log("this.options", this.options);
-      if (!this.open) return;
-      if (
-        this.options.editType == "update" ||
-        this.options.editType == "detail"
-      ) {
-        this.requsetDetail();
-      }
-    },
-  },
   mounted() {
     this.getTree();
   },

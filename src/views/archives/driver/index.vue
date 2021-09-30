@@ -66,7 +66,7 @@
                   >删除</el-button
                 >
               </el-col>
-              <el-col :span="1.5">
+              <!-- <el-col :span="1.5">
                 <el-button type="primary" size="mini" @click="handleImport"
                   >导入</el-button
                 >
@@ -79,7 +79,7 @@
                   @click="handleExport"
                   >导出</el-button
                 >
-              </el-col>
+              </el-col> -->
               <right-toolbar
                 :show-search.sync="showSearch"
                 @queryTable="searchQuery"
@@ -242,7 +242,7 @@ export default {
   watch: {
     orgName(val) {
       this.$refs.tree.filter(val);
-    }
+    },
   },
   created() {
     this.tableColumnsConfig = driverConfig.tableColumnsConfig;
@@ -279,7 +279,7 @@ export default {
         });
         return;
       }
-      const ids = [obj.code] || this.ids;
+      const ids = obj.code ? [obj.code] : this.ids;
       console.log("this.ids", ids);
       this.$confirm("是否确认删除此项数据?", "警告", {
         confirmButtonText: "确定",
@@ -406,11 +406,7 @@ export default {
           row.enabled = row.enabled === 1 ? 0 : 1;
         });
     },
-
-    //请求分页数据
-    async driverHttpReq() {
-      console.log("this.queryParams.orgCode", this.queryParams.orgCode);
-      this.loading = true;
+    formToPaging() {
       const tmp = {
         startIndex: this.queryParams.startIndex,
         pageSize: this.queryParams.pageSize,
@@ -423,15 +419,29 @@ export default {
         createEndTime: this.queryParams.dateRange[1] || null,
         orgCode: this.queryParams.orgCode,
       };
+      for (const item in tmp) {
+        if (!tmp[item]) {
+          delete tmp[item];
+        }
+      }
+
       if (tmp.createBeginTime)
         tmp.createBeginTime = tmp.createBeginTime + " " + "00:00:00";
       if (tmp.createEndTime)
         tmp.createEndTime = tmp.createEndTime + " " + "23:59:59";
+
+      return tmp;
+    },
+    //请求分页数据
+    async driverHttpReq() {
+      console.log("this.queryParams.orgCode", this.queryParams.orgCode);
+      this.loading = true;
+
       const obj = {
         moduleName: "http_driver",
         method: "post",
         url_alias: "driver_paging",
-        data: tmp,
+        data: this.formToPaging(),
       };
       console.log("所有参数列表", obj);
       const res = await http_request(obj);

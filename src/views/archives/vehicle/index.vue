@@ -18,7 +18,7 @@
               ref="tree"
               :data="orgTreeData"
               :props="defaultTreeProps"
-              :expand-on-click-node="true"
+              :expand-on-click-node="false"
               :filter-node-method="filterNode"
               :indent="0"
               :highlight-current="true"
@@ -44,7 +44,7 @@
             <QueryForm
               v-model="queryParams"
               :vehicle-status-list="vehicleStatusList"
-              :group-List="groupList"
+              :groupList="groupList"
               :enabled-list="enabledList"
               @handleQuery="searchQuery"
             />
@@ -67,7 +67,7 @@
                   >删除</el-button
                 >
               </el-col>
-              <el-col :span="1.5">
+              <!-- <el-col :span="1.5">
                 <el-button type="primary" size="mini" @click="handleImport"
                   >导入</el-button
                 >
@@ -80,15 +80,15 @@
                   @click="handleExport"
                   >导出</el-button
                 >
-              </el-col>
+              </el-col> -->
               <el-col :span="1.5">
                 <el-button type="primary" size="mini" @click="handleGroup"
                   >车辆分组管理</el-button
                 >
               </el-col>
-              <el-col :span="1.5" class="loadTemplate"
+              <!-- <el-col :span="1.5" class="loadTemplate"
                 ><a> 下载导入模板</a>
-              </el-col>
+              </el-col> -->
               <right-toolbar
                 :show-search.sync="showSearch"
                 @queryTable="searchQuery"
@@ -203,9 +203,11 @@
       :group-open="groupOpen"
       @colseGroupDialog="colseGroupDialog"
     ></GroupDialog>
-    <DeviceDialog :open="deviceOpen"
-    :options="deviceOptions"
-     @colseDeviceDialog="colseDeviceDialog" />
+    <DeviceDialog
+      :open="deviceOpen"
+      :options="deviceOptions"
+      @colseDeviceDialog="colseDeviceDialog"
+    />
   </div>
 </template>
 
@@ -259,9 +261,9 @@ export default {
       },
       orgTreeData: [],
       deviceOpen: false,
-      deviceOptions:{
-        title:''
-      }
+      deviceOptions: {
+        title: "",
+      },
     };
   },
   created() {},
@@ -269,9 +271,7 @@ export default {
     this.getConfigData();
     this.getDictData();
     this.getOrgHttp();
-    setTimeout(() => {
-      console.log("store", store);
-    }, 2000);
+    this.requsetGroupHttp()
   },
   watch: {
     orgName(val) {
@@ -279,6 +279,18 @@ export default {
     },
   },
   methods: {
+    async requsetGroupHttp() {
+      console.log("我被请求了");
+      const obj = {
+        moduleName: "http_group",
+        method: "post",
+        url_alias: "group_list",
+      };
+      const res = await http_request(obj);
+      console.log("group_list res==>", res);
+      this.groupList = res.data;
+      console.log("this.groupList", this.groupList);
+    },
     async getDefaultDriver() {
       const obj = {
         moduleName: "http_vehicle",
@@ -366,7 +378,7 @@ export default {
       console.log("orgRes res", orgRes);
       this.orgTreeData = orgRes.data.length > 0 ? orgRes.data : [];
       this.queryParams.orgCode = this.orgTreeData[0].code;
-         this.$nextTick(() => {
+      this.$nextTick(() => {
         this.$refs.tree.setCurrentKey(this.queryParams.orgCode);
       });
       console.log("当前code", this.queryParams.orgCode);
@@ -390,10 +402,7 @@ export default {
       this.queryParams.pageNum = 1;
       this.vehicleHttpReq();
     },
-    //请求分页数据
-    async vehicleHttpReq() {
-      this.loading = true;
-      console.log("vehicleHttpReq", this.queryParams);
+    formToPaging() {
       const tmp = {
         startIndex: this.queryParams.pageNum,
         pageSize: this.queryParams.pageSize,
@@ -407,15 +416,28 @@ export default {
           (this.queryParams.dateRange && this.queryParams.dateRange[1]) || null,
         orgCode: this.queryParams.orgCode,
       };
+      for (const item in tmp) {
+        if (!tmp[item]) {
+          delete tmp[item];
+        }
+      }
       if (tmp.createBeginTime)
         tmp.createBeginTime = tmp.createBeginTime + " " + "00:00:00";
       if (tmp.createEndTime)
         tmp.createEndTime = tmp.createEndTime + " " + "23:59:59";
+
+      return tmp;
+    },
+    //请求分页数据
+    async vehicleHttpReq() {
+      this.loading = true;
+      console.log("vehicleHttpReq", this.queryParams);
+
       const obj = {
         moduleName: "http_vehicle",
         method: "post",
         url_alias: "vehicle_list_page",
-        data: tmp,
+        data: this.formToPaging(),
       };
       console.log("所有参数列表", obj);
       const res = await http_request(obj);
@@ -453,6 +475,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.selection = selection;
+      console.log('selection',selection)
       this.ids = selection.map((item) => item.code);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
@@ -460,8 +483,8 @@ export default {
     //删除
     async handleDelete(obj = {}) {
       console.log("obj", obj);
-      const ids = [obj.code] || this.ids;
-      console.log("this.ids", ids);
+      const ids =obj.code?[obj.code] : this.ids;
+      console.log("this.ids", ids,this.ids,obj.code);
       this.$confirm("是否确认删除此项数据?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -488,8 +511,8 @@ export default {
       this.vehicleCode = obj.code;
     },
     handlePosition(obj) {
-        console.log("obj", obj);
-         const vehicleCode = obj.code;
+      console.log("obj", obj);
+      const vehicleCode = obj.code;
       const trackType = 1;
       this.$router.push(
         `/map/mapInfo?vehicleCode=${vehicleCode}&trackType=${trackType}`
@@ -502,14 +525,13 @@ export default {
     },
     handleDevice(obj) {
       console.log("ckc obj", obj);
-      
-      this.deviceOptions = {
-        title:obj.seriesCode?'更换设备':'绑定设备',
-        vehicleCode:obj.code,
-        isbang:obj.seriesCode?true:false
-      }
-      this.deviceOpen = true 
 
+      this.deviceOptions = {
+        title: obj.seriesCode ? "更换设备" : "绑定设备",
+        vehicleCode: obj.code,
+        isbang: obj.seriesCode ? true : false,
+      };
+      this.deviceOpen = true;
     },
     colseDialog(e) {
       console.log("关闭。。。", e);
@@ -523,7 +545,7 @@ export default {
     colseDeviceDialog() {
       console.log("device关闭。。。");
       this.deviceOpen = false;
-      this.vehicleHttpReq()
+      this.vehicleHttpReq();
     },
   },
 };
