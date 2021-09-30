@@ -461,6 +461,8 @@ export default {
       },
       // showVehicleDetail: false,  //车辆详情组件显示
       locationProp: null, //路由上有参数时
+      // 实时告警点位marker
+      realWarnMarker: null
     };
   },
 
@@ -1329,6 +1331,8 @@ export default {
       this.clearPathSimplifierIns();
       // 关闭地图信息窗体
       this.closeInfoWindow();
+      // 清除告警标记
+      this.clearRealWarnMarker();
     },
     // 定时刷新车位置
     refreshMarker() {
@@ -1346,6 +1350,33 @@ export default {
     // 清除定时刷新车位置
     clearRefreshMarkerTimer() {
       if (this.refreshMarkerTimer) clearInterval(this.refreshMarkerTimer);
+    },
+    // 绘制告警点位
+    darwRealWarnMarker(row) {
+      console.log('绘制告警点位：', row)
+      // 绘制前先清除
+      this.clearRealWarnMarker();
+      if (row.lng && row.lat) {
+        const styleObj = {
+          content:
+            '<div style="transform:rotate(' +
+            (row.direction || -30) +
+            'deg)" class="own-device-marker-warn ' +
+            (row.carrier_type || "qt") +
+            '"><div class="warn-car"></div><div class="warn-cirle"></div></div>',
+          offset: this.offsetList[row.carrierType || "qt"],
+          angle: 0,
+        };
+        this.realWarnMarker = this.drawMarker([row.lng, row.lat], styleObj);
+        this.map.setCenter([row.lng, row.lat]);
+      }
+    },
+    // 清除告警点位
+    clearRealWarnMarker() {
+      if (this.realWarnMarker) {
+        this.realWarnMarker.setMap(null);
+        this.realWarnMarker = null;
+      }
     }
   }
 };
@@ -1866,6 +1897,94 @@ export default {
         background: url("~@/assets/images/device/map_icon_vehicle-stop.png")
           no-repeat;
         background-size: 100% 100%;
+      }
+    }
+    // 告警标记样式
+    ::v-deep.own-device-marker-warn{
+      position: relative;
+      transform-origin: center center;
+      .warn-car{
+        position: relative;
+        z-index: 1;
+      }
+      &.ztc {
+        .warn-car{
+          width: 34px;
+          height: 76px;
+          background: url("~@/assets/images/device/map_car_ztc.png") no-repeat;
+          background-size: 100% 100%;
+        }
+      }
+      &.jbc {
+        .warn-car{
+          width: 34px;
+          height: 80px;
+          background: url("~@/assets/images/device/map_car_jbc.png") no-repeat;
+          background-size: 100% 100%;
+        }
+      }
+      &.llc {
+        .warn-car{
+          width: 28px;
+          height: 62px;
+          background: url("~@/assets/images/device/map_car_llc.png") no-repeat;
+          background-size: 100% 100%;
+        }
+      }
+      &.phc {
+        .warn-car{
+          width: 31px;
+          height: 79px;
+          background: url("~@/assets/images/device/map_car_phc.png") no-repeat;
+          background-size: 100% 100%;
+        }
+      }
+      &.qt {
+        .warn-car{
+          width: 31px;
+          height: 79px;
+          background: url("~@/assets/images/device/map_car_qt.png") no-repeat;
+          background-size: 100% 100%;
+        }
+      }
+      .warn-cirle{
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-left: -45px;
+        margin-top: -45px;
+        width: 90px;
+        height: 90px;
+        border: 1px solid rgba(239, 105, 105, 0.6);
+        border-radius: 50%;
+        background: rgba(239, 105, 105, 0.15);
+        z-index: 0;
+        &::before{
+          content: '';
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          margin-left: -80px;
+          margin-top: -80px;
+          width: 160px;
+          height: 160px;
+          border: 1px solid rgba(239, 105, 105, 0.4);
+          border-radius: 50%;
+          background: rgba(239, 105, 105, 0.08);
+        }
+        &::after{
+          content: '';
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          margin-left: -114px;
+          margin-top: -114px;
+          width: 228px;
+          height: 228px;
+          border: 1px solid rgba(239, 105, 105, 0.2);
+          border-radius: 50%;
+          background: rgba(239, 105, 105, 0.04);
+        }
       }
     }
   }

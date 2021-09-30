@@ -10,8 +10,8 @@
         <!-- 实时报警 -->
         <template v-if="activeTab === 'real'">
           <template v-if="dataList.length > 0">
-            <li class="warning-list-li" v-for="(item, index) in dataList" :key="index">
-              <div class="warning-card" :class="{active: index === 0}">
+            <li class="warning-list-li" v-for="(item, index) in dataList" :key="index" @click="handleRealWarnCard(item, index)">
+              <div class="warning-card" :class="{active: index === activeRealWarnCard}">
                 <h5 class="g-single-row">{{ item.licenseNumber }}</h5>
                 <p class="label mb10 g-single-row">{{ item.nickName ? item.nickName : '暂无' }}<span style="margin: 0 10px">|</span>{{ item.teamName ? item.teamName : '暂无' }}</p>
                 <div class="center-box ly-flex-pack-justify ly-flex-align-end mb5">
@@ -157,7 +157,9 @@ export default {
         teamCode: undefined,
         orgCode: undefined,
         vehicleCode: undefined
-      }
+      },
+      // 当前选中的实时告警卡片
+      activeRealWarnCard: 0
     }
   },
   watch: {
@@ -222,6 +224,7 @@ export default {
         } else {
           this.dataList = [];
         }
+        this.handleRealWarnCard(this.dataList[0], 0);
       });
     },
     /** 获取 车辆/设备/人员 告警 */
@@ -271,6 +274,11 @@ export default {
     /** 查看更多 */
     handleMore() {
       this.$router.push('/warning/warning');
+    },
+    /** 点击实时告警事件 */
+    handleRealWarnCard(row, index) {
+      this.activeRealWarnCard = index;
+      this.$parent.darwRealWarnMarker(row);
     }
   }
 }
@@ -349,7 +357,7 @@ export default {
         .warning-card{
           height: 100%;
           border-radius: 6px;
-          cursor: default;
+          cursor: pointer;
           padding: 12px 14px;
           overflow: hidden;
           position: relative;
@@ -363,7 +371,7 @@ export default {
               height: 100%;
               background: linear-gradient(90deg, rgba(239, 105, 105, 0.16) 0%, rgba(239, 105, 105, 0) 100%);
               z-index: 0;
-              animation: show-linear 1s;
+              animation: show-linear 0.6s;
               @keyframes show-linear {
                 0% {
                   width: 0;
