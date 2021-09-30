@@ -184,7 +184,7 @@ export default {
   .status {
     // height: 100%;
     position: relative;
-    top: 25px;
+    // top: 25px;
   }
   .apply {
     display: flex;

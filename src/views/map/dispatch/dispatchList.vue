@@ -1,45 +1,46 @@
 <!-- 调度单列表 -->
 <template>
   <div class="dispatch-list-container" v-loading="loading" :class="isFresh">
-    <div class="no-data" v-if="dispatchList.length === 0">暂无数据</div>
+    <div class="no-data" v-if="dispatchList.length === 0">暂无调度数据</div>
     <div class="list-main">
       <div
-      class="list-box"
-      :class="item.isChoosed ? 'choosed' : ''"
-      v-for="(item, index) in dispatchList"
-      :key="index"
-      @click="chooseItem(index)"
-    >
-      <div class="first-line">
-        <div>{{ item.goodsBigTypeName }}</div>
-        <div>
-          {{ parseFloat(item.freightStr) }}
-          <span>{{ "元/" + item.freightStr.split("/")[1] }}</span>
+        class="list-box"
+        :class="item.isChoosed ? 'choosed' : ''"
+        v-for="(item, index) in dispatchList"
+        :key="index"
+        @click="chooseItem(index)"
+      >
+        <div class="first-line">
+          <div>{{ item.goodsBigTypeName }}</div>
+          <div>
+            {{ parseFloat(item.freightStr) }}
+            <span>{{ "元/" + item.freightStr.split("/")[1] }}</span>
+          </div>
+        </div>
+        <div class="second-line">{{ item.companyName }}</div>
+        <div class="addr-box">
+          <div class="addr-icon start">起</div>
+          <div class="addr start-addr">{{ item.loadFormattedAddress }}</div>
+        </div>
+        <div class="addr-box">
+          <div class="addr-icon end">终</div>
+          <div class="addr end-addr">{{ item.unloadFormattedAddress }}</div>
+        </div>
+        <div class="btn-box">
+          <div class="btn dispatch" @click="toDispatchVehicle(item)">派车</div>
+          <div class="btn detail" @click="toDispatchDetail(item)">详情</div>
         </div>
       </div>
-      <div class="second-line">{{ item.companyName }}</div>
-      <div class="addr-box">
-        <div class="addr-icon start">起</div>
-        <div class="addr start-addr">{{ item.loadFormattedAddress }}</div>
-      </div>
-      <div class="addr-box">
-        <div class="addr-icon end">终</div>
-        <div class="addr end-addr">{{ item.unloadFormattedAddress }}</div>
-      </div>
-      <div class="btn-box">
-        <div class="btn dispatch" @click="toDispatchVehicle(item)">派车</div>
-        <div class="btn detail" @click="toDispatchDetail(item)">详情</div>
-      </div>
+      <pagination
+        v-if="total > queryParams.pageSize"
+        :total="total"
+        hide-on-single-page
+        layout="prev, pager, next"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
     </div>
-    </div>
-    <pagination
-      :total="total"
-      hide-on-single-page
-      layout="prev, pager, next"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
   </div>
 </template>
 
@@ -153,14 +154,15 @@ export default {
 .no-data {
   position: absolute;
   width: 100%;
-  height: 32px;
+  height: 200px;
   top: 0;
   left: 0;
-  line-height: 32px;
+  line-height: 200px;
   color: #333;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 18px;
   text-align: center;
+  background: rgba(255, 255, 255, 0.7);
 }
 
 .list-main {
@@ -172,12 +174,14 @@ export default {
 }
 
 .pagination-container {
-  position: fixed;
-  // width: 100%;
-  margin: 0;
-  bottom: 25px;
-  right: 9px;
-  background: rgba(0, 0, 0, 0);
+  // position: fixed;
+  // width: 380px;
+  // margin: 0;
+  // bottom: 24px;
+  // right: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 5px 3px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
 }
 .detail-box {
   position: absolute;
@@ -312,10 +316,10 @@ export default {
 
 ::-webkit-scrollbar {
   width: 0;
-  height: 20px;
-  background-color: #0e1013;
+  height: 10px;
+  // background-color: #ddd;
 }
 ::-webkit-scrollbar-thumb {
-  background: #333;
+  background: #aaa;
 }
 </style>
