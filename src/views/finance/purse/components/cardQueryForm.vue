@@ -16,7 +16,7 @@
           @keyup.enter.native="$emit('handleQuery')"
         />
       </el-form-item>
-      <el-form-item label="银行预留手机" prop="mobile">
+      <el-form-item label="银行预留手机" prop="mobile" label-width="120px">
         <el-input
           v-model="queryParams.mobile"
           placeholder="请输入银行预留手机"
