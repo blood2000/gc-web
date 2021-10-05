@@ -30,6 +30,8 @@
             v-if="item.prop == 'edit'"
             :key="index"
             :prop="item.prop"
+            align="center"
+            fixed="right"
             :label="item.label"
             :show-overflow-tooltip="item.tooltip"
             :width="item.width || '180'"
@@ -40,26 +42,30 @@
                 type="text"
                 icon="el-icon-edit"
                 @click="handleDetail(scope.row)"
-                >详情</el-button
               >
+                详情
+              </el-button>
               <el-button
                 size="mini"
                 type="text"
                 @click="handleDispatch(scope.row)"
-                >派车</el-button
               >
+                派车
+              </el-button>
               <el-button
                 size="mini"
                 type="text"
                 icon="el-icon-position"
                 @click="handleCarlog(scope.row)"
-                >派车记录</el-button
               >
+                派车记录
+              </el-button>
             </template>
           </el-table-column>
           <el-table-column
             v-else-if="item.prop == 'dispatchOrderStatus'"
             v-show="item.isShow"
+            align="center"
             :key="index"
             :prop="item.prop"
             :label="item.label"
@@ -74,15 +80,17 @@
                     'color'
                   ),
                 }"
-                >{{
-                  dealDispatchOrderStatus(scope.row.dispatchOrderStatus, "text")
-                }}</span
               >
+                {{
+                  dealDispatchOrderStatus(scope.row.dispatchOrderStatus, "text")
+                }}
+              </span>
             </template>
           </el-table-column>
           <el-table-column
             v-else
             v-show="item.isShow"
+            align="center"
             :key="index"
             :prop="item.prop"
             :label="item.label"
