@@ -187,6 +187,11 @@ export default {
     getList() {
       const code = this.activeTab;
       // 构造公共参数
+      this.queryParams = {
+        teamCode: undefined,
+        orgCode: undefined,
+        vehicleCode: undefined
+      };
       if (this.orgOrVehicleInfo) {
         if (this.orgOrVehicleInfo.vehicleFlag) {
           this.queryParams.vehicleCode = this.orgOrVehicleInfo.orgOrVehicleCode;
