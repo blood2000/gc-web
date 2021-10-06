@@ -189,6 +189,7 @@ export default {
     background-size: 343px 121px;
     background-repeat: no-repeat;
     padding: 10px 50px;
+    margin-bottom: 20px;
     display: flex;
     flex-direction: column;
     color: #ffffff;
