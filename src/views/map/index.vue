@@ -1,7 +1,7 @@
 <template>
   <div class="map-container">
     <div class="header-panel ly-flex-pack-start">
-      <img class="logo" src="~@/assets/images/device/logo.png" />
+      <img class="header-panel-logo" src="~@/assets/images/device/logo.png" />
       <div class="time-box ly-flex-pack-center ly-flex-align-center">
         <div class="time">{{ currentTime }}</div>
         <div>
@@ -1412,7 +1412,7 @@ export default {
       #ffffff 100%
     );
     border-bottom: 1px solid #e4ecf4;
-    > .logo {
+    > .header-panel-logo {
       width: 136px;
       height: 46px;
       margin: 12px 2px 10px 16px;
