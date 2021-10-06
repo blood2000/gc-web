@@ -60,7 +60,7 @@
           v-model="queryParams.driverStatus"
           clearable
           filterable
-         style="width: 150px"
+         style="width: 185px"
           placeholder="全部"
           @change="$emit('handleQuery')"
         >
@@ -77,7 +77,7 @@
           v-model="queryParams.realStatus"
           clearable
           filterable
-          style="width: 150px"
+          style="width: 185px"
           placeholder="全部"
           @change="$emit('handleQuery')"
         >

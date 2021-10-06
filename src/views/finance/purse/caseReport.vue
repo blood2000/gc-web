@@ -12,12 +12,14 @@
       <div class="purse-tool-bar">
         <div class="apply">
           <div style="margin-right: 40px">
-            <div class="number">{{ dealApplyData.successfulTransfer }}</div>
-            <div class="titleStr">已打款金额</div>
+            <div class="titleStr">已打款金额: {{ dealApplyData.successfulTransfer || '-' }}</div>
+            <!-- <div class="number">{{ dealApplyData.successfulTransfer || '-' }}</div> -->
+            
           </div>
           <div>
-            <div class="number">{{ dealApplyData.applying }}</div>
-            <div class="titleStr">处理中金额</div>
+            <div class="titleStr">处理中金额: {{ dealApplyData.applying || '-' }}</div>
+            <!-- <div class="number">{{ dealApplyData.applying || '-' }}</div> -->
+            
           </div>
         </div>
         <div class="status">
@@ -189,13 +191,16 @@ export default {
   .apply {
     display: flex;
     flex-direction: row;
+    > div {
+      display: flex;
+    }
     .number {
       font-size: 16px;
       font-weight: bold;
     }
     .titleStr {
       font-size: 14px;
-      font-weight: bold;
+      // font-weight: bold;
     }
   }
 }

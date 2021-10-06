@@ -56,7 +56,7 @@
         v-model="queryParams.goodsType"
         clearable
         filterable
-        style="width: 150px"
+        style="width: 185px"
         placeholder="请选择"
         @change="$emit('handleQuery')"
       >

@@ -44,11 +44,11 @@
     </el-form-item>
 
     <el-form-item label="货物类型：" prop="goodsType">
-         <el-select
+      <el-select
         v-model="queryParams.goodsType"
         clearable
         filterable
-        style="width: 150px"
+        style="width: 185px"
         placeholder="请选择"
         @change="$emit('handleQuery')"
       >
@@ -61,13 +61,40 @@
       </el-select>
     </el-form-item>
     <el-form-item label="调度单来源" prop="source">
-         <el-input
+      <el-input
         v-model="queryParams.source"
         placeholder=" 请输入调度单来源"
         clearable
         style="width: 185px"
         @keyup.enter.native="$emit('handleQuery')"
-      /> </el-form-item>
+      />
+    </el-form-item>
+    <el-form-item label="调度单状态" prop="dispatchOrderStatus">
+      <el-select
+        v-model="queryParams.dispatchOrderStatus"
+        clearable
+        filterable
+        style="width: 185px"
+        placeholder="全部"
+        @change="$emit('handleQuery')"
+      >
+        <el-option
+          v-for="(item, index) in dispatchOrderStatusList"
+          :key="index"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+    </el-form-item>
+    <el-form-item label="货源备注：" prop="remark">
+      <el-input
+        v-model="queryParams.remark"
+        placeholder="请输入手机号码"
+        clearable
+        style="width: 185px"
+        @keyup.enter.native="$emit('handleQuery')"
+      />
+    </el-form-item>
 
     <el-form-item label="创建时间">
       <el-date-picker
@@ -83,32 +110,8 @@
         end-placeholder="结束日期"
       />
     </el-form-item>
-    <el-form-item label="调度单状态" prop="dispatchOrderStatus">
-      <el-select
-        v-model="queryParams.dispatchOrderStatus"
-        clearable
-        filterable
-        style="width: 150px"
-        placeholder="全部"
-        @change="$emit('handleQuery')"
-      >
-        <el-option
-          v-for="(item, index) in dispatchOrderStatusList"
-          :key="index"
-          :label="item.label"
-          :value="item.value"
-        />
-      </el-select>
-    </el-form-item>
-    <el-form-item label="货源备注：" prop="remark"> 
-        <el-input
-        v-model="queryParams.remark"
-        placeholder="请输入手机号码"
-        clearable
-        style="width: 185px"
-        @keyup.enter.native="$emit('handleQuery')"
-      />
-    </el-form-item>
+
+    
 
     <el-form-item>
       <el-button
@@ -140,10 +143,10 @@ export default {
       type: Array,
       default: [],
     },
-    goodsTypeList:{
-        type:Array,
-        default:[]
-    }
+    goodsTypeList: {
+      type: Array,
+      default: [],
+    },
   },
   data() {
     return {
