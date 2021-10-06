@@ -1267,12 +1267,18 @@ export default {
     // 绘制车辆定位marker
     drawVehicleMarker(row) {
       const _this = this;
-      const { vehicle_code, carrier_type, plate_number, attribute } = row;
+      const { vehicle_code, carrier_type, plate_number, tip, attribute } = row;
       const direction = attribute.direction || {};
-      const onlineStatus = attribute.onlineStatus || {};
       const speed = attribute.speed || {};
       const position = attribute.coordinate.value;
-      const statusColor = onlineStatus === 1 ? "green" : "gray"; // 设备状态 0离线 1在线
+      let statusColor = '#ADB5BD';
+      if (tip.deviceStatus === 0) {
+        statusColor = '#ADB5BD'; // 离线
+      } else if (tip.deviceStatus === 1) {
+        statusColor = '#43B91E'; // 在线
+      } else if (tip.deviceStatus === -1) {
+        statusColor = '#EF6969'; // 异常
+      }
       const contentValue = [];
       if (speed.text) contentValue.push(speed.text + " km/h");
       if (direction.text) contentValue.push(direction.text + "°");
@@ -1293,12 +1299,12 @@ export default {
       const info = [];
       info.push("<div class='own-map-vehicle-marker-label'>");
       info.push("<h5>" + plate_number);
-      if (onlineStatus.text)
+      if (tip.deviceStatusText)
         info.push(
-          "<span class='status " +
+          "<span class='status' style='color:" +
             statusColor +
             "'><strong class='mr5'>· </strong>" +
-            onlineStatus.text +
+            tip.deviceStatusText +
             "</span>"
         );
       info.push("</h5>");
