@@ -306,7 +306,6 @@ export default {
         if (node.childrenOrgList && node.childrenOrgList.length > 0) {
           obj.children = node.childrenOrgList;
         }
-        console.log("obj", obj);
         return obj;
       },
     };

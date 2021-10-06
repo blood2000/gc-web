@@ -118,7 +118,7 @@ export default {
       countdownTimer: null,
       loginForm: {
         telephone: "15859109120",
-        password: "test-123",
+        password: "abcd1234@",
         rememberMe: false,
         captcha: "12",
         uuid: "",

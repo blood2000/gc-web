@@ -96,13 +96,20 @@ export default {
       initialPassword: 'abcd1234@',
       // 部门树选项
       deptOptions: [],
-      // 部门树键值转换
+          // 部门树键值转换
       normalizer(node) {
-        return {
+        if (node.children == null || node.children == "null") {
+          delete node.children;
+        }
+        const obj = {
           id: node.code, // 键名转换，方法默认是label和children进行树状渲染
           label: node.orgName,
-          children: node.childrenOrgList
+          // children: node.childrenOrgList,
         };
+        if (node.childrenOrgList && node.childrenOrgList.length > 0) {
+          obj.children = node.childrenOrgList;
+        }
+        return obj;
       },
       // 角色树选项
       roleOptions: []
