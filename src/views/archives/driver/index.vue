@@ -1,150 +1,153 @@
 <template>
   <div class="device-info">
-    <el-row :gutter="15">
-      <el-col :xl="5" :lg="6" :md="8" :sm="9" :xs="24">
-        <div class="device-info-left">
-          <div class="head-container">
-            <el-input
-              v-model="orgName"
-              placeholder="请输入组织名称"
-              clearable
-              size="small"
-              prefix-icon="el-icon-search"
-              class="mb20"
-            />
-          </div>
-          <div class="head-container el-tree-scroll-container">
-            <el-tree
-              ref="tree"
-              :data="orgTreeData"
-              :props="defaultTreeProps"
-              :expand-on-click-node="true"
-              :filter-node-method="filterNode"
-              :indent="0"
-              node-key="code"
-              :current-node-key="queryParams.orgCode"
-              :highlight-current="true"
-              default-expand-all
-              @node-click="handleNodeClick"
-            >
-              <span slot-scope="{ node, data }">
-                <span class="node-label">
-                  <i class="tree-node-icon" :class="data.icon" />
-                  {{ node.label }}
-                </span>
-              </span>
-            </el-tree>
-          </div>
-        </div>
-      </el-col>
-      <el-col :xl="19" :lg="18" :md="16" :sm="15" :xs="24">
-        <div class="device-info-right">
-          <div class="device-info-right-top" v-show="showSearch">
-            <!-- 上：搜索 -->
-            <QueryForm
-              v-model="queryParams"
-              :enabled-list="driverConfig.enabledConfigArr"
-              :driver-status-list="driverStatusList"
-              :real-status-list="driverConfig.realStatusConfigArr"
-              @handleQuery="searchQuery"
-            />
-          </div>
-          <div class="device-info-right-bottom">
-            <!-- 操作栏 -->
-            <el-row :gutter="10" class="mb8">
-              <el-col :span="1.5">
-                <el-button type="primary" size="mini" @click="handleAdd"
-                  >新增</el-button
-                >
-              </el-col>
-              <el-col :span="1.5">
-                <el-button
-                  type="danger"
-                  size="mini"
-                  :disabled="multiple"
-                  @click="handleDelete"
-                  >删除</el-button
-                >
-              </el-col>
-              <!-- <el-col :span="1.5">
-                <el-button type="primary" size="mini" @click="handleImport"
-                  >导入</el-button
-                >
-              </el-col>
-              <el-col :span="1.5">
-                <el-button
-                  type="primary"
-                  size="mini"
-                  :loading="exportLoading"
-                  @click="handleExport"
-                  >导出</el-button
-                >
-              </el-col> -->
-              <right-toolbar
+    <div class="device-info-left">
+      <div class="head-container">
+        <el-input
+          v-model="orgName"
+          placeholder="请输入组织名称"
+          clearable
+          size="small"
+          prefix-icon="el-icon-search"
+          class="mb20"
+        />
+      </div>
+      <div class="head-container el-tree-scroll-container">
+        <el-tree
+          ref="tree"
+          :data="orgTreeData"
+          :props="defaultTreeProps"
+          :expand-on-click-node="true"
+          :filter-node-method="filterNode"
+          :indent="0"
+          node-key="code"
+          :current-node-key="queryParams.orgCode"
+          :highlight-current="true"
+          default-expand-all
+          @node-click="handleNodeClick"
+        >
+          <span slot-scope="{ node, data }">
+            <span class="node-label">
+              <i class="tree-node-icon" :class="data.icon" />
+              {{ node.label }}
+            </span>
+          </span>
+        </el-tree>
+      </div>
+    </div>
+
+    <div class="device-info-right">
+      <!-- 上：搜索 -->
+      <QueryForm
+        v-model="queryParams"
+        :enabled-list="driverConfig.enabledConfigArr"
+        :driver-status-list="driverStatusList"
+        :real-status-list="driverConfig.realStatusConfigArr"
+        @handleQuery="searchQuery"
+      />
+      <!-- 分割线 -->
+      <div class="divier"></div>
+      <!-- 操作栏 -->
+      <el-row :gutter="10" class="toolsbar">
+        <el-col :span="1.5">
+          <el-button type="primary" size="mini" @click="handleAdd"
+            >新增</el-button
+          >
+        </el-col>
+        <el-col :span="1.5">
+          <!-- danger -->
+          <el-button
+            type="primary"
+            size="mini"
+            :disabled="multiple"
+            @click="handleDelete"
+            >删除</el-button
+          >
+        </el-col>
+        <el-col :span="1.5">
+          <el-button type="primary" size="mini" @click="handleImport"
+            >导入</el-button
+          >
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            size="mini"
+            :loading="exportLoading"
+            @click="handleExport"
+            >导出</el-button
+          >
+        </el-col>
+        <!-- <right-toolbar
                 :show-search.sync="showSearch"
                 @queryTable="searchQuery"
-              />
-            </el-row>
-            <!-- 表格 -->
-            <RefactorTable
-              is-show-index
-              :loading="loading"
-              :data="driverList"
-              row-key="id"
-              :table-columns-config="tableColumnsConfig"
-              @selection-change="handleSelectionChange"
-            >
-              <template #driverStatus="{ row }">
-                <span
-                  :style="{
-                    color: driverStatusDeal(row.driverStatus, 'color'),
-                  }"
-                >
-                  {{ driverStatusDeal(row.driverStatus, "text") }}
-                </span>
-              </template>
-              <template #realStatus="{ row }">
-                <span
-                  :style="{
-                    color: realStatusDeal(row.realStatus, 'color'),
-                  }"
-                >
-                  {{ realStatusDeal(row.realStatus, "text") }}
-                </span>
-              </template>
+              /> -->
+      </el-row>
+      <!-- 表格 -->
+      <RefactorTable
+        is-show-index
+        :loading="loading"
+        :data="driverList"
+        row-key="id"
+        :table-columns-config="tableColumnsConfig"
+        @selection-change="handleSelectionChange"
+        :border="false"
+        :stripe="true"
+      >
+        <template #driverStatus="{ row }">
+          <span
+            :style="{
+              color: driverStatusDeal(row.driverStatus, 'color'),
+            }"
+          >
+            {{ driverStatusDeal(row.driverStatus, "text") }}
+          </span>
+        </template>
+        <template #realStatus="{ row }">
+          <span
+            :style="{
+              color: realStatusDeal(row.realStatus, 'color'),
+            }"
+          >
+            {{ realStatusDeal(row.realStatus, "text") }}
+          </span>
+        </template>
 
-              <template #enabled="{ row }">
-                <el-switch
-                  v-model="row.enabled"
-                  :active-value="1"
-                  :inactive-value="0"
-                  @change="handleStatusChange(row)"
-                />
-              </template>
-              <template #edit="{ row }">
-                <el-button
-                  size="mini"
-                  type="text"
-                  icon="el-icon-edit"
-                  @click="handleUpdate(row)"
-                  >修改</el-button
-                >
-                <el-button
-                  size="mini"
-                  type="text"
-                  icon="el-icon-delete"
-                  style="color: red"
-                  @click="handleDelete(row)"
-                  >删除</el-button
-                >
-                <el-button
-                  size="mini"
-                  type="text"
-                  icon="el-icon-position"
-                  @click="handleReset(row)"
-                  >密码重置</el-button
-                >
-                <!-- <el-button
+        <template #enabled="{ row }">
+          <i-switch
+            size="large"
+            :true-value="1"
+            :false-value="0"
+            v-model="row.enabled"
+            @on-change="handleStatusChange(row)"
+          >
+            <span slot="open">正常</span>
+            <span slot="close">停用</span>
+          </i-switch>
+        </template>
+        <template #edit="{ row }">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(row)"
+            >修改</el-button
+          >
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            style="color: red"
+            @click="handleDelete(row)"
+            >删除</el-button
+          >
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-position"
+            @click="handleReset(row)"
+            >密码重置</el-button
+          >
+          <!-- <el-button
                   size="mini"
                   type="text"
                   icon="el-icon-position"
@@ -152,27 +155,27 @@
                 >
                   数据权限</el-button
                 > -->
-                <el-button
-                  size="mini"
-                  type="text"
-                  icon="el-icon-tickets"
-                  @click="handleDetail(row)"
-                  >详情</el-button
-                >
-              </template>
-            </RefactorTable>
-            <!-- 分页 -->
-            <pagination
-              v-show="total > 0"
-              :total="total"
-              :page.sync="queryParams.startIndex"
-              :limit.sync="queryParams.pageSize"
-              @pagination="driverHttpReq"
-            />
-          </div>
-        </div>
-      </el-col>
-    </el-row>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-tickets"
+            @click="handleDetail(row)"
+            >详情</el-button
+          >
+        </template>
+      </RefactorTable>
+
+      <!-- 分页 -->
+      <pagination
+        v-show="total > 0"
+        :total="total"
+        layout="prev, pager, next, sizes, total,  jumper"
+        :page.sync="queryParams.startIndex"
+        :limit.sync="queryParams.pageSize"
+        @pagination="driverHttpReq"
+      />
+    </div>
+
     <DriverDialog
       :options="{ editType: editType, code: dialogCode }"
       :open="open"
@@ -195,11 +198,11 @@ import driverConfig from "./driver_config";
 import DriverDialog from "./components/driver_dialog.vue";
 import QueryForm from "./components/queryForm.vue";
 import ResetPwdDialog from "./components/resetPwdDialog.vue";
+
 export default {
   components: { QueryForm, DriverDialog, ResetPwdDialog },
   data() {
     return {
-      showSearch: true, //搜索显隐
       loading: false, //表格load
       exportLoading: false, //到处load
       total: 0, //总条数
@@ -467,27 +470,39 @@ export default {
 
 <style lang="scss" scoped>
 .device-info {
-  margin: 0 15px;
-  @mixin box-shadow {
-    margin: 0 0 15px;
+  margin: 0 20px;
+  display: flex;
+  .device-info-left {
     padding: 20px;
     background: #fff;
     box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
     border-radius: 3px;
-  }
-
-  .device-info-left {
-    @include box-shadow;
-    min-height: calc(100vh - 146px);
+    height: calc(100vh - 146px);
+    margin-right: 15px;
+    width: 220px !important;
   }
 
   .device-info-right {
+    flex: 1 !important;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
+    border-radius: 3px;
+    height: calc(100vh - 146px);
+    box-sizing: border-box !important;
     .device-info-right-top {
-      @include box-shadow;
+      
       padding-bottom: 8px;
     }
-    .device-info-right-bottom {
-      @include box-shadow;
+    .divier {
+      height: 1px;
+      margin: 20px 0;
+      border-bottom: 1px solid #e4ecf4;
+    }
+    .toolsbar {
+      display: flex;
+      flex-direction: row;
+      margin-bottom: 17px;
     }
   }
 }

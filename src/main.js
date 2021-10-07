@@ -39,7 +39,8 @@ import DictTag from '@/components/DictTag'
 import RefactorTable from '@/components/ddc/tin/RefactorTable';
 //左侧标题蓝条
 import TitleSideBlueTip   from '@/components/titleSideBlueTip'
-
+import 'iview/dist/styles/iview.css';    // 使用 CSS
+import {Switch } from 'iview'
 // 高德地图vue组件库
 import VueAMap from 'vue-amap';
 Vue.use(VueAMap);
@@ -95,7 +96,7 @@ Vue.component('ImageUpload', ImageUpload)
 Vue.component('RefactorTable',RefactorTable)
 Vue.use(directive)
 Vue.component('TitleSideBlueTip',TitleSideBlueTip)
-
+Vue.component('iSwitch',Switch)
 // Vue.use(VueMeta)
 
 /**

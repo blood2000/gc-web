@@ -271,7 +271,7 @@ export default {
     this.getConfigData();
     this.getDictData();
     this.getOrgHttp();
-    this.requsetGroupHttp()
+    this.requsetGroupHttp();
   },
   watch: {
     orgName(val) {
@@ -285,10 +285,11 @@ export default {
         moduleName: "http_group",
         method: "post",
         url_alias: "group_list",
+        data: { startIndex: 1, pageSize: 1000 },
       };
       const res = await http_request(obj);
       console.log("group_list res==>", res);
-      this.groupList = res.data;
+      this.groupList = res.data.rows;
       console.log("this.groupList", this.groupList);
     },
     async getDefaultDriver() {
@@ -475,7 +476,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.selection = selection;
-      console.log('selection',selection)
+      console.log("selection", selection);
       this.ids = selection.map((item) => item.code);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
@@ -483,8 +484,8 @@ export default {
     //删除
     async handleDelete(obj = {}) {
       console.log("obj", obj);
-      const ids =obj.code?[obj.code] : this.ids;
-      console.log("this.ids", ids,this.ids,obj.code);
+      const ids = obj.code ? [obj.code] : this.ids;
+      console.log("this.ids", ids, this.ids, obj.code);
       this.$confirm("是否确认删除此项数据?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

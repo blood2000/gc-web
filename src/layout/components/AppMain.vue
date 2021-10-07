@@ -2,13 +2,13 @@
   <section class="app-main" :class="showRecord ? 'hidden-x' : ''">
     <transition name="fade-transform" mode="out-in">
       <keep-alive :include="cachedViews">
-        <router-view :key="key" :class="showRecord ? 'app-main-content' : ''" />
+        <router-view :key="key"  />
       </keep-alive>
     </transition>
-    <div v-show="showRecord" class="foot-record-number">
+    <!-- <div v-show="showRecord" class="foot-record-number">
       <p>福建至简至一信息科技有限公司 版权所有</p>
       <p>CopyRight@ 2021 All Rights Reserved <a href="https://beian.miit.gov.cn/" target="_blank">闽ICP备19023755号-2</a></p>
-    </div>
+    </div> -->
   </section>
 </template>
 
