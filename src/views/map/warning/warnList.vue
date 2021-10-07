@@ -154,7 +154,6 @@ export default {
       detailOpen: false,
       // 公共请求参数
       queryParams: {
-        teamCode: undefined,
         orgCode: undefined,
         vehicleCode: undefined
       },
@@ -187,15 +186,15 @@ export default {
     getList() {
       const code = this.activeTab;
       // 构造公共参数
+      this.queryParams = {
+        orgCode: undefined,
+        vehicleCode: undefined
+      };
       if (this.orgOrVehicleInfo) {
         if (this.orgOrVehicleInfo.vehicleFlag) {
           this.queryParams.vehicleCode = this.orgOrVehicleInfo.orgOrVehicleCode;
         } else {
           this.queryParams.orgCode = this.orgOrVehicleInfo.orgOrVehicleCode;
-          // 判断是否是树节点的最顶层
-          if (this.orgOrVehicleInfo.icon && this.orgOrVehicleInfo.icon === 'second') {
-            this.queryParams.teamCode = this.orgOrVehicleInfo.orgOrVehicleCode;
-          }
         }
       }
       // 根据不同tab请求不同接口
