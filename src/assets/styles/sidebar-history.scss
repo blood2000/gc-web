@@ -14,16 +14,7 @@
     transition: width 0.28s;
     width: $sideBarWidth !important;
     background-color: $menuBg;
-    // 70: headerHeight
-    height: calc(100% - 70px);
-    position: fixed;
-    font-size: 0px;
-    // 70: headerHeight
-    top: 70px;
-    bottom: 0;
-    left: 0;
-    z-index: 1001;
-    overflow: hidden;
+    height: 100%;
     -webkit-box-shadow: 2px 0 6px rgba(0,21,41,.05);
     box-shadow: 2px 0 6px rgba(0,21,41,.05);
 

@@ -1,13 +1,18 @@
 <template>
   <div class="navbar">
-    <img class="navbar__logo" src="@/assets/images/navBar/logo.png" @click="goToStatistic">
-
-    <!-- <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" /> -->
-
-    <!-- <breadcrumb id="breadcrumb-container" class="breadcrumb-container" /> -->
-
+    <div class="left-menu">
+      <div class="left-menu-img">
+        <img
+          src="~@/assets/images/navBar/text_logo.png"
+          style="width: 100%; height: 100%"
+          alt=""
+        />
+      </div>
+      <div class="left-menu-driver"></div>
+      <div class="left-menu-team">公司/车队名称</div>
+    </div>
     <div class="right-menu">
-      <template v-if="device!=='mobile'">
+      <template v-if="device !== 'mobile'">
         <!-- <search id="header-search" class="right-menu-item" /> -->
 
         <!-- <el-tooltip content="官网地址" effect="dark" placement="bottom">
@@ -19,17 +24,23 @@
         <!-- <el-tooltip content="布局大小" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip> -->
-
       </template>
 
       <div class="avatar-wrapper">
-        <img v-real-img="avatar" src="@/assets/images/workbench/icon_noavator.png" class="avatar-wrapper__image">
+        <img
+          v-real-img="avatar"
+          src="@/assets/images/workbench/icon_noavator.png"
+          class="avatar-wrapper__image"
+        />
         <!-- <span v-if="roleName !== ''" class="avatar-wrapper__role">{{ roleName }}</span> -->
       </div>
-      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
+      <el-dropdown
+        class="avatar-container right-menu-item hover-effect"
+        trigger="click"
+      >
         <div class="avatar-wrapper">
           <span class="avatar-wrapper__user">{{ nickName || name }}</span>
-          <span class="avatar-wrapper__icon" />
+          <i class="el-icon-caret-right avatar-wrapper__icon" />
         </div>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/user/profile">
@@ -44,65 +55,47 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-
-    <quick-entry />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-import QuickEntry from './QuickEntry';
-// import Breadcrumb from '@/components/Breadcrumb';
-// import Hamburger from '@/components/Hamburger';
-// import Screenfull from '@/components/Screenfull';
-// import SizeSelect from '@/components/SizeSelect';
-// import Search from '@/components/HeaderSearch';
-// import DdcYiDoc from '@/components/Ddc/Doc';
-
+import { mapGetters } from "vuex";
 export default {
-  components: {
-    QuickEntry
-    // Breadcrumb,
-    // Hamburger
-    // Screenfull,
-    // SizeSelect,
-    // Search,
-    // DdcYiDoc
-  },
+  components: {},
   computed: {
     ...mapGetters([
-      'sidebar',
-      'avatar',
-      'device',
-      'nickName',
-      'name',
-      'roleName',
-      'isShipment'
+      "sidebar",
+      "avatar",
+      "device",
+      "nickName",
+      "name",
+      "roleName",
+      "isShipment",
     ]),
     setting: {
       get() {
         return this.$store.state.settings.showSettings;
       },
       set(val) {
-        this.$store.dispatch('settings/changeSetting', {
-          key: 'showSettings',
-          value: val
+        this.$store.dispatch("settings/changeSetting", {
+          key: "showSettings",
+          value: val,
         });
-      }
-    }
+      },
+    },
   },
   methods: {
     toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar');
+      this.$store.dispatch("app/toggleSideBar");
     },
     async logout() {
-      this.$confirm('确定注销并退出系统吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm("确定注销并退出系统吗？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       }).then(() => {
-        this.$store.dispatch('LogOut').then(() => {
-          location.href = '/index';
+        this.$store.dispatch("LogOut").then(() => {
+          location.href = "/index";
         });
       });
     },
@@ -110,28 +103,28 @@ export default {
       if (this.isShipment) return;
       const routeData = this.$router.resolve({
         // path: '/statistic',
-        path: '/statisticSecond',
+        path: "/statisticSecond",
         query: {
-          isScale: true
-        }
+          isScale: true,
+        },
       });
-      window.open(routeData.href, '_blank');
-    }
-  }
+      window.open(routeData.href, "_blank");
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 .navbar {
   // 70: headerHeight
-  height: 70px;
+  height: 60px;
   overflow: hidden;
   position: relative;
-  background: linear-gradient(270deg, #409EFF 0%, #0571D8 100%);
-  box-shadow: 0px 3px 6px rgba(64, 158, 255, 0.22);
-  box-shadow: 0 1px 4px rgba(0,21,41,.08);
-
-  &__logo{
+  background: #ffffff;
+  border-bottom: 1px solid #f2f2f2;
+  display: flex;
+  justify-content: space-between;
+  &__logo {
     float: left;
     width: 134px;
     height: 36px;
@@ -145,11 +138,11 @@ export default {
     height: 100%;
     float: left;
     cursor: pointer;
-    transition: background .3s;
-    -webkit-tap-highlight-color:transparent;
+    transition: background 0.3s;
+    -webkit-tap-highlight-color: transparent;
 
     &:hover {
-      background: rgba(0, 0, 0, .025)
+      background: rgba(0, 0, 0, 0.025);
     }
   }
 
@@ -158,10 +151,36 @@ export default {
     padding-top: 7px;
   }
 
-
   .errLog-container {
     display: inline-block;
     vertical-align: top;
+  }
+  .left-menu {
+    height: 100%;
+    padding: 15px 12px;
+    display: flex;
+    align-items:center;
+    &-img{
+      width: 96px;
+      height: 20px;
+      margin-right: 8px;
+      line-height: 33px;
+    }
+    &-driver {
+      width: 1px;
+      height: 16px;
+      background: #cccccc;
+      margin-right: 8px;
+    }
+    &-team {
+      height: 22px;
+      font-size: 16px;
+      font-family: PingFang SC;
+      font-weight: bold;
+      line-height: 22px;
+      color: #3d4050;
+      opacity: 1;
+    }
   }
 
   .right-menu {
@@ -184,10 +203,10 @@ export default {
 
       &.hover-effect {
         cursor: pointer;
-        transition: background .3s;
+        transition: background 0.3s;
 
         &:hover {
-          background: rgba(0, 0, 0, .025)
+          background: rgba(0, 0, 0, 0.025);
         }
       }
     }
@@ -202,7 +221,7 @@ export default {
       position: relative;
       height: 100%;
       float: left;
-
+      line-height: 60px;
       &__image {
         width: 34px;
         height: 34px;
@@ -210,15 +229,15 @@ export default {
         vertical-align: middle;
       }
 
-      &__role{
+      &__role {
         padding: 0 12px 0 10px;
         font-size: 14px;
         font-family: PingFang SC;
-        color: #FFFFFF;
+        color: #3d4050;
         vertical-align: middle;
         position: relative;
-        &::after{
-          content: '';
+        &::after {
+          content: "";
           width: 1px;
           height: 12px;
           position: absolute;
@@ -231,26 +250,17 @@ export default {
         }
       }
 
-      &__user{
+      &__user {
         margin: 0 6px 0 2px;
         font-size: 14px;
         font-family: PingFang SC;
-        color: #FFFFFF;
+        color: #3d4050;
         font-weight: bold;
-        vertical-align: middle;
       }
 
       &__icon {
-        display: inline-block;
-        width: 12px;
-        height: 16px;
-        background: url('~@/assets/images/navBar/avatar_icon.png') no-repeat;
-        background-size: 100% 100%;
-        cursor: pointer;
-        position: absolute;
-        right: -12px;
-        top: 50%;
-        margin-top: -7px;
+        position: relative;
+        top: 3px;
       }
     }
   }
