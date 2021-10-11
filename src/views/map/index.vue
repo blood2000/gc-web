@@ -23,7 +23,7 @@
     </div>
 
     <div class="left-tree-panel">
-      <ul class="left-tree-panel__tab ly-flex-pack-justify">
+      <ul class="left-tree-panel__tab ly-flex-pack-justify ly-flex-align-end">
         <li :class="{ active: currentType === '1' }" @click="handleType('1')">
           {{ `车辆（${countVehicle.countAll ? countVehicle.countAll : 0}）` }}
         </li>
@@ -1510,7 +1510,7 @@ export default {
   }
 
   > .left-tree-panel {
-    $tab-height: 48px;
+    $tab-height: 44px;
     position: absolute;
     top: calc(#{$header-height} + #{$tab-height} + 18px);
     left: 0;
@@ -1524,32 +1524,32 @@ export default {
       left: 0;
       right: 0;
       top: calc(-#{$tab-height});
+      height: 44px;
       > li {
         width: 50%;
-        height: $tab-height;
+        height: 38px;
         background: #e3e7f0;
         border-radius: 6px 6px 0 0;
         font-size: 16px;
         font-family: PingFang SC;
         font-weight: 700;
-        line-height: 36px;
+        line-height: 38px;
         color: #8592ad;
         cursor: pointer;
         text-align: center;
         box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.16);
         z-index: 0;
-        transform: translateY(12px);
-        transition: transform 0.4s;
+        transition: height 0.4s;
         &:first-child {
           margin-right: 8px;
         }
         &.active {
           color: #3d4050;
+          height: $tab-height;
           font-weight: 700;
-          line-height: 48px;
+          line-height: 44px;
           background: rgba(255, 255, 255, 0.72);
           box-shadow: 6px -2px 10px rgba(0, 0, 0, 0.1);
-          transform: translateY(4px);
         }
       }
     }
@@ -1559,7 +1559,7 @@ export default {
       z-index: 1;
       background: rgba(255, 255, 255, 0.72);
       box-shadow: 6px 3px 10px rgba(0, 0, 0, 0.1);
-      border-radius: 0 8px 8px 0;
+      border-radius: 0 0 8px 0;
       padding: 18px 0;
       > div {
         height: 100%;
