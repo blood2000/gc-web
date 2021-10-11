@@ -155,7 +155,7 @@ export default {
     handleDel(data) {
       console.log("data", data);
       const codes = data.appointCarRecordCode;
-      this.$confirm("是否确认删除此项数据?", "警告", {
+      this.$confirm("删除操作不可恢复，确认要删除该调度信息吗？", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",

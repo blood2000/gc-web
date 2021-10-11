@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div>
     <el-dialog
       title="分组管理"
       :visible.sync="groupOpen"
@@ -38,7 +38,7 @@
               :total="group_obj.total"
               small
               layout="prev, pager, next"
-              :page.sync="group_obj.startIndex"
+              :page.sync="group_obj.pageNum"
               :limit.sync="group_obj.pageSize"
               @pagination="requsetGroupHttp"
             />
@@ -65,7 +65,7 @@
               class="transfer-footer"
               layout="prev, pager, next"
               slot="left-footer"
-              :page.sync="no_obj.startIndex"
+              :page.sync="no_obj.pageNum"
               :limit.sync="no_obj.pageSize"
               @pagination="no_obj_http"
             />
@@ -75,7 +75,7 @@
               class="transfer-footer"
               layout="prev, pager, next"
               :total="add_obj.total"
-              :page.sync="add_obj.startIndex"
+              :page.sync="add_obj.pageNum"
               :limit.sync="add_obj.pageSize"
               @pagination="add_obj_http"
             /> -->
@@ -131,21 +131,21 @@ export default {
       isEditing: false,
       currGroupCode: null,
       group_obj: {
-        startIndex: 1,
+        pageNum: 1,
         pageSize: 10,
         total: 0,
       },
       no_obj: {
         groupCode: null,
         licenseNumber: null,
-        startIndex: 1,
+        pageNum: 1,
         pageSize: 1000,
         total: 0,
       },
       add_obj: {
         groupCode: null,
         licenseNumber: null,
-        startIndex: 1,
+        pageNum: 1,
         pageSize: 1000,
         total: 0,
       },
@@ -153,7 +153,7 @@ export default {
   },
   methods: {
     searchQuery() {
-      this.group_obj.startIndex = 1;
+      this.group_obj.pageNum = 1;
       this.requsetGroupHttp();
     },
     //获取分组列表
@@ -164,7 +164,7 @@ export default {
         method: "post",
         url_alias: "group_list",
         data: {
-          startIndex: this.group_obj.startIndex,
+          pageNum: this.group_obj.pageNum,
           pageSize: this.group_obj.pageSize,
         },
       };
@@ -186,14 +186,14 @@ export default {
       this.no_obj = {
         groupCode: null,
         licenseNumber: null,
-        startIndex: 1,
+        pageNum: 1,
         pageSize: 1000,
         total: 0,
       };
       this.add_obj = {
         groupCode: null,
         licenseNumber: null,
-        startIndex: 1,
+        pageNum: 1,
         pageSize: 1000,
         total: 0,
       };

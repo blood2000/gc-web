@@ -86,7 +86,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
+      <!-- <el-row>
         <el-col :span="24">
           <el-form-item prop="engineNumber" label="发动机号">
             <el-input
@@ -96,7 +96,7 @@
             />
           </el-form-item>
         </el-col>
-      </el-row>
+      </el-row> -->
       <el-row>
         <el-col :span="24">
           <el-form-item label="车辆识别代号" prop="chassisNumber">
@@ -329,7 +329,7 @@ export default {
         issueDate: null, //发证日期
         vehicleLoadWeight: null, // 可载重量
         vehicleTypeCode: null, //  车辆类型
-        engineNumber: null, //发动机号
+        // engineNumber: null, //发动机号
         chassisNumber: null, //车辆识别号码
         licenseNumber: null, //车牌号
         vehicleTotalWeight: null, //车辆总重量
@@ -527,7 +527,7 @@ export default {
         issueDate: null, //发证日期
         vehicleLoadWeight: null, // 可载重量
         vehicleTypeCode: null, //  车辆类型
-        engineNumber: null, //发动机号
+        // engineNumber: null, //发动机号
         chassisNumber: null, //车辆识别号码
         licenseNumber: null, //车牌号
         vehicleTotalWeight: null, //车辆总重量
@@ -616,7 +616,7 @@ export default {
       this.form.issueDate = data.vehicleLicenseInf.issueDate; //发证日期
       this.form.vehicleLoadWeight = data.vehicleInf.vehicleLoadWeight; // 可载重量
       this.form.vehicleTypeCode = data.vehicleLicenseInf.vehicleTypeCode; //  车辆类型*
-      this.form.engineNumber = data.vehicleLicenseInf.engineNumber; //发动机号
+      // this.form.engineNumber = data.vehicleLicenseInf.engineNumber; //发动机号
       this.form.chassisNumber = data.vehicleInf.chassisNumber; //车辆识别号码
       this.form.licenseNumber = data.vehicleLicenseInf.licenseNumber; //车牌号
       this.form.vehicleTotalWeight = data.vehicleInf.vehicleTotalWeight; //车辆总重量

@@ -92,8 +92,8 @@
       <pagination
         v-show="total>0"
         :total="total"
-        :page.sync="queryParams.start"
-        :limit.sync="queryParams.limit"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
         @pagination="getList"
       />
     </div>
@@ -133,8 +133,8 @@ export default {
       showSearch: true,
       // 查询参数
       queryParams: {
-        start: 1,
-        limit: 10,
+        pageNum: 1,
+        pageSize: 10,
         roleName: undefined
       },
       // 角色列表数据
@@ -156,7 +156,7 @@ export default {
   methods: {
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.start = 1;
+      this.queryParams.pageNum = 1;
       this.getList();
     },
     /** 重置按钮操作 */

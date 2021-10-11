@@ -180,7 +180,7 @@ export function getDicts(dictType) {
     dictType: dictType,
     dictPid: 0
   }
-  return service.post('/fmsweb/system/common/v1/listByDict', params, {
+  return service.post('/chy/system/dict/data/listByDict', params, {
     headers: Object.assign({}, defaultH, {
       'Content-Type': 'application/json'
     })

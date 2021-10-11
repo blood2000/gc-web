@@ -1,6 +1,6 @@
 <template>
-  <div class="device-info">
-    <div class="device-info-left">
+  <div class="pages-info">
+    <div class="pages-info-left">
       <div class="head-container">
         <el-input
           v-model="orgName"
@@ -35,7 +35,7 @@
       </div>
     </div>
 
-    <div class="device-info-right">
+    <div class="pages-info-right">
       <!-- 上：搜索 -->
       <QueryForm
         v-model="queryParams"
@@ -170,7 +170,7 @@
         v-show="total > 0"
         :total="total"
         layout="prev, pager, next, sizes, total,  jumper"
-        :page.sync="queryParams.startIndex"
+        :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="driverHttpReq"
       />
@@ -215,7 +215,7 @@ export default {
       ids: [],
       driverList: [], //表格数据
       queryParams: {
-        startIndex: 1,
+        pageNum: 1,
         pageSize: 10,
         name: null,
         telphone: null,
@@ -276,7 +276,7 @@ export default {
     async handleDelete(obj = {}) {
       console.log("obj", obj);
       if (obj.driverStatus == "0") {
-        this.$confirm("司机正在运输任务中，无法删除。", "警告", {
+        this.$confirm("司机正在运输任务中，无法删除！", "警告", {
           cancelButtonText: "取消",
           type: "warning",
         });
@@ -284,7 +284,7 @@ export default {
       }
       const ids = obj.code ? [obj.code] : this.ids;
       console.log("this.ids", ids);
-      this.$confirm("是否确认删除此项数据?", "警告", {
+      this.$confirm("删除操作不可恢复，确认要删除改司机吗？", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -316,7 +316,7 @@ export default {
       //  this.exportLoading = true;
       // const params = Object.assign({}, this.queryParams);
       // params.pageSize = undefined;
-      // params.startIndex = undefined;
+      // params.pageNum = undefined;
       // this.download('/fmsweb/basic/teamEmployee/v1/export', params, `职员信息`);
       // this.exportLoading = false;
     },
@@ -374,12 +374,12 @@ export default {
     handleNodeClick(data) {
       console.log("data ckc", data);
       this.queryParams.orgCode = data.code;
-      this.queryParams.startIndex = 1;
+      this.queryParams.pageNum = 1;
       this.driverHttpReq();
     },
     //发送搜索请求
     searchQuery() {
-      this.queryParams.startIndex = 1;
+      this.queryParams.pageNum = 1;
       this.driverHttpReq();
     },
     //停用状态修改
@@ -411,7 +411,7 @@ export default {
     },
     formToPaging() {
       const tmp = {
-        startIndex: this.queryParams.startIndex,
+        pageNum: this.queryParams.pageNum,
         pageSize: this.queryParams.pageSize,
         name: this.queryParams.name,
         telphone: this.queryParams.telphone,
@@ -467,43 +467,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.device-info {
-  margin: 0 20px;
-  display: flex;
-  .device-info-left {
-    padding: 20px;
-    background: #fff;
-    box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
-    border-radius: 3px;
-    height: calc(100vh - 146px);
-    margin-right: 15px;
-    width: 220px !important;
-  }
-
-  .device-info-right {
-    flex: 1 !important;
-    padding: 20px;
-    background: #fff;
-    box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
-    border-radius: 3px;
-    height: calc(100vh - 146px);
-    box-sizing: border-box !important;
-    .device-info-right-top {
-      
-      padding-bottom: 8px;
-    }
-    .divier {
-      height: 1px;
-      margin: 20px 0;
-      border-bottom: 1px solid #e4ecf4;
-    }
-    .toolsbar {
-      display: flex;
-      flex-direction: row;
-      margin-bottom: 17px;
-    }
-  }
-}
-</style>

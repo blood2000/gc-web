@@ -5,10 +5,10 @@
     :inline="true"
     label-width="120px"
     size="small"
-    class="queryParams"
+    class="ddc-queryParams"
     label-position="top"
   >
-    <div class="queryParams-left">
+    <div class="ddc-queryParams-left">
       <div class="up">
         <el-form-item label="用户名称:" prop="name">
           <el-input
@@ -97,7 +97,7 @@
         </el-form-item>
       </div>
     </div>
-    <div class="queryParams-right">
+    <div class="ddc-queryParams-right">
       <div @click="hanleIsShow">
         <i :class="isShow ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i>
         <span>{{ isShow ? "收起" : "展开" }}</span>
@@ -175,30 +175,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.queryParams {
-  display: flex;
-  .queryParams-left {
-    flex: 1;
-    
-    // background: brown;
-  }
-  .queryParams-right {
-    width: 310px;
-    box-sizing: border-box;
-    padding: 28px;
-    display: flex;
-    & > div {
-      cursor: pointer;
-      color: #409eff;
-      font-size: 14px;
-      margin-right: 20px;
-      line-height: 30px;
-      -moz-user-select: none;
--webkit-user-select: none;
-user-select: none;
-    }
-  }
-}
-</style>

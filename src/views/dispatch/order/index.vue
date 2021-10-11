@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div v-show="showSearch" class="app-container app-container--search">
+  <div class="pages-info">
+    <div class="pages-info-right">
       <!-- 上：搜索 -->
       <QueryForm
         v-model="queryParams"
@@ -8,30 +8,24 @@
         :goods-type-list="goodsTypeList"
         @handleQuery="searchQuery"
       />
-    </div>
-    <div class="app-container">
-      <!-- 操作栏 -->
-      <right-toolbar
-        :show-search.sync="showSearch"
-        @queryTable="searchQuery"
-        style="margin-bottom: 10px"
-      />
+      <!-- 分割线 -->
+      <div class="divier"></div>
       <!-- 表格 -->
       <el-table
         v-loading="loading"
         row-key="id"
         highlight-current-row
-        border
-        default-expand-all
+        :border="false"
+        :stripe="true"
         :data="tableData"
+        v-bind="$attrs"
       >
         <template v-for="(item, index) in tableColumnsConfig">
           <el-table-column
-            v-if="item.prop == 'edit'"
+            v-if="item.prop == 'RefactorTable'"
             :key="index"
             :prop="item.prop"
             align="center"
-            fixed="right"
             :label="item.label"
             :show-overflow-tooltip="item.tooltip"
             :width="item.width || '180'"
@@ -101,8 +95,51 @@
           </el-table-column>
         </template>
       </el-table>
-      <!-- 分页 -->
 
+      <!-- <RefactorTable
+        is-show-index
+        :loading="loading"
+        :data="tableData"
+        row-key="id"
+        :table-columns-config="tableColumnsConfig"
+        @selection-change="handleSelectionChange"
+        :border="false"
+        :stripe="true"
+      >
+        <template #edit="{ row }">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(row)"
+            >修改</el-button
+          >
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            style="color: red"
+            @click="handleDelete(row)"
+            >删除</el-button
+          >
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-position"
+            @click="handleReset(row)"
+            >密码重置</el-button
+          >
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-tickets"
+            @click="handleDetail(row)"
+            >详情</el-button
+          >
+        </template>
+      </RefactorTable> -->
+
+      <!-- 分页 -->
       <pagination
         :total="total"
         :page.sync="queryParams.pageNum"
@@ -269,5 +306,19 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.el-table__empty-block {
+  text-align: left !important;
+  margin-left: 50% !important;
+  justify-content: left !important;
+}
+.el-table__empty-text {
+  width: auto;
+}
+.el-table__footer-wrapper tbody td {
+  background-color: #ebf4fd !important;
+  color: #409eff !important;
+  font-weight: bold;
 }
 </style>

@@ -1,73 +1,67 @@
 <template>
-  <div class="device-info">
-    <el-row :gutter="15">
-      <el-col :xl="5" :lg="6" :md="8" :sm="9" :xs="24">
-        <div class="device-info-left">
-          <div class="head-container">
-            <el-input
-              v-model="orgName"
-              placeholder="请输入组织名称"
-              clearable
-              size="small"
-              prefix-icon="el-icon-search"
-              class="mb20"
-            />
-          </div>
-          <div class="head-container el-tree-scroll-container">
-            <el-tree
-              ref="tree"
-              :data="orgTreeData"
-              :props="defaultTreeProps"
-              :expand-on-click-node="false"
-              :filter-node-method="filterNode"
-              :indent="0"
-              :highlight-current="true"
-              node-key="code"
-              :current-node-key="queryParams.orgCode"
-              default-expand-all
-              @node-click="handleNodeClick"
-            >
-              <span slot-scope="{ node, data }">
-                <span class="node-label">
-                  <i class="tree-node-icon" :class="data.icon" />
-                  {{ node.label }}
-                </span>
-              </span>
-            </el-tree>
-          </div>
-        </div>
-      </el-col>
-      <el-col :xl="19" :lg="18" :md="16" :sm="15" :xs="24">
-        <div class="device-info-right">
-          <div class="device-info-right-top" v-show="showSearch">
-            <!-- 上：搜索 -->
-            <QueryForm
-              v-model="queryParams"
-              :vehicle-status-list="vehicleStatusList"
-              :groupList="groupList"
-              :enabled-list="enabledList"
-              @handleQuery="searchQuery"
-            />
-          </div>
-          <!-- 下 -->
-          <div class="device-info-right-bottom">
-            <!-- 操作栏 -->
-            <el-row :gutter="10" class="mb8">
-              <el-col :span="1.5">
-                <el-button type="primary" size="mini" @click="handleAdd"
-                  >新增</el-button
-                >
-              </el-col>
-              <el-col :span="1.5">
-                <el-button
-                  type="danger"
-                  size="mini"
-                  :disabled="multiple"
-                  @click="handleDelete"
-                  >删除</el-button
-                >
-              </el-col>
-              <!-- <el-col :span="1.5">
+  <div class="pages-info">
+    <div class="pages-info-left">
+      <div class="head-container">
+        <el-input
+          v-model="orgName"
+          placeholder="请输入组织名称"
+          clearable
+          size="small"
+          prefix-icon="el-icon-search"
+          class="mb20"
+        />
+      </div>
+      <div class="head-container el-tree-scroll-container">
+        <el-tree
+          ref="tree"
+          :data="orgTreeData"
+          :props="defaultTreeProps"
+          :expand-on-click-node="false"
+          :filter-node-method="filterNode"
+          :indent="0"
+          :highlight-current="true"
+          node-key="code"
+          :current-node-key="queryParams.orgCode"
+          default-expand-all
+          @node-click="handleNodeClick"
+        >
+          <span slot-scope="{ node, data }">
+            <span class="node-label">
+              <i class="tree-node-icon" :class="data.icon" />
+              {{ node.label }}
+            </span>
+          </span>
+        </el-tree>
+      </div>
+    </div>
+    <div class="pages-info-right">
+      <!-- 上：搜索 -->
+      <QueryForm
+        v-model="queryParams"
+        :vehicle-status-list="vehicleStatusList"
+        :groupList="groupList"
+        :enabled-list="enabledList"
+        @handleQuery="searchQuery"
+      />
+      <!-- 分割线 -->
+      <div class="divier"></div>
+      <!-- 操作栏 -->
+      <el-row :gutter="10" class="toolsbar">
+        <el-col :span="1.5">
+          <el-button type="primary" size="mini" @click="handleAdd"
+            >新增</el-button
+          >
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="danger"
+            size="mini"
+            :disabled="multiple"
+            @click="handleDelete"
+            >删除</el-button
+          >
+        </el-col>
+        <!-- <el-col :span="1.5">
                 <el-button type="primary" size="mini" @click="handleImport"
                   >导入</el-button
                 >
@@ -81,114 +75,113 @@
                   >导出</el-button
                 >
               </el-col> -->
-              <el-col :span="1.5">
-                <el-button type="primary" size="mini" @click="handleGroup"
-                  >车辆分组管理</el-button
-                >
-              </el-col>
-              <!-- <el-col :span="1.5" class="loadTemplate"
+        <el-col :span="1.5">
+          <el-button type="primary" size="mini" @click="handleGroup"
+            >车辆分组管理</el-button
+          >
+        </el-col>
+        <!-- <el-col :span="1.5" class="loadTemplate"
                 ><a> 下载导入模板</a>
               </el-col> -->
-              <right-toolbar
-                :show-search.sync="showSearch"
-                @queryTable="searchQuery"
-              />
-            </el-row>
-            <!-- 表格 -->
-            <RefactorTable
-              is-show-index
-              :loading="loading"
-              :data="vehicleList"
-              row-key="id"
-              :table-columns-config="tableColumnsConfig"
-              @selection-change="handleSelectionChange"
+        <!-- <right-toolbar
+          :show-search.sync="showSearch"
+          @queryTable="searchQuery"
+        /> -->
+      </el-row>
+      <!-- 表格 -->
+      <RefactorTable
+        is-show-index
+        :loading="loading"
+        :data="vehicleList"
+        row-key="id"
+        :table-columns-config="tableColumnsConfig"
+        @selection-change="handleSelectionChange"
+        :border="false"
+        :stripe="true"
+      >
+        <template #vehicleStatus="{ row }">
+          <span
+            :style="{
+              color: getVehicleStatusConfigOption(row.vehicleStatus).color,
+            }"
+          >
+            {{ getVehicleStatusConfigOption(row.vehicleStatus).label }}
+          </span>
+        </template>
+        <template #enabled="{ row }">
+          <el-switch
+            v-model="row.enabled"
+            :active-value="1"
+            :inactive-value="0"
+            @change="handleStatusChange(row)"
+          />
+        </template>
+        <template #deviceInf="{ row }">
+          <div
+            class="deviceInf-cion"
+            v-for="item in row.deviceInf"
+            :key="item.img"
+          >
+            <el-tooltip
+              class="item"
+              effect="dark"
+              :content="item.name"
+              placement="top"
             >
-              <template #vehicleStatus="{ row }">
-                <span
-                  :style="{
-                    color: getVehicleStatusConfigOption(row.vehicleStatus)
-                      .color,
-                  }"
-                >
-                  {{ getVehicleStatusConfigOption(row.vehicleStatus).label }}
-                </span>
-              </template>
-              <template #enabled="{ row }">
-                <el-switch
-                  v-model="row.enabled"
-                  :active-value="1"
-                  :inactive-value="0"
-                  @change="handleStatusChange(row)"
-                />
-              </template>
-              <template #deviceInf="{ row }">
-                <div
-                  class="deviceInf-cion"
-                  v-for="item in row.deviceInf"
-                  :key="item.img"
-                >
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    :content="item.name"
-                    placement="top"
-                  >
-                    <img :src="item.img" alt="" />
-                  </el-tooltip>
-                </div>
-              </template>
-
-              <template #edit="{ row }" width="200">
-                <el-button
-                  size="mini"
-                  type="text"
-                  icon="el-icon-edit"
-                  @click="handleUpdate(row)"
-                  >修改</el-button
-                >
-                <el-button
-                  size="mini"
-                  type="text"
-                  icon="el-icon-delete"
-                  style="color: red"
-                  @click="handleDelete(row)"
-                  >删除</el-button
-                >
-                <el-button
-                  size="mini"
-                  type="text"
-                  icon="el-icon-position"
-                  @click="handlePosition(row)"
-                  >定位</el-button
-                >
-                <el-button
-                  size="mini"
-                  type="text"
-                  icon="el-icon-tickets"
-                  @click="handleDetail(row)"
-                  >详情</el-button
-                >
-                <el-button
-                  size="mini"
-                  type="text"
-                  icon="el-icon-tickets"
-                  @click="handleDevice(row)"
-                  >绑定设备</el-button
-                >
-              </template>
-            </RefactorTable>
-            <!-- 分页 -->
-            <pagination
-              v-show="total > 0"
-              :total="total"
-              :page.sync="queryParams.pageNum"
-              :limit.sync="queryParams.pageSize"
-              @pagination="vehicleHttpReq"
-            />
+              <img :src="item.img" alt="" />
+            </el-tooltip>
           </div>
-        </div>
-      </el-col>
-    </el-row>
+        </template>
+
+        <template #edit="{ row }" width="200">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(row)"
+            >修改</el-button
+          >
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            style="color: red"
+            @click="handleDelete(row)"
+            >删除</el-button
+          >
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-position"
+            @click="handlePosition(row)"
+            >定位</el-button
+          >
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-tickets"
+            @click="handleDetail(row)"
+            >详情</el-button
+          >
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-tickets"
+            @click="handleDevice(row)"
+            >绑定设备</el-button
+          >
+        </template>
+      </RefactorTable>
+      <!-- 分页 -->
+      <pagination
+        v-show="total > 0"
+        :total="total"
+        layout="prev, pager, next, sizes, total,  jumper"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="vehicleHttpReq"
+      />
+    </div>
     <VehicleDialog
       :options="{
         editType: editType,
@@ -285,7 +278,7 @@ export default {
         moduleName: "http_group",
         method: "post",
         url_alias: "group_list",
-        data: { startIndex: 1, pageSize: 1000 },
+        data: { pageNum: 1, pageSize: 1000 },
       };
       const res = await http_request(obj);
       console.log("group_list res==>", res);
@@ -298,7 +291,7 @@ export default {
         method: "post",
         url_alias: "paging_de_driver",
         data: {
-          startIndex: 1,
+          pageNum: 1,
           pageSize: 10000,
           orgCode: this.queryParams.orgCode,
         },
@@ -405,7 +398,7 @@ export default {
     },
     formToPaging() {
       const tmp = {
-        startIndex: this.queryParams.pageNum,
+        pageNum: this.queryParams.pageNum,
         pageSize: this.queryParams.pageSize,
         licenseNumber: this.queryParams.licenseNumber || null, //车牌号
         vehicleStatus: this.queryParams.vehicleStatus || null, //车辆状态
@@ -486,7 +479,7 @@ export default {
       console.log("obj", obj);
       const ids = obj.code ? [obj.code] : this.ids;
       console.log("this.ids", ids, this.ids, obj.code);
-      this.$confirm("是否确认删除此项数据?", "警告", {
+      this.$confirm("删除操作不可恢复，确认要删除改车辆吗？", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
