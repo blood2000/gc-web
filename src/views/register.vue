@@ -44,8 +44,13 @@
         </div>
       </el-form-item>
       <div class="protocol">
-        注册即表示您同意我们的 <span @click="toProtocol">《用户协议》</span>
-        <span>《隐私政策》</span>
+        注册即表示您同意我们的 
+        <span @click="toProtocol">《用户协议》</span>
+        <!-- <router-link class="link-type" :to="'/protocol'">
+          《用户协议》
+        </router-link> -->
+        <span @click="toPrivacy">《隐私政策》</span>
+        
       </div>
       <el-form-item style="width: 100%">
         <el-button
@@ -386,14 +391,13 @@ export default {
 
     //跳转用户协议
     toProtocol() {
-      const obj = {
-        moduleName: "http_login",
-        method: "get",
-        url_alias: "protocol",
-      };
-      http_request(obj).then(res => {
-        console.log(res)
-      })
+      // const code = item.dispatchOrderCode;
+      // this.$router.push("../../dispatch/order/detail?code=" + code);
+      this.$router.push("protocol");
+    },
+
+    toPrivacy() {
+      this.$router.push("privacy");
     },
 
     //上传身份证图片

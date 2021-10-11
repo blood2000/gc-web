@@ -1,45 +1,5 @@
-﻿<html>
-
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta http-equiv="Content-Style-Type" content="text/css" />
-  <meta name="generator" content="Aspose.Words for .NET 15.1.0.0" />
-  <title>隐私政策</title>
-  <style>
-    .text-box {
-      padding: 20pt;
-    }
-
-    .text-box>p {
-      margin: 10pt 0;
-      font-family: "Microsoft YaHei";
-      font-size: 12pt;
-      color: #333;
-      font-weight: bold;
-    }
-
-    .text-box>.content {
-      color: #666;
-      font-weight: normal;
-    }
-
-    .text-box .fw {
-      color: #333;
-      font-weight: bold;
-    }
-
-    .text-box .table-box {
-      box-sizing: border-box;
-      padding: 10pt 30pt;
-      width: 100%;
-      font-size: 11pt;
-      overflow-x: auto;
-    }
-
-  </style>
-</head>
-
-<body>
+<template>
+  <!-- <web-view src="../assets/protocol/protocol.html"></web-view> -->
   <div class="text-box">
     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“至简管车”是由福建至简至一信息科技有限公司（“我们”）运营的能够为您提供车队管理的SaaS平台。本隐私政策适用于至简管车手机客户端、网页端、微信端和其他开放平台产品及服务。请您务必认真阅读本隐私政策，在确认充分了解并同意后使用至简管车。如果您不同意本隐私政策的任何内容，您应该立即停止使用至简管车。当您开始使用至简管车服务，即表示您已经同意我们按照本政策来收集、保存、使用、共享、保护您的个人信息。
     </p>
@@ -203,7 +163,7 @@
       您可以在设备的设置功能中选择关闭部分或全部权限，从而拒绝至简管车收集相应的个人信息。使用Android系统的不同设备中，权限显示方式及关闭方式可能有所不同，如果无法找到相应功能，可询问设备及系统的提供方获得帮助。</p>
     <p class="content table-box">
       <!-- first-table-start -->
-      <table cellspacing="0" cellpadding="0" style="border-collapse:collapse; margin-left:0pt; width:1200pt">
+      <table cellspacing="0" cellpadding="0" style="border-collapse:collapse; margin-left:0pt; min-width: 70%;max-width:100%;">
         <tr style="height:30pt">
           <td
             style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:0.12pt; padding-right:0.12pt; vertical-align:top; width:81.4pt">
@@ -753,8 +713,8 @@
     
     <p class="content table-box">
       <!-- second-table-start -->
-      <table cellspacing="0" cellpadding="0" style="border-collapse:collapse; margin-left:0pt; width:1200pt">
-        <tr style="height:73.5pt">
+      <table cellspacing="0" cellpadding="0" style="border-collapse:collapse; margin-left:0pt; min-width: 70%;max-width:100%;">
+        <tr >
           <td
             style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:0.12pt; padding-right:0.12pt; vertical-align:top; width:69.35pt">
             <p style="margin:0pt">
@@ -801,7 +761,7 @@
             </p>
           </td>
         </tr>
-        <tr style="height:285pt">
+        <tr>
           <td
             style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:0.12pt; padding-right:0.12pt; vertical-align:top; width:69.35pt">
             <p style="margin:0pt">
@@ -853,7 +813,7 @@
             </p>
           </td>
         </tr>
-        <tr style="height:189pt">
+        <tr>
           <td
             style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:0.12pt; padding-right:0.12pt; vertical-align:top; width:69.35pt">
             <p style="margin:0pt">
@@ -901,7 +861,7 @@
             </p>
           </td>
         </tr>
-        <tr style="height:177pt">
+        <tr>
           <td
             style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:0.12pt; padding-right:0.12pt; vertical-align:top; width:69.35pt">
             <p style="margin:0pt">
@@ -950,7 +910,7 @@
             </p>
           </td>
         </tr>
-        <tr style="height:81pt">
+        <tr>
           <td
             style="border-bottom-color:#000000; border-bottom-style:solid; border-bottom-width:0.75pt; border-left-color:#000000; border-left-style:solid; border-left-width:0.75pt; border-right-color:#000000; border-right-style:solid; border-right-width:0.75pt; border-top-color:#000000; border-top-style:solid; border-top-width:0.75pt; padding-left:0.12pt; padding-right:0.12pt; vertical-align:top; width:69.35pt">
             <p style="margin:0pt">
@@ -1220,7 +1180,45 @@
       <span style="font-family:微软雅黑; font-size:11pt">&#xa0;</span>
     </p>
   </div>
-  
-</body>
+</template>
 
-</html>
+<script>
+export default {
+  data() {
+    return {};
+  },
+  mounted() {},
+};
+</script>
+
+<style lang='scss' scoped>
+.text-box {
+  padding: 20pt;
+}
+
+.text-box > p {
+  margin: 10pt 0;
+  font-family: "Microsoft YaHei";
+  font-size: 12pt;
+  color: #333;
+  font-weight: bold;
+}
+
+.text-box > .content {
+  color: #666;
+  font-weight: normal;
+}
+
+.text-box .fw {
+  color: #333;
+  font-weight: bold;
+}
+
+.text-box .table-box {
+  box-sizing: border-box;
+  padding: 10pt 30pt;
+  width: 100%;
+  font-size: 11pt;
+  overflow-x: auto;
+}
+</style>

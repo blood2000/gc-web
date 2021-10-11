@@ -1,22 +1,7 @@
-﻿<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta http-equiv="Content-Style-Type" content="text/css" />
-    <meta name="generator" content="Aspose.Words for .NET 15.1.0.0" />
-    <title>用户协议</title>
-    <style>
-      .text-content {
-        padding: 20pt;
-      }
-      .text-content > p {
-        margin: 10pt 0;
-      }
-    </style>
-  </head>
-
-  <body>
-    <div class="text-content">
-      <p
+<template>
+  <!-- <web-view src="../assets/protocol/protocol.html"></web-view> -->
+  <div class="text-content">
+    <p
         style="font-size:12pt; line-height:115%; margin:13pt 0pt; text-align: center;"
       >
         <span style="font-family:微软雅黑; font-size:12pt; font-weight:bold">
@@ -404,8 +389,25 @@
       <p>
         <span style="font-family:微软雅黑; font-size:11pt">&#xa0;</span>
       </p>
-    </div>
-    
-   
-  </body>
-</html>
+  </div>
+</template>
+
+<script>
+
+export default {
+  data() {
+    return {};
+  },
+  mounted() {},
+};
+</script>
+
+<style lang='scss' scoped>
+.text-content {
+  padding: 0 20pt 10pt;
+  color: #333;
+}
+.text-content > p {
+  margin: 10pt 0;
+}
+</style>
