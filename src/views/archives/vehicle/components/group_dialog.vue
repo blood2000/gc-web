@@ -24,6 +24,7 @@
               <div class="group-dialog-list-content-item-title">
                 {{ item.name }}
               </div>
+              <el-button type="text" @click="groupEdit(item)">修改</el-button>
               <el-button
                 type="text"
                 class="group-dialog-list-content-item-del"
@@ -86,7 +87,7 @@
       </div>
     </el-dialog>
     <el-dialog
-      title="新增分组"
+      :title="isEditing ? '修改分组' : '新增分组'"
       :visible.sync="addOpen"
       width="400px"
       :close-on-click-modal="false"
@@ -127,6 +128,8 @@ export default {
       addGroupName: "", //新增分组名字
       addOpen: false, //新增分组弹出框
       groupList: [], //分组列表
+      isEditing: false,
+      currGroupCode: null,
       group_obj: {
         startIndex: 1,
         pageSize: 10,
@@ -177,7 +180,7 @@ export default {
     },
     //数据init
     init() {
-      console.log('数据初始化')
+      console.log("数据初始化");
       this.rightData = [];
       this.leftData = [];
       this.no_obj = {
@@ -240,7 +243,7 @@ export default {
       }
       this.add_obj.total = res.data.total;
     },
-        //发生变化操作
+    //发生变化操作
     getObject(value, direction, movedKeys) {
       const me = this;
       const list = [];
@@ -308,6 +311,12 @@ export default {
           this.requsetGroupHttp();
         });
     },
+    //修改分组名
+    groupEdit(data) {
+      this.isEditing = true;
+      this.addOpen = true;
+      this.currGroupCode = data.code;
+    },
     // 分组管理关闭
     cancel() {
       this.groupList = [];
@@ -317,27 +326,44 @@ export default {
     // 新增分组名关闭
     addCancel() {
       this.addOpen = false;
+      this.isEditing = false;
       this.addGroupName = "";
+      this.currGroupCode = null;
     },
     // 新增分组名确认
     addOk() {
-      const obj = {
-        moduleName: "http_group",
-        method: "post",
-        url_alias: "group_add",
-        data: { name: this.addGroupName },
-      };
-      http_request(obj).then((res) => {
-        console.log("addOk res", res);
-        this.msgSuccess("添加成功");
-        this.searchQuery();
-      });
-      this.addCancel();
+      if (this.isEditing && this.currGroupCode) {
+        const obj = {
+          //update_group
+          moduleName: "http_group",
+          method: "post",
+          url_alias: "update_group",
+          data: { name: this.addGroupName, code: this.currGroupCode },
+        };
+        http_request(obj).then((res) => {
+          console.log("updateOk res", res);
+          this.msgSuccess("修改成功");
+          this.searchQuery();
+          this.addCancel();
+        });
+      } else {
+        const obj = {
+          moduleName: "http_group",
+          method: "post",
+          url_alias: "group_add",
+          data: { name: this.addGroupName },
+        };
+        http_request(obj).then((res) => {
+          console.log("addOk res", res);
+          this.msgSuccess("添加成功");
+          this.searchQuery();
+          this.addCancel();
+        });
+      }
     },
     filterMethod(query, item) {
       return item.licenseNumber.indexOf(query) > -1;
     },
-
   },
 };
 </script>
@@ -408,6 +434,9 @@ export default {
           padding-left: 20px;
           font-size: 16px;
         }
+        &-input {
+          width: 60px;
+        }
         &-del {
           width: 40px;
           text-align: center;
@@ -416,7 +445,10 @@ export default {
       }
       &-item:hover {
         background: #409eff;
-        color: #ffffff;
+        color: #ffffff !important;
+        .el-button--text {
+          color: #ffffff !important;
+        }
       }
     }
   }

@@ -112,7 +112,6 @@
         <el-col :span="16">
           <el-form-item label="身份证有效期:" prop="idDateRange">
             <el-date-picker
-              :disabled="form.identificationEffective"
               v-model="form.idDateRange"
               unlink-panels
               :picker-options="pickerOptions"
@@ -125,13 +124,7 @@
             />
           </el-form-item>
         </el-col>
-        <el-col :span="4">
-          <el-form-item prop="identificationEffective">
-            <el-checkbox v-model="form.identificationEffective"
-              >是否长期有效</el-checkbox
-            >
-          </el-form-item>
-        </el-col>
+      
       </el-row>
       <el-row>
         <el-col :span="8">
@@ -151,7 +144,6 @@
         <el-col :span="16">
           <el-form-item label="驾驶证有效期:" prop="driverDateRange">
             <el-date-picker
-              :disabled="form.validPeriodAlways"
               v-model="form.driverDateRange"
               unlink-panels
               :picker-options="pickerOptions"
@@ -162,13 +154,6 @@
               start-placeholder="支持自动识别"
               end-placeholder="支持自动识别"
             />
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item prop="validPeriodAlways">
-            <el-checkbox v-model="form.validPeriodAlways"
-              >是否长期有效</el-checkbox
-            >
           </el-form-item>
         </el-col>
       </el-row>
@@ -246,10 +231,8 @@ export default {
         telphone: null, //手机号码
         identificationNumber: null, //身份证号
         idDateRange: [], //身份证有效期
-        identificationEffective: null, //身份证是否长期有效（0否,1是）
         driverLicenseImage: null, //驾驶证
         driverDateRange: [], //驾驶证有效期
-        validPeriodAlways: null, // 是否长期有效
         issuingOrganizations: null, //发证机关
         driverLicense: null, //驾驶证号
         remark: null, //备注
@@ -418,10 +401,8 @@ export default {
         telphone: null, //手机号码
         identificationNumber: null, //身份证号
         idDateRange: [], //身份证有效期
-        identificationEffective: null,
         driverLicenseImage: null, //驾驶证
         driverDateRange: [], //驾驶证有效期
-        validPeriodAlways: null, // 是否长期有效
         issuingOrganizations: null, //发证机关
         remark: null, //备注
       };
@@ -493,16 +474,12 @@ export default {
           data.identificationInf.identificationBeginTime || "",
           data.identificationInf.identificationEndTime || "",
         ], //身份证有效期
-        identificationEffective:
-          data.identificationInf.identificationEffective == "1" ? true : false,
         driverLicenseImage: data.driverLicenseInf.driverLicenseImage, //驾驶证
         driverDateRange: [
           data.driverLicenseInf.validPeriodTo || "",
           data.driverLicenseInf.validPeriodFrom || "",
         ], //驾驶证有效期
         driverLicense: data.driverLicenseInf.driverLicense,
-        validPeriodAlways:
-          data.driverLicenseInf.validPeriodAlways == "1" ? true : false, // 是否长期有效
         issuingOrganizations: data.driverLicenseInf.issuingOrganizations, //发证机关
         remark: data.remark, //备注
       };
@@ -524,7 +501,6 @@ export default {
           issuingOrganizations: form.issuingOrganizations, //驾驶证发证机关
           validPeriodTo: form.driverDateRange[1], //驾驶证有效期至
           driverLicenseImage: form.driverLicenseImage, //驾驶证照
-          validPeriodAlways: form.validPeriodAlways ? "1" : "0", //驾驶证是否长期有效
         },
         identificationInf: {
           identificationImage: form.identificationImage, //身份证正面照
@@ -533,7 +509,6 @@ export default {
           identificationBeginTime: form.idDateRange[0], //身份证有效期开始
           identificationBackImage: form.identificationBackImage, //身份证反面照
           identificationNumber: form.identificationNumber, //身份证号
-          identificationEffective: form.identificationEffective ? "1" : "0", //身份证是否长期有效（0否,1是）
         },
       };
       return obj;
@@ -547,7 +522,6 @@ export default {
           validPeriodTo: form.driverDateRange[1] || null,
           issuingOrganizations: form.issuingOrganizations,
           validPeriodFrom: form.driverDateRange[0] || null,
-          validPeriodAlways: form.validPeriodAlways ? "1" : "0",
         },
         identificationInf: {
           name: form.name,
@@ -556,7 +530,6 @@ export default {
           identificationBackImage: form.identificationBackImage,
           identificationImage: form.identificationImage,
           identificationNumber: form.identificationNumber,
-          identificationEffective: form.identificationEffective ? "1" : "0",
         },
         telphone: form.telphone,
         // password: form.password, //用户密码
