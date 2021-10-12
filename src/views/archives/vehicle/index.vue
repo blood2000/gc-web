@@ -187,6 +187,7 @@
         editType: editType,
         code: vehicleCode,
         defaultDriverList: defaultDriverList,
+        orgCode:queryParams.orgCode
       }"
       :open="open"
       :title="title"

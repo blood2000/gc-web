@@ -1,53 +1,52 @@
 <template>
   <!-- 职员管理 -->
-  <div>
-    <el-row>
-      <!-- 组织树 -->
-      <el-col :lg="5" :md="6" :sm="7" :xs="24">
-        <div class="app-container app-container--tree">
-          <div class="head-container">
-            <el-input
-              v-model="orgName"
-              placeholder="请输入组织名称"
-              clearable
-              size="small"
-              prefix-icon="el-icon-search"
-              class="mb20"
-            />
-          </div>
-          <div class="head-container">
-            <el-tree
-              ref="tree"
-              :data="deptOptions"
-              :props="defaultProps"
-              :expand-on-click-node="false"
-              :filter-node-method="filterNode"
-              :indent="0"
-              highlight-current
-              node-key="code"
-              :current-node-key="queryParams.orgCode"
-              default-expand-all
-              @node-click="handleNodeClick"
-            >
-              <span slot-scope="{ node, data }">
-                <span class="node-label">
-                  <i class="tree-node-icon" :class="data.icon" />
-                  {{ node.label }}
-                </span>
-              </span>
-            </el-tree>
-          </div>
-        </div>
-      </el-col>
-      <!-- 职员数据 -->
-      <el-col :lg="19" :md="18" :sm="17" :xs="24">
-        <div v-show="showSearch" class="app-container app-container--search">
-          <el-form
-            ref="queryForm"
-            :model="queryParams"
-            :inline="true"
-            label-width="68px"
-          >
+  <div class="pages-info">
+    <div class="pages-info-left">
+      <div class="head-container">
+        <el-input
+          v-model="orgName"
+          placeholder="请输入组织名称"
+          clearable
+          size="small"
+          prefix-icon="el-icon-search"
+          class="mb20"
+        />
+      </div>
+      <div class="head-container el-tree-scroll-container">
+        <el-tree
+          ref="tree"
+          :data="deptOptions"
+          :props="defaultProps"
+          :expand-on-click-node="false"
+          :filter-node-method="filterNode"
+          :indent="0"
+          highlight-current
+          node-key="code"
+          :current-node-key="queryParams.orgCode"
+          default-expand-all
+          @node-click="handleNodeClick"
+        >
+          <span slot-scope="{ node, data }">
+            <span class="node-label">
+              <i class="tree-node-icon" :class="data.icon" />
+              {{ node.label }}
+            </span>
+          </span>
+        </el-tree>
+      </div>
+    </div>
+    <!-- 职员数据 -->
+    <div class="pages-info-right">
+      <el-form
+        ref="queryForm"
+        :model="queryParams"
+        :inline="true"
+        label-width="68px"
+        class="ddc-queryParams"
+        label-position="top"
+      >
+        <div class="ddc-queryParams-left">
+          <div class="up">
             <el-form-item label="姓名" prop="nickName">
               <el-input
                 v-model="queryParams.nickName"
@@ -105,148 +104,141 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item>
-              <el-button
-                type="primary"
-                icon="el-icon-search"
-                size="mini"
-                @click="handleQuery"
-                >搜索</el-button
-              >
-              <el-button
-                type="primary"
-                plain
-                icon="el-icon-refresh"
-                size="mini"
-                @click="resetQuery"
-                >重置</el-button
-              >
-            </el-form-item>
-          </el-form>
+          </div>
         </div>
-        <div class="app-container">
-          <el-row :gutter="10" class="mb8">
-            <el-col :span="1.5">
-              <el-button
-                v-hasPermi="['employee:add']"
-                type="primary"
-                icon="el-icon-plus"
-                size="mini"
-                @click="handleAdd"
-                >新增</el-button
-              >
-            </el-col>
-            <el-col :span="1.5">
-              <el-button
-                v-hasPermi="['employee:delete']"
-                type="danger"
-                icon="el-icon-delete"
-                size="mini"
-                :disabled="multiple"
-                @click="handleDeleteMultiple"
-                >删除</el-button
-              >
-            </el-col>
-            <el-col :span="1.5">
-              <el-button
-                v-hasPermi="['employee:export']"
-                type="warning"
-                icon="el-icon-download"
-                size="mini"
-                :loading="exportLoading"
-                @click="handleExport"
-                >导出</el-button
-              >
-            </el-col>
-            <right-toolbar
-              :show-search.sync="showSearch"
-              @queryTable="getList"
-            />
-          </el-row>
-          <el-table
-            v-loading="loading"
-            highlight-current-row
-            border
-            :data="dataList"
-            @selection-change="handleSelectionChange"
+            <div class="ddc-queryParams-right">
+
+        <el-form-item>
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            size="mini"
+            @click="handleQuery"
+            >搜索</el-button
           >
-            <el-table-column
-              type="selection"
-              width="50"
-              align="center"
-              :selectable="checkboxSelectable"
+          <el-button
+            type="primary"
+            plain
+            icon="el-icon-refresh"
+            size="mini"
+            @click="resetQuery"
+            >重置</el-button
+          >
+        </el-form-item>
+            </div>
+
+      </el-form>
+      <!-- 分割线 -->
+      <div class="divier"></div>
+      <el-row :gutter="10" class="toolsbar">
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['employee:add']"
+            type="primary"
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleAdd"
+            >新增</el-button
+          >
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['employee:delete']"
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            :disabled="multiple"
+            @click="handleDeleteMultiple"
+            >删除</el-button
+          >
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['employee:export']"
+            type="warning"
+            icon="el-icon-download"
+            size="mini"
+            :loading="exportLoading"
+            @click="handleExport"
+            >导出</el-button
+          >
+        </el-col>
+      </el-row>
+      <el-table
+        v-loading="loading"
+        highlight-current-row
+        :stripe="true"
+        :data="dataList"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column
+          type="selection"
+          width="50"
+          align="center"
+          :selectable="checkboxSelectable"
+        />
+        <el-table-column label="序号" type="index" width="50" align="center" />
+        <el-table-column
+          label="姓名"
+          align="center"
+          prop="nickName"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          label="手机号"
+          align="center"
+          prop="phonenumber"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          label="所属组织"
+          align="center"
+          prop="orgName"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          label="所属角色"
+          align="center"
+          prop="roleNames"
+          :show-overflow-tooltip="true"
+        />
+        <!-- 0 启用 1 禁用 -->
+        <el-table-column label="账号状态" align="center" prop="employeeStatus">
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.employeeStatus"
+              active-value="0"
+              inactive-value="1"
+              @change="handleStatusChange(scope.row)"
             />
-            <el-table-column
-              label="序号"
-              type="index"
-              width="50"
-              align="center"
-            />
-            <el-table-column
-              label="姓名"
-              align="center"
-              prop="nickName"
-              :show-overflow-tooltip="true"
-            />
-            <el-table-column
-              label="手机号"
-              align="center"
-              prop="phonenumber"
-              :show-overflow-tooltip="true"
-            />
-            <el-table-column
-              label="所属组织"
-              align="center"
-              prop="orgName"
-              :show-overflow-tooltip="true"
-            />
-            <el-table-column
-              label="所属角色"
-              align="center"
-              prop="roleNames"
-              :show-overflow-tooltip="true"
-            />
-            <!-- 0 启用 1 禁用 -->
-            <el-table-column
-              label="账号状态"
-              align="center"
-              prop="employeeStatus"
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="创建时间"
+          align="center"
+          prop="createTime"
+          width="160"
+        >
+          <template slot-scope="scope">
+            <span>{{ parseTime(scope.row.createTime) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          align="center"
+          width="200"
+          class-name="small-padding fixed-width"
+        >
+          <template slot-scope="scope">
+            <el-button
+              v-if="!scope.row.teamLeaderFlag"
+              v-hasPermi="['employee:edit']"
+              size="mini"
+              type="text"
+              @click="handleUpdate(scope.row)"
+              >修改</el-button
             >
-              <template slot-scope="scope">
-                <el-switch
-                  v-model="scope.row.employeeStatus"
-                  active-value="0"
-                  inactive-value="1"
-                  @change="handleStatusChange(scope.row)"
-                />
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="创建时间"
-              align="center"
-              prop="createTime"
-              width="160"
-            >
-              <template slot-scope="scope">
-                <span>{{ parseTime(scope.row.createTime) }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="操作"
-              align="center"
-              width="200"
-              class-name="small-padding fixed-width"
-            >
-              <template slot-scope="scope">
-                <el-button
-                  v-if="!scope.row.teamLeaderFlag"
-                  v-hasPermi="['employee:edit']"
-                  size="mini"
-                  type="text"
-                  @click="handleUpdate(scope.row)"
-                  >修改</el-button
-                >
-                <!-- <el-button
+            <!-- <el-button
                   v-hasPermi="['employee:rel:role']"
                   size="mini"
                   type="text"
@@ -258,35 +250,33 @@
                   type="text"
                   @click="handleOrg(scope.row)"
                 >调整组织</el-button> -->
-                <el-button
-                  v-hasPermi="['employee:reset']"
-                  size="mini"
-                  type="text"
-                  @click="handleResetPwd(scope.row)"
-                  >重置密码</el-button
-                >
-                <el-button
-                  v-if="!scope.row.teamLeaderFlag"
-                  v-hasPermi="['employee:delete']"
-                  size="mini"
-                  type="text"
-                  @click="handleDelete(scope.row)"
-                  >删除</el-button
-                >
-              </template>
-            </el-table-column>
-          </el-table>
-          <pagination
-            v-show="total > 0"
-            :total="total"
-            :page.sync="queryParams.pageNum "
-            :limit.sync="queryParams.pageSize"
-            @pagination="getList"
-          />
-        </div>
-      </el-col>
-    </el-row>
-
+            <el-button
+              v-hasPermi="['employee:reset']"
+              size="mini"
+              type="text"
+              @click="handleResetPwd(scope.row)"
+              >重置密码</el-button
+            >
+            <el-button
+              v-if="!scope.row.teamLeaderFlag"
+              v-hasPermi="['employee:delete']"
+              size="mini"
+              type="text"
+              @click="handleDelete(scope.row)"
+              >删除</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination
+        v-show="total > 0"
+        :total="total"
+        layout="prev, pager, next, sizes, total,  jumper"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
+    </div>
     <!-- 新增/编辑 -->
     <EmployeeDialog
       ref="employeeDialog"
@@ -336,7 +326,7 @@ export default {
       },
       // 查询参数
       queryParams: {
-        pageNum : 1,
+        pageNum: 1,
         pageSize: 10,
         orgCode: undefined,
         nickName: undefined,
@@ -398,13 +388,13 @@ export default {
     },
     /** 节点单击事件 */
     handleNodeClick(data) {
-      this.queryParams.pageNum  = 1;
+      this.queryParams.pageNum = 1;
       this.queryParams.orgCode = data.code;
       this.getList();
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum  = 1;
+      this.queryParams.pageNum = 1;
       this.getList();
     },
     /** 重置按钮操作 */
@@ -557,7 +547,7 @@ export default {
       this.exportLoading = true;
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
-      params.pageNum  = undefined;
+      params.pageNum = undefined;
       if (params.startTime && params.startTime !== "")
         params.startTime = params.startTime + " 00:00:00";
       if (params.endTime && params.endTime !== "")

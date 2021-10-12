@@ -6,7 +6,11 @@
       :inline="true"
       label-width="80px"
       size="small"
+          class="ddc-queryParams"
+    label-position="top"
     >
+        <div class="ddc-queryParams-left">
+      <div class="up">
       <el-form-item label="车牌号" prop="vehicleCode" v-if="warningTab === '1'">
         <el-input
           v-model="queryParams.vehicleCode"
@@ -66,7 +70,13 @@
           />
         </el-select>
       </el-form-item>
-
+  </div>
+    </div>
+     <div class="ddc-queryParams-right">
+      <!-- <div @click="hanleIsShow">
+        <i :class="isShow ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i>
+        <span>{{ isShow ? "收起" : "展开" }}</span>
+      </div> -->
       <el-form-item>
         <el-button
           type="primary"
@@ -79,6 +89,7 @@
           重置
         </el-button>
       </el-form-item>
+      </div>
     </el-form>
     <el-dialog
       title="告警类型选择"
@@ -174,6 +185,8 @@ export default {
       loading: false,
       warningTypes: [],
       warningNames: "",
+            isShow: false,
+
       // 'projectList': []
     };
   },
@@ -201,6 +214,9 @@ export default {
       this.queryParams.deviceType = null;
       console.log(this.queryParams);
       this.$emit("handleQuery");
+    },
+      hanleIsShow() {
+      this.isShow = !this.isShow;
     },
 
     chooseWarningTypes() {

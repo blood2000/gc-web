@@ -5,7 +5,11 @@
     :inline="true"
     label-width="120px"
     size="small"
+      class="ddc-queryParams"
+    label-position="top"
   >
+     <div class="ddc-queryParams-left">
+      <div class="up">
     <el-form-item label="下单客户" prop="shipmentNameOrCompanyName">
       <el-input
         v-model="queryParams.shipmentNameOrCompanyName"
@@ -42,7 +46,8 @@
         @keyup.enter.native="$emit('handleQuery')"
       />
     </el-form-item>
-
+  </div>
+   <div class="down" v-show="isShow">
     <el-form-item label="货物类型：" prop="goodsType">
       <el-select
         v-model="queryParams.goodsType"
@@ -110,9 +115,14 @@
         end-placeholder="结束日期"
       />
     </el-form-item>
-
+   </div>
+    </div>
     
-
+ <div class="ddc-queryParams-right">
+      <div @click="hanleIsShow">
+        <i :class="isShow ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i>
+        <span>{{ isShow ? "收起" : "展开" }}</span>
+      </div>
     <el-form-item>
       <el-button
         type="primary"
@@ -125,6 +135,7 @@
         重置
       </el-button>
     </el-form-item>
+     </div>
   </el-form>
 </template>
 
@@ -151,6 +162,7 @@ export default {
   data() {
     return {
       pickerOptions,
+        isShow: false,
       // 'projectList': []
     };
   },
@@ -174,7 +186,11 @@ export default {
       this.queryParams.dateRange = [];
       this.$emit("handleQuery");
     },
+     hanleIsShow() {
+      this.isShow = !this.isShow;
+    },
   },
+  
 };
 </script>
 

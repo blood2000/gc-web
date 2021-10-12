@@ -44,7 +44,6 @@
       />
       <!-- 分割线 -->
       <div class="divier"></div>
-
       <el-row :gutter="10" class="toolsbar"> </el-row>
       <RefactorTable
         is-show-index
@@ -52,7 +51,7 @@
         :data="list"
         row-key="id"
         :table-columns-config="tableColumnsConfig"
-         :border="false"
+        :border="false"
         :stripe="true"
       >
         <template #edit="{ row }">
@@ -97,8 +96,7 @@
       <pagination
         v-show="total > 0"
         :total="total"
-                layout="prev, pager, next, sizes, total,  jumper"
-
+        layout="prev, pager, next, sizes, total,  jumper"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="getList"
@@ -110,7 +108,6 @@
 import { http_request } from "../../../api";
 import { tableColumnsConfig, vehicleStatusList } from "./config";
 import QueryForm from "./components/queryForm.vue";
-import axios from "axios";
 export default {
   name: "carlist",
   components: { QueryForm },

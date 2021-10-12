@@ -1,16 +1,17 @@
 <template>
-  <div>
-    <div v-show="showSearch" class="app-container app-container--search">
+  <div class="pages-info">
+    <div class="pages-info-right">
       <!-- 上：搜索 -->
       <QueryForm
         v-model="queryParams"
         :goods-type-list="goodsTypeList"
         @handleQuery="searchQuery"
       />
-    </div>
-    <div class="app-container">
+      <!-- 分割线 -->
+      <div class="divier"></div>
+
       <!-- 操作栏 -->
-      <div class="recode-tool-bar">
+      <div class="toolsbar">
         <el-button
           :disabled="multiple"
           type="primary"
@@ -19,10 +20,10 @@
           @click="handleInfo"
           >生成调度信息</el-button
         >
-        <right-toolbar
+        <!-- <right-toolbar
           :show-search.sync="showSearch"
           @queryTable="searchQuery"
-        />
+        /> -->
       </div>
 
       <!-- 表格 -->
@@ -33,6 +34,8 @@
         row-key="id"
         :table-columns-config="tableColumnsConfig"
         @selection-change="handleSelectionChange"
+        :border="false"
+        :stripe="true"
       >
         <template #edit="{ row }">
           <el-button
@@ -58,9 +61,11 @@
       <!-- 分页 -->
 
       <pagination
+        v-show="total > 0"
         :total="total"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
+        layout="prev, pager, next, sizes, total,  jumper"
         @pagination="getList"
       />
     </div>
@@ -206,7 +211,7 @@ export default {
           delete tmp[item];
         }
       }
-      return tmp
+      return tmp;
     },
     async getList() {
       this.loading = true;

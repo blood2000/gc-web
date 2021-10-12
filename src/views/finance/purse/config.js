@@ -103,7 +103,6 @@ const DetailTableColumnsConfig = [
     prop: "waybillNo",
     sortNum: 3,
     tooltip: true,
-    width: 200
   },
   {
     isShow: true,
@@ -111,7 +110,6 @@ const DetailTableColumnsConfig = [
     prop: "loadFormattedAddress",
     sortNum: 4,
     tooltip: true,
-    width: 200
   },
   {
     isShow: true,
@@ -119,7 +117,6 @@ const DetailTableColumnsConfig = [
     prop: "unloadFormattedAddress",
     sortNum: 5,
     tooltip: true,
-    width: 200
   },
   {
     isShow: true,
@@ -127,7 +124,6 @@ const DetailTableColumnsConfig = [
     prop: "goodsBigTypeName",
     sortNum: 6,
     tooltip: true,
-    width: 200
   },
   {
     isShow: true,
@@ -135,7 +131,6 @@ const DetailTableColumnsConfig = [
     prop: "goodsTypeName",
     sortNum: 7,
     tooltip: true,
-    width: 200
   },
   {
     isShow: true,
@@ -143,7 +138,6 @@ const DetailTableColumnsConfig = [
     prop: "driverName",
     sortNum: 7,
     tooltip: true,
-    width: 200
   },
   {
     isShow: true,
@@ -151,7 +145,6 @@ const DetailTableColumnsConfig = [
     prop: "licenseNumber",
     sortNum: 7,
     tooltip: true,
-    width: 200
   },
   {
     isShow: true,
@@ -159,7 +152,6 @@ const DetailTableColumnsConfig = [
     prop: "teamName",
     sortNum: 7,
     tooltip: true,
-    width: 200
   },
   {
     isShow: true,
@@ -167,7 +159,6 @@ const DetailTableColumnsConfig = [
     prop: "paidAmount",
     sortNum: 7,
     tooltip: true,
-    width: 200
   },
   {
     isShow: true,
@@ -175,7 +166,6 @@ const DetailTableColumnsConfig = [
     prop: "createTime",
     sortNum: 7,
     tooltip: true,
-    width: 200
   },
 ]
 

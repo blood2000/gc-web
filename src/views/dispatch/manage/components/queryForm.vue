@@ -5,7 +5,11 @@
     :inline="true"
     label-width="120px"
     size="small"
+      class="ddc-queryParams"
+    label-position="top"
   >
+      <div class="ddc-queryParams-left">
+      <div class="up">
     <el-form-item label="派车记录编号" prop="appointCarRecordCode">
       <el-input
         v-model="queryParams.appointCarRecordCode"
@@ -42,7 +46,8 @@
         @keyup.enter.native="$emit('handleQuery')"
       />
     </el-form-item>
-
+ </div>
+      <div class="down" v-show="isShow">
     <el-form-item label="出发地" prop="loadAddress">
       <el-input
         v-model="queryParams.loadAddress"
@@ -52,7 +57,6 @@
         @keyup.enter.native="$emit('handleQuery')"
       />
     </el-form-item>
-
     <el-form-item label="目的地" prop="unloadAddress">
       <el-input
         v-model="queryParams.unloadAddress"
@@ -62,7 +66,6 @@
         @keyup.enter.native="$emit('handleQuery')"
       />
     </el-form-item>
-
     <el-form-item label="承运车辆" prop="vehicleNumber">
       <el-input
         v-model="queryParams.vehicleNumber"
@@ -72,7 +75,6 @@
         @keyup.enter.native="$emit('handleQuery')"
       />
     </el-form-item>
-
     <el-form-item label="司机姓名" prop="driverName">
       <el-input
         v-model="queryParams.driverName"
@@ -82,7 +84,6 @@
         @keyup.enter.native="$emit('handleQuery')"
       />
     </el-form-item>
-
     <el-form-item label="司机电话" prop="driverPhone">
       <el-input
         v-model="queryParams.driverPhone"
@@ -92,7 +93,6 @@
         @keyup.enter.native="$emit('handleQuery')"
       />
     </el-form-item>
-
     <el-form-item label="调度单状态" prop="status">
       <el-select
         v-model="queryParams.status"
@@ -110,6 +110,13 @@
         />
       </el-select>
     </el-form-item>
+      </div>
+    </div>
+      <div class="ddc-queryParams-right">
+      <div @click="hanleIsShow">
+        <i :class="isShow ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i>
+        <span>{{ isShow ? "收起" : "展开" }}</span>
+      </div>
     <el-form-item>
       <el-button
         type="primary"
@@ -122,6 +129,7 @@
         重置
       </el-button>
     </el-form-item>
+       </div>
   </el-form>
 </template>
 
@@ -146,6 +154,7 @@ export default {
   data() {
     return {
       pickerOptions,
+            isShow: false,
       // 'projectList': []
     };
   },
@@ -168,6 +177,9 @@ export default {
       this.$refs["queryForm"].resetFields();
       this.queryParams.dateRange = [];
       this.$emit("handleQuery");
+    },
+        hanleIsShow() {
+      this.isShow = !this.isShow;
     },
   },
 };

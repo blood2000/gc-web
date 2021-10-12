@@ -1,9 +1,7 @@
 <!-- 告警 -->
 <template>
-  <div class="device-info">
-    <el-row :gutter="15">
-      <!-- <el-col :xl="5" :lg="6" :md="8" :sm="9" :xs="24">
-        <div class="device-info-left">
+  <div class="pages-info">
+    <!-- <div class="pages-info-left"> 
           <div class="head-container">
             <el-input
               v-model="orgName"
@@ -36,77 +34,71 @@
               </span>
             </el-tree>
           </div>
-        </div>
-      </el-col> -->
-      <!-- <el-col :xl="19" :lg="18" :md="16" :sm="15" :xs="24"> -->
-      <el-col :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
-        <div class="device-info-right">
-          <div class="device-info-right-top" v-show="showSearch">
-            <!-- 上：搜索 -->
-            <QueryForm
-              v-model="queryParams"
-              :warningTypeList="warningTypeList"
-              :device-type-list="deviceTypeList"
-              :warning-tab="tabIndex"
-              @handleQuery="searchQuery"
-              @updateWarningTypeList="updateWarningTypeList"
-            />
-          </div>
-          <div class="device-info-right-bottom">
-            <el-tabs
-              type="border-card"
-              v-model="tabIndex"
-              @tab-click="tabClick"
+        </div> -->
+    <div class="pages-info-right">
+      <!-- 上：搜索 -->
+      <QueryForm
+        v-model="queryParams"
+        :warningTypeList="warningTypeList"
+        :device-type-list="deviceTypeList"
+        :warning-tab="tabIndex"
+        @handleQuery="searchQuery"
+        @updateWarningTypeList="updateWarningTypeList"
+      />
+      <!-- 分割线 -->
+      <div class="divier"></div>
+      <div class="device-info-right-bottom">
+        <el-tabs type="border-card" v-model="tabIndex" @tab-click="tabClick">
+          <el-tab-pane
+            v-for="item in warningTabs"
+            :key="item.value"
+            :name="item.value"
+            :label="item.label"
+          >
+            <!-- 表格 -->
+            <RefactorTable
+              :loading="loading"
+              :data="warningData"
+              row-key="id"
+              :table-columns-config="tableColumnsConfig"
+              :border="false"
+              :stripe="true"
             >
-              <el-tab-pane
-                v-for="item in warningTabs"
-                :key="item.value"
-                :name="item.value"
-                :label="item.label"
-              >
-                <!-- 表格 -->
-                <RefactorTable
-                  :loading="loading"
-                  :data="warningData"
-                  row-key="id"
-                  :table-columns-config="tableColumnsConfig"
-                >
-                  <!-- <template #warinigType="{ row }">
+              <!-- <template #warinigType="{ row }">
                     {{ getWarinigTypeName(row.warinigType) }}
                   </template>
                   <template #warningLevel="{ row }">
                     {{ getWarningLevelName(row.warningLevel) }}
                   </template> -->
-                  <template #deviceType="{ row }">
-                    {{ getDeviceTypeName(row.deviceType) }}
-                  </template>
-                  <!-- <template #alarmValue="{ row }">
+              <template #deviceType="{ row }">
+                {{ getDeviceTypeName(row.deviceType) }}
+              </template>
+              <!-- <template #alarmValue="{ row }">
                     {{ row.alarmValue || '-' }}
                   </template> -->
-                  <template #handle="{ row }">
-                    <el-button
-                      size="mini"
-                      type="text"
-                      icon="el-icon-tickets"
-                      @click="toDetail(row)"
-                      >详情
-                    </el-button>
-                  </template>
-                </RefactorTable>
-                <!-- 分页 -->
-                <pagination
-                  v-show="total > 0"
-                  :total="total"
-                  :page.sync="queryParams.pageNum"
-                  :limit.sync="queryParams.pageSize"
-                  @pagination="warningDataReq"
-                />
-              </el-tab-pane>
-            </el-tabs>
-          </div>
-        </div>
-      </el-col>
-    </el-row>
+              <template #handle="{ row }">
+                <el-button
+                  size="mini"
+                  type="text"
+                  icon="el-icon-tickets"
+                  @click="toDetail(row)"
+                  >详情
+                </el-button>
+              </template>
+            </RefactorTable>
+            <!-- 分页 -->
+            <pagination
+              v-show="total > 0"
+              :total="total"
+              layout="prev, pager, next, sizes, total,  jumper"
+              :page.sync="queryParams.pageNum"
+              :limit.sync="queryParams.pageSize"
+              @pagination="warningDataReq"
+            />
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -124,7 +116,7 @@ export default {
       orgCode: null, // 当前选中的类型
       defaultTreeProps: {
         children: "childrenOrgList",
-        label: "orgName"
+        label: "orgName",
       },
       orgTreeData: [],
       showSearch: true, //搜索显隐
@@ -137,7 +129,7 @@ export default {
         driver: "",
         deviceType: null,
         dateRange: [],
-        warningTypes: []
+        warningTypes: [],
       },
       deviceTypeList: [],
       warningTypeList: [],
@@ -145,7 +137,7 @@ export default {
       tabIndex: "1",
       warningTabs: [],
       tableColumnsConfig: [], //配置表头数据
-      total: 0
+      total: 0,
     };
   },
 
@@ -153,7 +145,7 @@ export default {
   watch: {
     orgName(val) {
       this.$refs.tree.filter(val);
-    }
+    },
   },
 
   created() {
@@ -164,7 +156,7 @@ export default {
     this.getDeviceTypes();
     this.tableColumnsConfig = [
       ...warningConfig.vehicleColumn,
-      ...warningConfig.tableColumnsConfig
+      ...warningConfig.tableColumnsConfig,
     ];
     this.warningTabs = warningConfig.warningTabs;
     // this.warningDataReq();
@@ -181,7 +173,7 @@ export default {
       const obj = {
         moduleName: "http_org",
         method: "get",
-        url_alias: "orgTree"
+        url_alias: "orgTree",
       };
       if (this.orgName) obj.data = { orgName: this.orgName };
       const orgRes = await http_request(obj);
@@ -210,7 +202,7 @@ export default {
       console.log("update==>", list);
       this.warningTypeList = list;
       let warningTypes = [];
-      this.warningTypeList.map(item => {
+      this.warningTypeList.map((item) => {
         item.alarmTypeInfoList.map((cItem) => {
           if (cItem.isChoose) {
             warningTypes.push(cItem.id);
@@ -225,7 +217,7 @@ export default {
       const obj = {
         moduleName: "http_warning",
         method: "get",
-        url_alias: "deviceType_list"
+        url_alias: "deviceType_list",
       };
       const res = await http_request(obj);
       console.log("设备类型列表", res);
@@ -238,18 +230,18 @@ export default {
       const obj = {
         moduleName: "http_warning",
         method: "get",
-        url_alias: "warningType_list"
+        url_alias: "warningType_list",
       };
       const res = await http_request(obj);
       console.log("告警类型列表", res);
       let warningTypeList = [];
       if (res.code === 200) {
         warningTypeList = res.data;
-        warningTypeList.map(item => {
-          item.alarmTypeInfoList.map(aItem => {
+        warningTypeList.map((item) => {
+          item.alarmTypeInfoList.map((aItem) => {
             aItem.isChoose = true;
-          })
-        })
+          });
+        });
         // let list = res.data.device;
         // list = list.concat(res.data.vehicle);
         // console.log(list);
@@ -260,7 +252,7 @@ export default {
         //   warningTypeList.push(obj);
         // });
         this.warningTypeList = warningTypeList;
-        console.log(this.warningTypeList)
+        console.log(this.warningTypeList);
       }
     },
     //初始页数请求
@@ -287,7 +279,7 @@ export default {
         endAlarmTime:
           (this.queryParams.dateRange && this.queryParams.dateRange[1]) || null,
         alarmTypeInfoId: this.queryParams.warningTypes.join(","),
-        deviceSeriesModelInfoCode: this.queryParams.deviceType
+        deviceSeriesModelInfoCode: this.queryParams.deviceType,
       };
       if (this.tabIndex === "1") {
         tmp.dimensionType = "vehicle";
@@ -300,7 +292,7 @@ export default {
         moduleName: "http_warning",
         method: "get",
         url_alias: "warning_list",
-        data: tmp
+        data: tmp,
       };
       console.log("告警参数", obj);
       const res = await http_request(obj);
@@ -315,7 +307,7 @@ export default {
     //告警类型表格项
     getWarinigTypeName(warningType) {
       let warningName = "";
-      this.warningTypeList.map(item => {
+      this.warningTypeList.map((item) => {
         if (item.warningType === warningType) {
           warningName = item.warningName;
         }
@@ -325,7 +317,7 @@ export default {
     //设备类型
     getDeviceTypeName(deviceType) {
       let name = "";
-      this.deviceTypeList.map(item => {
+      this.deviceTypeList.map((item) => {
         if (item.value === deviceType) {
           name = item.label;
         }
@@ -335,7 +327,7 @@ export default {
     // 告警级别
     getWarningLevelName(level) {
       let levelName = "";
-      this.warningLevelList.map(item => {
+      this.warningLevelList.map((item) => {
         if (item.level === level) {
           levelName = item.name;
         }
@@ -352,18 +344,18 @@ export default {
       if (this.tabIndex === "1") {
         this.tableColumnsConfig = [
           ...warningConfig.vehicleColumn,
-          ...warningConfig.tableColumnsConfig
+          ...warningConfig.tableColumnsConfig,
         ];
       } else {
         this.tableColumnsConfig = [
           ...warningConfig.driverColumn,
-          ...warningConfig.tableColumnsConfig
+          ...warningConfig.tableColumnsConfig,
         ];
       }
       this.searchQuery();
       console.log(this.tableColumnsConfig);
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

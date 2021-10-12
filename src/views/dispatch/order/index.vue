@@ -10,99 +10,12 @@
       />
       <!-- 分割线 -->
       <div class="divier"></div>
-      <!-- 表格 -->
-      <el-table
-        v-loading="loading"
-        row-key="id"
-        highlight-current-row
-        :border="false"
-        :stripe="true"
-        :data="tableData"
-        v-bind="$attrs"
-      >
-        <template v-for="(item, index) in tableColumnsConfig">
-          <el-table-column
-            v-if="item.prop == 'RefactorTable'"
-            :key="index"
-            :prop="item.prop"
-            align="center"
-            :label="item.label"
-            :show-overflow-tooltip="item.tooltip"
-            :width="item.width || '180'"
-            :fixed="item.fixed"
-          >
-            <template slot-scope="scope">
-              <el-button
-                size="mini"
-                type="text"
-                icon="el-icon-edit"
-                @click="handleDetail(scope.row)"
-              >
-                详情
-              </el-button>
-              <el-button
-                size="mini"
-                type="text"
-                @click="handleDispatch(scope.row)"
-              >
-                派车
-              </el-button>
-              <el-button
-                size="mini"
-                type="text"
-                icon="el-icon-position"
-                @click="handleCarlog(scope.row)"
-              >
-                派车记录
-              </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column
-            v-else-if="item.prop == 'dispatchOrderStatus'"
-            v-show="item.isShow"
-            align="center"
-            :key="index"
-            :prop="item.prop"
-            :label="item.label"
-            :show-overflow-tooltip="item.tooltip"
-            :width="item.width || '180'"
-          >
-            <template slot-scope="scope">
-              <span
-                :style="{
-                  color: dealDispatchOrderStatus(
-                    scope.row.dispatchOrderStatus,
-                    'color'
-                  ),
-                }"
-              >
-                {{
-                  dealDispatchOrderStatus(scope.row.dispatchOrderStatus, "text")
-                }}
-              </span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            v-else
-            v-show="item.isShow"
-            align="center"
-            :key="index"
-            :prop="item.prop"
-            :label="item.label"
-            :show-overflow-tooltip="item.tooltip"
-            :width="item.width || '180'"
-          >
-          </el-table-column>
-        </template>
-      </el-table>
-
-      <!-- <RefactorTable
+      <RefactorTable
         is-show-index
         :loading="loading"
         :data="tableData"
         row-key="id"
         :table-columns-config="tableColumnsConfig"
-        @selection-change="handleSelectionChange"
         :border="false"
         :stripe="true"
       >
@@ -111,37 +24,27 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleUpdate(row)"
-            >修改</el-button
+            @click="handleDetail(row)"
           >
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            style="color: red"
-            @click="handleDelete(row)"
-            >删除</el-button
-          >
+            详情
+          </el-button>
+          <el-button size="mini" type="text" @click="handleDispatch(row)">
+            派车
+          </el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-position"
-            @click="handleReset(row)"
-            >密码重置</el-button
+            @click="handleCarlog(row)"
           >
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-tickets"
-            @click="handleDetail(row)"
-            >详情</el-button
-          >
+            派车记录
+          </el-button>
         </template>
-      </RefactorTable> -->
-
+      </RefactorTable>
       <!-- 分页 -->
       <pagination
         :total="total"
+        layout="prev, pager, next, sizes, total,  jumper"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="getList"
@@ -275,50 +178,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.device-info {
-  margin: 0 15px;
-  @mixin box-shadow {
-    margin: 0 0 15px;
-    padding: 20px;
-    background: #fff;
-    box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
-    border-radius: 3px;
-  }
-
-  .device-info-left {
-    @include box-shadow;
-    min-height: calc(100vh - 146px);
-  }
-
-  .device-info-right {
-    .device-info-right-top {
-      @include box-shadow;
-      padding-bottom: 8px;
-    }
-    .device-info-right-bottom {
-      @include box-shadow;
-    }
-  }
-}
-.table-colunm {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.el-table__empty-block {
-  text-align: left !important;
-  margin-left: 50% !important;
-  justify-content: left !important;
-}
-.el-table__empty-text {
-  width: auto;
-}
-.el-table__footer-wrapper tbody td {
-  background-color: #ebf4fd !important;
-  color: #409eff !important;
-  font-weight: bold;
-}
-</style>

@@ -31,12 +31,12 @@
                   >{{ isPageShow("vehicleLicenseInf", "chassisNumber") }}
                 </span>
               </div>
-              <div>
+              <!-- <div>
                 <span> 发动机号： </span>
                 <span>
                   {{ isPageShow("vehicleLicenseInf", "engineNumber") }}</span
                 >
-              </div>
+              </div> -->
 
               <div>
                 <span> 车辆类型： </span>
@@ -86,13 +86,17 @@
               <el-divider></el-divider>
             </div>
             <el-row>
-              <el-col :span="12">
+              <el-col :span="8">
                 <span>车辆状态：</span>
                 <span>{{ vehicleInfo.enabledValue }}</span>
               </el-col>
-              <el-col :span="12">
+              <el-col :span="8">
                 <span>停用状态：</span>
                 <span>{{ vehicleInfo.vehicleStatusValue }}</span>
+              </el-col>
+               <el-col :span="8">
+                <span>审核状态：</span>
+                <span>{{ vehicleInfo.authStatusValue	 }}</span>
               </el-col>
             </el-row>
           </div>

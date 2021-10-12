@@ -6,7 +6,11 @@
       :inline="true"
       label-width="80px"
       size="small"
+       class="ddc-queryParams"
+    label-position="top"
     >
+      <div class="ddc-queryParams-left">
+      <div class="up">
       <el-form-item label="开户姓名" prop="bankUserName">
         <el-input
           v-model="queryParams.bankUserName"
@@ -51,6 +55,8 @@
           @keyup.enter.native="$emit('handleQuery')"
         />
       </el-form-item>
+        </div>
+      <div class="down" v-show="isShow">
       <el-form-item label="提现日期">
         <el-date-picker
           v-model="queryParams.dateRange"
@@ -65,6 +71,13 @@
           end-placeholder=" 请选择"
         />
       </el-form-item>
+       </div>
+    </div>
+    <div class="ddc-queryParams-right">
+      <div @click="hanleIsShow">
+        <i :class="isShow ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i>
+        <span>{{ isShow ? "收起" : "展开" }}</span>
+      </div>
       <el-form-item>
         <el-button
           type="primary"
@@ -77,6 +90,7 @@
           重置
         </el-button>
       </el-form-item>
+        </div>
     </el-form>
   </div>
 </template>
@@ -105,6 +119,8 @@ export default {
   data() {
     return {
       pickerOptions,
+            isShow: false,
+
       // 'projectList': []
     };
   },
@@ -129,6 +145,9 @@ export default {
       this.$refs["queryForm"].resetFields();
       this.queryParams.dateRange = [];
       this.$emit("handleQuery");
+    },
+      hanleIsShow() {
+      this.isShow = !this.isShow;
     },
   },
 };

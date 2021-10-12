@@ -34,7 +34,6 @@
         </el-tree>
       </div>
     </div>
-
     <div class="pages-info-right">
       <!-- 上：搜索 -->
       <QueryForm
@@ -125,13 +124,13 @@
           </i-switch>
         </template>
         <template #edit="{ row }">
-          <el-button
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(row)"
             >修改</el-button
-          >
+          > -->
           <el-button
             size="mini"
             type="text"
