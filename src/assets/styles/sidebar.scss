@@ -135,7 +135,10 @@
       align-items: center;
       padding-bottom: 20px;
       transition: all 0.3s;
-
+      color: #9FA2B5 !important;
+      &:hover{
+        color: #ffffff !important;
+      }
       .svg-icon-box{
         display: inline-flex;
         justify-content: center;
@@ -150,8 +153,11 @@
 
       .svg-icon {
         margin: 0;
-        color: #9FA2B5;
+        // color: #9FA2B5;
         font-size: 24px;
+        // &:hover{
+        //   color: #ffffff;
+        // }
       }
 
       .label{
@@ -159,12 +165,11 @@
         font-size: 12px;
         font-family: PingFang SC;
         font-weight: 400;
-        color: #9FA2B5;
+        // color: #9FA2B5;
+        // &:hover{
+        //   color: #ffffff;
+        // }
       }
-      // .label:hover{
-      //   color: #ffffff;
-      // }
-
       .el-submenu__icon-arrow {
         display: none;
       }
@@ -204,10 +209,10 @@
         >.el-submenu__title{
           background: #F2F7FC;
           .svg-icon {
-            color: #409EFF;
+            color: #ffffff;
           }
           .label{
-            color: #409EFF;
+            color: #ffffff;
           }
         }
       }
@@ -304,7 +309,7 @@
         top: 50%;
         transition: all 0.2s;
       }
-      &::after{
+      &::after{ 
         content: '';
         width: 3px;
         height: 100%;
@@ -320,15 +325,15 @@
       }
       .label{
         font-size: 14px;
-        color: #717171;
+        color:$menuText;
         padding-left: 12px;
         transition: all 0.2s;
       }
-      &:hover{
+      &:hover{ /**/
         transition: all 0.2s;
-        background: $menuHover !important;
+        background:$subMenuHover !important;
         .label{
-          color: #ffffff;
+          color: #409EFF;
           transition: all 0.2s;
         }
         &::before{
@@ -340,12 +345,12 @@
           transition: all 0.2s;
         }
       }
-      &.is-active{
+      &.is-active{//**
         transition: all 0.2s;
-        background: $menuHover !important;
+        background: $subMenuHover !important;
         .label{
           font-weight: bold;
-          color: #ffffff;
+          color:  #409EFF;
           transition: all 0.2s;
         }
         &::before{
