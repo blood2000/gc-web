@@ -62,6 +62,51 @@
   color: #3d4050;
   opacity: 1;
 }
-.dispatch-base-confrim{
+.dispatch-base-confrim {
   text-align: center;
 }
+.dispatch-bg-upload {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-content: center;
+
+}
+.dispatch-bg-upload img {
+  width: 58px;
+  height: 58px;
+}
+//身份证正
+.dispatch-id_front {
+  background: url("../images/certificate/id_front.png") no-repeat;
+  background-position: center;
+}
+//身份证背
+.dispatch-id_back {
+  background: url("../images/certificate/id_back.png") no-repeat;
+  background-position: center;
+}
+//驾驶证
+.dispatch-driving_front {
+  background: url("../images/certificate/driving_front.png") no-repeat;
+  background-position: center;
+}
+//行驶证正面
+.dispatch-travel_front {
+  background: url("../images/certificate/travel_front.png") no-repeat;
+  background-position: center;
+}
+//行驶证背面
+.dispatch-travel_back {
+  background: url("../images/certificate/travel_back.png") no-repeat;
+  background-position: center;
+}
+//道路运输证
+.dispatch-load {
+  background: url("../images/certificate/load.png") no-repeat;
+  background-position: center;
+}
+
+

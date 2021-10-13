@@ -15,6 +15,7 @@
       style="display: inline-block; vertical-align: top"
       class="upload-image"
     >
+
       <img v-if="value && !disabled" :src="attachUrl" class="avatar">
       <!-- <div v-if="value && !disabled && attachUrl && attachUrl !== ''" class="avatar-box" :style="{background: `url('${attachUrl}') center center /contain no-repeat`}" /> -->
       <div v-else-if="value && disabled" class="avatar-box">
@@ -22,10 +23,12 @@
         <img :src="attachUrl" class="avatar">
       </div>
       <template v-else>
-        <i class="el-icon-plus"></i>
+        <!-- <i class="el-icon-plus"></i> -->
+        <slot name="initImage"></slot>
         <!-- <div class="avatar-box icon-type-img" :class="iconType" />
         <div :class="disabled ? 'filter' : ''" class="avatar-uploader-icon" /> -->
       </template>
+
     </el-upload>
   </div>
 </template>
@@ -35,6 +38,7 @@ import { uploadImgApi, getFile, uploadOcr } from '@/api/system/image.js';
 import { getToken } from '@/utils/auth';
 import {defaultH} from '@/api'
 export default {
+  name:'ImageUploadSimple',
   components: {},
   props: {
     value: {
@@ -186,8 +190,8 @@ export default {
   justify-content: center;
   align-items: center;
   background: #F9F9F9;
-  width: 128px;
-  height: 128px;
+  width: 127px;
+  height: 87px;
   overflow: hidden;
   .avatar {
     max-width: 100%;

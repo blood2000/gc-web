@@ -31,7 +31,13 @@
             <ImageUploadSimple
               v-model="form.vehicleLicenseImg"
               @input="chooseImg"
-            />
+            >
+             <template slot="initImage">
+                <div class="dispatch-bg-upload dispatch-travel_front">
+                  <img  src="../../../../assets/images/certificate/photograph.png" alt="">
+                </div>
+            </template>
+            </ImageUploadSimple>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -47,7 +53,13 @@
             <ImageUploadSimple
               v-model="form.vehicleLicenseSecondImg"
               @input="chooseImgBack"
-            />
+            >  
+            <template slot="initImage">
+                <div class="dispatch-bg-upload dispatch-travel_back">
+                  <img  src="../../../../assets/images/certificate/photograph.png" alt="">
+                </div>
+            </template>
+            </ImageUploadSimple>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -60,7 +72,13 @@
             <ImageUploadSimple
               v-model="form.roadTransportCertificateImg"
               @input="LoadChooseImg"
-            />
+            >
+            <template slot="initImage">
+                <div class="dispatch-bg-upload dispatch-load">
+                  <img  src="../../../../assets/images/certificate/photograph.png" alt="">
+                </div>
+            </template>
+            </ImageUploadSimple>
           </el-form-item>
         </el-col>
       </el-row>

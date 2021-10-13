@@ -57,7 +57,13 @@
             <ImageUploadSimple
               v-model="form.identificationImage"
               @input="chooseImg"
-            />
+            >
+            <template slot="initImage">
+                <div class="dispatch-bg-upload dispatch-id_front">
+                  <img  src="../../../../assets/images/certificate/photograph.png" alt="">
+                </div>
+            </template>
+            </ImageUploadSimple>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -73,7 +79,13 @@
             <ImageUploadSimple
               v-model="form.identificationBackImage"
               @input="chooseImgBack"
-            />
+            >
+             <template slot="initImage">
+                <div class="dispatch-bg-upload dispatch-id_back">
+                  <img  src="../../../../assets/images/certificate/photograph.png" alt="">
+                </div>
+            </template>
+            </ImageUploadSimple>
           </el-form-item>
         </el-col>
       </el-row>
@@ -155,7 +167,13 @@
             <ImageUploadSimple
               v-model="form.driverLicenseImage"
               @input="driverChooseImg"
-            />
+            >
+             <template slot="initImage">
+                <div class="dispatch-bg-upload dispatch-driving_front">
+                  <img  src="../../../../assets/images/certificate/photograph.png" alt="">
+                </div>
+            </template>
+            </ImageUploadSimple>
           </el-form-item>
         </el-col>
       </el-row>
