@@ -82,6 +82,12 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+    <Detail
+      :code="currCode"
+      :detailDrawer="detailDrawer"
+      :options="{ title: '派车记录' }"
+      @colseDetailDrawer="colseDetailDrawer"
+    />
   </div>
 </template>
 
@@ -90,10 +96,11 @@ import { tableColumnsConfig } from "./recode_config";
 import QueryForm from "./components/queryForm.vue";
 import { http_request } from "../../../api";
 import { listByDict } from "../../../api/system/dict/data.js";
+import Detail from "./detail.vue";
 
 export default {
   name: "order",
-  components: { QueryForm },
+  components: { QueryForm, Detail },
   data() {
     return {
       showSearch: true,
@@ -119,6 +126,8 @@ export default {
       tableData: [],
       goodsTypeList: [],
       shareText: "",
+      currCode: null,
+      detailDrawer: false, //详情抽屉
     };
   },
   created() {
@@ -144,13 +153,6 @@ export default {
     this.searchQuery();
   },
   methods: {
-    cancel() {
-      this.open = false;
-      this.shareText = "";
-    },
-    ok() {
-      this.cancel();
-    },
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.selection = selection;
@@ -200,9 +202,12 @@ export default {
       this.$router.push("/dispatch/manage?code=" + code);
     },
     handleDetail(data) {
-      const code = data.appointCarRecordCode;
-      console.log("????", code);
-      this.$router.push("recode/detail?code=" + code);
+      console.log('data.appointCarRecordCode',data.appointCarRecordCode)
+      this.currCode = data.appointCarRecordCode;
+      this.detailDrawer = true;
+      // const code = data.appointCarRecordCode;
+      // console.log("????", code);
+      // this.$router.push("recode/detail?code=" + code);
     },
     formToPaging() {
       const tmp = JSON.parse(JSON.stringify(this.queryParams));
@@ -232,6 +237,16 @@ export default {
     searchQuery() {
       this.queryParams.pageNum = 1;
       this.getList();
+    },
+    cancel() {
+      this.open = false;
+      this.shareText = "";
+    },
+    colseDetailDrawer() {
+      this.detailDrawer = false;
+    },
+    ok() {
+      this.cancel();
     },
   },
 };

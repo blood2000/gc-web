@@ -41,6 +41,7 @@
         @pagination="getList"
       />
     </div>
+        <Detail :code="currCode" :detailDrawer="detailDrawer" :options="{title:'派车单详情'}" @colseDetailDrawer='colseDetailDrawer' />
   </div>
 </template>
 
@@ -48,9 +49,11 @@
 import { statusList, tableColumnsConfig } from "./manage_config";
 import QueryForm from "./components/queryForm.vue";
 import { http_request } from "../../../api";
+import Detail from './detail.vue'
+
 export default {
   name: "manage",
-  components: { QueryForm },
+  components: { QueryForm,Detail },
   data() {
     return {
       showSearch: true,
@@ -76,6 +79,8 @@ export default {
       tableColumnsConfig,
       tableData: [],
       statusList,
+      currCode:null,
+      detailDrawer:false
     };
   },
   created() {
@@ -101,9 +106,11 @@ export default {
       return result;
     },
     handleDetail(data) {
+       this.currCode = data.appointCarOrderCode;
+      this.detailDrawer = true
       console.log("manage data", data);
-      const code = data.appointCarOrderCode;
-      this.$router.push("manage/detail?code=" + code);
+      // const code = data.appointCarOrderCode;
+      // this.$router.push("manage/detail?code=" + code);
     },
 
     async getList() {
@@ -125,39 +132,13 @@ export default {
       this.queryParams.pageNum = 1;
       this.getList();
     },
+     colseDetailDrawer(){
+      this.detailDrawer = false
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.device-info {
-  margin: 0 15px;
-  @mixin box-shadow {
-    margin: 0 0 15px;
-    padding: 20px;
-    background: #fff;
-    box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
-    border-radius: 3px;
-  }
 
-  .device-info-left {
-    @include box-shadow;
-    min-height: calc(100vh - 146px);
-  }
-
-  .device-info-right {
-    .device-info-right-top {
-      @include box-shadow;
-      padding-bottom: 8px;
-    }
-    .device-info-right-bottom {
-      @include box-shadow;
-    }
-  }
-}
-.table-colunm {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 </style>

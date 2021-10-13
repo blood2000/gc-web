@@ -50,6 +50,8 @@
         @pagination="getList"
       />
     </div>
+    <Detail :code="currCode" :detailDrawer="detailDrawer" :options="{title:'调度单派车'}" @colseDetailDrawer='colseDetailDrawer' />
+    <Car :code="currCode" :carDrawer='carDrawer' :options="{title:'调度单派车'}" @colseCarDrawer='colseCarDrawer'/>
   </div>
 </template>
 
@@ -58,13 +60,18 @@ import { dispatchOrderStatusList, tableColumnsConfig } from "./order_config";
 import QueryForm from "./components/queryForm.vue";
 import { http_request } from "../../../api";
 import { listByDict } from "../../../api/system/dict/data.js";
+import Detail from './detail.vue'
+import Car from './car.vue'
 export default {
   name: "order",
-  components: { QueryForm },
+  components: { QueryForm,Detail,Car },
   data() {
     return {
       showSearch: true,
       loading: false,
+      detailDrawer:false,//详情抽屉
+      carDrawer:false,// 派车抽屉
+      currCode:null,
       queryParams: {
         pageNum: 1, //页码
         pageSize: 10, //每页显示条数
@@ -101,6 +108,7 @@ export default {
     });
   },
   mounted() {
+    
     this.searchQuery();
   },
   methods: {
@@ -119,14 +127,16 @@ export default {
       this.$router.push("/dispatch/recode?code=" + code);
     },
     handleDetail(data) {
-      const code = data.dispatchOrderCode;
-      this.$router.push("order/detail?code=" + code);
+      this.currCode = data.dispatchOrderCode;
+      this.detailDrawer = true
+      // this.$router.push("order/detail?code=" + code);
     },
     handleDispatch(data) {
       //dispatch/order/car
       console.log("data", data);
-      const code = data.dispatchOrderCode;
-      this.$router.push("order/car?code=" + code);
+      this.carDrawer = true
+     this.currCode  = data.dispatchOrderCode;
+      // this.$router.push("order/car?code=" + code);
     },
     formToPaging() {
       const tmp = { ...this.queryParams };
@@ -175,6 +185,12 @@ export default {
       this.queryParams.pageNum = 1;
       this.getList();
     },
+    colseDetailDrawer(){
+      this.detailDrawer = false
+    },
+    colseCarDrawer(){
+      this.carDrawer =false
+    }
   },
 };
 </script>

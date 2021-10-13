@@ -1,230 +1,225 @@
  <template>
-  <div class="app-container">
-    <div class="dispatch-order-info">
-      <TitleSideBlueTip title="订单信息" />
-      <div class="dispatch-order-content">
-        <el-form
-          :disabled="true"
-          ref="pageData"
-          :model="pageData"
-          label-width="120px"
-          label-position="left"
-        >
-          <el-row :gutter="10" class="dispatch-base-contents-box">
-            <el-col :span="8">
-              <el-form-item label="用车企业:" prop="companyName">
-                <el-input
-                  v-model="pageData.companyName"
-                  clearable
-                  style="width: 220px"
-                />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="下单客户姓名:" prop="shipmentName">
-                <el-input
-                  v-model="pageData.shipmentName"
-                  clearable
-                  style="width: 220px"
-                />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="下单客户电话:" prop="shipmentPhone ">
-                <el-input
-                  v-model="pageData.shipmentPhone"
-                  clearable
-                  style="width: 220px"
-                />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row :gutter="10" class="dispatch-base-contents-box">
-            <el-col :span="8">
-              <el-form-item label="货物类型:" prop="goodsTypeName">
-                <el-input
-                  v-model="pageData.goodsTypeName"
-                  clearable
-                  style="width: 220px"
-                />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="运费单价:" prop="freightStr">
-                <el-input
-                  v-model="pageData.freightStr"
-                  clearable
-                  style="width: 220px"
-                />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <div>
-            <div class="dispatch-title-item">出发地信息</div>
+  <el-drawer
+    :title="options.title"
+    :visible.sync="carDrawer"
+    direction="rtl"
+    :before-close="handleClose"
+    size="42%"
+  >
+    <TitleSideBlueTip title="订单信息" />
+    <div class="dispatch-order-content">
+      <el-form
+        :disabled="true"
+        ref="pageData"
+        :model="pageData"
+        label-width="120px"
+        label-position="top"
+      >
+        <el-row :gutter="10" class="dispatch-base-contents-box">
+          <el-col :span="7">
+            <el-form-item label="用车企业:" prop="companyName">
+              <el-input
+                v-model="pageData.companyName"
+                clearable
+                style="width: 200px"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="下单客户姓名:" prop="shipmentName">
+              <el-input
+                v-model="pageData.shipmentName"
+                clearable
+                style="width: 156px"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="下单客户电话:" prop="shipmentPhone ">
+              <el-input
+                v-model="pageData.shipmentPhone"
+                clearable
+                style="width: 156px"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
+            <el-form-item label="货物类型:" prop="goodsTypeName">
+              <el-input
+                v-model="pageData.goodsTypeName"
+                clearable
+                style="width: 128px"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="运费单价:" prop="freightStr">
+              <el-input
+                v-model="pageData.freightStr"
+                clearable
+                style="width: 156px"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <div class="dispatch-base-contents-box">
+          <div class="dispatch-title-item start_address">出发地信息</div>
+          <div class="dispatch-info-content">
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="省 / 市 / 区:" prop="loadAddress">
+                  <el-input
+                    v-model="pageData.loadAddress"
+                    clearable
+                    style="width: 220px"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="详细地址:" prop="loadDetail">
+                  <el-input
+                    v-model="pageData.loadDetail"
+                    clearable
+                    style="width: 220px"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="地址别名:" prop="loadAlias">
+                  <el-input
+                    v-model="pageData.loadAlias"
+                    clearable
+                    style="width: 220px"
+                  />
+                </el-form-item>
+              </el-col>
 
-            <div class="dispatch-info-content">
-              <el-row>
-                <el-col :span="12">
-                  <el-form-item label="省 / 市 / 区:" prop="loadAddress">
-                    <el-input
-                      v-model="pageData.loadAddress"
-                      clearable
-                      style="width: 220px"
-                    />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col :span="8">
-                  <el-form-item label="详细地址:" prop="loadDetail">
-                    <el-input
-                      v-model="pageData.loadDetail"
-                      clearable
-                      style="width: 220px"
-                    />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="地址别名:" prop="loadAlias">
-                    <el-input
-                      v-model="pageData.loadAlias"
-                      clearable
-                      style="width: 220px"
-                    />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col :span="8">
-                  <el-form-item label="联系人:" prop="loadLinkManName">
-                    <el-input
-                      v-model="pageData.loadLinkManName"
-                      clearable
-                      style="width: 220px"
-                    />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="联系人电话:" prop="loadLinkManPhone">
-                    <el-input
-                      v-model="pageData.loadLinkManPhone"
-                      clearable
-                      style="width: 220px"
-                    />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </div>
+              <el-col :span="8">
+                <el-form-item label="联系人电话:" prop="loadLinkManPhone">
+                  <el-input
+                    v-model="pageData.loadLinkManPhone"
+                    clearable
+                    style="width: 168px"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="联系人:" prop="loadLinkManName">
+                  <el-input
+                    v-model="pageData.loadLinkManName"
+                    clearable
+                    style="width: 112px"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
           </div>
-          <div>
-            <div class="title-item">目的地信息</div>
+        </div>
+        <div class="dispatch-base-contents-box">
+          <div class="dispatch-title-item end_address">目的地信息</div>
+          <div class="dispatch-info-content">
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="省 / 市 / 区:" prop="unloadAddress">
+                  <el-input
+                    v-model="pageData.unloadAddress"
+                    clearable
+                    style="width: 220px"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="详细地址:" prop="unloadDetail">
+                  <el-input
+                    v-model="pageData.unloadDetail"
+                    clearable
+                    style="width: 220px"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="地址别名:" prop="unloadAlias">
+                  <el-input
+                    v-model="pageData.unloadAlias"
+                    clearable
+                    style="width: 220px"
+                  />
+                </el-form-item>
+              </el-col>
 
-            <div class="dispatch-info-content">
-              <el-row>
-                <el-col :span="12">
-                  <el-form-item label="省 / 市 / 区:" prop="unloadAddress">
-                    <el-input
-                      v-model="pageData.unloadAddress"
-                      clearable
-                      style="width: 220px"
-                    />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col :span="8">
-                  <el-form-item label="详细地址:" prop="unloadDetail">
-                    <el-input
-                      v-model="pageData.unloadDetail"
-                      clearable
-                      style="width: 220px"
-                    />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="地址别名:" prop="unloadAlias">
-                    <el-input
-                      v-model="pageData.unloadAlias"
-                      clearable
-                      style="width: 220px"
-                    />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col :span="8">
-                  <el-form-item label="联系人:" prop="unloadLinkManName">
-                    <el-input
-                      v-model="pageData.unloadLinkManName"
-                      clearable
-                      style="width: 220px"
-                    />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="联系人电话:" prop="unloadLinkManPhone">
-                    <el-input
-                      v-model="pageData.unloadLinkManPhone"
-                      clearable
-                      style="width: 220px"
-                    />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </div>
+              <el-col :span="8">
+                <el-form-item label="联系人电话:" prop="unloadLinkManPhone">
+                  <el-input
+                    v-model="pageData.unloadLinkManPhone"
+                    clearable
+                    style="width: 168px"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="联系人:" prop="unloadLinkManName">
+                  <el-input
+                    v-model="pageData.unloadLinkManName"
+                    clearable
+                    style="width: 112px"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
           </div>
-        </el-form>
-      </div>
+        </div>
+      </el-form>
     </div>
     <!-- 派车填写表单 -->
-    <div class="dispatch-order-info">
-      <el-form
-        ref="ruleForm"
-        :rules="rules"
-        :model="form"
-        label-width="90px"
-        label-position="left"
-      >
-        <el-row class="dispatch-base-contents-box" style="padding-top: 20px">
-          <el-col :span="8">
-            <el-form-item label="开始日期:" prop="startDate">
-              <el-date-picker
-                v-model="form.startDate"
-                type="date"
-                :picker-options="startPickerOptions"
-                value-format="yyyy-MM-dd"
-                placeholder="选择开始日期"
-              >
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="结束日期:" prop="endDate">
-              <el-date-picker
-                v-model="form.endDate"
-                type="date"
-                :picker-options="endPickerOptions"
-                value-format="yyyy-MM-dd"
-                placeholder="选择结束日期"
-              >
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row class="dispatch-base-contents-box">
-          <el-col :span="8">
-            <el-form-item label="出车时间:" prop="outCarTime">
-              <el-time-picker
-                v-model="form.outCarTime"
-                value-format="HH:mm"
-                placeholder="选择出车时间"
-              >
-              </el-time-picker>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <TitleSideBlueTip title="承运车辆" />
-        <!-- <el-row :gutter="10" style="padding-left: 20px">
+    <el-form
+      ref="ruleForm"
+      :rules="rules"
+      :model="form"
+      label-width="90px"
+      label-position="top"
+    >
+      <el-row class="dispatch-base-contents-big ">
+        <el-col :span="8">
+          <el-form-item label="开始日期:" prop="startDate">
+            <el-date-picker
+              v-model="form.startDate"
+              type="date"
+              :picker-options="startPickerOptions"
+              value-format="yyyy-MM-dd"
+              placeholder="选择开始日期"
+            >
+            </el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="结束日期:" prop="endDate">
+            <el-date-picker
+              v-model="form.endDate"
+              type="date"
+              :picker-options="endPickerOptions"
+              value-format="yyyy-MM-dd"
+              placeholder="选择结束日期"
+            >
+            </el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="出车时间:" prop="outCarTime">
+            <el-time-picker
+              v-model="form.outCarTime"
+              value-format="HH:mm"
+              placeholder="选择出车时间"
+            >
+            </el-time-picker>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <TitleSideBlueTip style="margin: 20px 0" title="承运车辆" />
+      <!-- <el-row :gutter="10" style="padding-left: 20px">
           <el-col :span="8">
             <el-form-item label="承运数量:" prop="companyName">
               <el-input
@@ -235,85 +230,86 @@
             </el-form-item>
           </el-col>
         </el-row> -->
-        <div
-          class="vehicleDrivers-content"
-          v-for="(item, index) in form.vehicleDrivers"
-          :key="item.key"
+      <div
+        class="dispatch-base-contents-big vehicleDrivers-content "
+        v-for="(item, index) in form.vehicleDrivers"
+        :key="item.key"
+      >
+        <el-form-item
+          label="承运车辆:"
+          :prop="'vehicleDrivers.' + index + '.vehicleCode'"
+          :rules="{
+            required: true,
+            message: '承运车辆为空',
+            trigger: 'change',
+          }"
         >
-          <el-form-item
-            label="承运车辆:"
-            :prop="'vehicleDrivers.' + index + '.vehicleCode'"
-            :rules="{
-              required: true,
-              message: '承运车辆为空',
-              trigger: 'change',
-            }"
+          <el-select
+            v-model="item.vehicleCode"
+            clearable
+            filterable
+            @change="vehicleChange($event, index)"
+            placeholder="请选择承运车辆"
           >
-            <el-select
-              v-model="item.vehicleCode"
-              clearable
-              filterable
-              @change="vehicleChange($event, index)"
-              placeholder="请选择承运车辆"
-            >
-              <el-option
-                v-for="(sub, i) in vehicleList"
-                :key="i"
-                :label="sub.vehicleNumber"
-                :value="sub.vehicleCode"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item
-            label="承运司机:"
-            :prop="`vehicleDrivers[${index}].driverCode`"
-            style="padding-left: 20px"
-            :rules="{
-              required: true,
-              message: '承运司机为空',
-              trigger: 'change',
-            }"
+            <el-option
+              v-for="(sub, i) in vehicleList"
+              :key="i"
+              :label="sub.vehicleNumber"
+              :value="sub.vehicleCode"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="承运司机:"
+          :prop="`vehicleDrivers[${index}].driverCode`"
+          style="padding-left: 20px"
+          :rules="{
+            required: true,
+            message: '承运司机为空',
+            trigger: 'change',
+          }"
+        >
+          <el-select
+            v-model="item.driverCode"
+            clearable
+            filterable
+            @change="driverChange($event, index)"
+            placeholder="请选择承运司机"
           >
-            <el-select
-              v-model="item.driverCode"
-              clearable
-              filterable
-              @change="driverChange($event, index)"
-              placeholder="请选择承运司机"
-            >
-              <el-option
-                v-for="(sub, i) in driverList[index]"
-                :key="i"
-                :label="sub.value"
-                :value="sub.key"
-              />
-            </el-select>
-          </el-form-item>
-          <div class="edit-icon">
-            <el-button
-              type="primary"
-              icon="el-icon-plus"
-              circle
-              @click="addItem(item, index)"
-            ></el-button>
-            <el-button
-              v-show="index !== 0"
-              type="danger"
-              icon="el-icon-minus"
-              circle
-              @click="delItem(item, index)"
-            ></el-button>
-          </div>
+            <el-option
+              v-for="(sub, i) in driverList[index]"
+              :key="i"
+              :label="sub.value"
+              :value="sub.key"
+            />
+          </el-select>
+        </el-form-item>
+        <div class="edit-icon">
+          <el-button
+            type="primary"
+            icon="el-icon-plus"
+            circle
+            @click="addItem(item, index)"
+          ></el-button>
+          <el-button
+            v-show="index !== 0"
+            type="danger"
+            icon="el-icon-minus"
+            circle
+            @click="delItem(item, index)"
+          ></el-button>
         </div>
-        <el-form-item>
+      </div>
+      <el-form-item>
+        <div class="dispatch-base-confrim">
           <el-button @click="resetForm('ruleForm')">重置</el-button>
           <el-button type="primary" @click="submitForm('ruleForm')"
             >确定</el-button
           >
-        </el-form-item>
-      </el-form>
-    </div>
-  </div>
+        </div>
+      </el-form-item>
+    </el-form>
+  </el-drawer>
 </template>
 
 <script>
@@ -321,7 +317,20 @@ import { http_request } from "../../../api";
 
 export default {
   name: "car",
-  components: {},
+  props: {
+    code: {
+      type: String,
+      default: "",
+    },
+    carDrawer: {
+      type: Boolean,
+      default: false,
+    },
+    options: {
+      type: Object,
+      default: {},
+    },
+  },
   data() {
     return {
       pageData: {
@@ -399,14 +408,28 @@ export default {
     };
   },
   created() {},
+  watch: {
+    carDrawer() {
+      console.log("我在监听");
+      if (this.carDrawer) {
+        console.log("他变成true", this.code);
+        this.form.dispatchOrderCode = this.code;
+        this.getDetail();
+        this.listVehicleSelect();
+      }
+    },
+  },
   mounted() {
-    if (document.location.search.includes("code")) {
-      this.form.dispatchOrderCode = document.location.search.split("=")[1];
-    }
-    this.getDetail();
-    this.listVehicleSelect();
+    // if (document.location.search.includes("code")) {
+    //   this.form.dispatchOrderCode = document.location.search.split("=")[1];
+    // }
+    // this.getDetail();
+    // this.listVehicleSelect();
   },
   methods: {
+    handleClose() {
+      this.$emit("colseCarDrawer");
+    },
     //查找车辆默认司机
     searchDefaultDriverCode(vkey, index) {
       const me = this;
@@ -517,6 +540,7 @@ export default {
     },
     //获取详情
     async getDetail() {
+      console.log("this.form.dispatchOrderCode", this.form.dispatchOrderCode);
       //detail_dispatch
       const obj = {
         moduleName: "http_dispatch",
@@ -590,6 +614,7 @@ export default {
 }
 .edit-icon {
   padding-left: 20px;
+  line-height: 125px;
 }
 .edit-icon i {
   padding-right: 20px;

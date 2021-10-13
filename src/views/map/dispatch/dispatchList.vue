@@ -41,12 +41,19 @@
         @pagination="getList"
       />
     </div>
+    <Detail
+      :code="currCode"
+      :detailDrawer="detailDrawer"
+      :options="{ title: '调度单派车' }"
+      @colseDetailDrawer="colseDetailDrawer"
+    />
   </div>
 </template>
 
 <script>
 import { http_request } from "../../../api";
 import config from "./config";
+import Detail from "../../dispatch/order/detail.vue";
 export default {
   data() {
     return {
@@ -68,11 +75,14 @@ export default {
         endDate: "", //创建结束时间 yyyy-MM-dd
         remark: null, //备注
         dispatchOrderStatus: [1, 2], //状态为非关闭的调度单
+       
       },
+       detailDrawer: false,
+       currCode:null
     };
   },
 
-  components: {},
+  components: { Detail },
   computed: {
     isFresh() {
       if (this.$store.getters.isFresh) {
@@ -98,9 +108,11 @@ export default {
       this.$store.commit("set_dispatchInfo", item);
     },
     //跳转调度单详情
-    toDispatchDetail(item) {
-      const code = item.dispatchOrderCode;
-      this.$router.push("../../dispatch/order/detail?code=" + code);
+    toDispatchDetail(data) {
+      this.currCode = data.dispatchOrderCode;
+      this.detailDrawer = true;
+      // const code = item.dispatchOrderCode;
+      // this.$router.push("../../dispatch/order/detail?code=" + code);
     },
 
     //选择调度单
@@ -143,6 +155,9 @@ export default {
       this.queryParams.pageNum = 1;
       this.getList();
     },
+    colseDetailDrawer(){
+            this.detailDrawer = false
+    }
   },
 };
 </script>
