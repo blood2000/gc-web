@@ -3,7 +3,6 @@
     <el-row :gutter="15">
       <el-col :span="9">
         <el-card class="box-card detail-left">
-          <h2>车辆信息</h2>
           <div class="info">
             <div class="info-title">
               <span>基础信息</span>
@@ -25,12 +24,6 @@
                 <span>{{ isPageShow("vehicleInf", "group") }} </span>
               </div>
 
-              <div>
-                <span> 车辆识别代号： </span>
-                <span
-                  >{{ isPageShow("vehicleLicenseInf", "chassisNumber") }}
-                </span>
-              </div>
               <!-- <div>
                 <span> 发动机号： </span>
                 <span>
@@ -73,7 +66,12 @@
                   >{{ isPageShow("vehicleInf", "vehicleLoadWeight") }} 吨
                 </span>
               </div>
-
+              <div style="width: 100%">
+                <span> 车辆识别代号： </span>
+                <span
+                  >{{ isPageShow("vehicleLicenseInf", "chassisNumber") }}
+                </span>
+              </div>
               <div>
                 <span> 备注信息： </span>
                 <span>{{ vehicleInfo.remark }} </span>
@@ -94,9 +92,9 @@
                 <span>停用状态：</span>
                 <span>{{ vehicleInfo.vehicleStatusValue }}</span>
               </el-col>
-               <el-col :span="8">
+              <el-col :span="8">
                 <span>审核状态：</span>
-                <span>{{ vehicleInfo.authStatusValue	 }}</span>
+                <span>{{ vehicleInfo.authStatusValue }}</span>
               </el-col>
             </el-row>
           </div>
@@ -356,10 +354,11 @@ export default {
       if (speed.text) contentValue.push(`${speed.text}km/h`);
       if (direction.text) contentValue.push(`${direction.text}°`);
       // 绘制标记
-      const styleObjContent = `<div style="transform:rotate(${(direction.value || -30)}deg)" class="own-device-marker-car ${(carrier_type || "qt")}"></div>`
+      const styleObjContent = `<div style="transform:rotate(${
+        direction.value || -30
+      }deg)" class="own-device-marker-car ${carrier_type || "qt"}"></div>`;
       const styleObj = {
-        content:
-         styleObjContent,
+        content: styleObjContent,
         offset: this.offsetList[carrier_type || "qt"],
         angle: 0,
       };
@@ -559,8 +558,15 @@ export default {
     display: flex;
     flex-direction: row;
     span {
-      width: 80px;
-      line-height: 49px;
+      flex-shrink: 0;
+      font-size: 14px;
+      font-family: PingFang SC;
+      font-weight: bold;
+      line-height: 47px;
+      color: #262626;
+      opacity: 1;
+      display: inline-block;
+      margin-right: 12px;
     }
   }
   .mar-bottom {
