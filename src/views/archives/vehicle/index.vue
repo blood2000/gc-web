@@ -235,13 +235,13 @@ export default {
         vehicleStatus: null, //车辆状态
         groupName: null, //分组
         dateRange: [], //日期范围
-        enabled: null, //是否停用
+        enabled: null, //是否启用
         orgCode: null,
       },
       vehicleCode: "",
       vehicleStatusList: [], //车辆状态
       vehicleStatusOptions: {},
-      enabledList: [], //是否停用列表
+      enabledList: [], //是否启用列表
       groupList: [], //分组列表
       tableColumnsConfig: [], //配置表头数据
       vehicleList: [], //表格数据
@@ -404,7 +404,7 @@ export default {
         licenseNumber: this.queryParams.licenseNumber || null, //车牌号
         vehicleStatus: this.queryParams.vehicleStatus || null, //车辆状态
         groupName: this.queryParams.groupName || null, //分组
-        enabled: this.queryParams.enabled || null, //是否停用
+        enabled: this.queryParams.enabled || null, //是否启用
         createBeginTime:
           (this.queryParams.dateRange && this.queryParams.dateRange[0]) || null,
         createEndTime:

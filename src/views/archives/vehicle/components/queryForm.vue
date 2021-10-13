@@ -75,7 +75,7 @@
             clearable
             filterable
             style="width: 185px"
-            placeholder="请选择是否停用"
+            placeholder="请选择是否启用"
             @change="$emit('handleQuery')"
           >
             <el-option

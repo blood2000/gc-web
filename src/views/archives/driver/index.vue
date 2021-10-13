@@ -415,8 +415,8 @@ export default {
         name: this.queryParams.name,
         telphone: this.queryParams.telphone,
         enabled: this.queryParams.enabled, //分组
-        driverStatus: this.queryParams.driverStatus || null, //是否停用
-        realStatus: this.queryParams.realStatus, //是否停用
+        driverStatus: this.queryParams.driverStatus || null, //是否启用
+        realStatus: this.queryParams.realStatus, //是否启用
         createBeginTime: this.queryParams.dateRange[0] || null,
         createEndTime: this.queryParams.dateRange[1] || null,
         orgCode: this.queryParams.orgCode,

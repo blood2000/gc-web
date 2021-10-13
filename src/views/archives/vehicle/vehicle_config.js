@@ -61,7 +61,7 @@ const tableColumnsConfig = [
   },
   {
     isShow: true,
-    label: "是否停用",
+    label: "是否启用",
     prop: "enabled",
     sortNum: 4,
     tooltip: true,
