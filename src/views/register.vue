@@ -1,5 +1,6 @@
 <template>
   <div class="register">
+    <!-- <iframe class="iframe" src="/static/protocol/protocol.html" frameborder="0" /> -->
     <el-form
       v-if="registerStatus === 0"
       ref="registerForm"
@@ -42,6 +43,15 @@
           {{ verCodeText }}
         </div>
       </el-form-item>
+      <div class="protocol">
+        注册即表示您同意我们的 
+        <span @click="toProtocol">《用户协议》</span>
+        <!-- <router-link class="link-type" :to="'/protocol'">
+          《用户协议》
+        </router-link> -->
+        <span @click="toPrivacy">《隐私政策》</span>
+        
+      </div>
       <el-form-item style="width: 100%">
         <el-button
           :loading="loading"
@@ -379,9 +389,20 @@ export default {
       });
     },
 
+    //跳转用户协议
+    toProtocol() {
+      // const code = item.dispatchOrderCode;
+      // this.$router.push("../../dispatch/order/detail?code=" + code);
+      this.$router.push("protocol");
+    },
+
+    toPrivacy() {
+      this.$router.push("privacy");
+    },
+
     //上传身份证图片
     importIdCard(type) {
-      this.idcardType = type;   //0-正面；1-反面
+      this.idcardType = type; //0-正面；1-反面
       this.$refs.import.dispatchEvent(new MouseEvent("click"));
     },
     //选取文件
@@ -536,6 +557,19 @@ export default {
   text-align: center;
   color: #121212;
   font-weight: bold;
+}
+
+.protocol {
+  height: 30px;
+  line-height: 30px;
+  font-size: 14px;
+  color: #8590a6;
+  margin-bottom: 20px;
+}
+
+.protocol > span {
+  color: #3c81ff;
+  cursor: pointer;
 }
 
 .register-form {

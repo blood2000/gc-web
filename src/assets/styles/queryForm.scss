@@ -1,0 +1,27 @@
+.queryForm-first-line {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  .queryForm-btn-box {
+    text-align: right;
+    min-width: 200px;
+    height: 33px;
+    margin-right: 0;
+    .queryForm-icon {
+      font-size: 12px;
+      color: #409eff;
+      padding-right: 10px;
+      cursor: pointer;
+    }
+  }
+  
+}
+.queryForm-unfold-line {
+  transition: height .25s linear;
+  .hidden {
+    height: 0;
+    overflow: hidden;
+    
+  }
+}
+

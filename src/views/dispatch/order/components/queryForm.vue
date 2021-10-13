@@ -65,6 +65,19 @@
         />
       </el-select>
     </el-form-item>
+    <el-form-item>
+      <el-button
+        type="primary"
+        icon="el-icon-search"
+        @click="$emit('handleQuery')"
+      >
+        搜索
+      </el-button>
+      <el-button type="primary" plain icon="el-icon-refresh" @click="reset">
+        重置
+      </el-button>
+    </el-form-item>
+
     <el-form-item label="调度单来源" prop="source">
       <el-input
         v-model="queryParams.source"

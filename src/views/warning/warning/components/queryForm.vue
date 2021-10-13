@@ -180,6 +180,7 @@ export default {
   },
   data() {
     return {
+      unfold: false,
       pickerOptions,
       open: false,
       loading: false,
@@ -204,6 +205,9 @@ export default {
   mounted() {},
 
   methods: {
+    expand() {
+      this.unfold = !this.unfold;
+    },
     reset() {
       this.queryParams.pageNum = 1;
       // this.resetForm('queryForm');
