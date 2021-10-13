@@ -5,6 +5,8 @@
     :show-summary="summary"
     :border="border"
     :data="data"
+        style="width: 100%"
+    :fit="true"
     v-bind="$attrs"
     highlight-current-row
     @selection-change="handleSelectionChange"

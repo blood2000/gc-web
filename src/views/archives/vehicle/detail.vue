@@ -19,10 +19,10 @@
                 <span> 归属组织： </span>
                 <span> {{ orgName }}</span>
               </div>
-              <div>
+              <!-- <div>
                 <span> 车辆分组： </span>
                 <span>{{ isPageShow("vehicleInf", "group") }} </span>
-              </div>
+              </div> -->
 
               <!-- <div>
                 <span> 发动机号： </span>
@@ -66,7 +66,7 @@
                   >{{ isPageShow("vehicleInf", "vehicleLoadWeight") }} 吨
                 </span>
               </div>
-              <div style="width: 100%">
+              <div >
                 <span> 车辆识别代号： </span>
                 <span
                   >{{ isPageShow("vehicleLicenseInf", "chassisNumber") }}
@@ -106,11 +106,11 @@
             <el-row>
               <el-col :span="12">
                 <span>司机姓名：</span>
-                <span></span>
+                <span>{{vehicleInfo.defaultDriverName}}</span>
               </el-col>
               <el-col :span="12">
                 <span>司机电话：</span>
-                <span></span>
+                <span>{{vehicleInfo.defaultDriverTelphone}}</span>
               </el-col>
             </el-row>
           </div>

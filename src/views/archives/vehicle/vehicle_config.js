@@ -109,13 +109,13 @@ const warningInfoTableColumnsConfig = [
     tooltip: true,
     width: 100
   },
-  {
-    isShow: true,
-    label: "司机",
-    prop: "nickName",
-    sortNum: 2,
-    tooltip: true
-  },
+  // {
+  //   isShow: true,
+  //   label: "司机",
+  //   prop: "nickName",
+  //   sortNum: 2,
+  //   tooltip: true
+  // },
   {
     isShow: true,
     label: "告警级别",

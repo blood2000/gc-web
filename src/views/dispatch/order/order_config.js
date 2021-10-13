@@ -26,6 +26,7 @@ export const tableColumnsConfig = [
         prop: "dispatchOrderNo",
         sortNum: 1,
         tooltip: true,
+        //width:200
     },
     {
         isShow: true,
@@ -33,6 +34,7 @@ export const tableColumnsConfig = [
         prop: "source",
         sortNum: 2,
         tooltip: true,
+        //width:200
     },
     {
         isShow: true,
@@ -40,6 +42,7 @@ export const tableColumnsConfig = [
         prop: "shipmentName",
         sortNum: 3,
         tooltip: true,
+        //width:200
     },
     {
         isShow: true,
@@ -47,12 +50,14 @@ export const tableColumnsConfig = [
         prop: "companyName",
         sortNum: 4,
         tooltip: true,
+        //width:200
     }, {
         isShow: true,
         label: "项目名称",
         prop: "companyName",
         sortNum: 5,
         tooltip: true,
+        //width:200
     },
     // {
     //     isShow: true,
@@ -67,6 +72,7 @@ export const tableColumnsConfig = [
         prop: "goodsTypeName",
         sortNum: 7,
         tooltip: true,
+        //width:200
     },
     {
         isShow: true,
@@ -74,6 +80,7 @@ export const tableColumnsConfig = [
         prop: "dispatchOrderStatus",
         sortNum: 7,
         tooltip: true,
+        //width:200
     },
     {
         isShow: true,
@@ -81,6 +88,7 @@ export const tableColumnsConfig = [
         prop: "remark",
         sortNum: 9,
         tooltip: true,
+        //width:200
     },
 
     {
@@ -89,6 +97,7 @@ export const tableColumnsConfig = [
         prop: "loadFormattedAddress",
         sortNum: 9,
         tooltip: true,
+        //width:400
     },
     {
         isShow: true,
@@ -96,6 +105,7 @@ export const tableColumnsConfig = [
         prop: "unloadFormattedAddress",
         sortNum: 9,
         tooltip: true,
+        //width:400
     },
     {
         isShow: true,
@@ -103,6 +113,7 @@ export const tableColumnsConfig = [
         prop: "freightStr",
         sortNum: 9,
         tooltip: true,
+        //width:200
     },
     {
         isShow: true,
@@ -110,6 +121,7 @@ export const tableColumnsConfig = [
         prop: "createTime",
         sortNum: 9,
         tooltip: true,
+        //width:200
     },
     {
         isShow: true,
@@ -117,6 +129,7 @@ export const tableColumnsConfig = [
         prop: "remark",
         sortNum: 9,
         tooltip: true,
+        //width:200
     },
     {
         isShow: true,

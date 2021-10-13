@@ -16,7 +16,6 @@
       size="small"
       :disabled="isDetail"
       label-position="top"
-      d
     >
       <el-row>
         <el-col :span="8">
@@ -24,6 +23,7 @@
             <treeselect
               v-model="form.orgCode"
               :options="deptOptions"
+               :disabled="isDetail"
               :normalizer="normalizer"
               :show-count="true"
               placeholder="请选择所属组织"
