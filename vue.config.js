@@ -43,6 +43,7 @@ module.exports = {
         // target: `http://192.168.30.166:8080`, //本地
         // target: `http://192.168.30.10:8080`, //本地---地图
         // target:`http://192.168.30.36:8080`,
+        // target:`http://192.168.1.34:8080`,
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''

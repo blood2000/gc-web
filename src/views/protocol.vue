@@ -33,8 +33,8 @@
       <p>
         <span style="font-family:微软雅黑; font-size:12pt;font-weight: bold;">
           1.1.&#xa0;至简管车服务条款是您与福建至简至一信息科技有限公司平台（“至简管车”或者“我们”）就使用至简管车服务而订立的有效合约。车队管家包含域名为
-          <a href="https://ddcwl.com/">
-            https://ddcwl.com/
+          <a href="http://www.z1gc.cn">
+            http://www.z1gc.cn
           </a>
           、司机APP、微信小程序、微信公众号等。
         </span>
