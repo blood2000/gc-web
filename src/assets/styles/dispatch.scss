@@ -1,18 +1,36 @@
 .dispatch-base-contents-box {
   padding-left: 20px;
 }
-.dispatch-contents-box{
-    padding-left: 20px;
-    font-size: 16px;
-    margin: 20px 0;
+.dispatch-base-contents-big {
+  padding-left: 40px !important;
+}
+.dispatch-contents-box {
+  padding-left: 20px;
+  font-size: 16px;
+  margin: 10px 0;
 }
 .dispatch-title-item {
-  font-size: 18px;
-  font-weight: 700;
-  margin: 10px;
+  height: 20px;
+  font-size: 14px;
+  font-family: PingFang SC;
+  font-weight: bold;
+  line-height: 24px;
+  color: #262626;
+  opacity: 1;
+  margin: 16px 0;
+}
+.start_address {
+  padding-left: 25px;
+  background: url("../images/detail/start_address.png") no-repeat;
+  background-size: 20px 20px;
+}
+.end_address {
+  padding-left: 25px;
+  background: url("../images/detail/end_address.png") no-repeat;
+  background-size: 20px 20px;
 }
 .dispatch-info-content {
-  min-height:100px;
+  min-height: 100px;
   width: 100%;
   background: rgba(176, 224, 230, 0.5);
   border-radius: 10px;
@@ -26,8 +44,24 @@
 }
 .dispatch-base-label {
   font-size: 14px;
-  color: #606266;
-  margin-right: 20px;
+  color: #adb5bd;
+  margin-right: 5px;
+  /* margin-bottom: 16px; */
+  width: 88px;
+  display: inline-block;
+  /* float: right; */
+  text-align: right;
 }
 .dispatch-base-text {
+  width: 135px;
+  height: 20px;
+  font-size: 14px;
+  font-family: PingFang SC;
+  font-weight: 400;
+  line-height: 22px;
+  color: #3d4050;
+  opacity: 1;
+}
+.dispatch-base-confrim{
+  text-align: center;
 }

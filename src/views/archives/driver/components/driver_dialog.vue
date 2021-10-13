@@ -88,13 +88,14 @@
               v-model="form.telphone"
               placeholder=" 请输入手机号码"
               clearable
+              @blur="changeBlurTel"
             />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <span style="color: red">*</span>
+          <!-- <span style="color: red">*</span> -->
           <el-form-item
             style="display: inline-block"
             label="身份证号"
@@ -104,15 +105,15 @@
               v-model="form.identificationNumber"
               placeholder="支持自动识别"
               clearable
+              @blur="changeBlurId"
             />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="16">
+        <el-col :span="16" v-if="isIdDateValid">
           <el-form-item label="身份证有效期:" prop="idDateRange">
             <el-date-picker
-              :disabled="form.identificationEffective"
               v-model="form.idDateRange"
               unlink-panels
               :picker-options="pickerOptions"
@@ -125,12 +126,18 @@
             />
           </el-form-item>
         </el-col>
-        <el-col :span="4">
-          <el-form-item prop="identificationEffective">
-            <el-checkbox v-model="form.identificationEffective"
-              >是否长期有效</el-checkbox
-            >
-          </el-form-item>
+        <el-col :span="10" v-if="!isIdDateValid">
+          <el-date-picker
+            v-model="form.idDateRange[0]"
+            align="right"
+            type="date"
+            placeholder="选择日期"
+            :picker-options="pickerOptions"
+          >
+          </el-date-picker>
+        </el-col>
+        <el-col :span="6" v-if="!isIdDateValid">
+          <el-input v-model="form.idDateRange[1]" disabled />
         </el-col>
       </el-row>
       <el-row>
@@ -148,10 +155,9 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="16">
+        <el-col :span="16" v-if="isDriverDateValid">
           <el-form-item label="驾驶证有效期:" prop="driverDateRange">
             <el-date-picker
-              :disabled="form.validPeriodAlways"
               v-model="form.driverDateRange"
               unlink-panels
               :picker-options="pickerOptions"
@@ -164,12 +170,18 @@
             />
           </el-form-item>
         </el-col>
-        <el-col :span="4">
-          <el-form-item prop="validPeriodAlways">
-            <el-checkbox v-model="form.validPeriodAlways"
-              >是否长期有效</el-checkbox
-            >
-          </el-form-item>
+        <el-col :span="10" v-if="!isDriverDateValid">
+          <el-date-picker
+            v-model="form.driverDateRange[0]"
+            align="right"
+            type="date"
+            placeholder="选择日期"
+            :picker-options="pickerOptions"
+          >
+          </el-date-picker>
+        </el-col>
+        <el-col :span="6" v-if="!isDriverDateValid">
+          <el-input v-model="form.driverDateRange[1]" disabled />
         </el-col>
       </el-row>
 
@@ -237,6 +249,8 @@ export default {
     return {
       loading: false,
       pickerOptions,
+      isDriverDateValid: true,
+      isIdDateValid: true,
       form: {
         orgCode: null, //所属组织
         // password: null, //用户密码
@@ -246,10 +260,8 @@ export default {
         telphone: null, //手机号码
         identificationNumber: null, //身份证号
         idDateRange: [], //身份证有效期
-        identificationEffective: null, //身份证是否长期有效（0否,1是）
         driverLicenseImage: null, //驾驶证
         driverDateRange: [], //驾驶证有效期
-        validPeriodAlways: null, // 是否长期有效
         issuingOrganizations: null, //发证机关
         driverLicense: null, //驾驶证号
         remark: null, //备注
@@ -313,7 +325,7 @@ export default {
   watch: {
     open() {
       console.log(" this.options.editType", this.options.editType);
-      if(!this.open) return
+      if (!this.open) return;
       if (
         this.options.editType == "update" ||
         this.options.editType == "detail"
@@ -332,6 +344,72 @@ export default {
     this.getTree();
   },
   methods: {
+    changeBlurTel(e) {
+      this.checkIdOrphone("0", this.form.telphone);
+    },
+    changeBlurId(e) {
+      this.checkIdOrphone("1", this.form.identificationNumber);
+    },
+    //校验
+    async checkIdOrphone(type, value) {
+      if (!value) return;
+      const me = this;
+      const obj = {
+        moduleName: "http_driver",
+        method: "get",
+        url_alias: "driver_check",
+        data: { type, value },
+      };
+      const res = await http_request(obj);
+      console.log("司机校验", res);
+      if (res.code != "200") return;
+      const msgData = res.data;
+      console.log("msgData", msgData);
+      if (msgData.type != "2") {
+        console.log("0000000");
+        me.$confirm(`${msgData.value}`, "系统提示", {
+          confirmButtonText: "确认",
+          showCancelButton: false,
+          type: "warning",
+        }).then(() => {
+          if (type == "0") {
+            me.form.telphone = null;
+          } else {
+            me.form.identificationNumber = null;
+          }
+        });
+      } else {
+        me.$confirm(`${msgData.value}`, "系统提示", {
+          confirmButtonText: "确认",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+          .then(() => {
+            const bindObj = {
+              moduleName: "http_driver",
+              method: "get",
+              url_alias: "driver_bind",
+              data: { value },
+            };
+            console.log("2222222", bindObj);
+
+            http_request(bindObj).then((rsp) => {
+              console.log("111111", rsp);
+              me.reset();
+              me.$emit("colseDialog", "ok");
+              me.msgSuccess("添加成功");
+            });
+          })
+          .catch(() => {
+            console.log("catch");
+            if (type == "0") {
+              me.form.telphone = null;
+            } else {
+              me.form.identificationNumber = null;
+            }
+          });
+      }
+    },
     /** 获取组织树 */
     getTree() {
       const obj = {
@@ -418,14 +496,13 @@ export default {
         telphone: null, //手机号码
         identificationNumber: null, //身份证号
         idDateRange: [], //身份证有效期
-        identificationEffective: null,
         driverLicenseImage: null, //驾驶证
         driverDateRange: [], //驾驶证有效期
-        validPeriodAlways: null, // 是否长期有效
         issuingOrganizations: null, //发证机关
         remark: null, //备注
       };
       this.resetForm("form");
+      this.isDetail = false;
     },
     //身份证正面照/身份证反面照 上传结束后回调
     chooseImg(e) {
@@ -463,10 +540,13 @@ export default {
       const tmp = {
         0: () => {
           //身份证
-          if (data.number) me.form.identificationNumber = data.number;
+          if (data.number) {
+            me.form.identificationNumber = data.number;
+            me.checkIdOrphone("1", data.number);
+          }
           if (data.name) me.form.name = data.name;
           if (data.valid_from && data.valid_to) {
-            console.log("ocrDataToForm");
+            console.log("ocrDataToForm data", data);
             me.form.idDateRange = [data.valid_from, data.valid_to];
           }
         },
@@ -493,16 +573,12 @@ export default {
           data.identificationInf.identificationBeginTime || "",
           data.identificationInf.identificationEndTime || "",
         ], //身份证有效期
-        identificationEffective:
-          data.identificationInf.identificationEffective == "1" ? true : false,
         driverLicenseImage: data.driverLicenseInf.driverLicenseImage, //驾驶证
         driverDateRange: [
           data.driverLicenseInf.validPeriodTo || "",
           data.driverLicenseInf.validPeriodFrom || "",
         ], //驾驶证有效期
         driverLicense: data.driverLicenseInf.driverLicense,
-        validPeriodAlways:
-          data.driverLicenseInf.validPeriodAlways == "1" ? true : false, // 是否长期有效
         issuingOrganizations: data.driverLicenseInf.issuingOrganizations, //发证机关
         remark: data.remark, //备注
       };
@@ -524,7 +600,6 @@ export default {
           issuingOrganizations: form.issuingOrganizations, //驾驶证发证机关
           validPeriodTo: form.driverDateRange[1], //驾驶证有效期至
           driverLicenseImage: form.driverLicenseImage, //驾驶证照
-          validPeriodAlways: form.validPeriodAlways ? "1" : "0", //驾驶证是否长期有效
         },
         identificationInf: {
           identificationImage: form.identificationImage, //身份证正面照
@@ -533,7 +608,6 @@ export default {
           identificationBeginTime: form.idDateRange[0], //身份证有效期开始
           identificationBackImage: form.identificationBackImage, //身份证反面照
           identificationNumber: form.identificationNumber, //身份证号
-          identificationEffective: form.identificationEffective ? "1" : "0", //身份证是否长期有效（0否,1是）
         },
       };
       return obj;
@@ -547,7 +621,6 @@ export default {
           validPeriodTo: form.driverDateRange[1] || null,
           issuingOrganizations: form.issuingOrganizations,
           validPeriodFrom: form.driverDateRange[0] || null,
-          validPeriodAlways: form.validPeriodAlways ? "1" : "0",
         },
         identificationInf: {
           name: form.name,
@@ -556,7 +629,6 @@ export default {
           identificationBackImage: form.identificationBackImage,
           identificationImage: form.identificationImage,
           identificationNumber: form.identificationNumber,
-          identificationEffective: form.identificationEffective ? "1" : "0",
         },
         telphone: form.telphone,
         // password: form.password, //用户密码

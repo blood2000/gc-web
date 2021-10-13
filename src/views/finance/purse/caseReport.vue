@@ -1,14 +1,16 @@
 <template>
-  <div>
-    <div v-show="showSearch" class="app-container app-container--search">
-      <QueryForm
+ <div class="pages-info">
+ <div class="pages-info-right">
+      <!-- 上：搜索 -->
+         <QueryForm
         v-model="queryParams"
         @handleQuery="searchQuery"
         :bank-name-list="bankNameList"
         :bank-number-list="bankNumberList"
       />
-    </div>
-    <div class="app-container">
+    <!-- 分割线 -->
+      <div class="divier"></div>
+    <div class="toolsbar">
       <div class="purse-tool-bar">
         <div class="apply">
           <div style="margin-right: 40px">
@@ -16,7 +18,7 @@
             <!-- <div class="number">{{ dealApplyData.successfulTransfer || '-' }}</div> -->
             
           </div>
-          <div>
+          <div style="margin-right: 40px">
             <div class="titleStr">处理中金额: {{ dealApplyData.applying || '-' }}</div>
             <!-- <div class="number">{{ dealApplyData.applying || '-' }}</div> -->
             
@@ -35,6 +37,7 @@
           >
         </div>
       </div>
+    </div>
       <!-- 表格 -->
       <RefactorTable
         is-show-index
@@ -42,6 +45,8 @@
         :data="tableData"
         row-key="id"
         :table-columns-config="tableColumnsConfig"
+          :border="false"
+        :stripe="true"
       >
         <template #status="{ row }">
           <span :style="{color:dealStatusColor(row.status)}">{{ dealStatusText(row.status) }}</span>
@@ -49,7 +54,9 @@
       </RefactorTable>
       <!-- 分页 -->
       <pagination
+         v-show="total > 0"
         :total="total"
+        layout="prev, pager, next, sizes, total,  jumper"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="getList"

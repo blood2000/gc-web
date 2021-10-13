@@ -62,6 +62,7 @@
         <el-col :span="12">
           <el-form-item label="车牌号" prop="licenseNumber">
             <el-input
+              @blur="blurChange"
               v-model="form.licenseNumber"
               placeholder="请输入车牌号"
               clearable
@@ -86,7 +87,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
+      <!-- <el-row>
         <el-col :span="24">
           <el-form-item prop="engineNumber" label="发动机号">
             <el-input
@@ -96,7 +97,7 @@
             />
           </el-form-item>
         </el-col>
-      </el-row>
+      </el-row> -->
       <el-row>
         <el-col :span="24">
           <el-form-item label="车辆识别代号" prop="chassisNumber">
@@ -138,7 +139,7 @@
               placeholder="请选择车辆类型"
             >
               <el-option
-                v-for="(item, index) in defaultDriverList                                                 "
+                v-for="(item, index) in defaultDriverList"
                 :key="index"
                 :label="item.name"
                 :value="item.code"
@@ -298,7 +299,7 @@ import ImageUploadSimple from "@/components/ImageUpload/simple.vue";
 import { http_request } from "../../../../api";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import formValidate from '../../../../utils/formValidate'
+import formValidate from "../../../../utils/formValidate";
 export default {
   name: "vehicleDialog",
   components: { ImageUploadSimple, Treeselect },
@@ -329,7 +330,7 @@ export default {
         issueDate: null, //发证日期
         vehicleLoadWeight: null, // 可载重量
         vehicleTypeCode: null, //  车辆类型
-        engineNumber: null, //发动机号
+        // engineNumber: null, //发动机号
         chassisNumber: null, //车辆识别号码
         licenseNumber: null, //车牌号
         vehicleTotalWeight: null, //车辆总重量
@@ -385,24 +386,24 @@ export default {
       deptOptions: [],
       // 部门树键值转换
       normalizer(node) {
-        if(node.children == null || node.children == 'null'){
-          delete node.children
+        if (node.children == null || node.children == "null") {
+          delete node.children;
         }
-        const   obj = {
+        const obj = {
           id: node.code, // 键名转换，方法默认是label和children进行树状渲染
           label: node.orgName,
           // children: node.childrenOrgList,
-        }; 
-        if(node.childrenOrgList&& node.childrenOrgList.length >0 ){
-          obj.children =  node.childrenOrgList
+        };
+        if (node.childrenOrgList && node.childrenOrgList.length > 0) {
+          obj.children = node.childrenOrgList;
         }
-        console.log('obj',obj)
-        return obj
+        console.log("obj", obj);
+        return obj;
       },
       vehicleLicenseColorCodeList: [], //车牌类型
       carrierTypeList: [], //车辆承运类型list
       vehicleEnergyTypeList: [], //车辆能源类型list
-      defaultDriverList:[],//
+      defaultDriverList: [], //
     };
   },
   created() {},
@@ -417,7 +418,7 @@ export default {
       if (this.options.editType == "update" && this.open) {
         console.log("this.options", this.options, this.open);
         //请求
-        this.defaultDriverList = this.options.defaultDriverList
+        this.defaultDriverList = this.options.defaultDriverList;
         this.requsetDetail();
       }
     },
@@ -426,6 +427,80 @@ export default {
     this.getOrgTree();
   },
   methods: {
+    blurChange(e) {
+      console.log("eee", e);
+      this.checkVhicle();
+    },
+    //车辆校验
+    async checkVhicle() {
+      const me = this;
+      const licenseNumber = me.form.licenseNumber;
+      const orgCode = me.options.orgCode;
+      if(!licenseNumber) return
+      console.log("orgCode", orgCode);
+      console.log("licenseNumber", licenseNumber);
+      const obj = {
+        moduleName: "http_vehicle",
+        method: "post",
+        url_alias: "checkAdd",
+        data: {
+          vehicleLicenseInf: { licenseNumber },
+        },
+      };
+      const res = await http_request(obj);
+      console.log("车辆校验", res);
+      if (res.code != "200") return;
+      const msgData = res.data;
+      const selectObj = {
+        //0:车辆已存在,请勿重复添加! 1:车辆已注册,是否确认进行添加至本车队 2:车辆为新车,可进行添加!
+        0: () => {
+          me.$confirm(`${msgData.msg}`, "系统提示", {
+             confirmButtonText: "确认",
+            showCancelButton: false,
+            type: "warning",
+          }).then(() => {
+            console.log("0000000");
+            me.form.licenseNumber = null;
+          });
+        },
+        1: () => {
+          me.$confirm(`${msgData.msg}`, "系统提示", {
+            confirmButtonText: "确认",
+            cancelButtonText: "取消",
+            type: "warning",
+          })
+            .then(() => {
+              const obj = {
+                moduleName: "http_vehicle",
+                method: "post",
+                url_alias: "confirmAdd",
+                data: {
+                  orgCode,
+                  code: msgData.code,
+                },
+              };
+              http_request(obj).then((res) => {
+                console.log("111111", res);
+                me.reset();
+                me.$emit("colseDialog", "ok");
+                me.msgSuccess("添加成功");
+              });
+            })
+            .catch(() => {
+              me.form.licenseNumber = null;
+            });
+        },
+        2: () => {
+          console.log("22222");
+          me.$confirm(`${msgData.msg}`, "系统提示", {
+             confirmButtonText: "确认",
+            type: "info",
+            showCancelButton: false,
+          });
+        },
+      };
+      selectObj[msgData.type]();
+    },
     //获取组织树
     getOrgTree() {
       const obj = {
@@ -527,7 +602,7 @@ export default {
         issueDate: null, //发证日期
         vehicleLoadWeight: null, // 可载重量
         vehicleTypeCode: null, //  车辆类型
-        engineNumber: null, //发动机号
+        // engineNumber: null, //发动机号
         chassisNumber: null, //车辆识别号码
         licenseNumber: null, //车牌号
         vehicleTotalWeight: null, //车辆总重量
@@ -567,7 +642,11 @@ export default {
       const res = await http_request(obj);
       console.log("ocr请求", res);
       const result = res.data.result;
-      this.form.licenseNumber = result.number;
+      if (result.number) {
+        console.log("ocr识别到车牌了", result.number);
+        this.form.licenseNumber = result.number;
+        this.checkVhicle();
+      }
       console.log("side", side);
       const sideFn = {
         front: () => {
@@ -616,7 +695,7 @@ export default {
       this.form.issueDate = data.vehicleLicenseInf.issueDate; //发证日期
       this.form.vehicleLoadWeight = data.vehicleInf.vehicleLoadWeight; // 可载重量
       this.form.vehicleTypeCode = data.vehicleLicenseInf.vehicleTypeCode; //  车辆类型*
-      this.form.engineNumber = data.vehicleLicenseInf.engineNumber; //发动机号
+      // this.form.engineNumber = data.vehicleLicenseInf.engineNumber; //发动机号
       this.form.chassisNumber = data.vehicleInf.chassisNumber; //车辆识别号码
       this.form.licenseNumber = data.vehicleLicenseInf.licenseNumber; //车牌号
       this.form.vehicleTotalWeight = data.vehicleInf.vehicleTotalWeight; //车辆总重量

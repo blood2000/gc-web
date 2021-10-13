@@ -1,83 +1,47 @@
 <template>
-  <div>
-    <div v-show="showSearch" class="app-container app-container--search">
+  <div class="pages-info">
+    <div class="pages-info-right">
       <!-- 上：搜索 -->
       <QueryForm
         v-model="queryParams"
         :status-list="statusList"
         @handleQuery="searchQuery"
       />
-    </div>
-    <div class="app-container">
+      <!-- 分割线 -->
+      <div class="divier"></div>
       <!-- 操作栏 -->
-      <right-toolbar
-        :show-search.sync="showSearch"
-        @queryTable="searchQuery"
-        style="marginbottom: 10px"
-      />
+      <div class="toolsbar"></div>
       <!-- 表格 -->
-      <el-table
-        v-loading="loading"
-        row-key="id"
-        highlight-current-row
-        border
-        default-expand-all
+      <RefactorTable
+        is-show-index
+        :loading="loading"
         :data="tableData"
-        
+        row-key="id"
+        :table-columns-config="tableColumnsConfig"
+        :border="false"
+        :stripe="true"
       >
-        <template v-for="(item, index) in tableColumnsConfig">
-          <el-table-column
-            v-if="item.prop == 'edit'"
-            :key="index"
-            :prop="item.prop"
-            :label="item.label"
-            :show-overflow-tooltip="item.tooltip"
-            :width="item.width || '180'"
-            :fixed="item.fixed"
+        <template #edit="{ row }">
+          <el-button size="mini" type="text" @click="handleDetail(row)"
+            >详情</el-button
           >
-            <template slot-scope="scope">
-              <el-button
-                size="mini"
-                type="text"
-                @click="handleDetail(scope.row)"
-                >详情</el-button
-              >
-            </template>
-          </el-table-column>
-          <el-table-column
-            v-else-if="item.prop == 'status'"
-            v-show="item.isShow"
-            :key="index"
-            :prop="item.prop"
-            :label="item.label"
-            :show-overflow-tooltip="item.tooltip"
-            :width="item.width || '180'"
-          >
-            <template slot-scope="scope">
-              <span>{{ dealSattus(scope.row.status) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            v-else
-            v-show="item.isShow"
-            :key="index"
-            :prop="item.prop"
-            :label="item.label"
-            :show-overflow-tooltip="item.tooltip"
-            :width="item.width || '180'"
-          >
-          </el-table-column>
         </template>
-      </el-table>
+        <!-- status -->
+        <template #status="{ row }">
+          <span>{{ dealSattus(row.status) }}</span>
+        </template>
+      </RefactorTable>
       <!-- 分页 -->
-
       <pagination
+        v-show="total > 0"
         :total="total"
+        layout="prev, pager, next, sizes, total,  jumper"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="getList"
       />
     </div>
+        <Detail :code="currCode" :detailDrawer="detailDrawer" :options="{title:'派车单详情'}" @colseDetailDrawer='colseDetailDrawer' />
   </div>
 </template>
 
@@ -85,9 +49,11 @@
 import { statusList, tableColumnsConfig } from "./manage_config";
 import QueryForm from "./components/queryForm.vue";
 import { http_request } from "../../../api";
+import Detail from './detail.vue'
+
 export default {
   name: "manage",
-  components: { QueryForm },
+  components: { QueryForm,Detail },
   data() {
     return {
       showSearch: true,
@@ -113,6 +79,8 @@ export default {
       tableColumnsConfig,
       tableData: [],
       statusList,
+      currCode:null,
+      detailDrawer:false
     };
   },
   created() {
@@ -138,13 +106,15 @@ export default {
       return result;
     },
     handleDetail(data) {
+       this.currCode = data.appointCarOrderCode;
+      this.detailDrawer = true
       console.log("manage data", data);
-      const code = data.appointCarOrderCode;
-      this.$router.push("manage/detail?code=" + code);
+      // const code = data.appointCarOrderCode;
+      // this.$router.push("manage/detail?code=" + code);
     },
 
     async getList() {
-      this.loading = true
+      this.loading = true;
       const obj = {
         //paging_dispatch
         moduleName: "http_dispatch",
@@ -156,45 +126,19 @@ export default {
       console.log("geatlist ===>", res);
       this.tableData = res.data.rows;
       this.total = res.data.total;
-      this.loading = false
+      this.loading = false;
     },
     searchQuery() {
       this.queryParams.pageNum = 1;
       this.getList();
+    },
+     colseDetailDrawer(){
+      this.detailDrawer = false
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.device-info {
-  margin: 0 15px;
-  @mixin box-shadow {
-    margin: 0 0 15px;
-    padding: 20px;
-    background: #fff;
-    box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
-    border-radius: 3px;
-  }
 
-  .device-info-left {
-    @include box-shadow;
-    min-height: calc(100vh - 146px);
-  }
-
-  .device-info-right {
-    .device-info-right-top {
-      @include box-shadow;
-      padding-bottom: 8px;
-    }
-    .device-info-right-bottom {
-      @include box-shadow;
-    }
-  }
-}
-.table-colunm {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 </style>

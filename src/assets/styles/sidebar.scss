@@ -1,9 +1,9 @@
 #app {
 
   .main-container {
-    height: 100%;
-    transition: margin-left .28s;
-    margin-left: $sideBarWidth;
+    height:calc(100% - 60px) ;
+    // transition: margin-left .28s;
+    // margin-left: $sideBarWidth;
     position: relative;
     background: rgba(242, 245, 248, 1);
     overflow: auto;
@@ -14,16 +14,10 @@
     transition: width 0.28s;
     width: $sideBarWidth !important;
     background-color: $menuBg;
-    // 70: headerHeight
-    height: calc(100% - 70px);
-    position: fixed;
-    font-size: 0px;
-    // 70: headerHeight
-    top: 70px;
-    bottom: 0;
-    left: 0;
-    z-index: 1001;
-    overflow: hidden;
+    height: 100%;
+    width: 60px !important;
+    flex-shrink: 0;
+    
     // -webkit-box-shadow: 2px 0 6px rgba(0,21,41,.05);
     // box-shadow: 2px 0 6px rgba(0,21,41,.05);
 
@@ -80,7 +74,8 @@
     .submenu-title-noDropdown,
     .el-submenu__title {
       &:hover {
-        background-color: rgba(0, 0, 0, 0.06) !important;
+        background-color: $menuHover !important;
+        // color: #ffffff;
       }
     }
 
@@ -91,9 +86,8 @@
     & .nest-menu .el-submenu>.el-submenu__title,
     & .el-submenu .el-menu-item {
       min-width: $sideBarWidth !important;
-
       &:hover {
-        background-color: rgba(0, 0, 0, 0.06) !important;
+        background-color: $menuHover !important;
       }
     }
 
@@ -102,7 +96,7 @@
       background-color: $subMenuBg !important;
 
       &:hover {
-        background-color: $subMenuHover !important;
+        background-color: $menuHover !important;
       }
     }
   }
@@ -110,12 +104,12 @@
   // 菜单折叠
   .hideSidebar {
     .sidebar-container {
-      width: 72px !important;
+      width: 60px !important;
     }
 
-    .main-container {
-      margin-left: 72px;
-    }
+    // .main-container {
+    //   margin-left: 72px;
+    // }
 
     .el-menu--collapse{
       padding-top: 20px;
@@ -141,7 +135,10 @@
       align-items: center;
       padding-bottom: 20px;
       transition: all 0.3s;
-
+      color: #9FA2B5 !important;
+      &:hover{
+        color: #ffffff !important;
+      }
       .svg-icon-box{
         display: inline-flex;
         justify-content: center;
@@ -156,8 +153,11 @@
 
       .svg-icon {
         margin: 0;
-        color: #9FA2B5;
+        // color: #9FA2B5;
         font-size: 24px;
+        // &:hover{
+        //   color: #ffffff;
+        // }
       }
 
       .label{
@@ -165,9 +165,11 @@
         font-size: 12px;
         font-family: PingFang SC;
         font-weight: 400;
-        color: #9FA2B5;
+        // color: #9FA2B5;
+        // &:hover{
+        //   color: #ffffff;
+        // }
       }
-
       .el-submenu__icon-arrow {
         display: none;
       }
@@ -181,10 +183,9 @@
         justify-content: center;
         align-items: center;
         &:hover{
-          background: transparent !important;
+          background: $menuHover !important;
         }
       }
-
       // &.is-active{
       //   >.el-submenu__title{
       //     .svg-icon-box{
@@ -208,10 +209,10 @@
         >.el-submenu__title{
           background: #F2F7FC;
           .svg-icon {
-            color: #409EFF;
+            color: #ffffff;
           }
           .label{
-            color: #409EFF;
+            color: #ffffff;
           }
         }
       }
@@ -253,12 +254,12 @@
 
 // when menu collapsed
 .el-menu--vertical {
-  left: 72px !important;
+  left: 60px !important;
   &>.el-menu {
     padding: 0;
     margin: 0 !important;
     min-width: 160px !important;
-    background: #F2F7FC !important;
+    background: #222E57 !important;
     box-shadow: 5px 0px 16px rgba(145, 147, 148, 0.31) !important;
     >.nest-menu{
       >.el-submenu{
@@ -280,7 +281,7 @@
             display: none;
           }
           &:hover{
-            background: transparent !important;
+            background: $menuHover !important;
           }
         }
       }
@@ -308,7 +309,7 @@
         top: 50%;
         transition: all 0.2s;
       }
-      &::after{
+      &::after{ 
         content: '';
         width: 3px;
         height: 100%;
@@ -324,13 +325,13 @@
       }
       .label{
         font-size: 14px;
-        color: #717171;
+        color:$menuText;
         padding-left: 12px;
         transition: all 0.2s;
       }
-      &:hover{
+      &:hover{ /**/
         transition: all 0.2s;
-        background: rgba(215, 234, 253, 0.5) !important;
+        background:$subMenuHover !important;
         .label{
           color: #409EFF;
           transition: all 0.2s;
@@ -344,12 +345,12 @@
           transition: all 0.2s;
         }
       }
-      &.is-active{
+      &.is-active{//**
         transition: all 0.2s;
-        background: #D7EAFD !important;
+        background: $subMenuHover !important;
         .label{
           font-weight: bold;
-          color: #409EFF;
+          color:  #409EFF;
           transition: all 0.2s;
         }
         &::before{
@@ -368,7 +369,7 @@
   .el-menu-item {
     &:hover {
       // you can use $subMenuHover
-      background-color: rgba(0, 0, 0, 0.06) !important;
+      background-color: $menuHover !important;
     }
   }
 

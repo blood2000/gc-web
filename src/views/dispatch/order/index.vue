@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div v-show="showSearch" class="app-container app-container--search">
+  <div class="pages-info">
+    <div class="pages-info-right">
       <!-- 上：搜索 -->
       <QueryForm
         v-model="queryParams"
@@ -8,108 +8,50 @@
         :goods-type-list="goodsTypeList"
         @handleQuery="searchQuery"
       />
-    </div>
-    <div class="app-container">
-      <!-- 操作栏 -->
-      <right-toolbar
-        :show-search.sync="showSearch"
-        @queryTable="searchQuery"
-        style="margin-bottom: 10px"
-      />
-      <!-- 表格 -->
-      <el-table
-        v-loading="loading"
-        row-key="id"
-        highlight-current-row
-        border
-        default-expand-all
+      <!-- 分割线 -->
+      <div class="divier"></div>
+      <RefactorTable
+        is-show-index
+        :loading="loading"
         :data="tableData"
+        row-key="id"
+        :table-columns-config="tableColumnsConfig"
+        :border="false"
+        :stripe="true"
       >
-        <template v-for="(item, index) in tableColumnsConfig">
-          <el-table-column
-            v-if="item.prop == 'edit'"
-            :key="index"
-            :prop="item.prop"
-            align="center"
-            fixed="right"
-            :label="item.label"
-            :show-overflow-tooltip="item.tooltip"
-            :width="item.width || '180'"
-            :fixed="item.fixed"
+        <template #edit="{ row }">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleDetail(row)"
           >
-            <template slot-scope="scope">
-              <el-button
-                size="mini"
-                type="text"
-                icon="el-icon-edit"
-                @click="handleDetail(scope.row)"
-              >
-                详情
-              </el-button>
-              <el-button
-                size="mini"
-                type="text"
-                @click="handleDispatch(scope.row)"
-              >
-                派车
-              </el-button>
-              <el-button
-                size="mini"
-                type="text"
-                icon="el-icon-position"
-                @click="handleCarlog(scope.row)"
-              >
-                派车记录
-              </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column
-            v-else-if="item.prop == 'dispatchOrderStatus'"
-            v-show="item.isShow"
-            align="center"
-            :key="index"
-            :prop="item.prop"
-            :label="item.label"
-            :show-overflow-tooltip="item.tooltip"
-            :width="item.width || '180'"
+            详情
+          </el-button>
+          <el-button size="mini" type="text" @click="handleDispatch(row)">
+            派车
+          </el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-position"
+            @click="handleCarlog(row)"
           >
-            <template slot-scope="scope">
-              <span
-                :style="{
-                  color: dealDispatchOrderStatus(
-                    scope.row.dispatchOrderStatus,
-                    'color'
-                  ),
-                }"
-              >
-                {{
-                  dealDispatchOrderStatus(scope.row.dispatchOrderStatus, "text")
-                }}
-              </span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            v-else
-            v-show="item.isShow"
-            align="center"
-            :key="index"
-            :prop="item.prop"
-            :label="item.label"
-            :show-overflow-tooltip="item.tooltip"
-            :width="item.width || '180'"
-          >
-          </el-table-column>
+            派车记录
+          </el-button>
         </template>
-      </el-table>
+      </RefactorTable>
       <!-- 分页 -->
-
       <pagination
         :total="total"
+        layout="prev, pager, next, sizes, total,  jumper"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="getList"
       />
     </div>
+    <Detail :code="currCode" :detailDrawer="detailDrawer" :options="{title:'调度单派车'}" @colseDetailDrawer='colseDetailDrawer' />
+    <Car :code="currCode" :carDrawer='carDrawer' :options="{title:'调度单派车'}" @colseCarDrawer='colseCarDrawer'/>
   </div>
 </template>
 
@@ -118,13 +60,18 @@ import { dispatchOrderStatusList, tableColumnsConfig } from "./order_config";
 import QueryForm from "./components/queryForm.vue";
 import { http_request } from "../../../api";
 import { listByDict } from "../../../api/system/dict/data.js";
+import Detail from './detail.vue'
+import Car from './car.vue'
 export default {
   name: "order",
-  components: { QueryForm },
+  components: { QueryForm,Detail,Car },
   data() {
     return {
       showSearch: true,
       loading: false,
+      detailDrawer:false,//详情抽屉
+      carDrawer:false,// 派车抽屉
+      currCode:null,
       queryParams: {
         pageNum: 1, //页码
         pageSize: 10, //每页显示条数
@@ -161,6 +108,7 @@ export default {
     });
   },
   mounted() {
+    
     this.searchQuery();
   },
   methods: {
@@ -179,14 +127,16 @@ export default {
       this.$router.push("/dispatch/recode?code=" + code);
     },
     handleDetail(data) {
-      const code = data.dispatchOrderCode;
-      this.$router.push("order/detail?code=" + code);
+      this.currCode = data.dispatchOrderCode;
+      this.detailDrawer = true
+      // this.$router.push("order/detail?code=" + code);
     },
     handleDispatch(data) {
       //dispatch/order/car
       console.log("data", data);
-      const code = data.dispatchOrderCode;
-      this.$router.push("order/car?code=" + code);
+      this.carDrawer = true
+     this.currCode  = data.dispatchOrderCode;
+      // this.$router.push("order/car?code=" + code);
     },
     formToPaging() {
       const tmp = { ...this.queryParams };
@@ -235,39 +185,12 @@ export default {
       this.queryParams.pageNum = 1;
       this.getList();
     },
+    colseDetailDrawer(){
+      this.detailDrawer = false
+    },
+    colseCarDrawer(){
+      this.carDrawer =false
+    }
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.device-info {
-  margin: 0 15px;
-  @mixin box-shadow {
-    margin: 0 0 15px;
-    padding: 20px;
-    background: #fff;
-    box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
-    border-radius: 3px;
-  }
-
-  .device-info-left {
-    @include box-shadow;
-    min-height: calc(100vh - 146px);
-  }
-
-  .device-info-right {
-    .device-info-right-top {
-      @include box-shadow;
-      padding-bottom: 8px;
-    }
-    .device-info-right-bottom {
-      @include box-shadow;
-    }
-  }
-}
-.table-colunm {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-</style>

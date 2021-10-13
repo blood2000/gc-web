@@ -1,74 +1,86 @@
  <template>
-  <div class="app-container">
+  <el-drawer
+    :title="options.title"
+    :visible.sync="detailDrawer"
+    direction="rtl"
+    style="z-index:2200"
+    :before-close="handleClose"
+    size="40%"
+    :append-to-body="true"
+  >
     <TitleSideBlueTip title="基本信息" />
-    <div>
-      <el-row class="dispatch-contents-box">
-        <el-col :span="8">
-          <span class="dispatch-base-label">调度单号:</span>
-          <span class="dispatch-base-text">
-            {{ pageData.dispatchOrderNo }}</span
-          >
-        </el-col>
-        <el-col :span="8">
-          <span class="dispatch-base-label">关联平台货源单号:</span>
-          <span class="dispatch-base-text"> {{ pageData.orderNo }}</span>
-        </el-col>
-      </el-row>
-      <el-row class="dispatch-contents-box">
-        <el-col :span="8">
-          <span class="dispatch-base-label">所属项目:</span>
-          <span class="dispatch-base-text"> {{ pageData.projectName }}</span>
-        </el-col>
-        <el-col :span="8">
-          <span class="dispatch-base-label">调度单来源:</span>
-          <span class="dispatch-base-text"> {{ pageData.source }}</span>
-        </el-col>
-      </el-row>
-      <el-row class="dispatch-contents-box">
-        <el-col :span="8">
-          <span class="dispatch-base-label">货源大类:</span>
-          <span class="dispatch-base-text">
-            {{ pageData.goodsBigTypeName }}</span
-          >
-        </el-col>
-        <el-col :span="8">
-          <span class="dispatch-base-label">货源小类:</span>
-          <span class="dispatch-base-text"> {{ pageData.goodsTypeName }}</span>
-        </el-col>
-      </el-row>
-      <el-row class="dispatch-contents-box">
-        <el-col :span="8">
-          <span class="dispatch-base-label">用车企业:</span>
-          <span class="dispatch-base-text"> {{ pageData.companyName }}</span>
-        </el-col>
-        <el-col :span="8">
-          <span class="dispatch-base-label">下单客户姓名:</span>
-          <span class="dispatch-base-text">{{ pageData.shipmentName }}</span>
-        </el-col>
-        <el-col :span="8">
-          <span class="dispatch-base-label">下单客户电话:</span>
-          <span class="dispatch-base-text"> {{ pageData.shipmentPhone }}</span>
-        </el-col>
-      </el-row>
-    </div>
-    <TitleSideBlueTip title="地址信息" />
-    <div class="dispatch-contents-box">
-      <div class="dispatch-title-item">出发地信息</div>
-      <div class="dispatch-info-content">
+    <el-row class="dispatch-contents-box">
+      <el-col :span="12">
         <el-row class="dispatch-contents-box">
-          <el-col :span="5">
+          <el-col :span="24" style="padding-bottom: 16px">
+            <span class="dispatch-base-label">调度单号:</span>
+            <span class="dispatch-base-text">
+              {{ pageData.dispatchOrderNo }}</span
+            >
+          </el-col>
+          <el-col :span="24" style="padding-bottom: 16px">
+            <span class="dispatch-base-label">所属项目:</span>
+            <span class="dispatch-base-text"> {{ pageData.projectName }}</span>
+          </el-col>
+          <el-col :span="24" style="padding-bottom: 16px">
+            <span class="dispatch-base-label">货源大类:</span>
+            <span class="dispatch-base-text">
+              {{ pageData.goodsBigTypeName }}</span
+            >
+          </el-col>
+          <el-col :span="24" style="padding-bottom: 16px">
+            <span class="dispatch-base-label">用车企业:</span>
+            <span class="dispatch-base-text"> {{ pageData.companyName }}</span>
+          </el-col>
+          <el-col :span="24" style="padding-bottom: 16px">
+            <span class="dispatch-base-label">下单客户电话:</span>
+            <span class="dispatch-base-text">
+              {{ pageData.shipmentPhone }}</span
+            >
+          </el-col>
+        </el-row>
+      </el-col>
+      <el-col :span="12">
+        <el-row class="dispatch-contents-box">
+          <el-col :span="24" style="padding-bottom: 16px">
+            <span class="dispatch-base-label">关联平台货源单号:</span>
+            <span class="dispatch-base-text"> {{ pageData.orderNo }}</span>
+          </el-col>
+          <el-col :span="24" style="padding-bottom: 16px">
+            <span class="dispatch-base-label">调度单来源:</span>
+            <span class="dispatch-base-text"> {{ pageData.source }}</span>
+          </el-col>
+          <el-col :span="24" style="padding-bottom: 16px">
+            <span class="dispatch-base-label">货源小类:</span>
+            <span class="dispatch-base-text">
+              {{ pageData.goodsTypeName }}</span
+            >
+          </el-col>
+          <el-col :span="24" style="padding-bottom: 16px">
+            <span class="dispatch-base-label">下单客户姓名:</span>
+            <span class="dispatch-base-text">{{ pageData.shipmentName }}</span>
+          </el-col>
+        </el-row>
+      </el-col>
+    </el-row>
+    <TitleSideBlueTip title="地址信息" />
+    <div class="dispatch-contents-box"  style="margin-bottom: 25px">
+      <div class="dispatch-title-item start_address">出发地信息</div>
+      <div class="dispatch-info-content" style="padding-left:0">
+        <el-row class="dispatch-contents-box"  >
+          <el-col :span="8">
             <span class="dispatch-base-label">省:</span>
             <span class="dispatch-base-text">
               {{ isPageShow("orderAddress", "loadProvince") }}</span
             >
           </el-col>
-          <el-col :span="5">
+          <el-col :span="8">
             <span class="dispatch-base-label">市:</span>
             <span class="dispatch-base-text">
               {{ isPageShow("orderAddress", "loadCity") }}</span
             >
           </el-col>
-          <el-col :span="5">
+          <el-col :span="8">
             <span class="dispatch-base-label">县/区:</span>
             <span class="dispatch-base-text">
               {{ isPageShow("orderAddress", "loadDistrict") }}</span
@@ -82,7 +94,7 @@
               {{ isPageShow("orderAddress", "loadDetail") }}</span
             >
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :offset="8">
             <span class="dispatch-base-label">地址别名:</span>
             <span class="dispatch-base-text">
               {{ isPageShow("orderAddress", "loadAlias") }}</span
@@ -96,7 +108,7 @@
               {{ isPageShow("orderAddress", "loadLinkManName") }}</span
             >
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :offset="8">
             <span class="dispatch-base-label">联系电话:</span>
             <span class="dispatch-base-text">
               {{ isPageShow("orderAddress", "loadLinkManPhone") }}</span
@@ -104,22 +116,22 @@
           </el-col>
         </el-row>
       </div>
-      <div class="dispatch-title-item">目的地信息</div>
-      <div class="dispatch-info-content">
-        <el-row class="dispatch-contents-box">
-          <el-col :span="5">
+      <div class="dispatch-title-item end_address">目的地信息</div>
+      <div class="dispatch-info-content" style="padding-left:0">
+        <el-row class="dispatch-contents-box" >
+          <el-col :span="8">
             <span class="dispatch-base-label">省:</span>
             <span class="dispatch-base-text">
               {{ isPageShow("orderAddress", "unloadProvince") }}</span
             >
           </el-col>
-          <el-col :span="5">
+          <el-col :span="8">
             <span class="dispatch-base-label">市:</span>
             <span class="dispatch-base-text">
               {{ isPageShow("orderAddress", "unloadCity") }}</span
             >
           </el-col>
-          <el-col :span="5">
+          <el-col :span="8">
             <span class="dispatch-base-label">县/区:</span>
             <span class="dispatch-base-text">
               {{ isPageShow("orderAddress", "unloadDistrict") }}</span
@@ -133,7 +145,7 @@
               {{ isPageShow("orderAddress", "unloadDetail") }}</span
             >
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :offset="8">
             <span class="dispatch-base-label">地址别名:</span>
             <span class="dispatch-base-text">
               {{ isPageShow("orderAddress", "unloadAlias") }}</span
@@ -147,7 +159,7 @@
               {{ isPageShow("orderAddress", "unloadLinkManName") }}</span
             >
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :offset="8">
             <span class="dispatch-base-label">联系电话:</span>
             <span class="dispatch-base-text">
               {{ isPageShow("orderAddress", "unloadLinkManPhone") }}</span
@@ -157,64 +169,72 @@
       </div>
     </div>
     <TitleSideBlueTip title="货源信息" />
-    <div>
-      <el-row class="dispatch-contents-box">
-        <el-col :span="5">
-          <span class="dispatch-base-label">配载方式:</span>
-          <span class="dispatch-base-text">
-            {{ isOrderGoodses("totalType") }}</span
-          >
-        </el-col>
-        <el-col :span="5">
-          <span class="dispatch-base-label">重量/体积:</span>
-          <span class="dispatch-base-text">
-            {{ isOrderGoodses("goodsWeight") }}</span
-          >
-        </el-col>
-        <el-col :span="5">
-          <span class="dispatch-base-label">最高配载:</span>
-          <span class="dispatch-base-text">
-            {{ isOrderGoodses("vehicleMaxWeight") }}</span
-          >
-        </el-col>
-      </el-row>
-      <el-row class="dispatch-contents-box">
-        <el-col :span="8">
-          <span class="dispatch-base-label">车型:</span>
-          <span class="dispatch-base-text">
-            {{ isOrderGoodses("vehicleType") }}</span
-          >
-        </el-col>
-        <el-col :span="8">
-          <span class="dispatch-base-label">车长:</span>
-          <span class="dispatch-base-text">
-            {{ isOrderGoodses("vehicleLenght") }}</span
-          >
-        </el-col>
-      </el-row>
-      <p class="dispatch-contents-box">
-        <span class="dispatch-base-label">货源备注:</span>
-        <span class="dispatch-base-text">{{ pageData.remark }}</span>
-      </p>
-    </div>
+    <el-row class="dispatch-base-contents-box">
+      <el-col :span="12">
+        <el-row class="dispatch-contents-box">
+          <el-col :span="24" style="padding-bottom: 16px">
+            <span class="dispatch-base-label">配载方式:</span>
+            <span class="dispatch-base-text">
+              {{ isOrderGoodses("totalType") }}</span
+            >
+          </el-col>
+          <el-col :span="24" style="padding-bottom: 16px">
+            <span class="dispatch-base-label">车型:</span>
+            <span class="dispatch-base-text">
+              {{ isOrderGoodses("vehicleType") }}</span
+            >
+          </el-col>
+
+          <el-col :span="24" style="padding-bottom: 16px">
+            <span class="dispatch-base-label">最高配载:</span>
+            <span class="dispatch-base-text">
+              {{ isOrderGoodses("vehicleMaxWeight") }}</span
+            >
+          </el-col>
+        </el-row>
+      </el-col>
+      <el-col :span="12">
+        <el-row class="dispatch-contents-box">
+          <el-col :span="24" style="padding-bottom: 16px">
+            <span class="dispatch-base-label">重量/体积:</span>
+            <span class="dispatch-base-text">
+              {{ isOrderGoodses("goodsWeight") }}</span
+            >
+          </el-col>
+          <el-col :span="24" style="padding-bottom: 16px">
+            <span class="dispatch-base-label">车长:</span>
+            <span class="dispatch-base-text">
+              {{ isOrderGoodses("vehicleLenght") }}</span
+            >
+          </el-col>
+
+          <el-col :span="24" style="padding-bottom: 16px">
+            <span class="dispatch-base-label">货源备注:</span>
+            <span class="dispatch-base-text">{{ pageData.remark }}</span>
+          </el-col>
+        </el-row>
+      </el-col>
+    </el-row>
+
+    <p class="dispatch-contents-box"></p>
     <TitleSideBlueTip title="费用信息" />
-    <div>
-      <el-row class="dispatch-contents-box">
-        <el-col :span="5">
-          <span>司机应收运费:</span>
-          <span class="dispatch-base-text">
-            {{ isOrderGoodses("driverFreightStr") }}</span
-          >
-        </el-col>
-        <el-col :span="5">
-          <span>运费单价:</span>
-          <span class="dispatch-base-text">
-            {{ isOrderGoodses("freightStr") }}</span
-          >
-        </el-col>
-      </el-row>
+    <div class="dispatch-base-contents-box">
+    <el-row class="dispatch-contents-box dispatch-base-contents-box">
+      <el-col :span="12" style="padding-bottom: 16px">
+        <span class="dispatch-base-label">司机应收运费:</span>
+        <span class="dispatch-base-text">
+          {{ isOrderGoodses("driverFreightStr") || '-' }}</span
+        >
+      </el-col>
+      <el-col :span="12" style="padding-bottom: 16px">
+        <span class="dispatch-base-label">运费单价:</span>
+        <span class="dispatch-base-text">
+          {{ isOrderGoodses("freightStr")|| '-' }}</span
+        >
+      </el-col>
+    </el-row>
     </div>
-  </div>
+  </el-drawer>
 </template>
 
 <script>
@@ -222,19 +242,34 @@ import { http_request } from "../../../api";
 export default {
   name: "detail",
   components: {},
+  props: {
+    code: {
+      type: String,
+      default: "",
+    },
+    detailDrawer: {
+      type: Boolean,
+      default: false,
+    },
+    options: {
+      type: Object,
+      default: {},
+    },
+  },
   data() {
     return {
-      codes: null,
       pageData: {},
     };
   },
   created() {},
-  mounted() {
-    if (document.location.search.includes("code")) {
-      this.codes = document.location.search.split("=")[1];
-      console.log("code", this.codes);
-    }
-    this.getDetail();
+  watch: {
+    detailDrawer() {
+      console.log("我在监听");
+      if (this.detailDrawer) {
+        console.log("他变成true");
+        this.getDetail();
+      }
+    },
   },
   methods: {
     isOrderGoodses(val) {
@@ -249,11 +284,14 @@ export default {
         moduleName: "http_dispatch",
         method: "get",
         url_alias: "detail_dispatch",
-        url_code: [this.codes],
+        url_code: [this.code],
       };
       const res = await http_request(obj);
       console.log("detail res", res);
       this.pageData = res.data;
+    },
+    handleClose() {
+      this.$emit("colseDetailDrawer");
     },
   },
 };

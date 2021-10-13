@@ -1,7 +1,7 @@
 <template>
   <!-- 地图告警列表 -->
   <div class="map-warning-table" :class="{isClose: isClose}">
-    <ul class="map-warning-table__tab ly-flex-pack-start">
+    <ul class="map-warning-table__tab ly-flex-pack-start ly-flex-align-end">
       <li v-for="item in tabList" :key="item.code" :class="{active: activeTab === item.code}" @click="handleTab(item.code)">{{ item.tabName }}</li>
     </ul>
 
@@ -285,37 +285,37 @@ export default {
 
 <style lang="scss" scoped>
 .map-warning-table{
-  $tab-height: 48px;
+  $tab-height: 44px;
   transition: height 0.3s;
   &__tab{
     position: absolute;
     left: 0;
     top: calc(-#{$tab-height});
+    height: 44px;
     z-index: 0;
     >li{
       padding: 0 30px;
-      height: $tab-height;
+      height: 38px;
       background: #E3E7F0;
       border-radius: 6px 6px 0 0;
       font-size: 16px;
       font-family: PingFang SC;
       font-weight: 700;
-      line-height: 36px;
+      line-height: 38px;
       color: #8592AD;
       cursor: pointer;
       text-align: center;
       box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.16);
       z-index: 0;
-      transform: translateY(12px);
-      transition: transform 0.4s;
+      transition: height 0.4s;
       margin-right: 8px;
       &.active{
         color: #3D4050;
+        height: $tab-height;
         font-weight: 700;
-        line-height: 48px;
+        line-height: 44px;
         background: rgba(255, 255, 255, 0.7);
         box-shadow: 6px -2px 10px rgba(0, 0, 0, 0.1);
-        transform: translateY(4px);
       }
     }
   }
@@ -324,7 +324,7 @@ export default {
     height: 100%;
     box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.16);
     background: rgba(255, 255, 255, 0.72);
-    border-radius: 8px;
+    border-radius: 0 8px 8px 8px;
     z-index: 1;
     padding: 20px 12px 6px 12px;
     overflow: hidden;

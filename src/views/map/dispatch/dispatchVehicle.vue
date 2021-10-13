@@ -15,8 +15,8 @@
         </div>
       </template>
       <div class="content-title">
-        <titleSideBlueTip />
-        <span>运单信息</span>
+        <titleSideBlueTip title="运单信息" />
+      
       </div>
       <div class="content-info">
         <el-row>
@@ -47,8 +47,7 @@
         </div>
       </div>
       <div class="content-title">
-        <titleSideBlueTip />
-        <span>承运车辆</span>
+        <titleSideBlueTip title="承运车辆" />
       </div>
       <el-form
         ref="ruleForm"

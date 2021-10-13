@@ -7,6 +7,7 @@ import './assets/styles/element-variables.scss'
 import '@/assets/styles/index.scss'; // global css
 import '@/assets/styles/ddc.scss'; // ddc css
 import '@/assets/styles/dispatch.scss'; // ddc css
+import '@/assets/styles/page-layout.scss'// ddc css
 import '@/assets/iconfont/iconfont.css'; // 字体图标
 import '@/assets/styles/queryForm.scss'; // 搜索表单组件 css
 import App from './App'

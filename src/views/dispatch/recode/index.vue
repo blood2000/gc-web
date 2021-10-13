@@ -1,16 +1,17 @@
 <template>
-  <div>
-    <div v-show="showSearch" class="app-container app-container--search">
+  <div class="pages-info">
+    <div class="pages-info-right">
       <!-- 上：搜索 -->
       <QueryForm
         v-model="queryParams"
         :goods-type-list="goodsTypeList"
         @handleQuery="searchQuery"
       />
-    </div>
-    <div class="app-container">
+      <!-- 分割线 -->
+      <div class="divier"></div>
+
       <!-- 操作栏 -->
-      <div class="recode-tool-bar">
+      <div class="toolsbar">
         <el-button
           :disabled="multiple"
           type="primary"
@@ -19,10 +20,10 @@
           @click="handleInfo"
           >生成调度信息</el-button
         >
-        <right-toolbar
+        <!-- <right-toolbar
           :show-search.sync="showSearch"
           @queryTable="searchQuery"
-        />
+        /> -->
       </div>
 
       <!-- 表格 -->
@@ -33,6 +34,8 @@
         row-key="id"
         :table-columns-config="tableColumnsConfig"
         @selection-change="handleSelectionChange"
+        :border="false"
+        :stripe="true"
       >
         <template #edit="{ row }">
           <el-button
@@ -58,9 +61,11 @@
       <!-- 分页 -->
 
       <pagination
+        v-show="total > 0"
         :total="total"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
+        layout="prev, pager, next, sizes, total,  jumper"
         @pagination="getList"
       />
     </div>
@@ -77,6 +82,12 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+    <Detail
+      :code="currCode"
+      :detailDrawer="detailDrawer"
+      :options="{ title: '派车记录' }"
+      @colseDetailDrawer="colseDetailDrawer"
+    />
   </div>
 </template>
 
@@ -85,10 +96,11 @@ import { tableColumnsConfig } from "./recode_config";
 import QueryForm from "./components/queryForm.vue";
 import { http_request } from "../../../api";
 import { listByDict } from "../../../api/system/dict/data.js";
+import Detail from "./detail.vue";
 
 export default {
   name: "order",
-  components: { QueryForm },
+  components: { QueryForm, Detail },
   data() {
     return {
       showSearch: true,
@@ -114,6 +126,8 @@ export default {
       tableData: [],
       goodsTypeList: [],
       shareText: "",
+      currCode: null,
+      detailDrawer: false, //详情抽屉
     };
   },
   created() {
@@ -139,13 +153,6 @@ export default {
     this.searchQuery();
   },
   methods: {
-    cancel() {
-      this.open = false;
-      this.shareText = "";
-    },
-    ok() {
-      this.cancel();
-    },
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.selection = selection;
@@ -155,7 +162,7 @@ export default {
     handleDel(data) {
       console.log("data", data);
       const codes = data.appointCarRecordCode;
-      this.$confirm("是否确认删除此项数据?", "警告", {
+      this.$confirm("删除操作不可恢复，确认要删除该调度信息吗？", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -195,9 +202,12 @@ export default {
       this.$router.push("/dispatch/manage?code=" + code);
     },
     handleDetail(data) {
-      const code = data.appointCarRecordCode;
-      console.log("????", code);
-      this.$router.push("recode/detail?code=" + code);
+      console.log('data.appointCarRecordCode',data.appointCarRecordCode)
+      this.currCode = data.appointCarRecordCode;
+      this.detailDrawer = true;
+      // const code = data.appointCarRecordCode;
+      // console.log("????", code);
+      // this.$router.push("recode/detail?code=" + code);
     },
     formToPaging() {
       const tmp = JSON.parse(JSON.stringify(this.queryParams));
@@ -206,7 +216,7 @@ export default {
           delete tmp[item];
         }
       }
-      return tmp
+      return tmp;
     },
     async getList() {
       this.loading = true;
@@ -227,6 +237,16 @@ export default {
     searchQuery() {
       this.queryParams.pageNum = 1;
       this.getList();
+    },
+    cancel() {
+      this.open = false;
+      this.shareText = "";
+    },
+    colseDetailDrawer() {
+      this.detailDrawer = false;
+    },
+    ok() {
+      this.cancel();
     },
   },
 };

@@ -1,31 +1,51 @@
  <template>
-  <div class="app-container">
+  <el-drawer
+    :title="options.title"
+    :visible.sync="detailDrawer"
+    direction="rtl"
+    style="z-index: 2200"
+    :before-close="handleClose"
+    size="40%"
+    :append-to-body="true"
+  >
     <TitleSideBlueTip title="订单信息" />
     <div class="dispatch-base-contents-box">
-      <el-row class="contents-box ">
-        <el-col :span="8">
-          <span class="base-label">用车企业:</span>
-          <span class="base-text"> {{ baseData.companyName }}</span>
+      <el-row class="contents-box">
+        <el-col :span="12" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">用车企业:</span>
+          <span class="dispatch-dispatch-base-text">
+            {{ baseData.companyName }}</span
+          >
         </el-col>
-        <el-col :span="10">
-          <span class="base-label">货物类型:</span>
-          <span class="base-text"> {{ baseData.goodsSmallTypeName }}</span>
+        <el-col :span="12" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">货物类型:</span>
+          <span class="dispatch-dispatch-base-text">
+            {{ baseData.goodsSmallTypeName }}</span
+          >
         </el-col>
-      </el-row>
-      <el-row class="contents-box ">
-        <el-col :span="8">
-          <span class="base-label">下单客户姓名:</span>
-          <span class="base-text"> {{ baseData.shipmentName }}</span>
+        <el-col :span="12">
+          <span class="dispatch-base-label" style="padding-bottom: 16px"
+            >下单客户姓名:</span
+          >
+          <span class="dispatch-dispatch-base-text">
+            {{ baseData.shipmentName }}</span
+          >
         </el-col>
-        <el-col :span="8">
-          <span class="base-label">下单客户电话:</span>
-          <span class="base-text"> {{ baseData.shipmentPhone }}</span>
+        <el-col :span="12">
+          <span class="dispatch-base-label" style="padding-bottom: 16px"
+            >下单客户电话:</span
+          >
+          <span class="dispatch-dispatch-base-text">
+            {{ baseData.shipmentPhone }}</span
+          >
         </el-col>
-      </el-row>
-      <el-row class="contents-box ">
-        <el-col :span="18">
-          <span class="base-label">备注:</span>
-          <span class="base-text"> {{ baseData.shipmentName }}</span>
+        <el-col :span="12">
+          <span class="dispatch-base-label" style="padding-bottom: 16px"
+            >备注:</span
+          >
+          <span class="dispatch-dispatch-base-text">
+            {{ baseData.shipmentName }}</span
+          >
         </el-col>
       </el-row>
       <el-form
@@ -33,10 +53,11 @@
         ref="form"
         :model="addressInfo"
         label-width="100px"
-        label-position="left"
+        label-position="top"
+        style="margin-bottom:30px;margin-left:20px"
       >
-        <div class="title-item">出发地信息</div>
-        <div class="info-content">
+        <div class="dispatch-title-item start_address">出发地信息</div>
+        <div class="dispatch-info-content">
           <!-- <TitleSideBlueTip title="出发地信息" /> -->
           <div class="dispatch-base-contents-box">
             <el-row>
@@ -49,9 +70,7 @@
                   />
                 </el-form-item>
               </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="8">
+              <el-col :span="12">
                 <el-form-item label="详细地址:" prop="loadAddressDetail">
                   <el-input
                     v-model="addressInfo.loadAddressDetail"
@@ -60,23 +79,14 @@
                   />
                 </el-form-item>
               </el-col>
+            </el-row>
+            <el-row>
               <el-col :span="8">
                 <el-form-item label="地址别名:" prop="loadAddressAlias">
                   <el-input
                     v-model="addressInfo.loadAddressAlias"
                     clearable
-                    style="width: 220px"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="联系人:" prop="loadLinkManName">
-                  <el-input
-                    v-model="addressInfo.loadLinkManName"
-                    clearable
-                    style="width: 220px"
+                    style="width: 200px"
                   />
                 </el-form-item>
               </el-col>
@@ -85,16 +95,24 @@
                   <el-input
                     v-model="addressInfo.loadLinkManPhone"
                     clearable
-                    style="width: 220px"
+                    style="width: 156px"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="联系人:" prop="loadLinkManName">
+                  <el-input
+                    v-model="addressInfo.loadLinkManName"
+                    clearable
+                    style="width: 112px"
                   />
                 </el-form-item>
               </el-col>
             </el-row>
           </div>
         </div>
-        <div class="title-item">目的地信息</div>
-        <div class="info-content">
-          <!-- <TitleSideBlueTip title="目的地信息" /> -->
+        <div class="dispatch-title-item end_address">目的地信息</div>
+        <div class="dispatch-info-content">
           <div class="dispatch-base-contents-box">
             <el-row>
               <el-col :span="12">
@@ -109,9 +127,8 @@
                   />
                 </el-form-item>
               </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="8">
+
+              <el-col :span="12">
                 <el-form-item label="详细地址:" prop="unloadAddressDetail">
                   <el-input
                     v-model="addressInfo.unloadAddressDetail"
@@ -120,23 +137,14 @@
                   />
                 </el-form-item>
               </el-col>
+            </el-row>
+            <el-row>
               <el-col :span="8">
                 <el-form-item label="地址别名:" prop="unloadAddressAlias">
                   <el-input
                     v-model="addressInfo.unloadAddressAlias"
                     clearable
-                    style="width: 220px"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="联系人:" prop="unloadLinkManName">
-                  <el-input
-                    v-model="addressInfo.unloadLinkManName"
-                    clearable
-                    style="width: 220px"
+                    style="width: 200px"
                   />
                 </el-form-item>
               </el-col>
@@ -145,7 +153,16 @@
                   <el-input
                     v-model="addressInfo.unloadLinkManPhone"
                     clearable
-                    style="width: 220px"
+                    style="width: 156px"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="联系人:" prop="unloadLinkManName">
+                  <el-input
+                    v-model="addressInfo.unloadLinkManName"
+                    clearable
+                    style="width: 112px"
                   />
                 </el-form-item>
               </el-col>
@@ -157,122 +174,146 @@
     <TitleSideBlueTip title="承运信息" />
     <div class="dispatch-base-contents-box">
       <el-row class="contents-box">
-        <el-col :span="8">
-          <span class="base-label">承运车辆:</span>
-          <span class="base-text"> {{ waybillInfo.vehicleNumber }}</span>
+        <el-col :span="12" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">承运车辆:</span>
+          <span class="dispatch-base-text">
+            {{ waybillInfo.vehicleNumber }}</span
+          >
         </el-col>
-        <el-col :span="10">
-          <span class="base-label">运单状态:</span>
-          <span class="base-text">
+        <el-col :span="12" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">运单状态:</span>
+          <span class="dispatch-base-text">
             {{ waybillInfoStatusDeal(waybillInfo.status) }}</span
           >
         </el-col>
-      </el-row>
-      <el-row class="contents-box">
-        <el-col :span="8">
-          <span class="base-label">承运司机:</span>
-          <span class="base-text"> {{ waybillInfo.driverName }}</span>
+        <el-col :span="12" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">承运司机:</span>
+          <span class="dispatch-base-text"> {{ waybillInfo.driverName }}</span>
         </el-col>
-        <el-col :span="10">
-          <span class="base-label">接单时间:</span>
-          <span class="base-text"> {{ waybillInfo.receviceTime }}</span>
+        <el-col :span="12" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">接单时间:</span>
+          <span class="dispatch-base-text">
+            {{ waybillInfo.receviceTime }}</span
+          >
         </el-col>
-      </el-row>
-      <el-row class="contents-box">
-        <el-col :span="8">
-          <span class="base-label">司机电话:</span>
-          <span class="base-text"> {{ waybillInfo.driverPhone }}</span>
+
+        <el-col :span="12" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">司机电话:</span>
+          <span class="dispatch-base-text"> {{ waybillInfo.driverPhone }}</span>
         </el-col>
-        <el-col :span="8">
-          <span class="base-label">出车时间:</span>
-          <span class="base-text"> {{ waybillInfo.loadTime }}</span>
+        <el-col :span="12" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">出车时间:</span>
+          <span class="dispatch-base-text"> {{ waybillInfo.loadTime }}</span>
         </el-col>
-        <el-col :span="8">
-          <span class="base-label">装货数量:</span>
-          <span class="base-text"> {{ waybillInfo.loadWeight }}</span>
+        <el-col :span="12" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">装货数量:</span>
+          <span class="dispatch-base-text"> {{ waybillInfo.loadWeight }}</span>
         </el-col>
-      </el-row>
-      <el-row class="contents-box">
-        <el-col :span="8">
-          <span class="base-label">承运组织:</span>
-          <span class="base-text"> {{ waybillInfo.teamName }}</span>
+
+        <el-col :span="12" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">承运组织:</span>
+          <span class="dispatch-base-text"> {{ waybillInfo.teamName }}</span>
         </el-col>
-        <el-col :span="8">
-          <span class="base-label">回车时间:</span>
-          <span class="base-text"> {{ waybillInfo.unloadTime }}</span>
+        <el-col :span="12" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">回车时间:</span>
+          <span class="dispatch-base-text"> {{ waybillInfo.unloadTime }}</span>
         </el-col>
-        <el-col :span="8">
-          <span class="base-label">卸货数量:</span>
-          <span class="base-text"> {{ waybillInfo.unloadWeight }}</span>
+        <el-col :span="12" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">卸货数量:</span>
+          <span class="dispatch-base-text">
+            {{ waybillInfo.unloadWeight }}</span
+          >
         </el-col>
-      </el-row>
-      <el-row class="contents-box">
-        <el-col :span="8">
-          <span class="base-label">调度者:</span>
-          <span class="base-text"> {{ waybillInfo.teamLeaderName }}</span>
+
+        <el-col :span="12" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">调度者:</span>
+          <span class="dispatch-base-text">
+            {{ waybillInfo.teamLeaderName }}</span
+          >
         </el-col>
-        <el-col :span="10">
-          <span class="base-label">运单是否异常:</span>
-          <span class="base-text"> {{ waybillInfo.isException == 0?"否":"是" }}</span>
+        <el-col :span="12" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">运单是否异常:</span>
+          <span class="dispatch-base-text">
+            {{ waybillInfo.isException == 0 ? "否" : "是" }}</span
+          >
         </el-col>
-      </el-row>
-      <el-row class="contents-box">
-        <el-col :span="8">
-          <span class="base-label">调度者电话:</span>
-          <span class="base-text"> {{ waybillInfo.teamLeaderPhone }}</span>
+
+        <el-col :span="12" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">调度者电话:</span>
+          <span class="dispatch-base-text">
+            {{ waybillInfo.teamLeaderPhone }}</span
+          >
         </el-col>
       </el-row>
     </div>
     <TitleSideBlueTip title="费用信息" />
-     <div  class="contents-box">
+    <div class="dispatch-contents-box">
       <template v-if="waybillInfo.status === 10">
-        <div  class="contents-box">
-          <span class="base-label">运费单价:</span>
-          <span class="base-text"> {{ settlementInfo.unitPrice }}</span>
+        <div class="dispatch-contents-box">
+          <span class="dispatch-base-label">运费单价:</span>
+          <span class="dispatch-base-text">
+            {{ settlementInfo.unitPrice }}</span
+          >
         </div>
-       <div  class="contents-box">
-          <span class="base-label">计费重量:</span>
-          <span class="base-text"> {{ settlementInfo.weight }}</span>
+        <div class="dispatch-contents-box">
+          <span class="dispatch-base-label">计费重量:</span>
+          <span class="dispatch-base-text"> {{ settlementInfo.weight }}</span>
         </div>
-       <div  class="contents-box">
-          <span class="base-label">货物单价:</span>
-          <span class="base-text"> {{ settlementInfo.goodsPrice }}</span>
+        <div class="dispatch-contents-box">
+          <span class="dispatch-base-label">货物单价:</span>
+          <span class="dispatch-base-text">
+            {{ settlementInfo.goodsPrice }}</span
+          >
         </div>
       </template>
       <template v-else>
-        <div  class="contents-box">
-          <span class="base-label">司机应收:</span>
-          <span class="base-text"> {{ settlementInfo.driverFreight }}</span>
+        <div class="dispatch-contents-box">
+          <span class="dispatch-base-label">司机应收:</span>
+          <span class="dispatch-base-text">
+            {{ settlementInfo.driverFreight }}</span
+          >
         </div>
-        <el-row  class="contents-box">
-          <el-col :span="4">
-            <span class="base-label">路耗扣费:</span>
-            <span class="base-text"> {{ settlementInfo.lossPrice }}</span>
+        <el-row class="dispatch-contents-box">
+          <el-col :span="8">
+            <span class="dispatch-base-label">路耗扣费:</span>
+            <span class="dispatch-base-text">
+              {{ settlementInfo.lossPrice }}</span
+            >
           </el-col>
-          <el-col :span="4">
-            <span class="base-label">增项:</span>
-            <span class="base-text"> {{ settlementInfo.subsidyPrice }}</span>
+          <el-col :span="8">
+            <span class="dispatch-base-label">增项:</span>
+            <span class="dispatch-base-text">
+              {{ settlementInfo.subsidyPrice }}</span
+            >
           </el-col>
-          <el-col :span="4">
-            <span class="base-label">减项:</span>
-            <span class="base-text"> {{ settlementInfo.deductionPrice }}</span>
+          <el-col :span="8">
+            <span class="dispatch-base-label">减项:</span>
+            <span class="dispatch-base-text">
+              {{ settlementInfo.deductionPrice }}</span
+            >
           </el-col>
         </el-row>
-       <div  class="contents-box">
-          <span class="base-label">司机实收:</span>
-          <span class="base-text"> {{ settlementInfo.driverRealFreight }}</span>
+        <div class="dispatch-contents-box">
+          <span class="dispatch-base-label">司机实收:</span>
+          <span class="dispatch-base-text">
+            {{ settlementInfo.driverRealFreight }}</span
+          >
         </div>
-        <div  class="contents-box">
-          <span class="base-label">纳税金额:</span>
-          <span class="base-text"> {{ settlementInfo.servicePrice }}</span>
+        <div class="dispatch-contents-box">
+          <span class="dispatch-base-label">纳税金额:</span>
+          <span class="dispatch-base-text">
+            {{ settlementInfo.servicePrice }}</span
+          >
         </div>
-        <div  class="contents-box">
-          <span class="base-label">货主实付:</span>
-          <span class="base-text"> {{ settlementInfo.shipmentPrice }}</span>
+        <div class="dispatch-contents-box">
+          <span class="dispatch-base-label">货主实付:</span>
+          <span class="dispatch-base-text">
+            {{ settlementInfo.shipmentPrice }}</span
+          >
         </div>
       </template>
-       </div>
-  </div>
+    </div>
+  </el-drawer>
 </template>
 
 <script>
@@ -281,6 +322,20 @@ import { statusList } from "./manage_config";
 export default {
   name: "detail",
   components: {},
+  props: {
+    code: {
+      type: String,
+      default: "",
+    },
+    detailDrawer: {
+      type: Boolean,
+      default: false,
+    },
+    options: {
+      type: Object,
+      default: {},
+    },
+  },
   data() {
     return {
       baseData: {},
@@ -290,12 +345,21 @@ export default {
     };
   },
   created() {},
-  mounted() {
-    if (document.location.search.includes("code")) {
-      this.codes = document.location.search.split("=")[1];
-      console.log("code", this.codes);
-    }
-    this.getDetail();
+  // mounted() {
+  //   if (document.location.search.includes("code")) {
+  //     this.codes = document.location.search.split("=")[1];
+  //     console.log("code", this.codes);
+  //   }
+  //   this.getDetail();
+  // },
+  watch: {
+    detailDrawer() {
+      console.log("我在监听");
+      if (this.detailDrawer) {
+        console.log("他变成true");
+        this.getDetail();
+      }
+    },
   },
   methods: {
     waybillInfoStatusDeal(status) {
@@ -313,7 +377,7 @@ export default {
         moduleName: "http_dispatch",
         method: "get",
         url_alias: "detail_manage",
-        url_code: [this.codes],
+        url_code: [this.code],
       };
       const res = await http_request(obj);
       console.log("detail res", res);
@@ -322,15 +386,17 @@ export default {
       this.waybillInfo = res.data && res.data.waybillInfo;
       this.settlementInfo = res.data && res.data.settlementInfo;
     },
+    handleClose() {
+      this.$emit("colseDetailDrawer");
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-
 .contents-box {
   font-size: 16px;
-  margin:  20px 0 20px 20px;
+  margin: 20px 0 20px 20px;
 }
 .title-item {
   font-size: 18px;
@@ -342,7 +408,7 @@ export default {
   color: #606266;
 }
 
-.base-text {
+.dispatch-base-text {
   margin-left: 20px;
 }
 .info-content {

@@ -1,13 +1,17 @@
 <template>
   <!-- 账户明细 -->
-  <div>
-    <div v-show="showSearch" class="app-container app-container--search">
+  <div class="pages-info">
+    <div class="pages-info-right">
       <el-form
         ref="queryForm"
         :model="queryParams"
         :inline="true"
         label-width="80px"
+         class="ddc-queryParams"
+    label-position="top"
       >
+       <div class="ddc-queryParams-left">
+      <div class="up">
         <el-form-item label="交易日期">
           <el-date-picker
             v-model="queryParams.updateTimeBegin"
@@ -30,6 +34,10 @@
             :picker-options="endPickerOptions"
           />
         </el-form-item>
+          </div>
+           </div>
+              <div class="ddc-queryParams-right">
+
         <el-form-item>
           <el-button
             type="primary"
@@ -42,86 +50,55 @@
             >重置</el-button
           >
         </el-form-item>
+              </div>
       </el-form>
-    </div>
-    <!-- 按钮组 -->
-    <div class="app-container">
-      <el-radio-group v-model="activeName" size="small" @change="handleClick">
-        <el-radio-button label="近一月" />
-        <el-radio-button label="近三月" />
-        <el-radio-button label="近半年" />
-        <el-radio-button label="近一年" />
-      </el-radio-group>
-    </div>
-    <!-- 表格层 -->
-    <div class="app-container table-container">
-      <Tabs :tablist="tablist" @getActiveName="getActiveName" />
-      <template v-if="activeTab === '收款记录'">
-        <el-table
-          v-loading="loading"
-          row-key="id"
-          highlight-current-row
-          border
-          default-expand-all
-          :data="tableData"
-        >
-          <template v-for="(item, index) in tableColumnsConfig">
-            <el-table-column
-              v-show="item.isShow"
-              :key="index"
-              :prop="item.prop"
-              :label="item.label"
-              :show-overflow-tooltip="item.tooltip"
-              :width="item.width || '300'"
-            >
-            </el-table-column>
-          </template>
-        </el-table>
-      </template>
-      <template v-else>
-        <el-table
-          v-loading="loading"
-          row-key="id"
-          highlight-current-row
-          border
-          default-expand-all
-          :data="tableData"
-        >
-          <template v-for="(item, index) in tableColumnsConfig1">
-            <el-table-column
-            v-if="item.prop === 'paidItem'"
-              v-show="item.isShow"
-              :key="index"
-              :prop="item.prop"
-              :label="item.label"
-              :show-overflow-tooltip="item.tooltip"
-            >
-              <template slot-scope="scope" >
-                <span>{{ dealPaidItem(scope.row.paidItem) }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-            v-else
-              v-show="item.isShow"
-              :key="index"
-              :prop="item.prop"
-              :label="item.label"
-              :show-overflow-tooltip="item.tooltip"
-            >
-            </el-table-column>
-          </template>
-        </el-table>
-      </template>
-
-      <div class="table-box">
-        <pagination
-          v-show="total > 0"
-          :total="total"
-          :page.sync="queryParams.pageNum"
-          :limit.sync="queryParams.pageSize"
-          @pagination="getList"
-        />
+      <!-- 分割线 -->
+      <div class="divier"></div>
+      <!-- 按钮组 -->
+      <div class="toolsbar">
+        <el-radio-group v-model="activeName" size="small" @change="handleClick">
+          <el-radio-button label="近一月" />
+          <el-radio-button label="近三月" />
+          <el-radio-button label="近半年" />
+          <el-radio-button label="近一年" />
+        </el-radio-group>
       </div>
+      <!-- 表格层 -->
+      <Tabs :tablist="tablist" @getActiveName="getActiveName" />
+        <RefactorTable
+        v-show="activeTab === '收款记录'"
+          is-show-index
+          :loading="loading"
+          :data="tableData"
+          row-key="id"
+          :table-columns-config="tableColumnsConfig"
+          :border="false"
+          :stripe="true"
+        >
+        </RefactorTable>
+        <RefactorTable
+        v-show="activeTab !== '收款记录'"
+          is-show-index
+          :loading="loading"
+          :data="tableData"
+          row-key="id"
+          :table-columns-config="tableColumnsConfig1"
+          :border="false"
+          :stripe="true"
+        >
+          <template #paidItem="{ row }">
+            <span>{{ dealPaidItem(row.paidItem) }}</span>
+          </template>
+        </RefactorTable>
+
+      <pagination
+        v-show="total > 0"
+        :total="total"
+        layout="prev, pager, next, sizes, total,  jumper"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
     </div>
   </div>
 </template>

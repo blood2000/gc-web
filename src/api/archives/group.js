@@ -5,5 +5,6 @@ export default {
     add_vehicle_group:'/fmsweb/basic/vehicle/v1/addVehicleToGroup', //加入车辆到分组
     paging_no_add_group:'/fmsweb/basic/vehicle/v1/pagingByNoAddVehicle', //未加入车辆列表
     paging_ok_add_group:'/fmsweb/basic/vehicle/v1/pagingByIsAddVehicle',//已加入车辆列表
-    del_from_group:'/fmsweb/basic/vehicle/v1/deleteVehicleFromGroup'
+    del_from_group:'/fmsweb/basic/vehicle/v1/deleteVehicleFromGroup',
+    update_group:'/fmsweb/basic/vehicle/v1/updateGroup'//修改分组名称
 }

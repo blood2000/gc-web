@@ -5,92 +5,105 @@
     :inline="true"
     label-width="120px"
     size="small"
+    class="ddc-queryParams"
+    label-position="top"
   >
-    <el-form-item label="调度单号" prop="dispatchOrderNo">
-      <el-input
-        v-model="queryParams.dispatchOrderNo"
-        placeholder="请输入调度单号"
-        clearable
-        style="width: 185px"
-        @keyup.enter.native="$emit('handleQuery')"
-      />
-    </el-form-item>
-    <el-form-item label="出发地" prop="loadAddress">
-      <el-input
-        v-model="queryParams.loadAddress"
-        placeholder="请输入出发地"
-        clearable
-        style="width: 185px"
-        @keyup.enter.native="$emit('handleQuery')"
-      />
-    </el-form-item>
-    <el-form-item label="目的地" prop="unloadAddress">
-      <el-input
-        v-model="queryParams.unloadAddress"
-        placeholder=" 请输入目的地"
-        clearable
-        style="width: 185px"
-        @keyup.enter.native="$emit('handleQuery')"
-      />
-    </el-form-item>
-    <el-form-item label="司机" prop="driverNameOrPhone">
-      <el-input
-        v-model="queryParams.driverNameOrPhone"
-        placeholder="司机姓名/司机电话"
-        clearable
-        style="width: 185px"
-        @keyup.enter.native="$emit('handleQuery')"
-      />
-    </el-form-item>
-    <el-form-item label="车牌号" prop="vehicleNumber">
-      <el-input
-        v-model="queryParams.vehicleNumber"
-        placeholder=" 请输入车牌号"
-        clearable
-        style="width: 185px"
-        @keyup.enter.native="$emit('handleQuery')"
-      />
-    </el-form-item>
-    <el-form-item label="货物类型：" prop="goodsType">
-      <el-select
-        v-model="queryParams.goodsType"
-        clearable
-        filterable
-        style="width: 185px"
-        placeholder="请选择"
-        @change="$emit('handleQuery')"
-      >
-        <el-option
-          v-for="(item, index) in goodsTypeList"
-          :key="index"
-          :label="item.dictLabel"
-          :value="item.dictValue"
-        />
-      </el-select>
-    </el-form-item>
-
-    <el-form-item label="派车日期" prop="appointCarDate" >
-      <el-date-picker
-        v-model="queryParams.appointCarDate"
-        unlink-panels
-        type="date"
-        value-format="yyyy-MM-dd"
-        placeholder="请选择派车日期"
-      >
-      </el-date-picker>
-    </el-form-item>
-    <el-form-item>
-      <el-button
-        type="primary"
-        icon="el-icon-search"
-        @click="$emit('handleQuery')"
-      >
-        搜索
-      </el-button>
-      <el-button type="primary" plain icon="el-icon-refresh" @click="reset">
-        重置
-      </el-button>
-    </el-form-item>
+    <div class="ddc-queryParams-left">
+      <div class="up">
+        <el-form-item label="调度单号" prop="dispatchOrderNo">
+          <el-input
+            v-model="queryParams.dispatchOrderNo"
+            placeholder="请输入调度单号"
+            clearable
+            style="width: 185px"
+            @keyup.enter.native="$emit('handleQuery')"
+          />
+        </el-form-item>
+        <el-form-item label="出发地" prop="loadAddress">
+          <el-input
+            v-model="queryParams.loadAddress"
+            placeholder="请输入出发地"
+            clearable
+            style="width: 185px"
+            @keyup.enter.native="$emit('handleQuery')"
+          />
+        </el-form-item>
+        <el-form-item label="目的地" prop="unloadAddress">
+          <el-input
+            v-model="queryParams.unloadAddress"
+            placeholder=" 请输入目的地"
+            clearable
+            style="width: 185px"
+            @keyup.enter.native="$emit('handleQuery')"
+          />
+        </el-form-item>
+        <el-form-item label="司机" prop="driverNameOrPhone">
+          <el-input
+            v-model="queryParams.driverNameOrPhone"
+            placeholder="司机姓名/司机电话"
+            clearable
+            style="width: 185px"
+            @keyup.enter.native="$emit('handleQuery')"
+          />
+        </el-form-item>
+      </div>
+      <div class="down" v-show="isShow">
+        <el-form-item label="车牌号" prop="vehicleNumber">
+          <el-input
+            v-model="queryParams.vehicleNumber"
+            placeholder=" 请输入车牌号"
+            clearable
+            style="width: 185px"
+            @keyup.enter.native="$emit('handleQuery')"
+          />
+        </el-form-item>
+        <el-form-item label="货物类型：" prop="goodsType">
+          <el-select
+            v-model="queryParams.goodsType"
+            clearable
+            filterable
+            style="width: 185px"
+            placeholder="请选择"
+            @change="$emit('handleQuery')"
+          >
+            <el-option
+              v-for="(item, index) in goodsTypeList"
+              :key="index"
+              :label="item.dictLabel"
+              :value="item.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="派车日期" prop="appointCarDate">
+          <el-date-picker
+            v-model="queryParams.appointCarDate"
+            unlink-panels
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择派车日期"
+          >
+          </el-date-picker>
+        </el-form-item>
+      </div>
+    </div>
+    <div class="ddc-queryParams-right">
+      <div @click="hanleIsShow">
+        <i :class="isShow ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i>
+        <span>{{ isShow ? "收起" : "展开" }}</span>
+      </div>
+      <el-form-item>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          @click="$emit('handleQuery')"
+        >
+          搜索
+        </el-button>
+        <el-button type="primary" plain icon="el-icon-refresh" @click="reset">
+          重置
+        </el-button>
+      </el-form-item>
+    </div>
   </el-form>
 </template>
 
@@ -103,10 +116,9 @@ export default {
       type: Object,
       default: () => {
         return {};
-      }
-    
-  },
-  goodsTypeList: {
+      },
+    },
+    goodsTypeList: {
       type: Array,
       default: [],
     },
@@ -114,6 +126,7 @@ export default {
   data() {
     return {
       pickerOptions,
+      isShow: false,
       // 'projectList': []
     };
   },
@@ -128,7 +141,7 @@ export default {
     },
   },
   created() {
-      console.log('goodsTypeList',this.goodsTypeList)
+    console.log("goodsTypeList", this.goodsTypeList);
   },
   methods: {
     reset() {
@@ -136,8 +149,11 @@ export default {
       this.$refs["queryForm"].resetFields();
       this.queryParams.dateRange = [];
       this.$emit("handleQuery");
-    }
-  }
+    },
+    hanleIsShow() {
+      this.isShow = !this.isShow;
+    },
+  },
 };
 </script>
 
