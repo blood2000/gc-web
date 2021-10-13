@@ -12,4 +12,5 @@ export default {
   // uploadImg: '/fmsweb/system/common/v1/upload',
   uploadImg: '/fmsweb/basic/common/v1/uploadCertAndGetInfoWithoutToken',
   resetPwd: '/fmsweb/basic/common/v1/resetPwd',  //重设密码/忘记密码
+  protocol:'/assets/protocol/protocol.html'
 }
