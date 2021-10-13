@@ -15,9 +15,11 @@
       label-width="100px"
       size="small"
       :disabled="isDetail"
+      label-position="top"
+      d
     >
       <el-row>
-        <el-col :span="12">
+        <el-col :span="8">
           <el-form-item label="所属组织" prop="orgCode">
             <treeselect
               v-model="form.orgCode"
@@ -42,28 +44,32 @@
       </el-row>
       <!-- 图片上传类 -->
       <el-row>
-        <el-col :span="8">
-          <el-form-item ref="identificationImageRef" prop="identificationImage">
-            <p class="upload-image-label">
+        <el-col :span="12">
+          <el-form-item
+            ref="identificationImageRef"
+            label="身份证正面照:"
+            prop="identificationImage"
+          >
+            <!-- <p class="upload-image-label">
               <span class="g-color-require">* </span>
               身份证正面照:
-            </p>
+            </p> -->
             <ImageUploadSimple
               v-model="form.identificationImage"
               @input="chooseImg"
             />
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="12">
           <el-form-item
             ref="identificationBackImageRef"
-            label=""
+            label=" 身份证背面照:"
             prop="identificationBackImage"
           >
-            <p class="upload-image-label">
+            <!-- <p class="upload-image-label">
               <span class="g-color-require">* </span>
               身份证背面照:
-            </p>
+            </p> -->
             <ImageUploadSimple
               v-model="form.identificationBackImage"
               @input="chooseImgBack"
@@ -72,8 +78,8 @@
         </el-col>
       </el-row>
 
-      <el-row>
-        <el-col :span="12">
+      <el-row :gutter="15">
+        <el-col :span="8">
           <el-form-item prop="name" label="司机姓名">
             <el-input
               v-model="form.name"
@@ -82,7 +88,7 @@
             />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="8">
           <el-form-item label="手机号码" prop="telphone">
             <el-input
               v-model="form.telphone"
@@ -92,9 +98,7 @@
             />
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
+        <el-col :span="8">
           <!-- <span style="color: red">*</span> -->
           <el-form-item
             style="display: inline-block"
@@ -110,6 +114,7 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row> </el-row>
       <el-row>
         <el-col :span="16" v-if="isIdDateValid">
           <el-form-item label="身份证有效期:" prop="idDateRange">
@@ -142,11 +147,11 @@
       </el-row>
       <el-row>
         <el-col :span="8">
-          <el-form-item prop="driverLicenseImage">
-            <p class="upload-image-label">
+          <el-form-item label=" 驾驶证:" prop="driverLicenseImage">
+            <!-- <p class="upload-image-label">
               <span class="g-color-require">* </span>
-              驾驶证:
-            </p>
+             
+            </p> -->
             <ImageUploadSimple
               v-model="form.driverLicenseImage"
               @input="driverChooseImg"
@@ -196,16 +201,20 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <div class="form-remark">
-        <span>备注:</span>
-        <el-input
-          type="textarea"
-          :rows="2"
-          placeholder="请输入内容"
-          v-model="form.remark"
-        >
-        </el-input>
-      </div>
+      <el-row class="form-remark">
+        <!-- <span>备注:</span> -->
+        <el-col :span="24">
+          <el-form-item label="备注:" prop="remark">
+            <el-input
+              type="textarea"
+              :rows="4"
+              placeholder="请输入内容"
+              v-model="form.remark"
+            >
+            </el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm" :loading="loading"
@@ -650,7 +659,7 @@ export default {
 }
 .form-remark span {
   display: inline-block;
-  width: 58px;
+  // width: 58px;
 }
 .upload-image-label {
   margin: 0;

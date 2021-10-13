@@ -270,7 +270,6 @@ export default {
       const res = await http_request(obj);
       console.log("res getList", res);
       res.data.rows.forEach((el) => {
-        console.log("el", el.attribute);
         if (
           el.attribute &&
           el.attribute.coordinate &&
@@ -286,7 +285,6 @@ export default {
           this.list.push(el);
         }
       });
-      console.log("this.list", this.list);
       this.total = res.data.total;
       this.loading = false;
     },

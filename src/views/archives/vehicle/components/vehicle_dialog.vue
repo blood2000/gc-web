@@ -14,15 +14,20 @@
       :rules="rules"
       label-width="110px"
       size="small"
+      label-position="top"
     >
       <!-- 图片上传类 -->
       <el-row>
         <el-col :span="8">
-          <el-form-item ref="vehicleLicenseImgRef" prop="vehicleLicenseImg">
-            <p class="upload-image-label">
+          <el-form-item
+            ref="vehicleLicenseImgRef"
+            label="行驶证正面:"
+            prop="vehicleLicenseImg"
+          >
+            <!-- <p class="upload-image-label">
               <span class="g-color-require">* </span>
               行驶证正面:
-            </p>
+            </p> -->
             <ImageUploadSimple
               v-model="form.vehicleLicenseImg"
               @input="chooseImg"
@@ -33,11 +38,12 @@
           <el-form-item
             ref="vehicleLicenseSecondImgRef"
             prop="vehicleLicenseSecondImg"
+            label="行驶证背面:"
           >
-            <p class="upload-image-label">
+            <!-- <p class="upload-image-label">
               <span class="g-color-require">* </span>
               行驶证背面:
-            </p>
+            </p> -->
             <ImageUploadSimple
               v-model="form.vehicleLicenseSecondImg"
               @input="chooseImgBack"
@@ -48,8 +54,9 @@
           <el-form-item
             ref="roadTransportCertificateImgRef"
             prop="roadTransportCertificateImg"
+            label="道路运输证:"
           >
-            <p class="upload-image-label">道路运输证:</p>
+            <!-- <p class="upload-image-label">道路运输证:</p> -->
             <ImageUploadSimple
               v-model="form.roadTransportCertificateImg"
               @input="LoadChooseImg"
@@ -58,7 +65,7 @@
         </el-col>
       </el-row>
       <!-- 车辆信息 -->
-      <el-row>
+      <el-row :gutter="15">
         <el-col :span="12">
           <el-form-item label="车牌号" prop="licenseNumber">
             <el-input
@@ -99,7 +106,7 @@
         </el-col>
       </el-row> -->
       <el-row>
-        <el-col :span="24">
+        <el-col :span="12">
           <el-form-item label="车辆识别代号" prop="chassisNumber">
             <el-input
               v-model="form.chassisNumber"
@@ -109,7 +116,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
+      <el-row :gutter="15">
         <el-col :span="12">
           <el-form-item
             style="display: inline-block"
@@ -148,7 +155,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
+      <el-row :gutter="15">
         <el-col :span="12">
           <el-form-item label="车辆可载重量:" prop="vehicleLoadWeight">
             <el-input
@@ -172,7 +179,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
+      <el-row :gutter="15">
         <el-col :span="12">
           <el-form-item
             style="display: inline-block"
@@ -216,7 +223,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
+      <el-row :gutter="15">
         <el-col :span="12">
           <el-form-item
             style="display: inline-block"
@@ -274,16 +281,19 @@
           </el-form-item>
         </el-col> -->
       </el-row>
-      <div class="form-remark">
-        <span>备注:</span>
-        <el-input
-          type="textarea"
-          :rows="2"
-          placeholder="请输入内容"
-          v-model="form.remark"
-        >
-        </el-input>
-      </div>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="备注:" prop="remark">
+            <el-input
+              type="textarea"
+              :rows="4"
+              placeholder="请输入内容"
+              v-model="form.remark"
+            >
+            </el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm" :loading="loading"
@@ -415,12 +425,12 @@ export default {
       this.carrierTypeList = this.$store.getters.carrierTypeList;
       this.vehicleLicenseColorCodeList =
         this.$store.getters.vehicleLicenseColorCodeList;
-          //请求
-        this.defaultDriverList = this.options.defaultDriverList;
-        console.log(' this.defaultDriverList', this.defaultDriverList)
+      //请求
+      this.defaultDriverList = this.options.defaultDriverList;
+      console.log(" this.defaultDriverList", this.defaultDriverList);
       if (this.options.editType == "update" && this.open) {
         console.log("this.options", this.options, this.open);
-      
+
         this.requsetDetail();
       }
     },
@@ -438,7 +448,7 @@ export default {
       const me = this;
       const licenseNumber = me.form.licenseNumber;
       const orgCode = me.options.orgCode;
-      if(!licenseNumber) return
+      if (!licenseNumber) return;
       console.log("orgCode", orgCode);
       console.log("licenseNumber", licenseNumber);
       const obj = {
@@ -457,7 +467,7 @@ export default {
         //0:车辆已存在,请勿重复添加! 1:车辆已注册,是否确认进行添加至本车队 2:车辆为新车,可进行添加!
         0: () => {
           me.$confirm(`${msgData.msg}`, "系统提示", {
-             confirmButtonText: "确认",
+            confirmButtonText: "确认",
             showCancelButton: false,
             type: "warning",
           }).then(() => {
@@ -495,7 +505,7 @@ export default {
         2: () => {
           console.log("22222");
           me.$confirm(`${msgData.msg}`, "系统提示", {
-             confirmButtonText: "确认",
+            confirmButtonText: "确认",
             type: "info",
             showCancelButton: false,
           });
