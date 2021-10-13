@@ -10,7 +10,8 @@ const user = {
     permissions: [],
     menus:[],
     nickName: "",
-    test:''
+    test:'',
+    company_name:''
   },
 
   mutations: {
@@ -35,6 +36,9 @@ const user = {
     },
     SET_NICKNAME: (state, nickName) => {
       state.nickName = nickName;
+    },
+    SET_COMPANY_NAME: (state, company_name)=> {
+      state.company_name = company_name;
     }
   },
 
@@ -110,6 +114,7 @@ const user = {
             commit("SET_NAME", user.userName);
             commit("SET_NICKNAME", user.nickName);
             commit("SET_AVATAR", avatar);
+            commit("SET_COMPANY_NAME", res.data.company.name);
             resolve(res.data);
           })
           .catch(error => {

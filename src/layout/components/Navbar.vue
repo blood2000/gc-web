@@ -9,7 +9,7 @@
         />
       </div>
       <div class="left-menu-driver"></div>
-      <div class="left-menu-team">公司/车队名称</div>
+      <div class="company-name">{{ company_name }}</div>
     </div>
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
@@ -71,6 +71,7 @@ export default {
       "name",
       "roleName",
       "isShipment",
+      "company_name",
     ]),
     setting: {
       get() {
@@ -83,6 +84,9 @@ export default {
         });
       },
     },
+  },
+  mounted() {
+    console.log("company_name", this.$store.state);
   },
   methods: {
     toggleSideBar() {
@@ -159,8 +163,8 @@ export default {
     height: 100%;
     padding: 15px 12px;
     display: flex;
-    align-items:center;
-    &-img{
+    align-items: center;
+    &-img {
       width: 96px;
       height: 20px;
       margin-right: 8px;
@@ -173,6 +177,16 @@ export default {
       margin-right: 8px;
     }
     &-team {
+      height: 22px;
+      font-size: 16px;
+      font-family: PingFang SC;
+      font-weight: bold;
+      line-height: 22px;
+      color: #3d4050;
+      opacity: 1;
+    }
+    .company-name {
+      width: 104px;
       height: 22px;
       font-size: 16px;
       font-family: PingFang SC;
