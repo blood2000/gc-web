@@ -30,7 +30,7 @@ export default {
     const vnodes = [];
 
     if (icon) {
-      console.log("icon=======",title)
+      // console.log("icon=======",title)
       const node = (
         <span class="svg-icon-box">
           <span class={"svg-icon iconfont icon-nav-system icon-" + icon} />
@@ -49,7 +49,6 @@ export default {
         </span>
       );
     }
-    console.log('ckc vnodes',vnodes)
     return vnodes;
   },
 };

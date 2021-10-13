@@ -415,10 +415,12 @@ export default {
       this.carrierTypeList = this.$store.getters.carrierTypeList;
       this.vehicleLicenseColorCodeList =
         this.$store.getters.vehicleLicenseColorCodeList;
+          //请求
+        this.defaultDriverList = this.options.defaultDriverList;
+        console.log(' this.defaultDriverList', this.defaultDriverList)
       if (this.options.editType == "update" && this.open) {
         console.log("this.options", this.options, this.open);
-        //请求
-        this.defaultDriverList = this.options.defaultDriverList;
+      
         this.requsetDetail();
       }
     },

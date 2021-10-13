@@ -176,13 +176,11 @@ export function download(url, params, filename, headers, type = '.xlsx') {
 
 // 通用下载字典方法
 export function getDicts(dictType) {
-  const params = {
-    dictType: dictType,
-    dictPid: 0
-  }
-  return service.post('/chy/system/dict/data/listByDict', params, {
+  const formData =  new FormData()
+  formData.append('dictType',dictType)
+  return service.post('/chy/system/dict/data/listByDict', formData, {
     headers: Object.assign({}, defaultH, {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/x-www-form-urlencoded'
     })
   })
 }

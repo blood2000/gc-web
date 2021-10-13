@@ -59,7 +59,6 @@
 import { dispatchOrderStatusList, tableColumnsConfig } from "./order_config";
 import QueryForm from "./components/queryForm.vue";
 import { http_request } from "../../../api";
-import { listByDict } from "../../../api/system/dict/data.js";
 import Detail from './detail.vue'
 import Car from './car.vue'
 export default {
@@ -97,11 +96,10 @@ export default {
   created() {
     const me = this;
     console.log("tableColumnsConfig", tableColumnsConfig);
-    listByDict({
-      // dictPid: "344",
-      dictType: "goodsType",
-    }).then((res) => {
-      console.log("res", res);
+          const formData = new FormData();
+          formData.append('dictType',"goodsType")
+    this.getDicts("goodsType").then((res) => {
+      console.log("getDicts res", res);
       me.$store.commit("set_goodsTypeList", res.data);
       console.log(111, me.$store.state.dict.goodsTypeList);
       me.goodsTypeList = me.$store.state.dict.goodsTypeList;

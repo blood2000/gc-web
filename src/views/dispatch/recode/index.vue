@@ -95,7 +95,6 @@
 import { tableColumnsConfig } from "./recode_config";
 import QueryForm from "./components/queryForm.vue";
 import { http_request } from "../../../api";
-import { listByDict } from "../../../api/system/dict/data.js";
 import Detail from "./detail.vue";
 
 export default {
@@ -133,10 +132,7 @@ export default {
   created() {
     const me = this;
     console.log("tableColumnsConfig", tableColumnsConfig);
-    listByDict({
-      // dictPid: "344",
-      dictType: "goodsType",
-    }).then((res) => {
+   this.getDicts('goodsType').then((res) => {
       console.log("res", res);
       me.$store.commit("set_goodsTypeList", res.data);
       console.log(111, me.$store.state.dict.goodsTypeList);
