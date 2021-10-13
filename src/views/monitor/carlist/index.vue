@@ -102,15 +102,23 @@
         @pagination="getList"
       />
     </div>
+    <Detail
+      :code="currCode"
+      :detailDrawer="detailDrawer"
+      :options="{ title: '派车单详情' }"
+      @colseDetailDrawer="colseDetailDrawer"
+    />
   </div>
 </template>
 <script>
 import { http_request } from "../../../api";
 import { tableColumnsConfig, vehicleStatusList } from "./config";
 import QueryForm from "./components/queryForm.vue";
+import Detail from "../../dispatch/manage/detail.vue";
+
 export default {
   name: "carlist",
-  components: { QueryForm },
+  components: { QueryForm, Detail },
   data() {
     return {
       loading: false,
@@ -136,6 +144,8 @@ export default {
       orgTreeData: [],
       snList: [],
       geocoder: null,
+      currCode: null,
+      detailDrawer: false,
     };
   },
   mounted() {
@@ -157,8 +167,10 @@ export default {
       const res = await http_request(tmp);
       console.log("res", res);
       if (res.data == null) return this.msgError("没有派车单");
-      const code = res.data.appointCarOrderCode;
-      this.$router.push("/dispatch/manage/detail?code=" + code);
+      this.currCode = res.data.appointCarOrderCode;
+      this.detailDrawer = true;
+
+      // this.$router.push("/dispatch/manage/detail?code=" + code);
     },
     /**
      * 通过经纬度获取详细点位信息
@@ -296,6 +308,9 @@ export default {
         }
       }
       return obj;
+    },
+    colseDetailDrawer() {
+      this.detailDrawer = false;
     },
   },
 };
