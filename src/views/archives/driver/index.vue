@@ -447,7 +447,6 @@ export default {
       };
       console.log("所有参数列表", obj);
       const res = await http_request(obj);
-      console.log("res", res);
       if (res.code == "200") {
         this.driverList = res.data.rows;
         console.log("this.driverList", this.driverList);

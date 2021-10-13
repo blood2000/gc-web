@@ -56,7 +56,6 @@ const user = {
         console.log('登录参数',obj)
         http_request(obj)
           .then(res => {
-            console.log(res)
             if(!res.data.access_token) return resolve();
             setToken(res.data.access_token);
             commit("SET_TOKEN", res.data.access_token);
@@ -79,7 +78,6 @@ const user = {
         console.log('短信登录参数',obj)
         http_request(obj)
           .then(res => {
-            console.log(res)
             if(!res.data.access_token) return resolve();
             setToken(res.data.access_token);
             commit("SET_TOKEN", res.data.access_token);

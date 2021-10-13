@@ -74,6 +74,7 @@ const permission = {
       })
       const sidebarRoutes = filterAsyncRouter(sdata);
       const rewriteRoutes = filterAsyncRouter(rdata, false, true);
+      changeSingleTitle(rewriteRoutes)
       rewriteRoutes.push({ path: '*', redirect: '/404', hidden: true });
       commit('SET_ROUTES', rewriteRoutes);
       // test
@@ -84,6 +85,27 @@ const permission = {
     },
   },
 };
+
+const changeSingleTitle = (data) => {
+  data.forEach((el) => {
+    if (el.children && el.children.length > 0) {
+      let realTotal = 0
+      el.children.forEach(item=>{
+        if(!item.hidden){
+          realTotal++
+        }
+      })
+      if(realTotal ===1){
+        el.children.forEach(item=>{
+          if(!item.hidden){
+            item.meta.title = el.meta.title
+          }
+        })
+      }
+    }
+
+  })
+}
 
 // 遍历后台传来的路由字符串，转换为组件对象
 function filterAsyncRouter(asyncRouterMap, lastRouter = false, type = false) {

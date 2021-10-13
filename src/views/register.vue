@@ -519,7 +519,6 @@ export default {
           };
           http_request(obj)
             .then((res) => {
-              console.log(res);
               this.loading = false;
               // const username = this.idCardForm.name;
               this.$alert(" 注册成功！</font>", "系统提示", {

@@ -91,8 +91,6 @@ export default {
       });
       // When there is only one child router, the child router is displayed by default
       if (showingChildren.length === 1) {
-        console.log("ckc showingChildren", showingChildren);
-        console.log("ckc showingChildren.length =1 ", this.onlyOneChild);
         return true;
       }
 

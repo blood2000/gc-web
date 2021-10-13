@@ -288,7 +288,6 @@ export default {
       if (this.$refs.TagsViewContainer) {
         const $ContainerWidth = this.$refs.TagsViewContainer.offsetWidth;
         const tagList = this.$refs.tag;
-        console.log("tag tagList", tagList);
         let tagswidth = 0;
         let index;
         let flag = true;
