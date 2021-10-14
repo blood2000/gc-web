@@ -1,5 +1,6 @@
 <template>
   <el-form
+    class="center-form"
     ref="form"
     :model="user"
     :rules="rules"
@@ -128,3 +129,8 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+.center-form {
+  width: 360px;
+}
+</style>
