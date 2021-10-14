@@ -408,7 +408,7 @@ export default {
         url_alias: "getVehicleEventTrack",
         data: {
           vehicleCode: this.jimiQueryParams.vehicleCode,
-          beginTime: this.jimiQueryParams.beginTime,
+          startTime: this.jimiQueryParams.beginTime,
           endTime: this.jimiQueryParams.endTime,
         },
       });
@@ -428,7 +428,7 @@ export default {
         url_alias: "getVehicleEventTrack",
         data: {
           vehicleCode: this.jimiQueryParams.vehicleCode,
-          beginTime: this.jimiQueryParams.beginTime,
+          startTime: this.jimiQueryParams.beginTime,
           endTime: this.jimiQueryParams.endTime,
           eventType: "vehicle-stop",
         },
