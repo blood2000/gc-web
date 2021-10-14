@@ -38,7 +38,7 @@
               <div>
                 <span> 车辆承运类型： </span>
                 <span>
-                  {{ isPageShow("vehicleInf", "carrierTypeValue") }}
+                  {{ vehicleInfo.carrierTypeValue }}
                 </span>
               </div>
               <div>
@@ -66,7 +66,7 @@
                   >{{ isPageShow("vehicleInf", "vehicleLoadWeight") }} 吨
                 </span>
               </div>
-              <div >
+              <div>
                 <span> 车辆识别代号： </span>
                 <span
                   >{{ isPageShow("vehicleLicenseInf", "chassisNumber") }}
@@ -86,11 +86,11 @@
             <el-row>
               <el-col :span="8">
                 <span>车辆状态：</span>
-                <span>{{ vehicleInfo.enabledValue }}</span>
+                <span>{{ vehicleInfo.vehicleStatusValue }}</span>
               </el-col>
               <el-col :span="8">
                 <span>停用状态：</span>
-                <span>{{ vehicleInfo.vehicleStatusValue }}</span>
+                <span>{{ vehicleInfo.enabledValue }}</span>
               </el-col>
               <el-col :span="8">
                 <span>审核状态：</span>
@@ -106,11 +106,11 @@
             <el-row>
               <el-col :span="12">
                 <span>司机姓名：</span>
-                <span>{{vehicleInfo.defaultDriverName}}</span>
+                <span>{{ vehicleInfo.defaultDriverName }}</span>
               </el-col>
               <el-col :span="12">
                 <span>司机电话：</span>
-                <span>{{vehicleInfo.defaultDriverTelphone}}</span>
+                <span>{{ vehicleInfo.defaultDriverTelphone }}</span>
               </el-col>
             </el-row>
           </div>
@@ -121,7 +121,7 @@
             </div>
             <el-row :gutter="10">
               <el-col :span="8">
-                <div>
+                <div class="img-box">
                   <img
                     width="100%"
                     :src="isPageShow('vehicleLicenseInf', 'vehicleLicenseImg')"
@@ -131,7 +131,7 @@
                 <div><span>驾驶证主页</span></div>
               </el-col>
               <el-col :span="8">
-                <div>
+                <div class="img-box">
                   <img
                     width="100%"
                     :src="
@@ -143,7 +143,7 @@
                 <div><span>驾驶证副页</span></div>
               </el-col>
               <el-col :span="8">
-                <div>
+                <div class="img-box">
                   <img
                     width="100%"
                     :src="vehicleInfo.roadTransportCertificateImg"
@@ -188,7 +188,7 @@
             <el-row :gutter="10">
               <el-col :span="8">
                 <span>设备编号：</span>
-                <span>{{ vehicleInfo.defaultDriverCode }} </span>
+                <span>{{ vehicleInfo.deviceNumber }} </span>
               </el-col>
             </el-row>
           </div>
@@ -836,5 +836,11 @@ export default {
   font-size: 16px;
   height: 40px;
   line-height: 40px;
+}
+.img-box {
+  background: url('../../../assets/images/certificate/none_data.png') no-repeat center;
+  width: 130px;
+  height: 97px;
+  border-radius: 10px;
 }
 </style>

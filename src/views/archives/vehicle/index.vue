@@ -187,7 +187,7 @@
         editType: editType,
         code: vehicleCode,
         defaultDriverList: defaultDriverList,
-        orgCode:queryParams.orgCode
+        orgCode: queryParams.orgCode,
       }"
       :open="open"
       :title="title"
@@ -398,6 +398,7 @@ export default {
       this.vehicleHttpReq();
     },
     formToPaging() {
+      console.log('this.queryParams.dateRange',this.queryParams.dateRange)
       const tmp = {
         pageNum: this.queryParams.pageNum,
         pageSize: this.queryParams.pageSize,
@@ -406,9 +407,9 @@ export default {
         groupName: this.queryParams.groupName || null, //分组
         enabled: this.queryParams.enabled || null, //是否启用
         createBeginTime:
-          (this.queryParams.dateRange && this.queryParams.dateRange[0]) || null,
+          (this.queryParams.dateRange&&this.queryParams.dateRange.length>0 && this.queryParams.dateRange[0]) || null,
         createEndTime:
-          (this.queryParams.dateRange && this.queryParams.dateRange[1]) || null,
+          (this.queryParams.dateRange&&this.queryParams.dateRange.length>0 && this.queryParams.dateRange[1]) || null,
         orgCode: this.queryParams.orgCode,
       };
       for (const item in tmp) {
@@ -416,10 +417,14 @@ export default {
           delete tmp[item];
         }
       }
-      if (tmp.createBeginTime)
+      console.log('tmp.createBeginTime',tmp.createBeginTime)
+      if (tmp.createBeginTime) {
         tmp.createBeginTime = tmp.createBeginTime + " " + "00:00:00";
-      if (tmp.createEndTime)
+      }
+      if (tmp.createEndTime){
         tmp.createEndTime = tmp.createEndTime + " " + "23:59:59";
+
+      }
 
       return tmp;
     },

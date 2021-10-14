@@ -180,6 +180,8 @@
               v-model="form.vehicleLoadWeight"
               placeholder="请输入可载重量"
               clearable
+              type="number"
+              @input="imposeInput($event,'vehicleLoadWeight')"
             >
               <template slot="append">吨</template>
             </el-input>
@@ -191,6 +193,8 @@
               v-model="form.vehicleTotalWeight"
               placeholder="请输入总重量"
               clearable
+              type="number"
+              @input="imposeInput($event,'vehicleTotalWeight')"
             >
               <template slot="append">吨</template>
             </el-input>
@@ -328,6 +332,7 @@ import { http_request } from "../../../../api";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import formValidate from "../../../../utils/formValidate";
+import { number } from 'echarts';
 export default {
   name: "vehicleDialog",
   components: { ImageUploadSimple, Treeselect },
@@ -457,6 +462,14 @@ export default {
     this.getOrgTree();
   },
   methods: {
+    //强制限制
+    imposeInput(e,value){
+      console.log('强制限制',e)
+     const tmp =  e.match(/^[0-9]+(\.[0-9]{0,3})?/g) ?? [""]
+     console.log('tmp',tmp[0])
+     this.form[value] = tmp[0]
+    },
+    //失去焦点
     blurChange(e) {
       console.log("eee", e);
       this.checkVhicle();
@@ -521,12 +534,12 @@ export default {
             });
         },
         2: () => {
-          console.log("22222");
-          me.$confirm(`${msgData.msg}`, "系统提示", {
-            confirmButtonText: "确认",
-            type: "info",
-            showCancelButton: false,
-          });
+          // console.log("22222");
+          // me.$confirm(`${msgData.msg}`, "系统提示", {
+          //   confirmButtonText: "确认",
+          //   type: "info",
+          //   showCancelButton: false,
+          // });
         },
       };
       selectObj[msgData.type]();
@@ -570,13 +583,13 @@ export default {
     },
     //提交表单
     submitForm() {
-      if (
-        isNaN(this.form.vehicleLoadWeight) ||
-        isNaN(this.form.vehicleTotalWeight)
-      ) {
-        this.msgError("请选择正确图片上传");
-        return;
-      }
+      // if (
+      //   isNaN(this.form.vehicleLoadWeight) ||
+      //   isNaN(this.form.vehicleTotalWeight)
+      // ) {
+      //   this.msgError("请选择正确图片上传");
+      //   return;
+      // }
       const me = this;
       this.$refs["form"].validate((valid) => {
         if (valid) {

@@ -84,7 +84,7 @@
         <el-form-item label="设备号" prop="sn">
           <el-input
             v-model="queryParams.sn"
-            placeholder="请输入设别编号"
+            placeholder="请输入设备编号"
             clearable
             style="width: 185px"
             @keyup.enter.native="$emit('handleQuery')"

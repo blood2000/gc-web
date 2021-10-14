@@ -62,7 +62,7 @@
             >删除</el-button
           >
         </el-col>
-        <el-col :span="1.5">
+        <!-- <el-col :span="1.5">
           <el-button type="primary" size="mini" @click="handleImport"
             >导入</el-button
           >
@@ -75,7 +75,7 @@
             @click="handleExport"
             >导出</el-button
           >
-        </el-col>
+        </el-col> -->
         <!-- <right-toolbar
                 :show-search.sync="showSearch"
                 @queryTable="searchQuery"
@@ -124,13 +124,13 @@
           </i-switch>
         </template>
         <template #edit="{ row }">
-          <!-- <el-button
+          <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(row)"
             >修改</el-button
-          > -->
+          >
           <el-button
             size="mini"
             type="text"
@@ -409,6 +409,8 @@ export default {
         });
     },
     formToPaging() {
+            console.log('this.queryParams.dateRange',this.queryParams.dateRange)
+
       const tmp = {
         pageNum: this.queryParams.pageNum,
         pageSize: this.queryParams.pageSize,
@@ -417,8 +419,10 @@ export default {
         enabled: this.queryParams.enabled, //分组
         driverStatus: this.queryParams.driverStatus || null, //是否启用
         realStatus: this.queryParams.realStatus, //是否启用
-        createBeginTime: this.queryParams.dateRange[0] || null,
-        createEndTime: this.queryParams.dateRange[1] || null,
+      createBeginTime:
+          (this.queryParams.dateRange&&this.queryParams.dateRange.length>0 && this.queryParams.dateRange[0]) || null,
+        createEndTime:
+          (this.queryParams.dateRange&&this.queryParams.dateRange.length>0 && this.queryParams.dateRange[1]) || null,
         orgCode: this.queryParams.orgCode,
       };
       for (const item in tmp) {

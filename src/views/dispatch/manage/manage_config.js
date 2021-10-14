@@ -23,7 +23,7 @@ export const tableColumnsConfig = [
     {
         isShow: true,
         label: "承运组织",
-        prop: "dispatchOrderNo",
+        prop: "source",
         sortNum: 1,
         tooltip: true,
     },
@@ -84,13 +84,13 @@ export const tableColumnsConfig = [
         sortNum: 1,
         tooltip: true,
     },
-    {
-        isShow: true,
-        label: "货物单价",
-        prop: "freight",
-        sortNum: 1,
-        tooltip: true,
-    },
+    // {
+    //     isShow: true,
+    //     label: "货物单价",
+    //     prop: "freight",
+    //     sortNum: 1,
+    //     tooltip: true,
+    // },
     {
         isShow: true,
         label: "操作",

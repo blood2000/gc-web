@@ -14,7 +14,7 @@
       :rules="rules"
       label-width="100px"
       size="small"
-      :disabled="isDetail"
+      :disabled="isDisabled"
       label-position="top"
     >
       <el-row>
@@ -371,6 +371,12 @@ export default {
     this.getTree();
   },
   methods: {
+    isDisabled(){
+      let result = false
+      if(this.isDetail) result = true
+      if(this.this.options.editType == 'update') result = true
+      return result
+    },
     changeBlurTel(e) {
       this.checkIdOrphone("0", this.form.telphone);
     },
@@ -557,6 +563,10 @@ export default {
           side,
         },
       };
+      if(type === 2){
+        obj.data.return_issuing_authority = true
+
+      }
       const res = await http_request(obj);
       console.log("ocr请求", res);
       this.ocrDataToForm(res.data.result, type);

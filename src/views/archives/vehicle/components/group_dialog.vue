@@ -21,9 +21,16 @@
               :key="index"
               @click="handleGroup(item)"
             >
-              <div class="group-dialog-list-content-item-title">
-                {{ item.name }}
-              </div>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                :content="item.name"
+                placement="left-start"
+              >
+                <div class="group-dialog-list-content-item-title">
+                  {{ item.name }}
+                </div>
+              </el-tooltip>
               <el-button type="text" @click="groupEdit(item)">修改</el-button>
               <el-button
                 type="text"
@@ -455,5 +462,10 @@ export default {
 }
 .group-dialog-transfer /deep/ .el-transfer__buttons {
   padding: 0 4px !important;
+}
+.group-dialog-list-content-item-title {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 </style>
