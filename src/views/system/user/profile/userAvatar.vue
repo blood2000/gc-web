@@ -166,7 +166,8 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   cursor: pointer;
-  line-height: 110px;
+  height: 72px;
+  line-height: 72px;
   border-radius: 50%;
 }
 </style>
