@@ -32,7 +32,7 @@
       </p>
       <p>
         <span style="font-family:微软雅黑; font-size:12pt;font-weight: bold;">
-          1.1.&#xa0;至简管车服务条款是您与福建至简至一信息科技有限公司平台（“至简管车”或者“我们”）就使用至简管车服务而订立的有效合约。车队管家包含域名为
+          1.1.&#xa0;至简管车服务条款是您与福建至简至一信息科技有限公司平台（“至简管车”或者“我们”）就使用至简管车服务而订立的有效合约。至简管车包含域名为
           <a href="http://www.z1gc.cn">
             http://www.z1gc.cn
           </a>
@@ -42,7 +42,7 @@
       </p>
       <p>
         <span style="font-family:微软雅黑; font-size:12pt; font-weight:bold">
-          1.2.&#xa0;如您购买或使用车队管家上某一具体服务，您仍需确认具体服务对应的服务条款；请您审慎阅读、充分理解各条款内容，选择接受或不接受该服务条款。
+          1.2.&#xa0;如您购买或使用至简管车上某一具体服务，您仍需确认具体服务对应的服务条款；请您审慎阅读、充分理解各条款内容，选择接受或不接受该服务条款。
         </span>
       </p>
       <p style="font-size:12pt; line-height:115%; margin:13pt 0pt">
@@ -376,7 +376,7 @@
       </p>
       <p>
         <span style="font-family:微软雅黑; font-size:12pt; font-weight:bold">14.4.&#xa0;至简管车有权在至简管车官网（
-          <a href="https://ddcwl.com/">https://ddcwl.com/</a>
+          <a href="http://www.z1gc.cn">http://www.z1gc.cn/</a>
           ）上发布公告、发站内通知或邮件通知等方式将本服务的权利义务全部或者部分转移给至简管车的关联公司。
         </span>
       </p>

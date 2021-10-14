@@ -82,10 +82,12 @@ export default {
       previews: {}
     };
   },
+  
+  
   methods: {
     // 编辑头像
     editCropper() {
-      this.open = true;
+      // this.open = true;
     },
     // 打开弹出层结束时的回调
     modalOpened() {
@@ -153,7 +155,7 @@ export default {
 }
 
 .user-info-head:hover:after {
-  content: '+';
+  // content: '+';
   position: absolute;
   left: 0;
   right: 0;
@@ -166,7 +168,8 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   cursor: pointer;
-  line-height: 110px;
+  height: 72px;
+  line-height: 72px;
   border-radius: 50%;
 }
 </style>

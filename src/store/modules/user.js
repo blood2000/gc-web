@@ -102,6 +102,7 @@ const user = {
             console.log('res userinfo',res.data)
             if (!res) return;
             const user = res.data.user;
+            user.avatar = user.avatar || '';
             const avatar =
               user.avatar == ""
                 ? require("@/assets/images/profile.jpg")
