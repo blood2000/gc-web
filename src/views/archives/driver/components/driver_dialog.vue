@@ -14,7 +14,7 @@
       :rules="rules"
       label-width="100px"
       size="small"
-      :disabled="isDisabled"
+      :disabled="isDisabled()"
       label-position="top"
     >
       <el-row>
@@ -374,7 +374,7 @@ export default {
     isDisabled(){
       let result = false
       if(this.isDetail) result = true
-      if(this.this.options.editType == 'update') result = true
+      if(this.options&&this.options.editType == 'update') result = true
       return result
     },
     changeBlurTel(e) {

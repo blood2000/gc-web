@@ -24,12 +24,12 @@
                 <span>{{ isPageShow("vehicleInf", "group") }} </span>
               </div> -->
 
-              <!-- <div>
+              <div>
                 <span> 发动机号： </span>
                 <span>
                   {{ isPageShow("vehicleLicenseInf", "engineNumber") }}</span
                 >
-              </div> -->
+              </div>
 
               <div>
                 <span> 车辆类型： </span>
