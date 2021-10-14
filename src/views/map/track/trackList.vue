@@ -266,7 +266,7 @@ export default {
       // jimi查询参数
       rangeTime: [],
       jimiQueryParams: {
-        startTime: "",
+        beginTime: "",
         endTime: "",
         vehicleCode: "",
       },
@@ -314,24 +314,24 @@ export default {
 
   mounted() {
     // 时间默认选中当天
-    const startTime = this.parseTime(new Date(), "{y}-{m}-{d} 00:00:00");
+    const beginTime = this.parseTime(new Date(), "{y}-{m}-{d} 00:00:00");
     const endTime = this.parseTime(new Date());
-    this.setTimeValue(startTime, endTime);
+    this.setTimeValue(beginTime, endTime);
   },
   methods: {
     /** 快捷时间选中 */
     chooseTimeGroup(code) {
       this.activeTime = code;
-      let startTime, endTime;
+      let beginTime, endTime;
       switch (code) {
         case 0:
           // 今日
-          startTime = this.parseTime(new Date(), "{y}-{m}-{d} 00:00:00");
+          beginTime = this.parseTime(new Date(), "{y}-{m}-{d} 00:00:00");
           endTime = this.parseTime(new Date());
           break;
         case 1:
           // 昨日
-          startTime = this.parseTime(
+          beginTime = this.parseTime(
             new Date().getTime() - 3600 * 1000 * 24 * 1,
             "{y}-{m}-{d} 00:00:00"
           );
@@ -342,7 +342,7 @@ export default {
           break;
         case 2:
           // 前日
-          startTime = this.parseTime(
+          beginTime = this.parseTime(
             new Date().getTime() - 3600 * 1000 * 24 * 2,
             "{y}-{m}-{d} 00:00:00"
           );
@@ -354,21 +354,21 @@ export default {
         default:
           break;
       }
-      this.setTimeValue(startTime, endTime);
+      this.setTimeValue(beginTime, endTime);
     },
     /** 时间赋值 */
-    setTimeValue(startTime, endTime) {
-      this.rangeTime = [startTime, endTime];
-      this.jimiQueryParams.startTime = startTime;
+    setTimeValue(beginTime, endTime) {
+      this.rangeTime = [beginTime, endTime];
+      this.jimiQueryParams.beginTime = beginTime;
       this.jimiQueryParams.endTime = endTime;
     },
     /** 选择日期 */
     dateChoose(date) {
       if (date) {
-        this.jimiQueryParams.startTime = this.parseTime(date[0]);
+        this.jimiQueryParams.beginTime = this.parseTime(date[0]);
         this.jimiQueryParams.endTime = this.parseTime(date[1]);
       } else {
-        this.jimiQueryParams.startTime = null;
+        this.jimiQueryParams.beginTime = null;
         this.jimiQueryParams.endTime = null;
       }
     },
@@ -386,8 +386,8 @@ export default {
         return;
       }
       if (
-        !this.jimiQueryParams.startTime ||
-        this.jimiQueryParams.startTime === ""
+        !this.jimiQueryParams.beginTime ||
+        this.jimiQueryParams.beginTime === ""
       ) {
         this.msgWarning("开始时间不能为空");
         return;
@@ -408,7 +408,7 @@ export default {
         url_alias: "getVehicleEventTrack",
         data: {
           vehicleCode: this.jimiQueryParams.vehicleCode,
-          beginTime: this.jimiQueryParams.startTime,
+          beginTime: this.jimiQueryParams.beginTime,
           endTime: this.jimiQueryParams.endTime,
         },
       });
@@ -428,7 +428,7 @@ export default {
         url_alias: "getVehicleEventTrack",
         data: {
           vehicleCode: this.jimiQueryParams.vehicleCode,
-          beginTime: this.jimiQueryParams.startTime,
+          beginTime: this.jimiQueryParams.beginTime,
           endTime: this.jimiQueryParams.endTime,
           eventType: "vehicle-stop",
         },
@@ -480,7 +480,7 @@ export default {
             }
             // 设置当前轨迹总时间、总里程
             if (this.jmTracklist.length >= 2) {
-              const startTime = this.jmTrackInfolist[0].gpsTime;
+              const beginTime = this.jmTrackInfolist[0].gpsTime;
               const endTime =
                 this.jmTrackInfolist[this.jmTrackInfolist.length - 1].gpsTime;
               const startMileage = Number(this.jmTrackInfolist[0].mileage || 0);
@@ -489,7 +489,7 @@ export default {
                   0
               );
               this.setCurrentTrackAllTimeAndMileage(
-                this.getRemainderTime(startTime, endTime),
+                this.getRemainderTime(beginTime, endTime),
                 endMileage - startMileage
               );
             } else {
