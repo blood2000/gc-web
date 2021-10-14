@@ -72,7 +72,7 @@ export default {
           delete node.children;
         }
         const obj = {
-          id: node.code, // 键名转换，方法默认是label和children进行树状渲染
+          id: node.id, // 键名转换，方法默认是label和children进行树状渲染
           label: node.orgName,
           // children: node.childrenOrgList,
         };
@@ -93,8 +93,12 @@ export default {
       }
     }
   },
-  created() {
-    this.getTree();
+  watch: {
+    open(val) {
+      if (val) {
+        this.getTree();
+      }
+    }
   },
   methods: {
     /** 获取组织树 */
