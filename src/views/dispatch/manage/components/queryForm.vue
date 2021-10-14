@@ -10,9 +10,9 @@
   >
       <div class="ddc-queryParams-left">
       <div class="up">
-    <el-form-item label="派车记录编号" prop="appointCarRecordCode">
+    <el-form-item label="派车记录编号" prop="appointCarRecordNo">
       <el-input
-        v-model="queryParams.appointCarRecordCode"
+        v-model="queryParams.appointCarRecordNo"
         placeholder=" 请输入调度单号"
         clearable
         style="width: 185px"

@@ -62,6 +62,7 @@ export default {
         pageNum: 1, //页码
         pageSize: 10, //每页显示条数
         appointCarRecordCode: null, //派单记录Code
+        appointCarRecordNo:null,//派单记录号
         appointCarOrderNo: null, //派单号
         shipmentName: null, //下单客户
         companyName: null, //用车企业

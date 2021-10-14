@@ -5,6 +5,7 @@ export const tableColumnsConfig = [
         prop: "appointCarRecordNo",
         sortNum: 1,
         tooltip: true,
+        width:'140'
     },
     {
         isShow: true,
@@ -12,6 +13,7 @@ export const tableColumnsConfig = [
         prop: "appointCarOrderNo",
         sortNum: 1,
         tooltip: true,
+        width:'140'
     },
     {
         isShow: true,
@@ -19,6 +21,7 @@ export const tableColumnsConfig = [
         prop: "status",
         sortNum: 1,
         tooltip: true,
+        width:'140'
     },
     {
         isShow: true,
@@ -26,6 +29,7 @@ export const tableColumnsConfig = [
         prop: "source",
         sortNum: 1,
         tooltip: true,
+        width:'140'
     },
     {
         isShow: true,
@@ -33,6 +37,7 @@ export const tableColumnsConfig = [
         prop: "driverName",
         sortNum: 1,
         tooltip: true,
+        width:'140'
     },
     {
         isShow: true,
@@ -40,6 +45,7 @@ export const tableColumnsConfig = [
         prop: "driverPhone",
         sortNum: 1,
         tooltip: true,
+        width:'140'
     },
     {
         isShow: true,
@@ -47,6 +53,7 @@ export const tableColumnsConfig = [
         prop: "vehicleNumber",
         sortNum: 1,
         tooltip: true,
+        width:'140'
     },
     {
         isShow: true,
@@ -62,6 +69,7 @@ export const tableColumnsConfig = [
         prop: "companyName",
         sortNum: 1,
         tooltip: true,
+        width:200
     },
     {
         isShow: true,
@@ -69,6 +77,7 @@ export const tableColumnsConfig = [
         prop: "goodsSmallTypeName",
         sortNum: 1,
         tooltip: true,
+        width:140
     },
     {
         isShow: true,
@@ -76,6 +85,7 @@ export const tableColumnsConfig = [
         prop: "loadAddress",
         sortNum: 1,
         tooltip: true,
+        width:450
     },
     {
         isShow: true,
@@ -83,6 +93,7 @@ export const tableColumnsConfig = [
         prop: "unloadAddress",
         sortNum: 1,
         tooltip: true,
+        width:260
     },
     // {
     //     isShow: true,

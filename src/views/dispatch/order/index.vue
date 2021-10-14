@@ -19,6 +19,9 @@
         :border="false"
         :stripe="true"
       >
+      <template #dispatchOrderStatus="{ row }">
+          <span :style="{color:dealDispatchOrderStatus(row.dispatchOrderStatus,'color')}">{{dealDispatchOrderStatus(row.dispatchOrderStatus,'text')}}</span>
+      </template>
         <template #edit="{ row }">
           <el-button
             size="mini"

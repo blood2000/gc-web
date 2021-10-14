@@ -182,7 +182,7 @@
       label-width="90px"
       label-position="top"
     >
-      <el-row class="dispatch-base-contents-big ">
+      <el-row class="dispatch-base-contents-big">
         <el-col :span="8">
           <el-form-item label="开始日期:" prop="startDate">
             <el-date-picker
@@ -231,7 +231,7 @@
           </el-col>
         </el-row> -->
       <div
-        class="dispatch-base-contents-big vehicleDrivers-content "
+        class="dispatch-base-contents-big vehicleDrivers-content"
         v-for="(item, index) in form.vehicleDrivers"
         :key="item.key"
       >
@@ -249,6 +249,7 @@
             clearable
             filterable
             @change="vehicleChange($event, index)"
+            style="width: 240px"
             placeholder="请选择承运车辆"
           >
             <el-option
@@ -262,7 +263,7 @@
         <el-form-item
           label="承运司机:"
           :prop="`vehicleDrivers[${index}].driverCode`"
-          style="padding-left: 20px"
+          style="padding-left: 20px; position: relative"
           :rules="{
             required: true,
             message: '承运司机为空',
@@ -273,6 +274,7 @@
             v-model="item.driverCode"
             clearable
             filterable
+            style="width: 240px"
             @change="driverChange($event, index)"
             placeholder="请选择承运司机"
           >
@@ -283,6 +285,9 @@
               :value="sub.key"
             />
           </el-select>
+          <div v-if="isMutual(index)" class="ab-mutual">
+            {{ `${driverMutual} 已经被分配到【${vehicleMutual}】车辆中` }}
+          </div>
         </el-form-item>
         <div class="edit-icon">
           <el-button
@@ -366,6 +371,9 @@ export default {
       vehicleList: [],
       driverList: [],
       oldkey: [],
+      driverMutual: null,
+      vehicleMutual: null,
+      indexMutual: -1,
       startPickerOptions: {
         //开始时间过滤
         disabledDate: (time) => {
@@ -408,6 +416,7 @@ export default {
     };
   },
   created() {},
+
   watch: {
     carDrawer() {
       console.log("我在监听");
@@ -427,6 +436,12 @@ export default {
     // this.listVehicleSelect();
   },
   methods: {
+    isMutual(index) {
+      if (!this.driverMutual || !this.vehicleMutual) return false;
+      if (index != this.indexMutual) return false;
+      if(this.form.vehicleDrivers[index].driverCode) return false
+      return true;
+    },
     handleClose() {
       this.$emit("colseCarDrawer");
     },
@@ -466,6 +481,7 @@ export default {
         http_request(obj1).then((res) => {
           console.log("获取司机列表 res", res.data);
           me.$set(me.driverList, index, res.data);
+          console.log("赋值结束 me.driverList", me.driverList);
           me.form.vehicleDrivers[index].driverCode = me.searchDefaultDriverCode(
             e,
             index
@@ -474,7 +490,7 @@ export default {
           me.oldkey[index] = e;
         });
       }
-      //检查是否重复
+      //检查车辆是否重复
       const checkList = me.form.vehicleDrivers;
       let resultIndex = -1;
       for (let i = 0; i < me.form.vehicleDrivers.length; i++) {
@@ -507,6 +523,24 @@ export default {
         if (item.driverCode === e && index !== i) resultIndex = i;
       }
       if (resultIndex > -1) {
+        this.driverList[index].forEach((el) => {
+          console.log('el===>',el.key)
+          if (me.form.vehicleDrivers[resultIndex].driverCode == el.key) {
+            this.driverMutual = el.value;
+          }
+        });
+         this.vehicleList.forEach((el) => {
+          if (me.form.vehicleDrivers[index].vehicleCode == el.vehicleCode) {
+            this.vehicleMutual = el.vehicleNumber;
+          }
+        });
+        console.log(
+          "resultIndex",
+          resultIndex,
+          this.driverMutual,
+          this.vehicleMutual
+        );
+        this.indexMutual = resultIndex;
         me.form.vehicleDrivers[resultIndex].driverCode = null;
       }
     },
@@ -623,5 +657,13 @@ export default {
   font-size: 18px;
   font-weight: 700;
   margin: 10px;
+}
+.ab-mutual {
+  position: absolute;
+  top: 46px;
+  left: 0;
+  font-size: 12px;
+  color: #ff4949;
+  font-family: PingFang SC;
 }
 </style>
