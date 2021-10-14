@@ -1280,8 +1280,8 @@ export default {
         statusColor = '#EF6969'; // 异常
       }
       const contentValue = [];
-      if (speed.text) contentValue.push(speed.text + " km/h");
-      if (direction.text) contentValue.push(direction.text + "°");
+      if (tip.speedText !== null && tip.speedText !== undefined) contentValue.push(tip.speedText);
+      if (tip.vehicleStatusText) contentValue.push(tip.vehicleStatusText);
       // 绘制标记
       const styleObj = {
         content:
