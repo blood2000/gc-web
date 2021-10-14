@@ -188,6 +188,7 @@
         code: vehicleCode,
         defaultDriverList: defaultDriverList,
         orgCode: queryParams.orgCode,
+        authStatusValue:authStatusValue
       }"
       :open="open"
       :title="title"
@@ -258,6 +259,7 @@ export default {
       deviceOptions: {
         title: "",
       },
+      authStatusValue:null
     };
   },
   created() {},
@@ -505,10 +507,12 @@ export default {
         });
     },
     handleUpdate(obj) {
+      console.log('修改车辆弹窗',obj)
       this.title = "修改车辆弹窗";
       this.editType = "update";
       this.open = true;
       this.vehicleCode = obj.code;
+      this.authStatusValue = obj.authStatusValue
     },
     handlePosition(obj) {
       console.log("obj", obj);
