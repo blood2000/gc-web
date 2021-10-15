@@ -10,7 +10,7 @@
       <!-- 分割线 -->
       <div class="divier"></div>
       <!-- 操作栏 -->
-      <div class="toolsbar"></div>
+      <!-- <div class="toolsbar"></div> -->
       <!-- 表格 -->
       <RefactorTable
         is-show-index
