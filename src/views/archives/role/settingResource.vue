@@ -5,14 +5,14 @@
       <el-form-item label="菜单权限">
         <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event)">展开/折叠</el-checkbox>
         <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event)">全选/全不选</el-checkbox>
-        <el-checkbox v-model="form.menuCheckStrictly" @change="handleCheckedTreeConnect($event)">父子联动</el-checkbox>
+        <el-checkbox v-model="form.menuCheckStrictlyFlag" @change="handleCheckedTreeConnect($event)">父子联动</el-checkbox>
         <el-tree
           ref="menu"
           class="tree-border own-version-menu-tree"
           :data="menuOptions"
           show-checkbox
           node-key="code"
-          :check-strictly="!form.menuCheckStrictly"
+          :check-strictly="!form.menuCheckStrictlyFlag"
           :indent="0"
           empty-text="暂无数据"
           :props="defaultProps"
@@ -90,6 +90,7 @@ export default {
         this.menuOptions = response.data.menus;
         this.defaultExpandedKeys = response.data.expandKeys;
         this.menuAllKeys = response.data.allKeys;
+        this.form.menuCheckStrictlyFlag = response.data.menuCheckStrictlyFlag;
         return response;
       });
     },
@@ -106,15 +107,15 @@ export default {
     },
     // 树权限（父子联动）
     handleCheckedTreeConnect(value) {
-      this.form.menuCheckStrictly = !!value;
+      this.form.menuCheckStrictlyFlag = !!value;
     },
     // 获取选中的菜单节点数据
     getMenuAllCheckedKeys() {
       // 目前被选中的菜单节点
       const checkedKeys = this.$refs.menu.getCheckedKeys();
       // 半选中的菜单节点
-      // const halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
-      // checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+      const halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
+      checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
       return checkedKeys;
     },
     /** 提交按钮 */
@@ -126,7 +127,8 @@ export default {
         url_alias: 'roleAssignMenu',
         data: {
           roleCode: this.roleCode,
-          menuCodeList: this.getMenuAllCheckedKeys()
+          menuCodeList: this.getMenuAllCheckedKeys(),
+          menuCheckStrictlyFlag: this.form.menuCheckStrictlyFlag
         }
       }
       http_request(obj).then(response => {
@@ -156,7 +158,7 @@ export default {
       this.menuExpand = false;
       this.menuNodeAll = false;
       this.form = {
-        menuCheckStrictly: true
+        menuCheckStrictlyFlag: true
       };
       this.resetForm('form');
     }
