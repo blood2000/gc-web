@@ -99,6 +99,7 @@
                 :normalizer="normalizer"
                 :show-count="true"
                 placeholder="选择上级菜单"
+                no-results-text="无匹配数据"
               />
             </el-form-item>
           </el-col>

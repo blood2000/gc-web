@@ -9,6 +9,7 @@
           :normalizer="normalizer"
           :show-count="true"
           placeholder="请选择上级组织"
+          no-results-text="无匹配数据"
           @select="selectOrgCode"
         />
       </el-form-item>
