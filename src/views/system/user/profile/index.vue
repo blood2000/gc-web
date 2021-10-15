@@ -199,5 +199,6 @@ export default {
     padding: 30px 20px 10px;
     background: #fff;
     box-shadow: 0 2px 10px 0 rgba(0,0,0,.1);
+    border-radius: 0 8px 8px 8px;
   }
 </style>

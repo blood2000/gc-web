@@ -38,13 +38,13 @@
       <div class="address-node">
         <p class="g-single-row">
           <span class="start">起</span>
-          {{ dispatchInfo.loadFormattedAddress ? dispatchInfo.loadFormattedAddress : '暂无' }}
+          {{ dispatchInfo.loadFormattedAddress ? dispatchInfo.loadFormattedAddress + dispatchInfo.loadAddressAlias : '暂无' }}
         </p>
       </div>
       <div class="address-node">
         <p class="g-single-row">
           <span class="end">终</span>
-          {{ dispatchInfo.unloadFormattedAddress ? dispatchInfo.unloadFormattedAddress : '暂无' }}
+          {{ dispatchInfo.unloadFormattedAddress ? dispatchInfo.unloadFormattedAddress + dispatchInfo.unloadAddressAlias : '暂无' }}
         </p>
       </div>
     </div>

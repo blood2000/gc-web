@@ -48,7 +48,7 @@
       <!-- 分割线 -->
       <div class="divier"></div>
       <div class="device-info-right-bottom">
-        <el-tabs type="border-card" v-model="tabIndex" @tab-click="tabClick">
+        <el-tabs v-model="tabIndex" @tab-click="tabClick">
           <el-tab-pane
             v-for="item in warningTabs"
             :key="item.value"
