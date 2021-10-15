@@ -99,6 +99,12 @@
         </el-tabs>
       </div>
     </div>
+    <Detail
+      :id="currId"
+      :detailDrawer="detailDrawer"
+      :options="{ title: '告警详情' }"
+      @colseDetailDrawer="colseDetailDrawer"
+    />
   </div>
 </template>
 
@@ -106,10 +112,11 @@
 import { http_request } from "@/api";
 import QueryForm from "./components/queryForm.vue";
 import warningConfig from "./config";
+import Detail from "./warningDetail.vue";
 // import store from "@/store";
 export default {
   name: "warning", // 告警管理
-  components: { QueryForm },
+  components: { QueryForm, Detail },
   data() {
     return {
       orgName: "", //组织查询
@@ -138,6 +145,8 @@ export default {
       warningTabs: [],
       tableColumnsConfig: [], //配置表头数据
       total: 0,
+      detailDrawer: false,
+      currId: null,
     };
   },
 
@@ -336,7 +345,10 @@ export default {
     },
     // 详情
     toDetail(obj) {
-      this.$router.push("warningDetail?id=" + obj.id);
+      console.log('详情',obj)
+      this.currId = obj.id;
+      this.detailDrawer = true;
+      // this.$router.push("warningDetail?id=" + obj.id);
       // this.$router.push("/warning/warning/warningDetail/" + obj.driver);
     },
     //选项卡切换
@@ -354,6 +366,9 @@ export default {
       }
       this.searchQuery();
       console.log(this.tableColumnsConfig);
+    },
+    colseDetailDrawer() {
+      this.detailDrawer = false;
     },
   },
 };
