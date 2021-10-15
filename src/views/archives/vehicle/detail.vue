@@ -93,7 +93,7 @@
                 <span>{{ vehicleInfo.enabledValue }}</span>
               </el-col>
               <el-col :span="8">
-                <span>审核状态：</span>
+                <span>认证状态：</span>
                 <span>{{ vehicleInfo.authStatusValue }}</span>
               </el-col>
             </el-row>
@@ -221,7 +221,6 @@
                 <el-button
                   size="mini"
                   type="text"
-                  icon="el-icon-tickets"
                   @click="toWarningDetail(row)"
                   >详情
                 </el-button>

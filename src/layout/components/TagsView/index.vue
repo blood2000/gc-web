@@ -394,7 +394,6 @@ export default {
             &.unactive {
         > .label {
           color:#CCCCCC ;
-          font-weight: bold;
           padding-left: 14px;
           position: relative;
           &::before {

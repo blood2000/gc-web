@@ -137,14 +137,12 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="handleUpdate(row)"
             >修改</el-button
           >
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-delete"
             style="color: red"
             @click="handleDelete(row)"
             >删除</el-button
@@ -152,21 +150,18 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-position"
             @click="handlePosition(row)"
             >定位</el-button
           >
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-tickets"
             @click="handleDetail(row)"
             >详情</el-button
           >
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-tickets"
             @click="handleDevice(row)"
             >绑定设备</el-button
           >

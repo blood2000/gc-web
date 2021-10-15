@@ -54,7 +54,7 @@
         :model="addressInfo"
         label-width="100px"
         label-position="top"
-        style="margin-bottom:30px;margin-left:20px"
+       class="dispatch-contents-box"
       >
         <div class="dispatch-title-item start_address">出发地信息</div>
         <div class="dispatch-info-content">

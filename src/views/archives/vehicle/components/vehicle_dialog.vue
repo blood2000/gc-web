@@ -12,7 +12,7 @@
       <el-tag
         v-if="open && options && options.editType == 'update'"
         :type="selectTipColor()"
-        >{{ options && options.authStatusValue }}</el-tag
+        >{{   selectTipText()  }}</el-tag
       >
     </template>
     <el-form
@@ -136,6 +136,7 @@
               v-model="form.engineNumber"
               placeholder="请输入发动机号"
               clearable
+              :disabled="disabledDeal()"
             />
           </el-form-item>
         </el-col>
@@ -490,19 +491,27 @@ export default {
   methods: {
     selectTipColor() {
       if (!this.options) return "";
-      return this.options && this.options.authStatusValue == "待审核"
+      return this.options && this.options.authStatusValue == "未认证"
         ? "info"
-        : this.options.authStatusValue == "审核中"
+        : this.options.authStatusValue == "认证中"
         ? ""
-        : this.options.authStatusValue == "审核未通过"
+        : this.options.authStatusValue == "认证失败"
         ? "danger"
         : "success";
+    },
+    selectTipText(){
+       if (!this.options) return "";
+       return this.options && this.options.authStatusValue == "未认证"
+        ? "未认证:该车辆证件信息认证中，相关证件信息不允许修改！"
+        : this.options.authStatusValue == "认证失败"
+        ? "认证失败:该车辆证件信息认证失败，请重新完善相关证件信息！"
+        : "已认证: 该车辆证件信息已认证，相关证件信息不允许修改！";
     },
     disabledDealLicenseNumber() {
       if (this.options && this.options.editType == "update") return true;
     },
     disabledDeal() {
-      if (this.options && this.options.authStatusValue == "审核未通过")
+      if (this.options && this.options.authStatusValue == "未认证")
         return false;
       if (this.options && this.options.editType != "update") return false;
       return true;

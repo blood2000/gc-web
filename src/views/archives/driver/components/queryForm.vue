@@ -61,7 +61,7 @@
         </el-form-item>
       </div>
       <div class="down" v-show="isShow">
-        <el-form-item label="审核状态" prop="realStatus">
+        <el-form-item label="认证状态" prop="realStatus">
           <el-select
             v-model="queryParams.realStatus"
             clearable
@@ -110,7 +110,7 @@
         >
           搜索
         </el-button>
-        <el-button type="primary" plain icon="el-icon-refresh" @click="reset">
+        <el-button class="ddc-queryParams-right-reset" type="primary" plain icon="el-icon-refresh" @click="reset">
           重置
         </el-button>
       </el-form-item>

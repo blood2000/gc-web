@@ -39,6 +39,7 @@
             plain
             icon="el-icon-refresh"
             size="mini"
+            class="ddc-queryParams-right-reset"
             @click="resetQuery"
             >重置</el-button
           >

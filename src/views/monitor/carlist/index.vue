@@ -60,21 +60,18 @@
             v-show="row.vehicle_status == 1"
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="lookCarOrder(row)"
             >查看派车单</el-button
           >
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="mapSearch(row)"
             >地图查看</el-button
           >
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="travelSeach(row)"
             >轨迹查看</el-button
           >

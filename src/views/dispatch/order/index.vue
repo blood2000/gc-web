@@ -26,7 +26,6 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="handleDetail(row)"
           >
             详情
@@ -37,7 +36,6 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-position"
             @click="handleCarlog(row)"
           >
             派车记录

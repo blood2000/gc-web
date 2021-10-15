@@ -6,9 +6,11 @@
 }
 .dispatch-contents-box {
   padding-left: 20px;
+  padding-right: 20px;
   font-size: 16px;
   margin: 10px 0;
 }
+
 .dispatch-title-item {
   height: 20px;
   font-size: 14px;
@@ -32,7 +34,7 @@
 .dispatch-info-content {
   min-height: 100px;
   width: 100%;
-  background: rgba(176, 224, 230, 0.5);
+  background: #F2F2F2;
   border-radius: 10px;
   padding: 20px 20px;
 }

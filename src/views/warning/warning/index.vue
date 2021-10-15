@@ -80,7 +80,6 @@
                 <el-button
                   size="mini"
                   type="text"
-                  icon="el-icon-tickets"
                   @click="toDetail(row)"
                   >详情
                 </el-button>

@@ -101,7 +101,7 @@
         >
           搜索
         </el-button>
-        <el-button type="primary" plain icon="el-icon-refresh" @click="reset">
+        <el-button type="primary" plain icon="el-icon-refresh" @click="reset" class="ddc-queryParams-right-reset">
           重置
         </el-button>
       </el-form-item>

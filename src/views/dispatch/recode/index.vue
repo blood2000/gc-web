@@ -41,14 +41,12 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-position"
             @click="handleCarlog(row)"
             >查看派车单</el-button
           >
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="handleDetail(row)"
             >详情</el-button
           >
