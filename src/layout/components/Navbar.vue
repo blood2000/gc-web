@@ -186,7 +186,6 @@ export default {
       opacity: 1;
     }
     .company-name {
-      width: 104px;
       height: 22px;
       font-size: 16px;
       font-family: PingFang SC;
