@@ -519,10 +519,13 @@ export default {
     // 树
     this.getOrgVehicleTree();
     this.getOrgDriverTree();
-    // 获取全部车定位
-    this.getVehicleLoLocations();
-    // 开启车辆位置定时刷新
-    this.refreshMarker();
+    // 在轨迹回放tab页不展示车辆当前定位
+    if (this.headerTab !== 3) {
+      // 获取全部车定位
+      this.getVehicleLoLocations();
+      // 开启车辆位置定时刷新
+      this.refreshMarker();
+    }
   },
   beforeDestroy() {
     this.clearTimer();
@@ -1331,19 +1334,30 @@ export default {
       this.closeInfoWindow();
       // 清除告警标记
       this.clearRealWarnMarker();
+      // 在轨迹回放tab页不展示车辆当前定位
+      if (code === 3) {
+        this.clearMarkerList();
+        this.clearRefreshMarkerTimer();
+      } else {
+        this.getDeviceLocationInfoByCode();
+        this.refreshMarker();
+      }
     },
     // 定时刷新车位置
     refreshMarker() {
       this.clearRefreshMarkerTimer();
       this.refreshMarkerTimer = setInterval(() => {
-        if (this.isShowVehicleInfo) {
-          // 选中车
-          this.getDeviceLocationInfo(this.orgOrVehicleInfo.orgOrlicenseNumber);
-        } else {
-          // 选中组织
-          this.getVehicleLoLocations(this.orgOrVehicleCode);
-        }
+        this.getDeviceLocationInfoByCode();
       }, 60 * 1000);
+    },
+    getDeviceLocationInfoByCode() {
+      if (this.isShowVehicleInfo) {
+        // 选中车
+        this.getDeviceLocationInfo(this.orgOrVehicleInfo.orgOrlicenseNumber);
+      } else {
+        // 选中组织
+        this.getVehicleLoLocations(this.orgOrVehicleCode);
+      }
     },
     // 清除定时刷新车位置
     clearRefreshMarkerTimer() {
