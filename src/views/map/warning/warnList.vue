@@ -69,7 +69,7 @@
                   </div>
                   <div>
                     <p class="label g-single-row">末次告警时间</p>
-                    <p class="time g-single-row">{{ item.minAlarmTime ? item.minAlarmTime : '暂无' }}</p>
+                    <p class="time g-single-row">{{ item.minAlarmTime ? item.minAlarmTime : (item.number === 1 ? item.maxAlarmTime : '暂无') }}</p>
                   </div>
                 </div>
                 <p class="label g-single-row">报警位置</p>

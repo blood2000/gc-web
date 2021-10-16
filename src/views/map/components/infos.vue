@@ -16,13 +16,13 @@
             {{ vehicleInfo.driverName ? vehicleInfo.driverName : '暂无' }}
             <span style="margin: 0 10px">|</span>
             <!-- 无数据 -->
-            {{ vehicleInfo.carrierTypeName ? vehicleInfo.carrierTypeName : '暂无' }}
+            {{ vehicleInfo.carrierTypeName ? vehicleInfo.carrierTypeName : '其他' }}
             <span style="margin: 0 10px">|</span>
             {{ vehicleInfo.orgName ? vehicleInfo.orgName : '暂无' }}
           </p>
           <p class="car-type">
             <span class="label">车辆类型</span>
-            {{ vehicleInfo.classificationName ? vehicleInfo.classificationName : '暂无' }}
+            {{ vehicleInfo.classificationName ? vehicleInfo.classificationName : '其他' }}
           </p>
         </div>
       </div>
