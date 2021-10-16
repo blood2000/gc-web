@@ -545,26 +545,18 @@ export default {
 
     /** 初始化地图 */
     initMap() {
-      if (!AMap) {
-        this.msgWarning("地图加载失败，请刷新页面重试");
-        return;
-      }
+      const _this = this;
       this.map = new AMap.Map("device-map-container", {
         mapStyle: "amap://styles/2fe468ae95b55caa76404a537353e63a", //设置地图的显示样式
         resizeEnable: true,
         center: [119.358267, 26.04577],
         zoom: 11,
       });
-      console.log(
-        "==========>",
-        new AMap.Geocoder({
+      this.map.plugin(['AMap.Geocoder',], function(){
+        _this.geocoder = new AMap.Geocoder({
           radius: 1000,
           extensions: "all",
-        })
-      );
-      this.geocoder = new AMap.Geocoder({
-        radius: 1000,
-        extensions: "all",
+        });
       });
     },
     /** 绘制标记
@@ -1362,7 +1354,8 @@ export default {
       console.log('绘制告警点位：', row)
       // 绘制前先清除
       this.clearRealWarnMarker();
-      if (row.lng && row.lat) {
+      
+      if (row && row.lng && row.lat) {
         const styleObj = {
           content:
             '<div style="transform:rotate(' +
