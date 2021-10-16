@@ -15,6 +15,7 @@
           type="text"
           auto-complete="off"
           placeholder="手机号"
+          clearable
         >
           <svg-icon
             slot="prefix"
@@ -28,6 +29,7 @@
           v-model="registerForm.captcha"
           auto-complete="off"
           placeholder="验证码"
+          clearable
         >
           <svg-icon
             slot="prefix"
@@ -38,19 +40,18 @@
         <div
           class="register-code"
           :class="sendCode ? 'no-send' : ''"
-          @click="getCode"
+          @click="checkPhone"
         >
           {{ verCodeText }}
         </div>
       </el-form-item>
       <div class="protocol">
-        注册即表示您同意我们的 
+        注册即表示您同意我们的
         <span @click="toProtocol">《用户协议》</span>
         <!-- <router-link class="link-type" :to="'/protocol'">
           《用户协议》
         </router-link> -->
         <span @click="toPrivacy">《隐私政策》</span>
-        
       </div>
       <el-form-item style="width: 100%">
         <el-button
@@ -73,7 +74,7 @@
     </el-form>
 
     <el-form
-      v-if="registerStatus === 1"
+      v-if="registerStatus === 1 || registerStatus === 2"
       v-loading="loading"
       ref="idCardForm"
       :model="idCardForm"
@@ -116,6 +117,7 @@
           type="text"
           auto-complete="off"
           placeholder="请输入姓名"
+          clearable
         >
           <svg-icon
             slot="prefix"
@@ -130,6 +132,7 @@
           type="text"
           auto-complete="off"
           placeholder="请输入身份证号码"
+          clearable
         >
           <svg-icon
             slot="prefix"
@@ -177,6 +180,7 @@
           type="text"
           auto-complete="off"
           placeholder="请输入企业或车队全称"
+          clearable
         >
           <svg-icon
             slot="prefix"
@@ -185,7 +189,7 @@
           />
         </el-input>
       </el-form-item>
-      <el-form-item style="width: 100%">
+      <el-form-item style="width: 100%" v-if="registerStatus === 1">
         <el-button
           size="medium"
           type="primary"
@@ -193,6 +197,17 @@
           @click.native.prevent="handleRegister"
         >
           <span>注 册</span>
+          <!-- <span v-else>注 册 中...</span> -->
+        </el-button>
+      </el-form-item>
+      <el-form-item style="width: 100%" v-if="registerStatus === 2">
+        <el-button
+          size="medium"
+          type="primary"
+          style="width: 100%"
+          @click.native.prevent="handleAuth"
+        >
+          <span>提交资料</span>
           <!-- <span v-else>注 册 中...</span> -->
         </el-button>
       </el-form-item>
@@ -215,6 +230,7 @@
 import { getCodeImg, register } from "@/api/login";
 import { http_request } from "../api";
 import formValidate from "../utils/formValidate";
+import { getOnceToken, setOnceToken, removeOnceToken } from "@/utils/auth";
 export default {
   name: "Register",
   data() {
@@ -294,43 +310,97 @@ export default {
     //   this.$refs.registerForm.clearValidate();
     //   this.registerStatus = 1;
     // }, 3000);
+    let option = document.location.search.split("=")[1];
+    let status = option || 0;
+    this.registerStatus = status * 1;
+    if (this.registerStatus === 2) {
+      //获取用户身份认证信息
+      this.getIdentityAuth();
+    }
   },
 
   methods: {
-    getCode() {
+    //获取身份认证信息
+    getIdentityAuth() {
+      let header = {
+        Authorization: this.$store.state.user.onceToken,
+      };
+      const obj = {
+        moduleName: "http_login",
+        method: "get",
+        url_alias: "getTeamInfo",
+        header: header,
+      };
+      http_request(obj).then((res) => {
+        console.log("车队长信息", res);
+        this.idCardForm.orgName = res.data.orgName || "";
+        let idCardInfo = res.data.identificationInf;
+        this.idCardForm.idCardFaceImageUrl = idCardInfo.identificationImage;
+        this.idCardForm.idCardNationalEmblemImageUrl =
+          idCardInfo.identificationBackImage;
+        this.idCardForm.name = idCardInfo.name;
+        this.idCardForm.number = idCardInfo.identificationNumber;
+        this.idCardForm.validFrom = idCardInfo.identificationBeginTime;
+        this.idCardForm.validTo = idCardInfo.identificationEndTime;
+      });
+    },
+    //验证手机号是否已注册
+    checkPhone() {
       if (!this.sendCode) {
         return;
       }
-
-      // let leap = this.verifyTel();validateField
       this.$refs.registerForm.validateField("telephone", (msg) => {
         if (msg) {
           return;
         }
         const data = {
-          telno: this.registerForm.telephone,
-          type: "register",
+          phoneNumber: this.registerForm.telephone,
         };
         const obj = {
           moduleName: "http_login",
-          method: "post",
-          url_alias: "getCode",
+          method: "get",
+          url_alias: "checkPhoneNumber",
           data: data,
         };
-        http_request(obj)
-          .then((res) => {
-            if (res.code === 200) {
-              this.$message({
-                message: res.msg,
-                type: "success",
-              });
-              this.countdown();
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        http_request(obj).then((res) => {
+          this.getCode();
+        });
       });
+    },
+    getCode() {
+      const data = {
+        telno: this.registerForm.telephone,
+        type: "register",
+      };
+      const obj = {
+        moduleName: "http_login",
+        method: "post",
+        url_alias: "getCode",
+        data: data,
+      };
+      http_request(obj)
+        .then((res) => {
+          if (res.code === 200) {
+            this.$message({
+              message: res.msg,
+              type: "success",
+            });
+            this.countdown();
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      // if (!this.sendCode) {
+      //   return;
+      // }
+
+      // // let leap = this.verifyTel();validateField
+      // this.$refs.registerForm.validateField("telephone", (msg) => {
+      //   if (msg) {
+      //     return;
+      //   }
+      // });
 
       // getCodeImg().then(res => {
       // this.captchaOnOff =
@@ -360,6 +430,7 @@ export default {
     },
 
     checkCode() {
+      this.registerStatus = 1; //wyptest
       this.$refs.registerForm.validate((valid) => {
         if (valid) {
           this.loading = true;
@@ -493,23 +564,6 @@ export default {
             orgName: this.idCardForm.orgName,
           };
           console.log(data);
-          // let data = {
-          //   name: "车小菊",
-          //   issue: "啊是的发生的",
-          //   number: "11010119900307117X",
-          //   address: "详细地址",
-          //   idCardNationalEmblemImageUrl: "http://",
-          //   brith: "1973-01-12",
-          //   telephone: "13763848915",
-          //   validFrom: "1906-01-01",
-          //   captcha: "1234",
-          //   ethnicity: "汉",
-          //   sex: "女",
-          //   validTo: "1920-01-01",
-          //   orgName: "车小菊车队",
-          //   idCardFaceImageUrl: "http://",
-          // };
-          // console.log(data);
           const obj = {
             moduleName: "http_login",
             method: "post",
@@ -522,6 +576,57 @@ export default {
               this.loading = false;
               // const username = this.idCardForm.name;
               this.$alert(" 注册成功！</font>", "系统提示", {
+                dangerouslyUseHTMLString: true,
+              })
+                .then(() => {
+                  this.$router.push("/login");
+                })
+                .catch(() => {});
+            })
+            .catch(() => {
+              this.loading = false;
+              // if (this.captchaOnOff) {
+              //   this.getCode();
+              // }
+            });
+        }
+      });
+    },
+    handleAuth() {
+      this.$refs.idCardForm.validate((valid) => {
+        if (valid) {
+          this.loading = true;
+          // register(this.registerForm)
+          // let data1 = { ...this.registerForm, ...this.idCardForm };
+          let data = {
+            orgName: this.idCardForm.orgName,
+            identificationInf: {
+              identificationBeginTime: this.idCardForm.validFrom,
+              identificationEndTime: this.idCardForm.validTo,
+              name: this.idCardForm.name,
+              identificationImage: this.idCardForm.idCardFaceImageUrl,
+              identificationBackImage:
+                this.idCardForm.idCardNationalEmblemImageUrl,
+              identificationNumber: this.idCardForm.number,
+            },
+          };
+          let header = {
+            Authorization: this.$store.state.user.onceToken,
+          };
+          const obj = {
+            moduleName: "http_login",
+            method: "put",
+            url_alias: "updateTeamInfo",
+            data: data,
+            header: header
+            // Headers: { isToken: false },
+          };
+          http_request(obj)
+            .then((res) => {
+              this.loading = false;
+              removeOnceToken();
+              this.$store.commit("SET_ONCETOKEN", '');
+              this.$alert(" 修改成功! </font>", "系统提示", {
                 dangerouslyUseHTMLString: true,
               })
                 .then(() => {

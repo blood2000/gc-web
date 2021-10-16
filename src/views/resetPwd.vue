@@ -13,6 +13,7 @@
           type="text"
           auto-complete="off"
           placeholder="手机号"
+          clearable
         >
           <svg-icon
             slot="prefix"
@@ -26,6 +27,7 @@
           v-model="resetForm.captcha"
           auto-complete="off"
           placeholder="验证码"
+          clearable
         >
           <svg-icon
             slot="prefix"
@@ -47,6 +49,7 @@
           type="password"
           auto-complete="off"
           placeholder="请输入密码"
+          clearable
           @keyup.enter.native="handleReset"
         >
           <svg-icon
