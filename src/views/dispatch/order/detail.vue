@@ -5,11 +5,11 @@
     direction="rtl"
     style="z-index:2200"
     :before-close="handleClose"
-    size="40%"
+    size="45%"
     :append-to-body="true"
   >
     <TitleSideBlueTip title="基本信息" />
-    <el-row class="dispatch-contents-box">
+    <el-row >
       <el-col :span="12">
         <el-row class="dispatch-contents-box">
           <el-col :span="24" style="padding-bottom: 16px">
@@ -169,7 +169,7 @@
       </div>
     </div>
     <TitleSideBlueTip title="货源信息" />
-    <el-row class="dispatch-base-contents-box">
+    <el-row >
       <el-col :span="12">
         <el-row class="dispatch-contents-box">
           <el-col :span="24" style="padding-bottom: 16px">
@@ -219,7 +219,7 @@
     <p class="dispatch-contents-box"></p>
     <TitleSideBlueTip title="费用信息" />
     <div class="dispatch-base-contents-box">
-    <el-row class="dispatch-contents-box dispatch-base-contents-box">
+    <el-row >
       <el-col :span="12" style="padding-bottom: 16px">
         <span class="dispatch-base-label">司机应收运费:</span>
         <span class="dispatch-base-text">

@@ -440,6 +440,8 @@ export default {
               me.form.telphone = null;
             } else {
               me.form.identificationNumber = null;
+              me.form.name = null
+              me.form.identificationImage = null
             }
           });
       }
@@ -566,7 +568,6 @@ export default {
       };
       if(type === 2){
         obj.data.return_issuing_authority = true
-
       }
       const res = await http_request(obj);
       console.log("ocr请求", res);

@@ -4,7 +4,7 @@
     :visible.sync="carDrawer"
     direction="rtl"
     :before-close="handleClose"
-    size="42%"
+    size="45%"
   >
     <TitleSideBlueTip title="订单信息" />
     <div class="dispatch-order-content">
@@ -15,7 +15,7 @@
         label-width="120px"
         label-position="top"
       >
-        <el-row :gutter="10" class="dispatch-base-contents-box">
+        <el-row :gutter="10" >
           <el-col :span="7">
             <el-form-item label="用车企业:" prop="companyName">
               <el-input

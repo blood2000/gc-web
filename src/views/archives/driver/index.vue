@@ -291,12 +291,12 @@ export default {
             url_alias: "driver_del",
             data: { list: ids },
           };
-          http_request(tmp);
-        })
-        .then(() => {
+          http_request(tmp).then(() => {
           this.searchQuery();
           this.msgSuccess("删除成功");
         });
+        })
+       
     },
     handleReset(data) {
       this.$refs.resetPwdDialog.reset(data.userCode);

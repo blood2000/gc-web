@@ -177,6 +177,7 @@
         @pagination="vehicleHttpReq"
       />
     </div>
+    <Detail :code="currCode" :detailDrawer="detailDrawer" :options="{title:'车辆详情'}" @colseDetailDrawer='colseDetailDrawer' />
     <VehicleDialog
       :options="{
         editType: editType,
@@ -209,10 +210,12 @@ import GroupDialog from "./components/group_dialog.vue";
 import DeviceDialog from "./components/device_dialog.vue";
 import { http_request } from "@/api";
 import store from "@/store";
+import Detail from './detail.vue'
+
 // import { mapState, mapMutations } from "vuex";
 export default {
   name: "vehicle", // 车辆管理
-  components: { QueryForm, VehicleDialog, GroupDialog, DeviceDialog },
+  components: { QueryForm, VehicleDialog, GroupDialog, DeviceDialog ,Detail},
   data() {
     return {
       showSearch: true, //搜索显隐
@@ -254,7 +257,9 @@ export default {
       deviceOptions: {
         title: "",
       },
-      authStatusValue:null
+      authStatusValue:null,
+      currCode:null,
+      detailDrawer:false
     };
   },
   created() {},
@@ -518,9 +523,10 @@ export default {
       );
     },
     handleDetail(obj) {
-      const code = obj.code;
-      console.log(" index code", code);
-      this.$router.push("detail?code=" + code);
+      this.currCode  = obj.code;
+      this.detailDrawer = true
+      console.log('ckc code',this.currCode )
+      // this.$router.push("detail?code=" + code);
     },
     handleDevice(obj) {
       console.log("ckc obj", obj);
@@ -545,6 +551,9 @@ export default {
       console.log("device关闭。。。");
       this.deviceOpen = false;
       this.vehicleHttpReq();
+    },
+       colseDetailDrawer(){
+      this.detailDrawer = false
     },
   },
 };

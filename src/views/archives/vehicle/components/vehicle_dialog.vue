@@ -12,7 +12,7 @@
       <el-tag
         v-if="open && options && options.editType == 'update'"
         :type="selectTipColor()"
-        >{{   selectTipText()  }}</el-tag
+        >{{ selectTipText() }}</el-tag
       >
     </template>
     <el-form
@@ -140,7 +140,7 @@
             />
           </el-form-item>
         </el-col>
-     
+
         <el-col :span="12">
           <el-form-item label="车辆识别代号" prop="chassisNumber">
             <el-input
@@ -427,6 +427,23 @@ export default {
         chassisNumber: [
           { required: true, message: "车辆识别号码不能为空", trigger: "blur" },
         ],
+        carrierType: [
+          {
+            required: true,
+            message: "车辆承运类型不能为空",
+            trigger: "change",
+          },
+        ],
+        vehicleEnergyType: [
+          {
+            required: true,
+            message: "车辆能源类型不能为空",
+            trigger: "change",
+          },
+        ],
+        vehicleLicenseColorCode: [
+          { required: true, message: "车牌类型不能为空", trigger: "change" },
+        ],
         orgCode: [
           {
             required: true,
@@ -499,9 +516,9 @@ export default {
         ? "danger"
         : "success";
     },
-    selectTipText(){
-       if (!this.options) return "";
-       return this.options && this.options.authStatusValue == "未认证"
+    selectTipText() {
+      if (!this.options) return "";
+      return this.options && this.options.authStatusValue == "未认证"
         ? "未认证:该车辆证件信息认证中，相关证件信息不允许修改！"
         : this.options.authStatusValue == "认证失败"
         ? "认证失败:该车辆证件信息认证失败，请重新完善相关证件信息！"
@@ -525,13 +542,20 @@ export default {
     },
     //失去焦点
     blurChange(e) {
-      console.log("eee", e);
+      //toUpperCase
+      console.log("eee", e, this.form.licenseNumber);
+      if (!this.form.licenseNumber) return;
+      const tmp = this.form.licenseNumber.toUpperCase();
+      console.log("result", tmp);
+      this.form.licenseNumber = tmp;
       this.checkVhicle();
     },
     //车辆校验
-    async checkVhicle() {
+    async checkVhicle(result = null) {
       const me = this;
-      const licenseNumber = me.form.licenseNumber;
+      const licenseNumber = result.number ||me.form.licenseNumber;
+      console.log('ckc------',result.number,me.form.licenseNumber)
+      console.log('licenseNumber',licenseNumber)
       const orgCode = me.options.orgCode;
       if (!licenseNumber) return;
       console.log("orgCode", orgCode);
@@ -585,9 +609,14 @@ export default {
             })
             .catch(() => {
               me.form.licenseNumber = null;
+              if (this.form.vehicleLicenseImg) {
+                this.form.vehicleLicenseImg = null;
+              }
             });
         },
         2: () => {
+          if (!result) return;
+          me.ocrToform(result);
           // console.log("22222");
           // me.$confirm(`${msgData.msg}`, "系统提示", {
           //   confirmButtonText: "确认",
@@ -724,6 +753,22 @@ export default {
     LoadChooseImg(e) {
       console.log("LoadChooseImg", e);
     },
+    ocrToform(result) {
+       this.form.licenseNumber = result.number;
+      this.form.engineNumber = result.engine_no;
+      this.form.chassisNumber = result.vin;
+      this.form.issueDate = result.issue_date;
+      this.form.registerDate = result.register_date;
+      if (result.vehicle_type) {
+        let typeValue = "X99";
+        this.vehicleTypeCodeList.forEach((el) => {
+          if (result.vehicle_type === el.dictLabel) {
+            typeValue = el.dictValue;
+          }
+        });
+        this.form.vehicleTypeCode = typeValue;
+      }
+    },
     async ocrHttp(imgPath, type, side) {
       const obj = {
         moduleName: "http_common",
@@ -739,26 +784,12 @@ export default {
       const res = await http_request(obj);
       console.log("ocr请求", res);
       const result = res.data.result;
-      if (result.number) {
-        console.log("ocr识别到车牌了", result.number);
-        this.form.licenseNumber = result.number;
-        this.checkVhicle();
-      }
       console.log("side", side);
       const sideFn = {
         front: () => {
-          this.form.engineNumber = result.engine_no;
-          this.form.chassisNumber = result.vin;
-          this.form.issueDate = result.issue_date;
-          this.form.registerDate = result.register_date;
-          if (result.vehicle_type) {
-            let typeValue = "X99";
-            this.vehicleTypeCodeList.forEach((el) => {
-              if (result.vehicle_type === el.dictLabel) {
-                typeValue = el.dictValue;
-              }
-            });
-            this.form.vehicleTypeCode = typeValue;
+          if (result.number) {
+            console.log("ocr识别到车牌了", result.number);
+            this.checkVhicle(result);
           }
         },
         back: () => {

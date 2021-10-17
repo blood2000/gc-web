@@ -2,6 +2,7 @@
   <div class="info-header">
     <div class="title-side-right"></div>
     <div class="titles">{{ title }}</div>
+    <slot></slot>
     <div class="title-line"></div>
   </div>
 </template>
@@ -21,7 +22,7 @@ export default {
 <style lang="scss" scoped>
 .info-header {
   display: flex;
-  padding:0 24px;
+  padding:20px 24px;
   .title-side-right {
     width: 4px;
     height: 14px;

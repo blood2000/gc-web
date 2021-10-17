@@ -158,6 +158,8 @@ export default {
           };
           http_request(obj)
             .then((res) => {
+              if(res.code == 200)
+              this.msgSuccess(res.msg)
               console.log("transferApply", res);
               this.loading = false;
               this.$emit("colseDialog", "ok");

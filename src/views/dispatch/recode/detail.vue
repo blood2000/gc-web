@@ -5,7 +5,7 @@
     direction="rtl"
     style="z-index: 2200"
     :before-close="handleClose"
-    size="40%"
+    size="45%"
     :append-to-body="true"
   >
     <div>
