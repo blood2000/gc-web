@@ -117,8 +117,8 @@ export default {
       countdownSeconds: 60, //倒计时总秒数
       countdownTimer: null,
       loginForm: {
-        telephone: "15859109120",
-        password: "abcd1234@",
+        telephone: "",
+        password: "",
         rememberMe: false,
         captcha: "12",
         uuid: "",
