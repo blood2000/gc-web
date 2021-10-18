@@ -571,7 +571,7 @@ export default {
     this.getOrgVehicleTree();
     this.getOrgDriverTree();
     // 获取全部车定位
-    this.getVehicleLoLocations();
+    this.getVehicleLoLocations(null, true);
     // 开启车辆位置定时刷新
     this.refreshMarker();
   },
@@ -1174,7 +1174,7 @@ export default {
         // 选中车
         this.isShowVehicleInfo = true;
         this.$store.commit("set_showVehicleDetail", true);
-        this.getDeviceLocationInfo(data.orgOrlicenseNumber);
+        this.getDeviceLocationInfo(data.orgOrlicenseNumber, true);
         // 轨迹回放页面，选中车直接搜索
         this.$nextTick(() => {
           if (this.headerTab === 3) {
@@ -1185,7 +1185,7 @@ export default {
         // 选中组织
         this.isShowVehicleInfo = false;
         this.$store.commit("set_showVehicleDetail", false);
-        this.getVehicleLoLocations(data.orgOrVehicleCode);
+        this.getVehicleLoLocations(data.orgOrVehicleCode, true);
       }
     },
     // 司机小tab
@@ -1240,7 +1240,7 @@ export default {
     // 司机节点选中
     driverNodeClick(data) {},
     // 获取车辆定位列表
-    getVehicleLoLocations(orgCode) {
+    getVehicleLoLocations(orgCode, isFresh) {
       const params = orgCode ? { orgCode } : {};
       const obj = {
         moduleName: "http_map",
@@ -1267,8 +1267,8 @@ export default {
               this.drawVehicleMarker(el);
             }
           });
-          // 只有在监控页，刷新点位后才有重新设置视野
-          if(this.headerTab === 1) {
+          // 刷新点位后不重新设置视野
+          if(isFresh && this.headerTab !== 3) {
             this.$nextTick(() => {
               this.map.setFitView();
             }); 
@@ -1279,7 +1279,7 @@ export default {
       });
     },
     // 获取设备定位信息
-    getDeviceLocationInfo(plateNumber) {
+    getDeviceLocationInfo(plateNumber, isFresh) {
       const obj = {
         moduleName: "http_map",
         method: "get",
@@ -1303,8 +1303,8 @@ export default {
             attribute.coordinate.value[1]
           ) {
             this.drawVehicleMarker(data);
-            // 只有在监控页，刷新点位后才有重新设置视野
-            if(this.headerTab === 1) {
+            // 刷新点位后不重新设置视野
+            if(isFresh && this.headerTab !== 3) {
               this.$nextTick(() => {
                 this.map.setZoomAndCenter(13, attribute.coordinate.value);
               });
