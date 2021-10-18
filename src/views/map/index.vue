@@ -264,6 +264,12 @@
     <!-- 地图 -->
     <div id="device-map-container" />
 
+    <!-- 定时刷新 -->
+    <div class="time-refresh-box" v-if="headerTab !== 3">
+      <img src="~@/assets/images/device/icon_notify.png" />
+      {{ refreshMarkerTime }}秒后刷新
+    </div>
+
     <!-- 设备信息 -->
     <Infos
       v-if="
@@ -451,6 +457,8 @@ export default {
       markerList: {},
       // 定时刷新地图点位
       refreshMarkerTimer: null,
+      refreshMarkerTime: 60,
+      readTimer: null,
       // 不同承运类型车辆图片大小不同所以点位偏移不同
       offsetList: {
         ztc: [-17, -38],
@@ -530,6 +538,7 @@ export default {
   beforeDestroy() {
     this.clearTimer();
     this.clearRefreshMarkerTimer();
+    this.clearReadTime();
   },
   methods: {
     locationQueryDeal() {
@@ -1340,6 +1349,7 @@ export default {
       if (code === 3) {
         this.clearMarkerList();
         this.clearRefreshMarkerTimer();
+        this.clearReadTime();
       } else {
         this.getDeviceLocationInfoByCode();
         this.refreshMarker();
@@ -1351,6 +1361,8 @@ export default {
       this.refreshMarkerTimer = setInterval(() => {
         this.getDeviceLocationInfoByCode();
       }, 60 * 1000);
+      // 车定位刷新读秒
+      this.setReadTime();
     },
     getDeviceLocationInfoByCode() {
       if (this.isShowVehicleInfo) {
@@ -1360,6 +1372,8 @@ export default {
         // 选中组织
         this.getVehicleLoLocations(this.orgOrVehicleCode);
       }
+      // 车定位刷新读秒
+      this.setReadTime();
     },
     // 清除定时刷新车位置
     clearRefreshMarkerTimer() {
@@ -1391,6 +1405,25 @@ export default {
       if (this.realWarnMarker) {
         this.realWarnMarker.setMap(null);
         this.realWarnMarker = null;
+      }
+    },
+    /** 定时器读秒 */
+    setReadTime() {
+      const _this = this;
+      this.clearReadTime();
+      this.readTimer = setInterval(() => {
+        if (_this.refreshMarkerTime < 1) {
+          _this.clearReadTime();
+          return;
+        }
+        _this.refreshMarkerTime = _this.refreshMarkerTime - 1;
+      }, 1000);
+    },
+    clearReadTime() {
+      if (this.readTimer) {
+        clearInterval(this.readTimer);
+        this.readTimer = null;
+        this.refreshMarkerTime = 60;
       }
     }
   }
@@ -1626,6 +1659,29 @@ export default {
     .device-info-list-box {
       height: calc(100% - 124px);
       overflow: auto;
+    }
+  }
+
+  // 定时刷新 
+  .time-refresh-box{
+    width: 120px;
+    height: 40px;
+    line-height: 40px;
+    background: #FFFFFF;
+    border: 1px solid #E4ECF4;
+    border-radius: 4px;
+    padding-left: 10px;
+    position: absolute;
+    top: calc(#{$header-height} + 22px);
+    left: calc(#{$left-tree-width} + 30px);
+    z-index: 998;
+    font-size: 14px;
+    font-family: PingFang SC;
+    font-weight: bold;
+    color: #3D4050;
+    >img{
+      vertical-align: middle;
+      margin-top: -4px;
     }
   }
 
