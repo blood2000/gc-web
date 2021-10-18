@@ -8,8 +8,8 @@ export default {
   getCodeImg:'/captchaImage', // 获取验证码
   mock_test:'/parameter/query', //mock测试
   checkPhoneNumber: '/fmsweb/basic/common/v1/phoneNumberIsExist', //验证手机号是否已存在
-  getCode: '/auth/send_sms',   //获取短信验证码
-  checkCode: '/auth/check_captcha',   //验证手机号及短信验证码是否匹配
+  getCode: '/chy/auth/send_sms',   //获取短信验证码
+  checkCode: '/chy/auth/check_captcha',   //验证手机号及短信验证码是否匹配
   // uploadImg: '/fmsweb/system/common/v1/upload',
   uploadImg: '/fmsweb/basic/common/v1/uploadCertAndGetInfoWithoutToken',
   resetPwd: '/fmsweb/basic/common/v1/resetPwd',  //重设密码/忘记密码
