@@ -347,6 +347,11 @@ export default {
     VehicleDetail,
     TrackList,
   },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.routerFrom = from.path;
+    });
+  },
   data() {
     return {
       // 地图
@@ -472,7 +477,9 @@ export default {
       // showVehicleDetail: false,  //车辆详情组件显示
       locationProp: null, //路由上有参数时
       // 实时告警点位marker
-      realWarnMarker: null
+      realWarnMarker: null,
+      // 记录上一页面路由
+      routerFrom: '/'
     };
   },
 
@@ -966,7 +973,7 @@ export default {
     // 返回上一页
     backPage() {
       // this.$router.go(-1);
-      this.$router.push('/index');
+      this.$router.push(this.routerFrom);
     },
     // 实时获取当前时间
     getCurrentTime() {
