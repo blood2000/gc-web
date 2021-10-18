@@ -516,6 +516,7 @@ export default {
     // },
   },
   created() {
+    // 这里是用来解决地图偶尔加载失败的问题
     localStorage.removeItem("_AMap_vectorlayer");
     localStorage.removeItem("_AMap_wgl");
     localStorage.removeItem("_AMap_sync");
