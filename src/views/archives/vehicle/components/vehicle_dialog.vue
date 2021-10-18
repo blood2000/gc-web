@@ -329,7 +329,7 @@
           </el-form-item>
         </el-col> -->
       </el-row>
-      <el-row>
+      <!-- <el-row>
         <el-col :span="24">
           <el-form-item label="备注:" prop="remark">
             <el-input
@@ -342,7 +342,7 @@
             </el-input>
           </el-form-item>
         </el-col>
-      </el-row>
+      </el-row> -->
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm" :loading="loading"
@@ -400,7 +400,7 @@ export default {
         orgCode: null, //归属组织编码
         carrierType: null, //车辆承运类型
         // deviceNumber: null, //绑定设备的编号
-        remark: null, //备注
+        // remark: null, //备注
         defaultDriverCode: null, //默认司机
       },
       rules: {
@@ -738,7 +738,7 @@ export default {
         orgCode: orgCode, //组织
         carrierType: null, //车辆承运类型
         // deviceNumber: null, //绑定设备的编号
-        remark: null, //备注
+        // remark: null, //备注
         defaultDriverCode: null,
       };
       this.resetForm("form");
@@ -834,7 +834,7 @@ export default {
       this.form.orgCode = data.orgCode; //组织
       this.form.carrierType = data.carrierType; //车辆承运类型*
       // this.form.deviceNumber = data.deviceNumber; //绑定设备的编号
-      this.form.remark = data.remark; //备注
+      // this.form.remark = data.remark; //备注
       this.form.defaultDriverCode = data.defaultDriverCode;
     },
     //表单给提交修改数据
@@ -862,7 +862,7 @@ export default {
         orgCode: me.form.orgCode,
         code: me.code,
         id: me.id,
-        remark: me.form.remark,
+        // remark: me.form.remark,
         defaultDriverCode: me.form.defaultDriverCode,
       };
 
@@ -891,7 +891,7 @@ export default {
         // driverCode: me.form.driverCode,
         // deviceNumber: me.form.deviceNumber,
         orgCode: me.form.orgCode,
-        remark: me.form.remark,
+        // remark: me.form.remark,
         defaultDriverCode: me.form.defaultDriverCode,
       };
       return obj;

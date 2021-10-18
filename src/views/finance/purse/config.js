@@ -155,7 +155,7 @@ const DetailTableColumnsConfig = [
   },
   {
     isShow: true,
-    label: "收款总额",
+    label: "收款总额(元)",
     prop: "paidAmount",
     sortNum: 7,
     tooltip: true,
@@ -181,7 +181,7 @@ const DetailTableColumnsConfig1 = [
   },
   {
     isShow: true,
-    label: "支出金额",
+    label: "支出金额(元)",
     prop: "paidAmount",
     sortNum: 4,
     tooltip: true,

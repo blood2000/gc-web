@@ -6,8 +6,8 @@
         <div class="card-title">我的账户</div>
         <div class="overview-box">
           <div>
-            <div>{{ pageData.amount | priceFormat }} <span>元</span></div>
-            <div class="overview-value">余额</div>
+            <div>{{ deal | priceFormat }} <span>元</span></div>
+            <div class="overview-value">可用余额</div>
           </div>
 
           <div>
@@ -58,7 +58,12 @@ export default {
     }
   },
 
-  computed: {},
+  computed: {
+    dealAmount(){
+      return  pageData.amount - pageData.freezeAmount
+    }
+     
+  },
 
   created() {},
   mounted() {
