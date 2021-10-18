@@ -515,6 +515,39 @@ export default {
     //   return this.$store.getters.vehicleInfo;
     // },
   },
+  created() {
+    localStorage.removeItem("_AMap_vectorlayer");
+    localStorage.removeItem("_AMap_wgl");
+    localStorage.removeItem("_AMap_sync");
+    localStorage.removeItem("_AMap_raster");
+    localStorage.removeItem("_AMap_overlay");
+    localStorage.removeItem("_AMap_mouse");
+    localStorage.removeItem("_AMap_AMap.ToolBar");
+    localStorage.removeItem("_AMap_AMap.Scale");
+    localStorage.removeItem("_AMap_AMap.RangingTool");
+    localStorage.removeItem("_AMap_AMap.PolyEditor");
+    localStorage.removeItem("_AMap_AMap.PlaceSearch");
+    localStorage.removeItem("_AMap_AMap.OverView");
+    localStorage.removeItem("_AMap_AMap.MouseTool");
+    localStorage.removeItem("_AMap_AMap.MarkerClusterer");
+    localStorage.removeItem("_AMap_AMap.MapType");
+    localStorage.removeItem("_AMap_AMap.Geolocation");
+    localStorage.removeItem("_AMap_AMap.CitySearch");
+    localStorage.removeItem("_AMap_AMap.CircleEditor");
+    localStorage.removeItem("_AMap_AMap.Autocomplete");
+    localStorage.removeItem("_AMap_AMap.IndoorMap3D");
+    localStorage.removeItem("_AMap_Map3D");
+    localStorage.removeItem("_AMap_labelcanvas");
+    localStorage.removeItem("_AMap_labelDir");
+    localStorage.removeItem("_AMap_data.tileKeys");
+    localStorage.removeItem("_AMap_AMap.CustomLayer");
+    localStorage.removeItem("_AMap_AMap.Geocoder");
+    localStorage.removeItem("_AMap_AMap.CustomLayer");
+    localStorage.removeItem("_AMap_AMap.IndoorMap");
+    localStorage.removeItem("_AMap_anole");
+    localStorage.removeItem("_AMap_cmng");
+    localStorage.removeItem("_AMap_cvector");
+  },
   mounted() {
     if (document.location.search.includes("trackType")) {
       console.log('document.location.search.split("=")', document.location);
