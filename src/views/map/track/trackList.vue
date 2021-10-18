@@ -367,6 +367,7 @@ export default {
     },
     /** 选择日期 */
     dateChoose(date) {
+      this.activeTime = -1;
       if (date) {
         this.jimiQueryParams.beginTime = this.parseTime(date[0]);
         this.jimiQueryParams.endTime = this.parseTime(date[1]);
