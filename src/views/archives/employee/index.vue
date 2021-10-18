@@ -210,8 +210,9 @@
           <template slot-scope="scope">
             <el-switch
               v-model="scope.row.employeeStatus"
-              active-value="0"
-              inactive-value="1"
+              :active-value="0"
+              :inactive-value="1"
+              :disabled="scope.row.teamLeaderFlag"
               @change="handleStatusChange(scope.row)"
             />
           </template>
@@ -351,8 +352,8 @@ export default {
       title: "",
       // 字典
       employeeStatusOptions: [
-        { dictLabel: "启用", dictValue: "0" },
-        { dictLabel: "禁用", dictValue: "1" },
+        { dictLabel: "启用", dictValue: 0 },
+        { dictLabel: "禁用", dictValue: 1 },
       ],
       // 导出按钮
       exportLoading: false,
@@ -470,7 +471,7 @@ export default {
     },
     /** 用户状态修改 */
     handleStatusChange(row) {
-      const text = row.employeeStatus === "0" ? "启用" : "停用";
+      const text = row.employeeStatus === 0 ? "启用" : "停用";
       this.$confirm("确认要" + text + '"' + row.nickName + '"用户吗?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -492,7 +493,7 @@ export default {
           this.msgSuccess(text + "成功");
         })
         .catch(function () {
-          row.employeeStatus = row.employeeStatus === "1" ? "0" : "1";
+          row.employeeStatus = row.employeeStatus === 1 ? 0 : 1;
         });
     },
     /** 重置密码 */
