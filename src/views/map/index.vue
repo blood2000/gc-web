@@ -985,6 +985,7 @@ export default {
       this.$refs.TrackListRef && this.$refs.TrackListRef.setSlideValue(0);
       this.$refs.TrackListRef && this.$refs.TrackListRef.setPlayStatus(0);
       this.pathSimplifierIns && this.pathSimplifierIns.setData([]);
+      this.closeInfoWindow();
     },
     /** 进度条滑块触发改变巡航轨迹 */
     handleSlideChange(value) {
@@ -1186,6 +1187,12 @@ export default {
         this.isShowVehicleInfo = false;
         this.$store.commit("set_showVehicleDetail", false);
         this.getVehicleLoLocations(data.orgOrVehicleCode, true);
+        // 轨迹回放页面，选中车直接搜索
+        this.$nextTick(() => {
+          if (this.headerTab === 3) {
+            this.$refs.TrackListRef.getJimi();
+          }
+        })
       }
     },
     // 司机小tab
