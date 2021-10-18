@@ -1,5 +1,5 @@
 .pages-info {
-  margin: 0 20px;
+  margin: 0 24px;
   display: flex;
   height: calc(100vh - 146px);
 
@@ -24,8 +24,8 @@ white-space: nowrap;
     flex: 1 !important;
     overflow: auto;
     width: 0;
-    padding: 20px;
-    padding-right: 0;
+    padding: 20px 0;
+    // padding-right: 0;
     background: #fff;
     box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
     border-radius: 3px;
@@ -36,8 +36,10 @@ white-space: nowrap;
     }
     .divier {
       height: 1px;
-      margin-bottom: 28px;
       border-bottom: 1px solid #e4ecf4;
+    }
+    .page-table-layout-set{
+      padding:28px 24px 0 24px;
     }
     .toolsbar {
       display: flex;
@@ -49,6 +51,7 @@ white-space: nowrap;
 
 .ddc-queryParams {
   display: flex;
+  padding: 0 28px;
   .ddc-queryParams-left {
     flex: 1;
     .down{
@@ -59,7 +62,6 @@ white-space: nowrap;
   .ddc-queryParams-right {
     width: 310px;
     box-sizing: border-box;
-    padding-right: 20px;
     padding-top:30px;
     padding-bottom:16px ;
     display: flex;
@@ -68,7 +70,7 @@ white-space: nowrap;
       cursor: pointer;
       color: #409eff;
       font-size: 14px;
-      margin-right: 20px;
+      margin-right:12px;
       line-height: 30px;
       -moz-user-select: none;
       -webkit-user-select: none;
@@ -86,4 +88,6 @@ white-space: nowrap;
       color: #1890ff;
     }
   }
+ 
 }
+
