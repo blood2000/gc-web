@@ -408,13 +408,13 @@ export default {
         url_alias: "getVehicleEventTrack",
         data: {
           vehicleCode: this.jimiQueryParams.vehicleCode,
-          startTime: this.jimiQueryParams.beginTime,
+          beginTime: this.jimiQueryParams.beginTime,
           endTime: this.jimiQueryParams.endTime,
         },
       });
       this.eventTrackList = [];
       this.trackList = {};
-      if (evenTrackRes.data && evenTrackRes.data.rows) {
+      if (evenTrackRes.data && evenTrackRes.data.rows && evenTrackRes.data.rows.length > 0) {
         // 构造事件轨迹
         this.eventTrackList = evenTrackRes.data.rows.filter((el) => {
           return el.event_type !== "vehicle-run";
@@ -428,7 +428,7 @@ export default {
         url_alias: "getVehicleEventTrack",
         data: {
           vehicleCode: this.jimiQueryParams.vehicleCode,
-          startTime: this.jimiQueryParams.beginTime,
+          beginTime: this.jimiQueryParams.beginTime,
           endTime: this.jimiQueryParams.endTime,
           eventType: "vehicle-stop",
         },
