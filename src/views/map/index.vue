@@ -265,7 +265,7 @@
     <div id="device-map-container" />
 
     <!-- 定时刷新 -->
-    <div class="time-refresh-box" v-if="headerTab !== 3">
+    <div class="time-refresh-box">
       <img src="~@/assets/images/device/icon_notify.png" />
       {{ refreshMarkerTime }}秒后刷新
     </div>
@@ -570,13 +570,10 @@ export default {
     // 树
     this.getOrgVehicleTree();
     this.getOrgDriverTree();
-    // 在轨迹回放tab页不展示车辆当前定位
-    if (this.headerTab !== 3) {
-      // 获取全部车定位
-      this.getVehicleLoLocations();
-      // 开启车辆位置定时刷新
-      this.refreshMarker();
-    }
+    // 获取全部车定位
+    this.getVehicleLoLocations();
+    // 开启车辆位置定时刷新
+    this.refreshMarker();
   },
   beforeDestroy() {
     this.clearTimer();
@@ -1238,7 +1235,6 @@ export default {
     driverNodeClick(data) {},
     // 获取车辆定位列表
     getVehicleLoLocations(orgCode) {
-      if(this.headerTab === 3) return;
       const params = orgCode ? { orgCode } : {};
       const obj = {
         moduleName: "http_map",
@@ -1278,7 +1274,6 @@ export default {
     },
     // 获取设备定位信息
     getDeviceLocationInfo(plateNumber) {
-      if(this.headerTab === 3) return;
       const obj = {
         moduleName: "http_map",
         method: "get",
@@ -1390,32 +1385,32 @@ export default {
         _this.$store.commit("set_showVehicleDetail", true);
       });
       // 标记点聚合
-      // const sts = [{
-      //     url: "https://a.amap.com/jsapi_demos/static/images/blue.png",
-      //     size: new AMap.Size(32, 32),
-      //     offset: new AMap.Pixel(-16, -16)
-      // }, {
-      //     url: "https://a.amap.com/jsapi_demos/static/images/green.png",
-      //     size: new AMap.Size(32, 32),
-      //     offset: new AMap.Pixel(-16, -16)
-      // }, {
-      //     url: "https://a.amap.com/jsapi_demos/static/images/orange.png",
-      //     size: new AMap.Size(36, 36),
-      //     offset: new AMap.Pixel(-18, -18)
-      // }, {
-      //     url: "https://a.amap.com/jsapi_demos/static/images/red.png",
-      //     size: new AMap.Size(48, 48),
-      //     offset: new AMap.Pixel(-24, -24)
-      // }, {
-      //     url: "https://a.amap.com/jsapi_demos/static/images/darkRed.png",
-      //     size: new AMap.Size(48, 48),
-      //     offset: new AMap.Pixel(-24, -24)
-      // }];
-      // this.cluster = new AMap.MarkerClusterer(this.map, this.markerList, {
-      //   minClusterSize: 1,
-      //   styles: sts,
-      //   gridSize: 80
-      // })
+      const sts = [{
+          url: "https://a.amap.com/jsapi_demos/static/images/blue.png",
+          size: new AMap.Size(32, 32),
+          offset: new AMap.Pixel(-16, -16)
+      }, {
+          url: "https://a.amap.com/jsapi_demos/static/images/green.png",
+          size: new AMap.Size(32, 32),
+          offset: new AMap.Pixel(-16, -16)
+      }, {
+          url: "https://a.amap.com/jsapi_demos/static/images/orange.png",
+          size: new AMap.Size(36, 36),
+          offset: new AMap.Pixel(-18, -18)
+      }, {
+          url: "https://a.amap.com/jsapi_demos/static/images/red.png",
+          size: new AMap.Size(48, 48),
+          offset: new AMap.Pixel(-24, -24)
+      }, {
+          url: "https://a.amap.com/jsapi_demos/static/images/darkRed.png",
+          size: new AMap.Size(48, 48),
+          offset: new AMap.Pixel(-24, -24)
+      }];
+      this.cluster = new AMap.MarkerClusterer(this.map, this.markerList, {
+        minClusterSize: 1,
+        styles: sts,
+        gridSize: 80
+      })
     },
     // 切换地图tab
     handleHeaderTab(code) {
@@ -1428,15 +1423,6 @@ export default {
       this.closeInfoWindow();
       // 清除告警标记
       this.clearRealWarnMarker();
-      // 在轨迹回放tab页不展示车辆当前定位
-      if (code === 3) {
-        this.clearMarkerList();
-        this.clearRefreshMarkerTimer();
-        this.clearReadTime();
-      } else {
-        this.getDeviceLocationInfoByCode();
-        this.refreshMarker();
-      }
     },
     // 定时刷新车位置
     refreshMarker() {
