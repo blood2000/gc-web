@@ -1185,6 +1185,7 @@ export default {
     driverNodeClick(data) {},
     // 获取车辆定位列表
     getVehicleLoLocations(orgCode) {
+      if(this.headerTab === 3) return;
       const params = orgCode ? { orgCode } : {};
       const obj = {
         moduleName: "http_map",
@@ -1224,6 +1225,7 @@ export default {
     },
     // 获取设备定位信息
     getDeviceLocationInfo(plateNumber) {
+      if(this.headerTab === 3) return;
       const obj = {
         moduleName: "http_map",
         method: "get",
@@ -1381,7 +1383,7 @@ export default {
           angle: 0,
         };
         this.realWarnMarker = this.drawMarker([row.lng, row.lat], styleObj);
-        this.map.setCenter([row.lng, row.lat]);
+        // this.map.setCenter([row.lng, row.lat]);
       }
     },
     // 清除告警点位
