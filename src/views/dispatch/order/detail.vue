@@ -175,7 +175,8 @@
           <el-col :span="24" style="padding-bottom: 16px">
             <span class="dispatch-base-label">配载方式:</span>
             <span class="dispatch-base-text">
-              {{ isOrderGoodses("totalType") }}</span
+              <!-- stowageStatusLabel -->
+              {{ pageData.stowageStatusLabel }}数配载</span
             >
           </el-col>
           <el-col :span="24" style="padding-bottom: 16px">
