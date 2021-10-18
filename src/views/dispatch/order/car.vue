@@ -415,8 +415,6 @@ export default {
       },
     };
   },
-  created() {},
-
   watch: {
     carDrawer() {
       console.log("我在监听");
@@ -425,17 +423,15 @@ export default {
         this.form.dispatchOrderCode = this.code;
         this.getDetail();
         this.listVehicleSelect();
+        this.initTimeDate()
       }
     },
   },
-  mounted() {
-    // if (document.location.search.includes("code")) {
-    //   this.form.dispatchOrderCode = document.location.search.split("=")[1];
-    // }
-    // this.getDetail();
-    // this.listVehicleSelect();
-  },
   methods: {
+    initTimeDate(){
+        this.form.startDate = this.form.endDate =  this.parseTime(new Date(),'{y}-{m}-{d}')
+        this.form.outCarTime = this.parseTime( new Date(),'{h}:{i}:{s}')
+    },
     isMutual(index) {
       if (!this.driverMutual || !this.vehicleMutual) return false;
       if (index != this.indexMutual) return false;

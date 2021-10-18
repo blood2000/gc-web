@@ -105,7 +105,7 @@ const user = {
             user.avatar = user.avatar || '';
             const avatar =
               user.avatar == ""
-                ? require("@/assets/images/profile.jpg")
+                ? require("@/assets/images/profile.png")
                 : process.env.VUE_APP_BASE_API + user.avatar;
                 console.log('avatar',avatar)
               commit('SET_MENUS',res.data.menus)
