@@ -106,7 +106,7 @@
               :filter-node-method="vehicleFilterNode"
               :indent="24"
               :highlight-current="true"
-              node-key="code"
+              node-key="orgOrVehicleCode"
               :current-node-key="orgOrVehicleCode"
               default-expand-all
               @node-click="vehicleNodeClick"
@@ -265,7 +265,7 @@
     <div id="device-map-container" />
 
     <!-- 定时刷新 -->
-    <div class="time-refresh-box" v-if="headerTab !== 3">
+    <div class="time-refresh-box">
       <img src="~@/assets/images/device/icon_notify.png" />
       {{ refreshMarkerTime }}秒后刷新
     </div>
@@ -346,6 +346,11 @@ export default {
     DispatchVehicle,
     VehicleDetail,
     TrackList,
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.routerFrom = from.path;
+    });
   },
   data() {
     return {
@@ -455,6 +460,8 @@ export default {
       endMarker: null,
       // 地图点位集合
       markerList: {},
+      // 聚合
+      cluster: null,
       // 定时刷新地图点位
       refreshMarkerTimer: null,
       refreshMarkerTime: 60,
@@ -470,7 +477,9 @@ export default {
       // showVehicleDetail: false,  //车辆详情组件显示
       locationProp: null, //路由上有参数时
       // 实时告警点位marker
-      realWarnMarker: null
+      realWarnMarker: null,
+      // 记录上一页面路由
+      routerFrom: '/'
     };
   },
 
@@ -506,6 +515,40 @@ export default {
     //   return this.$store.getters.vehicleInfo;
     // },
   },
+  created() {
+    // 这里是用来解决地图偶尔加载失败的问题
+    localStorage.removeItem("_AMap_vectorlayer");
+    localStorage.removeItem("_AMap_wgl");
+    localStorage.removeItem("_AMap_sync");
+    localStorage.removeItem("_AMap_raster");
+    localStorage.removeItem("_AMap_overlay");
+    localStorage.removeItem("_AMap_mouse");
+    localStorage.removeItem("_AMap_AMap.ToolBar");
+    localStorage.removeItem("_AMap_AMap.Scale");
+    localStorage.removeItem("_AMap_AMap.RangingTool");
+    localStorage.removeItem("_AMap_AMap.PolyEditor");
+    localStorage.removeItem("_AMap_AMap.PlaceSearch");
+    localStorage.removeItem("_AMap_AMap.OverView");
+    localStorage.removeItem("_AMap_AMap.MouseTool");
+    localStorage.removeItem("_AMap_AMap.MarkerClusterer");
+    localStorage.removeItem("_AMap_AMap.MapType");
+    localStorage.removeItem("_AMap_AMap.Geolocation");
+    localStorage.removeItem("_AMap_AMap.CitySearch");
+    localStorage.removeItem("_AMap_AMap.CircleEditor");
+    localStorage.removeItem("_AMap_AMap.Autocomplete");
+    localStorage.removeItem("_AMap_AMap.IndoorMap3D");
+    localStorage.removeItem("_AMap_Map3D");
+    localStorage.removeItem("_AMap_labelcanvas");
+    localStorage.removeItem("_AMap_labelDir");
+    localStorage.removeItem("_AMap_data.tileKeys");
+    localStorage.removeItem("_AMap_AMap.CustomLayer");
+    localStorage.removeItem("_AMap_AMap.Geocoder");
+    localStorage.removeItem("_AMap_AMap.CustomLayer");
+    localStorage.removeItem("_AMap_AMap.IndoorMap");
+    localStorage.removeItem("_AMap_anole");
+    localStorage.removeItem("_AMap_cmng");
+    localStorage.removeItem("_AMap_cvector");
+  },
   mounted() {
     if (document.location.search.includes("trackType")) {
       console.log('document.location.search.split("=")', document.location);
@@ -527,13 +570,10 @@ export default {
     // 树
     this.getOrgVehicleTree();
     this.getOrgDriverTree();
-    // 在轨迹回放tab页不展示车辆当前定位
-    if (this.headerTab !== 3) {
-      // 获取全部车定位
-      this.getVehicleLoLocations();
-      // 开启车辆位置定时刷新
-      this.refreshMarker();
-    }
+    // 获取全部车定位
+    this.getVehicleLoLocations(null, true);
+    // 开启车辆位置定时刷新
+    this.refreshMarker();
   },
   beforeDestroy() {
     this.clearTimer();
@@ -963,7 +1003,8 @@ export default {
     },
     // 返回上一页
     backPage() {
-      this.$router.go(-1);
+      // this.$router.go(-1);
+      this.$router.push(this.routerFrom);
     },
     // 实时获取当前时间
     getCurrentTime() {
@@ -1125,7 +1166,7 @@ export default {
     },
     // 车树节点选中
     vehicleNodeClick(data) {
-      if (this.orgOrVehicleCode === data.orgOrVehicleCode) return;
+      // if (this.orgOrVehicleCode === data.orgOrVehicleCode) return;
       console.log("tree-node: ", data);
       this.orgOrVehicleCode = data.orgOrVehicleCode;
       this.orgOrVehicleInfo = data;
@@ -1133,12 +1174,18 @@ export default {
         // 选中车
         this.isShowVehicleInfo = true;
         this.$store.commit("set_showVehicleDetail", true);
-        this.getDeviceLocationInfo(data.orgOrlicenseNumber);
+        this.getDeviceLocationInfo(data.orgOrlicenseNumber, true);
+        // 轨迹回放页面，选中车直接搜索
+        this.$nextTick(() => {
+          if (this.headerTab === 3) {
+            this.$refs.TrackListRef.getJimi();
+          }
+        })
       } else {
         // 选中组织
         this.isShowVehicleInfo = false;
         this.$store.commit("set_showVehicleDetail", false);
-        this.getVehicleLoLocations(data.orgOrVehicleCode);
+        this.getVehicleLoLocations(data.orgOrVehicleCode, true);
       }
     },
     // 司机小tab
@@ -1193,8 +1240,7 @@ export default {
     // 司机节点选中
     driverNodeClick(data) {},
     // 获取车辆定位列表
-    getVehicleLoLocations(orgCode) {
-      if(this.headerTab === 3) return;
+    getVehicleLoLocations(orgCode, isFresh) {
       const params = orgCode ? { orgCode } : {};
       const obj = {
         moduleName: "http_map",
@@ -1221,8 +1267,8 @@ export default {
               this.drawVehicleMarker(el);
             }
           });
-          // 只有在监控页，刷新点位后才有重新设置视野
-          if(this.headerTab === 1) {
+          // 刷新点位后不重新设置视野
+          if(isFresh && this.headerTab !== 3) {
             this.$nextTick(() => {
               this.map.setFitView();
             }); 
@@ -1233,8 +1279,7 @@ export default {
       });
     },
     // 获取设备定位信息
-    getDeviceLocationInfo(plateNumber) {
-      if(this.headerTab === 3) return;
+    getDeviceLocationInfo(plateNumber, isFresh) {
       const obj = {
         moduleName: "http_map",
         method: "get",
@@ -1258,8 +1303,8 @@ export default {
             attribute.coordinate.value[1]
           ) {
             this.drawVehicleMarker(data);
-            // 只有在监控页，刷新点位后才有重新设置视野
-            if(this.headerTab === 1) {
+            // 刷新点位后不重新设置视野
+            if(isFresh && this.headerTab !== 3) {
               this.$nextTick(() => {
                 this.map.setZoomAndCenter(13, attribute.coordinate.value);
               });
@@ -1327,12 +1372,53 @@ export default {
       });
       // 单击
       marker.on("click", function (e) {
-        if (JSON.stringify(marker.getLabel()) === "{}") {
-          _this.setLabel(marker, content);
-        } else {
-          _this.setLabel(marker, {});
+        // if (JSON.stringify(marker.getLabel()) === "{}") {
+        //   _this.setLabel(marker, content);
+        // } else {
+        //   _this.setLabel(marker, {});
+        // }
+        if (_this.headerTab !== 3) {
+          // 和树节点字段保持一致
+          row.orgOrVehicleCode = row.vehicle_code;
+          row.carrierType = row.carrier_type;
+          row.orgOrlicenseNumber = plate_number;
+          row.vehicleFlag = true;
+          // 同步树的节点高亮状态
+          _this.orgOrVehicleCode = row.orgOrVehicleCode;
+          _this.$refs.vehicleTree.setCurrentKey(_this.orgOrVehicleCode);
+          // 显示车辆信息
+          _this.orgOrVehicleInfo = row;
+          _this.isShowVehicleInfo = true;
+          _this.$store.commit("set_showVehicleDetail", true);
         }
       });
+      // 标记点聚合
+      const sts = [{
+          url: "https://a.amap.com/jsapi_demos/static/images/blue.png",
+          size: new AMap.Size(32, 32),
+          offset: new AMap.Pixel(-16, -16)
+      }, {
+          url: "https://a.amap.com/jsapi_demos/static/images/green.png",
+          size: new AMap.Size(32, 32),
+          offset: new AMap.Pixel(-16, -16)
+      }, {
+          url: "https://a.amap.com/jsapi_demos/static/images/orange.png",
+          size: new AMap.Size(36, 36),
+          offset: new AMap.Pixel(-18, -18)
+      }, {
+          url: "https://a.amap.com/jsapi_demos/static/images/red.png",
+          size: new AMap.Size(48, 48),
+          offset: new AMap.Pixel(-24, -24)
+      }, {
+          url: "https://a.amap.com/jsapi_demos/static/images/darkRed.png",
+          size: new AMap.Size(48, 48),
+          offset: new AMap.Pixel(-24, -24)
+      }];
+      this.cluster = new AMap.MarkerClusterer(this.map, this.markerList, {
+        minClusterSize: 1,
+        styles: sts,
+        gridSize: 80
+      })
     },
     // 切换地图tab
     handleHeaderTab(code) {
@@ -1345,15 +1431,6 @@ export default {
       this.closeInfoWindow();
       // 清除告警标记
       this.clearRealWarnMarker();
-      // 在轨迹回放tab页不展示车辆当前定位
-      if (code === 3) {
-        this.clearMarkerList();
-        this.clearRefreshMarkerTimer();
-        this.clearReadTime();
-      } else {
-        this.getDeviceLocationInfoByCode();
-        this.refreshMarker();
-      }
     },
     // 定时刷新车位置
     refreshMarker() {

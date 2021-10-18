@@ -317,6 +317,9 @@ export default {
     const beginTime = this.parseTime(new Date(), "{y}-{m}-{d} 00:00:00");
     const endTime = this.parseTime(new Date());
     this.setTimeValue(beginTime, endTime);
+    if (this.orgOrVehicleCode) {
+      this.getJimi();
+    }
   },
   methods: {
     /** 快捷时间选中 */
@@ -364,6 +367,7 @@ export default {
     },
     /** 选择日期 */
     dateChoose(date) {
+      this.activeTime = -1;
       if (date) {
         this.jimiQueryParams.beginTime = this.parseTime(date[0]);
         this.jimiQueryParams.endTime = this.parseTime(date[1]);
@@ -375,8 +379,12 @@ export default {
     /** 获取硬件轨迹 */
     async getJimi() {
       const _this = this;
-      // 参数不能为空
-      console.log('参数不能为空',this.isShowVehicleInfo,this.orgOrVehicleCode)
+      this.eventTrackList = [];
+      this.trackList = {};
+      this.parkingList = [];
+      this.jmTracklist = [];
+      this.jmTrackInfolist = [];
+      this.$emit("clearPathSimplifierIns");
       if (
         !this.isShowVehicleInfo ||
         !this.orgOrVehicleCode 
