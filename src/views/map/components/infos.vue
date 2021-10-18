@@ -55,7 +55,7 @@
       <!-- content -->
       <div class="device-content ly-flex ly-flex-align-center">
         <div class="img-box ly-flex-pack-center ly-flex-align-center">
-          <img :src="deviceInfo.modelImageUrl.replace(/\{tag\}/g, 'icon')">
+          <img v-if="deviceInfo.modelImageUrl" :src="deviceInfo.modelImageUrl.replace(/\{tag\}/g, 'icon')">
         </div>
         <div class="info-box ly-flex-1">
           <h5 class="g-single-row">{{ `${deviceInfo.modelName ? deviceInfo.modelName : ''} | ${deviceInfo.seriesName ? deviceInfo.seriesName : ''}` }}</h5>

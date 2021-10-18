@@ -106,7 +106,7 @@
               :filter-node-method="vehicleFilterNode"
               :indent="24"
               :highlight-current="true"
-              node-key="code"
+              node-key="orgOrVehicleCode"
               :current-node-key="orgOrVehicleCode"
               default-expand-all
               @node-click="vehicleNodeClick"
@@ -455,6 +455,8 @@ export default {
       endMarker: null,
       // 地图点位集合
       markerList: {},
+      // 聚合
+      cluster: null,
       // 定时刷新地图点位
       refreshMarkerTimer: null,
       refreshMarkerTime: 60,
@@ -564,12 +566,12 @@ export default {
         center: [119.358267, 26.04577],
         zoom: 11,
       });
-      this.map.plugin(['AMap.Geocoder',], function(){
+      // this.map.plugin(['AMap.Geocoder',], function(){
         _this.geocoder = new AMap.Geocoder({
           radius: 1000,
           extensions: "all",
         });
-      });
+      // });
     },
     /** 绘制标记
      * @param {Array} position 经纬度必传
@@ -963,7 +965,8 @@ export default {
     },
     // 返回上一页
     backPage() {
-      this.$router.go(-1);
+      // this.$router.go(-1);
+      this.$router.push('/index');
     },
     // 实时获取当前时间
     getCurrentTime() {
@@ -1125,7 +1128,7 @@ export default {
     },
     // 车树节点选中
     vehicleNodeClick(data) {
-      if (this.orgOrVehicleCode === data.orgOrVehicleCode) return;
+      // if (this.orgOrVehicleCode === data.orgOrVehicleCode) return;
       console.log("tree-node: ", data);
       this.orgOrVehicleCode = data.orgOrVehicleCode;
       this.orgOrVehicleInfo = data;
@@ -1327,12 +1330,51 @@ export default {
       });
       // 单击
       marker.on("click", function (e) {
-        if (JSON.stringify(marker.getLabel()) === "{}") {
-          _this.setLabel(marker, content);
-        } else {
-          _this.setLabel(marker, {});
-        }
+        // if (JSON.stringify(marker.getLabel()) === "{}") {
+        //   _this.setLabel(marker, content);
+        // } else {
+        //   _this.setLabel(marker, {});
+        // }
+        // 和树节点字段保持一致
+        row.orgOrVehicleCode = row.vehicle_code;
+        row.carrierType = row.carrier_type;
+        row.orgOrlicenseNumber = plate_number;
+        row.vehicleFlag = true;
+        // 同步树的节点高亮状态
+        _this.orgOrVehicleCode = row.orgOrVehicleCode;
+        _this.$refs.vehicleTree.setCurrentKey(_this.orgOrVehicleCode);
+        // 显示车辆信息
+        _this.orgOrVehicleInfo = row;
+        _this.isShowVehicleInfo = true;
+        _this.$store.commit("set_showVehicleDetail", true);
       });
+      // 标记点聚合
+      // const sts = [{
+      //     url: "https://a.amap.com/jsapi_demos/static/images/blue.png",
+      //     size: new AMap.Size(32, 32),
+      //     offset: new AMap.Pixel(-16, -16)
+      // }, {
+      //     url: "https://a.amap.com/jsapi_demos/static/images/green.png",
+      //     size: new AMap.Size(32, 32),
+      //     offset: new AMap.Pixel(-16, -16)
+      // }, {
+      //     url: "https://a.amap.com/jsapi_demos/static/images/orange.png",
+      //     size: new AMap.Size(36, 36),
+      //     offset: new AMap.Pixel(-18, -18)
+      // }, {
+      //     url: "https://a.amap.com/jsapi_demos/static/images/red.png",
+      //     size: new AMap.Size(48, 48),
+      //     offset: new AMap.Pixel(-24, -24)
+      // }, {
+      //     url: "https://a.amap.com/jsapi_demos/static/images/darkRed.png",
+      //     size: new AMap.Size(48, 48),
+      //     offset: new AMap.Pixel(-24, -24)
+      // }];
+      // this.cluster = new AMap.MarkerClusterer(this.map, this.markerList, {
+      //   minClusterSize: 1,
+      //   styles: sts,
+      //   gridSize: 80
+      // })
     },
     // 切换地图tab
     handleHeaderTab(code) {
