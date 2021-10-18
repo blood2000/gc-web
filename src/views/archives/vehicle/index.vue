@@ -180,7 +180,7 @@
         @pagination="vehicleHttpReq"
       />
     </div>
-    <Detail :code="currCode" :detailDrawer="detailDrawer" :options="{title:'车辆详情'}" @colseDetailDrawer='colseDetailDrawer' />
+    <Detail :code="currCode" :detailDrawer="detailDrawer" :options="{title:'车辆信息'}" @colseDetailDrawer='colseDetailDrawer' />
     <VehicleDialog
       :options="{
         editType: editType,

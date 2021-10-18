@@ -54,7 +54,7 @@
         @pagination="getList"
       />
     </div>
-    <Detail :code="currCode" :detailDrawer="detailDrawer" :options="{title:'调度单派车'}" @colseDetailDrawer='colseDetailDrawer' />
+    <Detail :code="currCode" :detailDrawer="detailDrawer" :options="{title:'调度单详情'}" @colseDetailDrawer='colseDetailDrawer' />
     <Car :code="currCode" :carDrawer='carDrawer' :options="{title:'调度单派车'}" @colseCarDrawer='colseCarDrawer'/>
   </div>
 </template>

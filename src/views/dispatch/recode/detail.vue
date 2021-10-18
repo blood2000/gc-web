@@ -157,7 +157,7 @@
     <div>
       <div>
         <TitleSideBlueTip title="派车信息" />
-        <el-row class="dispatch-contents-box">
+        <el-row class="dispatch-contents-box" style="padding-bottom:114px">
           <el-col :span="12" style="padding-bottom: 16px">
             <span class="dispatch-base-label">派车时间:</span>
             <span class="dispatch-base-text">

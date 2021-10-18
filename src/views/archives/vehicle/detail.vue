@@ -8,34 +8,37 @@
     size="50%"
     :append-to-body="true"
   >
+  <div>
+
+
     <TitleSideBlueTip title="基础信息" />
     <div class="dispatch-base-contents-box">
       <el-row class="contents-box">
         <el-col :span="8" style="padding-bottom: 16px">
           <span class="dispatch-base-label">车牌号:</span>
-          <span class="dispatch-dispatch-base-text">
+          <span class="dispatch-base-text">
             {{ isPageShow("vehicleLicenseInf", "licenseNumber") }}</span
           >
         </el-col>
         <el-col :span="8" style="padding-bottom: 16px">
           <span class="dispatch-base-label">归属组织:</span>
-          <span class="dispatch-dispatch-base-text"> {{ orgName }}</span>
+          <span class="dispatch-base-text"> {{ orgName }}</span>
         </el-col>
         <el-col :span="8" style="padding-bottom: 16px">
           <span class="dispatch-base-label">车辆分组:</span>
-          <span class="dispatch-dispatch-base-text">
+          <span class="dispatch-base-text">
             {{ isPageShow("vehicleInf", "group") }}</span
           >
         </el-col>
         <el-col :span="8" style="padding-bottom: 16px">
           <span class="dispatch-base-label">车辆识别代号:</span>
-          <span class="dispatch-dispatch-base-text">
+          <span class="dispatch-base-text">
             {{ isPageShow("vehicleLicenseInf", "chassisNumber") }}</span
           >
         </el-col>
         <el-col :span="8" style="padding-bottom: 16px">
           <span class="dispatch-base-label">发动机号:</span>
-          <span class="dispatch-dispatch-base-text">
+          <span class="dispatch-base-text">
             {{ isPageShow("vehicleLicenseInf", "engineNumber") }}</span
           >
         </el-col>
@@ -43,44 +46,44 @@
       <el-row class="contents-box">
         <el-col :span="8" style="padding-bottom: 16px">
           <span class="dispatch-base-label">车辆类型:</span>
-          <span class="dispatch-dispatch-base-text">
+          <span class="dispatch-base-text">
             {{ isPageShow("vehicleInf", "vehicleTypeValue") }}</span
           >
         </el-col>
         <el-col :span="8" style="padding-bottom: 16px">
           <span class="dispatch-base-label">车辆承运类型:</span>
-          <span class="dispatch-dispatch-base-text">
+          <span class="dispatch-base-text">
             {{ vehicleInfo.carrierTypeValue }}</span
           >
         </el-col>
         <el-col :span="8" style="padding-bottom: 16px">
           <span class="dispatch-base-label">车牌类型:</span>
-          <span class="dispatch-dispatch-base-text">
+          <span class="dispatch-base-text">
             {{ isPageShow("vehicleInf", "vehicleLicenseColorValue") }}</span
           >
         </el-col>
         <el-col :span="8" style="padding-bottom: 16px">
           <span class="dispatch-base-label">车辆能源类型:</span>
-          <span class="dispatch-dispatch-base-text">
+          <span class="dispatch-base-text">
             {{ isPageShow("vehicleInf", "vehicleEnergyTypeValue") }}</span
           >
         </el-col>
         <el-col :span="8" style="padding-bottom: 16px">
           <span class="dispatch-base-label">车辆总重量:</span>
-          <span class="dispatch-dispatch-base-text">
+          <span class="dispatch-base-text">
             {{ isPageShow("vehicleInf", "vehicleTotalWeight") }}</span
           >
         </el-col>
 
         <el-col :span="8" style="padding-bottom: 16px">
           <span class="dispatch-base-label">车辆可载重量:</span>
-          <span class="dispatch-dispatch-base-text">
+          <span class="dispatch-base-text">
             {{ isPageShow("vehicleInf", "vehicleLoadWeight") }}</span
           >
         </el-col>
-        <el-col :span="8" style="padding-bottom: 16px">
+        <el-col :span="8">
           <span class="dispatch-base-label">备注信息:</span>
-          <span class="dispatch-dispatch-base-text">
+          <span class="dispatch-base-text">
             {{ vehicleInfo.remark }}</span
           >
         </el-col>
@@ -89,21 +92,21 @@
     <TitleSideBlueTip title="状态信息" />
     <div class="dispatch-base-contents-box">
       <el-row class="contents-box">
-        <el-col :span="8" style="padding-bottom: 16px">
+        <el-col :span="8" >
           <span class="dispatch-base-label">车辆状态:</span>
           <span class="dispatch-base-text">
             {{ vehicleInfo.vehicleStatusValue }}</span
           >
         </el-col>
 
-        <el-col :span="8" style="padding-bottom: 16px">
+        <el-col :span="8" >
           <span class="dispatch-base-label">停用状态:</span>
           <span class="dispatch-base-text">
             {{ vehicleInfo.enabledValue }}</span
           >
         </el-col>
 
-        <el-col :span="8" style="padding-bottom: 16px">
+        <el-col :span="8">
           <span class="dispatch-base-label">认证状态:</span>
           <span class="dispatch-base-text">
             {{ vehicleInfo.authStatusValue }}</span
@@ -114,15 +117,15 @@
     <TitleSideBlueTip title="默认司机" />
     <div class="dispatch-base-contents-box">
       <el-row class="contents-box">
-        <el-col :span="8" style="padding-bottom: 16px">
+        <el-col :span="8" >
           <span class="dispatch-base-label">司机姓名:</span>
-          <span class="dispatch-dispatch-base-text">
+          <span class="dispatch-base-text">
             {{ vehicleInfo.defaultDriverName }}</span
           >
         </el-col>
-        <el-col :span="8" style="padding-bottom: 16px">
+        <el-col :span="8" >
           <span class="dispatch-base-label">司机电话:</span>
-          <span class="dispatch-dispatch-base-text">
+          <span class="dispatch-base-text">
             {{ vehicleInfo.defaultDriverTelphone }}</span
           >
         </el-col>
@@ -133,7 +136,7 @@
       <el-row class="contents-box">
         <el-col :span="8" style="padding-bottom: 16px">
           <span class="dispatch-base-label">注册时间:</span>
-          <span class="dispatch-dispatch-base-text">
+          <span class="dispatch-base-text">
             {{
               parseTime(
                 isPageShow("vehicleLicenseInf", "registerDate"),
@@ -144,7 +147,7 @@
         </el-col>
         <el-col :span="8" style="padding-bottom: 16px">
           <span class="dispatch-base-label">发证日期:</span>
-          <span class="dispatch-dispatch-base-text">
+          <span class="dispatch-base-text">
             {{
               parseTime(
                 isPageShow("vehicleLicenseInf", "issueDate"),
@@ -155,14 +158,14 @@
         </el-col>
         <el-col :span="8" style="padding-bottom: 16px">
           <span class="dispatch-base-label">发证机关:</span>
-          <span class="dispatch-dispatch-base-text">
+          <span class="dispatch-base-text">
             {{ isPageShow("vehicleLicenseInf", "issuingOrganizations") }}</span
           >
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
-          <span class="dispatch-base-label">驾驶证主页</span>
+          <span class="dispatch-base-label">驾驶证主页:</span>
           <div class="img-box">
             <img
               :src="isPageShow('vehicleLicenseInf', 'vehicleLicenseImg')"
@@ -171,7 +174,7 @@
           </div>
         </el-col>
         <el-col :span="8">
-          <span class="dispatch-base-label">驾驶证副页</span>
+          <span class="dispatch-base-label">驾驶证副页:</span>
           <div class="img-box">
             <img
               :src="isPageShow('vehicleLicenseInf', 'vehicleLicenseSecondImg')"
@@ -180,7 +183,7 @@
           </div>
         </el-col>
         <el-col :span="8">
-          <span class="dispatch-base-label">道路运输许可证</span>
+          <span class="dispatch-base-label">道路运输许可证:</span>
           <div class="img-box">
             <img :src="vehicleInfo.roadTransportCertificateImg" alt="" />
           </div>
@@ -190,16 +193,16 @@
     <TitleSideBlueTip title="设备信息" />
     <div class="dispatch-base-contents-box">
       <el-row class="contents-box">
-        <el-col :span="12" style="padding-bottom: 16px">
+        <el-col :span="12">
           <span class="dispatch-base-label">设备编号:</span>
-          <span class="dispatch-dispatch-base-text">
+          <span class="dispatch-base-text">
             {{ vehicleInfo.deviceNumber }}</span
           >
         </el-col>
       </el-row>
     </div>
     <TitleSideBlueTip title="位置信息" />
-    <div class="dispatch-base-contents-box" style="height: 400px">
+    <div class="dispatch-base-contents-box" style="height: 400px;">
       <!-- 地图 -->
       <div id="device-map-container" style="height: 400px" />
     </div>
@@ -207,14 +210,14 @@
       {{ warningInfo.length ? "(" + warningInfo.length + ")" : "" }}
     </TitleSideBlueTip>
 
-    <div class="dispatch-base-contents-box">
+    <div class="dispatch-base-contents-box" style="padding-bottom: 114px">
       <!-- <div > -->
       <RefactorTable
         :loading="loading"
         :data="warningInfo"
-        style="padding: 0 20px"
         row-key="id"
         :table-columns-config="warningInfoTableColumnsConfig"
+        :isShowIndex="true"
         :border="false"
         :stripe="true"
       >
@@ -235,6 +238,7 @@
         @pagination="warningDataReq"
       />
     </div>
+      </div>
   </el-drawer>
 </template>
 
@@ -605,11 +609,7 @@ export default {
     }
   }
 }
-.detail-right {
-  min-height: 829px;
-  .maps {
-    height: 580px;
-    width: 100%;
+.dispatch-base-contents-box {
     // 地图
     > #device-map-container {
       width: 100%;
@@ -847,7 +847,6 @@ export default {
         }
       }
     }
-  }
 }
 // 告警信息表格标题
 .table-title {
@@ -857,10 +856,11 @@ export default {
   line-height: 40px;
 }
 .img-box {
+  padding-top:12px;
   background: url("../../../assets/images/certificate/none_data.png") no-repeat
     center;
   width: 90%;
-  height: 120px;
+  height: 132px;
   border-radius: 10px;
   & > img {
     width: 100%;

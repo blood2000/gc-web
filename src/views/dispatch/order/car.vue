@@ -7,7 +7,7 @@
     size="45%"
   >
     <TitleSideBlueTip title="订单信息" />
-    <div class="dispatch-order-content">
+    <div class="dispatch-contents-box">
       <el-form
         :disabled="true"
         ref="pageData"
@@ -15,7 +15,7 @@
         label-width="120px"
         label-position="top"
       >
-        <el-row :gutter="10" >
+        <el-row :gutter="10">
           <el-col :span="7">
             <el-form-item label="用车企业:" prop="companyName">
               <el-input
@@ -62,115 +62,111 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <div class="dispatch-base-contents-box">
-          <div class="dispatch-title-item start_address">出发地信息</div>
-          <div class="dispatch-info-content">
-            <el-row>
-              <el-col :span="12">
-                <el-form-item label="省 / 市 / 区:" prop="loadAddress">
-                  <el-input
-                    v-model="pageData.loadAddress"
-                    clearable
-                    style="width: 220px"
-                  />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="详细地址:" prop="loadDetail">
-                  <el-input
-                    v-model="pageData.loadDetail"
-                    clearable
-                    style="width: 220px"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="地址别名:" prop="loadAlias">
-                  <el-input
-                    v-model="pageData.loadAlias"
-                    clearable
-                    style="width: 220px"
-                  />
-                </el-form-item>
-              </el-col>
+        <div class="dispatch-title-item start_address">出发地信息</div>
+        <div class="dispatch-info-content">
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="省 / 市 / 区:" prop="loadAddress">
+                <el-input
+                  v-model="pageData.loadAddress"
+                  clearable
+                  style="width: 220px"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="详细地址:" prop="loadDetail">
+                <el-input
+                  v-model="pageData.loadDetail"
+                  clearable
+                  style="width: 220px"
+                />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="地址别名:" prop="loadAlias">
+                <el-input
+                  v-model="pageData.loadAlias"
+                  clearable
+                  style="width: 220px"
+                />
+              </el-form-item>
+            </el-col>
 
-              <el-col :span="8">
-                <el-form-item label="联系人电话:" prop="loadLinkManPhone">
-                  <el-input
-                    v-model="pageData.loadLinkManPhone"
-                    clearable
-                    style="width: 168px"
-                  />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="联系人:" prop="loadLinkManName">
-                  <el-input
-                    v-model="pageData.loadLinkManName"
-                    clearable
-                    style="width: 112px"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </div>
+            <el-col :span="8">
+              <el-form-item label="联系人电话:" prop="loadLinkManPhone">
+                <el-input
+                  v-model="pageData.loadLinkManPhone"
+                  clearable
+                  style="width: 168px"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="联系人:" prop="loadLinkManName">
+                <el-input
+                  v-model="pageData.loadLinkManName"
+                  clearable
+                  style="width: 112px"
+                />
+              </el-form-item>
+            </el-col>
+          </el-row>
         </div>
-        <div class="dispatch-base-contents-box">
-          <div class="dispatch-title-item end_address">目的地信息</div>
-          <div class="dispatch-info-content">
-            <el-row>
-              <el-col :span="12">
-                <el-form-item label="省 / 市 / 区:" prop="unloadAddress">
-                  <el-input
-                    v-model="pageData.unloadAddress"
-                    clearable
-                    style="width: 220px"
-                  />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="详细地址:" prop="unloadDetail">
-                  <el-input
-                    v-model="pageData.unloadDetail"
-                    clearable
-                    style="width: 220px"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="地址别名:" prop="unloadAlias">
-                  <el-input
-                    v-model="pageData.unloadAlias"
-                    clearable
-                    style="width: 220px"
-                  />
-                </el-form-item>
-              </el-col>
+        <div class="dispatch-title-item end_address">目的地信息</div>
+        <div class="dispatch-info-content">
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="省 / 市 / 区:" prop="unloadAddress">
+                <el-input
+                  v-model="pageData.unloadAddress"
+                  clearable
+                  style="width: 220px"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="详细地址:" prop="unloadDetail">
+                <el-input
+                  v-model="pageData.unloadDetail"
+                  clearable
+                  style="width: 220px"
+                />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="地址别名:" prop="unloadAlias">
+                <el-input
+                  v-model="pageData.unloadAlias"
+                  clearable
+                  style="width: 220px"
+                />
+              </el-form-item>
+            </el-col>
 
-              <el-col :span="8">
-                <el-form-item label="联系人电话:" prop="unloadLinkManPhone">
-                  <el-input
-                    v-model="pageData.unloadLinkManPhone"
-                    clearable
-                    style="width: 168px"
-                  />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="联系人:" prop="unloadLinkManName">
-                  <el-input
-                    v-model="pageData.unloadLinkManName"
-                    clearable
-                    style="width: 112px"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </div>
+            <el-col :span="8">
+              <el-form-item label="联系人电话:" prop="unloadLinkManPhone">
+                <el-input
+                  v-model="pageData.unloadLinkManPhone"
+                  clearable
+                  style="width: 168px"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="联系人:" prop="unloadLinkManName">
+                <el-input
+                  v-model="pageData.unloadLinkManName"
+                  clearable
+                  style="width: 112px"
+                />
+              </el-form-item>
+            </el-col>
+          </el-row>
         </div>
       </el-form>
     </div>
@@ -218,7 +214,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <TitleSideBlueTip style="margin: 20px 0" title="承运车辆" />
+      <TitleSideBlueTip title="承运车辆" />
       <!-- <el-row :gutter="10" style="padding-left: 20px">
           <el-col :span="8">
             <el-form-item label="承运数量:" prop="companyName">
@@ -423,19 +419,22 @@ export default {
         this.form.dispatchOrderCode = this.code;
         this.getDetail();
         this.listVehicleSelect();
-        this.initTimeDate()
+        this.initTimeDate();
       }
     },
   },
   methods: {
-    initTimeDate(){
-        this.form.startDate = this.form.endDate =  this.parseTime(new Date(),'{y}-{m}-{d}')
-        this.form.outCarTime = this.parseTime( new Date(),'{h}:{i}:{s}')
+    initTimeDate() {
+      this.form.startDate = this.form.endDate = this.parseTime(
+        new Date(),
+        "{y}-{m}-{d}"
+      );
+      this.form.outCarTime = this.parseTime(new Date(), "{h}:{i}:{s}");
     },
     isMutual(index) {
       if (!this.driverMutual || !this.vehicleMutual) return false;
       if (index != this.indexMutual) return false;
-      if(this.form.vehicleDrivers[index].driverCode) return false
+      if (this.form.vehicleDrivers[index].driverCode) return false;
       return true;
     },
     handleClose() {
@@ -520,12 +519,12 @@ export default {
       }
       if (resultIndex > -1) {
         this.driverList[index].forEach((el) => {
-          console.log('el===>',el.key)
+          console.log("el===>", el.key);
           if (me.form.vehicleDrivers[resultIndex].driverCode == el.key) {
             this.driverMutual = el.value;
           }
         });
-         this.vehicleList.forEach((el) => {
+        this.vehicleList.forEach((el) => {
           if (me.form.vehicleDrivers[index].vehicleCode == el.vehicleCode) {
             this.vehicleMutual = el.vehicleNumber;
           }

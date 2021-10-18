@@ -32,7 +32,7 @@
             <span class="dispatch-base-label">用车企业:</span>
             <span class="dispatch-base-text"> {{ pageData.companyName }}</span>
           </el-col>
-          <el-col :span="24" style="padding-bottom: 16px">
+          <el-col :span="24" >
             <span class="dispatch-base-label">下单客户电话:</span>
             <span class="dispatch-base-text">
               {{ pageData.shipmentPhone }}</span
@@ -64,10 +64,10 @@
       </el-col>
     </el-row>
     <TitleSideBlueTip title="地址信息" />
-    <div class="dispatch-contents-box"  style="margin-bottom: 25px">
-      <div class="dispatch-title-item start_address">出发地信息</div>
-      <div class="dispatch-info-content" style="padding-left:0">
-        <el-row class="dispatch-contents-box"  >
+    <div class="dispatch-contents-box" >
+      <div class="dispatch-title-item start_address" style="margin-top:0">出发地信息</div>
+      <div class="dispatch-info-content" >
+        <el-row  style="padding-bottom:16px" >
           <el-col :span="8">
             <span class="dispatch-base-label">省:</span>
             <span class="dispatch-base-text">
@@ -87,7 +87,7 @@
             >
           </el-col>
         </el-row>
-        <el-row class="dispatch-contents-box">
+        <el-row  style="padding-bottom:16px">
           <el-col :span="8">
             <span class="dispatch-base-label">详细地址:</span>
             <span class="dispatch-base-text">
@@ -101,7 +101,7 @@
             >
           </el-col>
         </el-row>
-        <el-row class="dispatch-contents-box">
+        <el-row style="padding-bottom:16px">
           <el-col :span="8">
             <span class="dispatch-base-label">联系人 :</span>
             <span class="dispatch-base-text">
@@ -117,8 +117,8 @@
         </el-row>
       </div>
       <div class="dispatch-title-item end_address">目的地信息</div>
-      <div class="dispatch-info-content" style="padding-left:0">
-        <el-row class="dispatch-contents-box" >
+      <div class="dispatch-info-content" >
+        <el-row  style="padding-bottom:16px">
           <el-col :span="8">
             <span class="dispatch-base-label">省:</span>
             <span class="dispatch-base-text">
@@ -138,7 +138,7 @@
             >
           </el-col>
         </el-row>
-        <el-row class="dispatch-contents-box">
+        <el-row style="padding-bottom:16px">
           <el-col :span="8">
             <span class="dispatch-base-label">详细地址:</span>
             <span class="dispatch-base-text">
@@ -152,7 +152,7 @@
             >
           </el-col>
         </el-row>
-        <el-row class="dispatch-contents-box">
+        <el-row style="padding-bottom:16px" >
           <el-col :span="8">
             <span class="dispatch-base-label">联系人 :</span>
             <span class="dispatch-base-text">
@@ -169,9 +169,9 @@
       </div>
     </div>
     <TitleSideBlueTip title="货源信息" />
-    <el-row >
+    <el-row class="dispatch-contents-box" >
       <el-col :span="12">
-        <el-row class="dispatch-contents-box">
+        <el-row >
           <el-col :span="24" style="padding-bottom: 16px">
             <span class="dispatch-base-label">配载方式:</span>
             <span class="dispatch-base-text">
@@ -186,7 +186,7 @@
             >
           </el-col>
 
-          <el-col :span="24" style="padding-bottom: 16px">
+          <el-col :span="24">
             <span class="dispatch-base-label">最高配载:</span>
             <span class="dispatch-base-text">
               {{ isOrderGoodses("vehicleMaxWeight") }}</span
@@ -209,7 +209,7 @@
             >
           </el-col>
 
-          <el-col :span="24" style="padding-bottom: 16px">
+          <el-col :span="24" >
             <span class="dispatch-base-label">货源备注:</span>
             <span class="dispatch-base-text">{{ pageData.remark }}</span>
           </el-col>
@@ -220,14 +220,14 @@
     <p class="dispatch-contents-box"></p>
     <TitleSideBlueTip title="费用信息" />
     <div class="dispatch-base-contents-box">
-    <el-row >
-      <el-col :span="12" style="padding-bottom: 16px">
+    <el-row style="margin-bottom:114px">
+      <el-col :span="12">
         <span class="dispatch-base-label">司机应收运费:</span>
         <span class="dispatch-base-text">
           {{ isOrderGoodses("driverFreightStr") || '-' }}</span
         >
       </el-col>
-      <el-col :span="12" style="padding-bottom: 16px">
+      <el-col :span="12" >
         <span class="dispatch-base-label">运费单价:</span>
         <span class="dispatch-base-text">
           {{ isOrderGoodses("freightStr")|| '-' }}</span

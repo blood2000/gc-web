@@ -40,7 +40,7 @@
           >
         </el-col>
         <el-col :span="12">
-          <span class="dispatch-base-label" style="padding-bottom: 16px"
+          <span class="dispatch-base-label" 
             >备注:</span
           >
           <span class="dispatch-dispatch-base-text">
@@ -54,12 +54,11 @@
         :model="addressInfo"
         label-width="100px"
         label-position="top"
-       class="dispatch-contents-box"
       >
         <div class="dispatch-title-item start_address">出发地信息</div>
         <div class="dispatch-info-content">
           <!-- <TitleSideBlueTip title="出发地信息" /> -->
-          <div class="dispatch-base-contents-box">
+          <div>
             <el-row>
               <el-col :span="12">
                 <el-form-item label="省 / 市 / 区:" prop="loadFormattedAddress">
@@ -113,7 +112,6 @@
         </div>
         <div class="dispatch-title-item end_address">目的地信息</div>
         <div class="dispatch-info-content">
-          <div class="dispatch-base-contents-box">
             <el-row>
               <el-col :span="12">
                 <el-form-item
@@ -167,13 +165,12 @@
                 </el-form-item>
               </el-col>
             </el-row>
-          </div>
         </div>
       </el-form>
     </div>
     <TitleSideBlueTip title="承运信息" />
     <div class="dispatch-base-contents-box">
-      <el-row class="contents-box">
+      <el-row >
         <el-col :span="12" style="padding-bottom: 16px">
           <span class="dispatch-base-label">承运车辆:</span>
           <span class="dispatch-base-text">
@@ -238,7 +235,7 @@
           >
         </el-col>
 
-        <el-col :span="12" style="padding-bottom: 16px">
+        <el-col :span="12" >
           <span class="dispatch-base-label">调度者电话:</span>
           <span class="dispatch-base-text">
             {{ waybillInfo.teamLeaderPhone }}</span
@@ -247,7 +244,7 @@
       </el-row>
     </div>
     <TitleSideBlueTip title="费用信息" />
-    <div class="dispatch-base-contents-box">
+    <div class="dispatch-base-contents-box" style="padding-bottom:114px">
       <template v-if="waybillInfo.status === 10">
         <div style="padding-bottom: 16px">
           <span class="dispatch-base-label">运费单价:</span>
@@ -394,10 +391,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.contents-box {
-  font-size: 16px;
-  margin: 20px 0 20px 20px;
-}
 .title-item {
   font-size: 18px;
   font-weight: 700;
