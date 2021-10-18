@@ -131,6 +131,8 @@
       </el-form>
       <!-- 分割线 -->
       <div class="divier"></div>
+            <div class="page-table-layout-set">
+
       <el-row :gutter="10" class="toolsbar">
         <el-col :span="1.5">
           <el-button
@@ -269,10 +271,11 @@
           </template>
         </el-table-column>
       </el-table>
+            </div>
       <pagination
         v-show="total > 0"
         :total="total"
-        layout="prev, pager, next, sizes, total,  jumper"
+        layout="prev, pager, next,jumper, total,sizes"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="getList"

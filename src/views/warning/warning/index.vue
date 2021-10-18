@@ -47,7 +47,7 @@
       />
       <!-- 分割线 -->
       <div class="divier"></div>
-      <div class="device-info-right-bottom">
+      <div class="page-table-layout-set">
         <el-tabs v-model="tabIndex" @tab-click="tabClick">
           <el-tab-pane
             v-for="item in warningTabs"
@@ -77,10 +77,7 @@
                     {{ row.alarmValue || '-' }}
                   </template> -->
               <template #handle="{ row }">
-                <el-button
-                  size="mini"
-                  type="text"
-                  @click="toDetail(row)"
+                <el-button size="mini" type="text" @click="toDetail(row)"
                   >详情
                 </el-button>
               </template>
@@ -89,7 +86,7 @@
             <pagination
               v-show="total > 0"
               :total="total"
-              layout="prev, pager, next, sizes, total,  jumper"
+              layout="prev, pager, next,jumper, total,sizes"
               :page.sync="queryParams.pageNum"
               :limit.sync="queryParams.pageSize"
               @pagination="warningDataReq"
@@ -344,7 +341,7 @@ export default {
     },
     // 详情
     toDetail(obj) {
-      console.log('详情',obj)
+      console.log("详情", obj);
       this.currId = obj.id;
       this.detailDrawer = true;
       // this.$router.push("warningDetail?id=" + obj.id);
@@ -396,9 +393,13 @@ export default {
     }
     .device-info-right-bottom {
       @include box-shadow;
+      margin-top: 28px;
     }
   }
 }
+// .device-info-right-bottom {
+//       margin-top: 28px;
+//     }
 .deviceInf-cion {
   display: flex;
   flex-direction: row;

@@ -45,6 +45,8 @@
       />
       <!-- 分割线 -->
       <div class="divier"></div>
+            <div class="page-table-layout-set">
+
       <!-- 操作栏 -->
       <el-row :gutter="10" class="toolsbar">
         <el-col :span="1.5">
@@ -167,11 +169,12 @@
           >
         </template>
       </RefactorTable>
+            </div>
       <!-- 分页 -->
       <pagination
         v-show="total > 0"
         :total="total"
-        layout="prev, pager, next, sizes, total,  jumper"
+        layout="prev, pager, next,jumper, total,sizes"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="vehicleHttpReq"

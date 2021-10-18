@@ -9,6 +9,7 @@
       />
       <!-- 分割线 -->
       <div class="divier"></div>
+      <div class="page-table-layout-set">
 
       <!-- 操作栏 -->
       <div class="toolsbar">
@@ -55,7 +56,7 @@
           >
         </template>
       </RefactorTable>
-
+      </div>
       <!-- 分页 -->
 
       <pagination
@@ -63,7 +64,7 @@
         :total="total"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
-        layout="prev, pager, next, sizes, total,  jumper"
+        layout="prev, pager, next,jumper, total,sizes"
         @pagination="getList"
       />
     </div>

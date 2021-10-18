@@ -10,6 +10,8 @@
       />
       <!-- 分割线 -->
       <div class="divier"></div>
+            <div class="page-table-layout-set">
+
       <RefactorTable
         is-show-index
         :loading="loading"
@@ -42,10 +44,11 @@
           </el-button>
         </template>
       </RefactorTable>
+            </div>
       <!-- 分页 -->
       <pagination
         :total="total"
-        layout="prev, pager, next, sizes, total,  jumper"
+                layout="prev, pager, next,jumper, total,sizes"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="getList"

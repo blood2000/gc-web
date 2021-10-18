@@ -247,19 +247,19 @@
       </el-row>
     </div>
     <TitleSideBlueTip title="费用信息" />
-    <div class="dispatch-contents-box">
+    <div class="dispatch-base-contents-box">
       <template v-if="waybillInfo.status === 10">
-        <div class="dispatch-contents-box">
+        <div style="padding-bottom: 16px">
           <span class="dispatch-base-label">运费单价:</span>
           <span class="dispatch-base-text">
             {{ settlementInfo.unitPrice }}</span
           >
         </div>
-        <div class="dispatch-contents-box">
+        <div  style="padding-bottom: 16px">
           <span class="dispatch-base-label">计费重量:</span>
           <span class="dispatch-base-text"> {{ settlementInfo.weight }}</span>
         </div>
-        <div class="dispatch-contents-box">
+        <div  style="padding-bottom: 16px">
           <span class="dispatch-base-label">货物单价:</span>
           <span class="dispatch-base-text">
             {{ settlementInfo.goodsPrice }}</span
@@ -267,13 +267,13 @@
         </div>
       </template>
       <template v-else>
-        <div class="dispatch-contents-box">
+        <div style="padding-bottom: 16px" >
           <span class="dispatch-base-label">司机应收:</span>
           <span class="dispatch-base-text">
             {{ settlementInfo.driverFreight }}</span
           >
         </div>
-        <el-row class="dispatch-contents-box">
+        <el-row style="padding-bottom: 16px" >
           <el-col :span="8">
             <span class="dispatch-base-label">路耗扣费:</span>
             <span class="dispatch-base-text">
@@ -293,19 +293,19 @@
             >
           </el-col>
         </el-row>
-        <div class="dispatch-contents-box">
+        <div  style="padding-bottom: 16px">
           <span class="dispatch-base-label">司机实收:</span>
           <span class="dispatch-base-text">
             {{ settlementInfo.driverRealFreight }}</span
           >
         </div>
-        <div class="dispatch-contents-box">
+        <div style="padding-bottom: 16px">
           <span class="dispatch-base-label">纳税金额:</span>
           <span class="dispatch-base-text">
             {{ settlementInfo.servicePrice }}</span
           >
         </div>
-        <div class="dispatch-contents-box">
+        <div  style="padding-bottom: 16px">
           <span class="dispatch-base-label">货主实付:</span>
           <span class="dispatch-base-text">
             {{ settlementInfo.shipmentPrice }}</span
