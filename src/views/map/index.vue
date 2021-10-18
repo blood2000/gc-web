@@ -607,12 +607,12 @@ export default {
         center: [119.358267, 26.04577],
         zoom: 11,
       });
-      // this.map.plugin(['AMap.Geocoder',], function(){
+      this.map.plugin(['AMap.Geocoder',], function(){
         _this.geocoder = new AMap.Geocoder({
           radius: 1000,
           extensions: "all",
         });
-      // });
+      });
     },
     /** 绘制标记
      * @param {Array} position 经纬度必传
