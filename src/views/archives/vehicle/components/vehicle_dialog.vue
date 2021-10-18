@@ -608,9 +608,9 @@ export default {
             })
             .catch(() => {
               me.form.licenseNumber = null;
-              if (this.form.vehicleLicenseImg) {
-                this.form.vehicleLicenseImg = null;
-              }
+              // if (this.form.vehicleLicenseImg) {
+              //   this.form.vehicleLicenseImg = null;
+              // }
             });
         },
         2: () => {

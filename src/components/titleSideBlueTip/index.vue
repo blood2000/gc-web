@@ -22,7 +22,10 @@ export default {
 <style lang="scss" scoped>
 .info-header {
   display: flex;
-  padding:20px 24px;
+  padding-top:24px;
+  padding-left:20px;
+  padding-bottom:25px;
+      padding-right: 24px;
   .title-side-right {
     width: 4px;
     height: 14px;

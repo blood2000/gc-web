@@ -9,10 +9,14 @@
     size="45%"
     :append-to-body="true"
   >
-    <TitleSideBlueTip title="告警详情" />
-     <div class="dispatch-base-contents-box" style="padding-top:20px">
-    <el-row class="contents-box">
-      <el-col :span="12" style="padding-bottom: 16px">
+    <div class="dispatch-base-contents-box" style="padding-top: 25px">
+      <!-- <div class="warn-icon">
+        <div class="warn-icon">
+
+        </div>
+      </div> -->
+      <el-row class="contents-box">
+        <el-col :span="12" style="padding-bottom: 16px">
         <span class="dispatch-base-label">告警类型:</span>
         <span class="dispatch-base-text warning">{{
           detail.alarmTypeName || "-"
@@ -24,34 +28,30 @@
           detail.alarmLevel || "-"
         }}</span>
       </el-col>
-      <el-col :span="24" style="padding-bottom: 16px">
-        <span class="dispatch-base-label">驾驶司机:</span>
-        <span class="dispatch-base-text">{{ detail.nickName }}</span>
-      </el-col>
-      <el-col :span="24" style="padding-bottom: 16px">
-        <span class="dispatch-base-label">驾驶车辆:</span>
-        <span class="dispatch-base-text">{{
-          detail.licenseNumber
-        }}</span>
-      </el-col>
-      <el-col :span="24" style="padding-bottom: 16px">
-        <span class="dispatch-base-label">时速:</span>
-        <span class="dispatch-base-text"
-          >{{ detail.speed || "-" }}km/h</span
-        >
-      </el-col>
-      <el-col :span="24" style="padding-bottom: 16px">
-        <span class="dispatch-base-label">告警地址:</span>
-        <span class="dispatch-base-text">{{
-          detail.alarmAddress || "-"
-        }}</span>
-      </el-col>
-      <el-col :span="24" style="padding-bottom: 16px">
-        <span class="dispatch-base-label">告警时间:</span>
-        <span class="dispatch-base-text">{{ detail.alarmTime }}</span>
-      </el-col>
-    </el-row>
-     </div>
+        <el-col :span="8" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">驾驶司机:</span>
+          <span class="dispatch-base-text">{{ detail.nickName }}</span>
+        </el-col>
+        <el-col :span="8" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">驾驶车辆:</span>
+          <span class="dispatch-base-text">{{ detail.licenseNumber }}</span>
+        </el-col>
+        <el-col :span="8" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">时速:</span>
+          <span class="dispatch-base-text">{{ detail.speed || "-" }}km/h</span>
+        </el-col>
+        <el-col :span="24" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">告警地址:</span>
+          <span class="dispatch-base-text">{{
+            detail.alarmAddress || "-"
+          }}</span>
+        </el-col>
+        <el-col :span="24">
+          <span class="dispatch-base-label">告警时间:</span>
+          <span class="dispatch-base-text">{{ detail.alarmTime }}</span>
+        </el-col>
+      </el-row>
+    </div>
     <!-- <div class="video-box" >
               <div class="video-item" v-for="item in videoList" :key="item.id">视频{{item.id * 1 + 1}}</div>
             </div> -->
@@ -255,5 +255,17 @@ export default {
   font-weight: bold;
   color: #eee;
   background: rgba(0, 0, 0, 0.4);
+}
+
+.warn-icon {
+  display: flex;
+  justify-content: flex-start;
+  &-box {
+    width: 76px;
+    height: 76px;
+    border: 1px solid rgba(112, 112, 112, 0.14901960784313725);
+    opacity: 1;
+    border-radius: 6px;
+  }
 }
 </style>
