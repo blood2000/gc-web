@@ -86,7 +86,7 @@ Vue.prototype.msgWarning = function (msg) {
 }
 
 Vue.prototype.msgInfo = function (msg) {
-  this.$message.info(msg);
+  this.$message.info({ showClose: true, message: msg, type: 'info' });
 }
 
 // 全局组件挂载
