@@ -28,7 +28,7 @@
           <span slot-scope="{ node, data }">
             <span class="node-label">
               <i class="tree-node-icon" :class="data.icon" />
-             <span class="tree-node-title"> {{ node.label }} </span>
+              <span class="tree-node-title"> {{ node.label }} </span>
             </span>
           </span>
         </el-tree>
@@ -142,6 +142,11 @@ export default {
       detailDrawer: false,
     };
   },
+  watch: {
+    orgName(val) {
+      this.$refs.tree.filter(val);
+    },
+  },
   mounted() {
     this.getOrgHttp();
     this.geocoder = new AMap.Geocoder({
@@ -235,10 +240,6 @@ export default {
     //组织树节点过滤
     filterNode(value, data) {
       if (!value) return true;
-      console.log(
-        "data.orgName.indexOf(value) !== -1",
-        data.orgName.indexOf(value) !== -1
-      );
       return data.orgName.indexOf(value) !== -1;
     },
     handleNodeClick(data) {

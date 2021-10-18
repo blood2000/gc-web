@@ -178,9 +178,16 @@ export default {
         bankUserPhone: this.queryParams.bankUserPhone,
       };
       obj.status = [];
-      if (this.statusing) obj.status.push("0");
+      if (this.statusing){
+         obj.status.push("0")
+         obj.status.push("1")
+         obj.status.push("4")
+      };
       if (this.statused) obj.status.push("2");
-      if (this.statusErr) obj.status.push("3");
+      if (this.statusErr){
+obj.status.push("3")
+obj.status.push("5")
+      } ;
 
       return obj;
     },

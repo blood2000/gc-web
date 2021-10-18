@@ -1,40 +1,6 @@
 <!-- 告警 -->
 <template>
   <div class="pages-info">
-    <!-- <div class="pages-info-left"> 
-          <div class="head-container">
-            <el-input
-              v-model="orgName"
-              placeholder="请输入组织名称"
-              clearable
-              size="small"
-              prefix-icon="el-icon-search"
-              class="mb20"
-            />
-          </div>
-          <div class="head-container el-tree-scroll-container">
-            <el-tree
-              ref="tree"
-              :data="orgTreeData"
-              :props="defaultTreeProps"
-              :expand-on-click-node="true"
-              :filter-node-method="filterNode"
-              :indent="0"
-              :highlight-current="true"
-              node-key="code"
-              :current-node-key="orgCode"
-              default-expand-all
-              @node-click="handleNodeClick"
-            >
-              <span slot-scope="{ node, data }">
-                <span class="node-label">
-                  <i class="tree-node-icon" :class="data.icon" />
-                  {{ node.label }}
-                </span>
-              </span>
-            </el-tree>
-          </div>
-        </div> -->
     <div class="pages-info-right">
       <!-- 上：搜索 -->
       <QueryForm

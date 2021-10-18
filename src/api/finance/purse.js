@@ -10,5 +10,5 @@ export default {
     dealApply: '/fmsweb/basic/wallet/v1',//已打款金额处理中金额
     provinceList: '/fmsweb/basic/wallet/v1/province',//省列表
     cityList: '/fmsweb/basic/wallet/v1/city', //市列表
-    certificates: '/basic/common/v1/certificates' //银行卡识别
+    certificates: 'fmsweb/basic/wallet/v1/certificates' //银行卡识别
 }
