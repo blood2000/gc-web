@@ -1175,6 +1175,12 @@ export default {
         this.isShowVehicleInfo = true;
         this.$store.commit("set_showVehicleDetail", true);
         this.getDeviceLocationInfo(data.orgOrlicenseNumber);
+        // 轨迹回放页面，选中车直接搜索
+        this.$nextTick(() => {
+          if (this.headerTab === 3) {
+            this.$refs.TrackListRef.getJimi();
+          }
+        })
       } else {
         // 选中组织
         this.isShowVehicleInfo = false;
@@ -1371,18 +1377,20 @@ export default {
         // } else {
         //   _this.setLabel(marker, {});
         // }
-        // 和树节点字段保持一致
-        row.orgOrVehicleCode = row.vehicle_code;
-        row.carrierType = row.carrier_type;
-        row.orgOrlicenseNumber = plate_number;
-        row.vehicleFlag = true;
-        // 同步树的节点高亮状态
-        _this.orgOrVehicleCode = row.orgOrVehicleCode;
-        _this.$refs.vehicleTree.setCurrentKey(_this.orgOrVehicleCode);
-        // 显示车辆信息
-        _this.orgOrVehicleInfo = row;
-        _this.isShowVehicleInfo = true;
-        _this.$store.commit("set_showVehicleDetail", true);
+        if (_this.headerTab !== 3) {
+          // 和树节点字段保持一致
+          row.orgOrVehicleCode = row.vehicle_code;
+          row.carrierType = row.carrier_type;
+          row.orgOrlicenseNumber = plate_number;
+          row.vehicleFlag = true;
+          // 同步树的节点高亮状态
+          _this.orgOrVehicleCode = row.orgOrVehicleCode;
+          _this.$refs.vehicleTree.setCurrentKey(_this.orgOrVehicleCode);
+          // 显示车辆信息
+          _this.orgOrVehicleInfo = row;
+          _this.isShowVehicleInfo = true;
+          _this.$store.commit("set_showVehicleDetail", true);
+        }
       });
       // 标记点聚合
       const sts = [{
