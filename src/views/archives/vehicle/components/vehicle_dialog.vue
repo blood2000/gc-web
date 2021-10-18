@@ -167,7 +167,6 @@
               placeholder="请选择所属组织"
               no-results-text="无匹配数据"
               @select="selectOrgCode"
-              :disabled="disabledDeal()"
             />
           </el-form-item>
         </el-col>
