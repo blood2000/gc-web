@@ -345,7 +345,7 @@ export default {
       };
       const res = await http_request(obj);
       console.log("获取车辆定位列表   res", res);
-      if (res.data.total !== 1) return this.msgWarning("车辆异常");
+      if (res.data.total !== 1) return ;
       const attribute = res.data.rows[0].attribute;
       console.log("attribute", attribute);
       if (
