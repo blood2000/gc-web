@@ -64,7 +64,7 @@
     <Detail
       :id="currId"
       :detailDrawer="detailDrawer"
-      :options="{ title: '告警详情' }"
+      :options="{ title: '告警详情' ,warningTypeList}"
       @colseDetailDrawer="colseDetailDrawer"
     />
   </div>

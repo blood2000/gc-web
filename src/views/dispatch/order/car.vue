@@ -429,7 +429,7 @@ export default {
         new Date(),
         "{y}-{m}-{d}"
       );
-      this.form.outCarTime = this.parseTime(new Date(), "{h}:{i}:{s}");
+      this.form.outCarTime = this.parseTime(new Date(), "{h}:{i}");
     },
     isMutual(index) {
       if (!this.driverMutual || !this.vehicleMutual) return false;

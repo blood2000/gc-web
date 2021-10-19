@@ -6,28 +6,45 @@
     direction="rtl"
     style="z-index: 2200"
     :before-close="handleClose"
-    size="45%"
+    size="40%"
     :append-to-body="true"
   >
     <div class="dispatch-base-contents-box" style="padding-top: 25px">
-      <!-- <div class="warn-icon">
-        <div class="warn-icon">
-
+      <div class="warn-icon">
+        <div class="warn-icon-box">
+          <div class="warn-icon-box-centent">
+            <img
+              :src="dealAlarmImg()"
+              style="width: 50px; height: 30px"
+              alt=""
+            />
+            <span>{{ detail.alarmTypeName || "-" }}</span>
+          </div>
         </div>
-      </div> -->
+        <div class="warn-icon-box">
+          <div class="warn-icon-box-centent">
+            <img
+              :src="levelDeal('img')"
+              style="width: 30px; height: 30px"
+              alt=""
+            />
+            <span>{{ levelDeal("text") }}</span>
+          </div>
+        </div>
+      </div>
       <el-row class="contents-box">
+        <!-- <el-col :span="12" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">告警类型:</span>
+          <span class="dispatch-base-text warning">{{
+            detail.alarmTypeName || "-"
+          }}</span>
+        </el-col>
         <el-col :span="12" style="padding-bottom: 16px">
-        <span class="dispatch-base-label">告警类型:</span>
-        <span class="dispatch-base-text warning">{{
-          detail.alarmTypeName || "-"
-        }}</span>
-      </el-col>
-      <el-col :span="12" style="padding-bottom: 16px">
-        <span class="dispatch-base-label">告警级别:</span>
-        <span class="dispatch-base-text warning">{{
-          detail.alarmLevel || "-"
-        }}</span>
-      </el-col>
+          <span class="dispatch-base-label">告警级别:</span>
+          <span class="dispatch-base-text warning">{{
+            detail.alarmLevel || "-"
+          }}</span>
+        </el-col> -->
         <el-col :span="8" style="padding-bottom: 16px">
           <span class="dispatch-base-label">驾驶司机:</span>
           <span class="dispatch-base-text">{{ detail.nickName }}</span>
@@ -52,9 +69,6 @@
         </el-col>
       </el-row>
     </div>
-    <!-- <div class="video-box" >
-              <div class="video-item" v-for="item in videoList" :key="item.id">视频{{item.id * 1 + 1}}</div>
-            </div> -->
   </el-drawer>
 </template>
 
@@ -97,6 +111,31 @@ export default {
     },
   },
   methods: {
+    dealAlarmImg(){
+      if(!this.detail.key) return ''
+      return require(`@/assets/images/detail/${this.detail.key}.png`)
+    },
+    levelDeal(type) {
+      const obj = {
+        text: () => {
+          if (!this.detail.alarmLevel) return "-";
+          console.log(
+            "text",
+            warningConfig.warningLevelObj[this.detail.alarmLevel][type]
+          );
+          return warningConfig.warningLevelObj[this.detail.alarmLevel].text;
+        },
+        img: () => {
+          if (!this.detail.alarmLevel) return "";
+          console.log(
+            "warningConfig.warningLevelObj[this.detail.alarmLevel].img",
+            warningConfig.warningLevelObj[this.detail.alarmLevel]
+          );
+          return warningConfig.warningLevelObj[this.detail.alarmLevel].img;
+        },
+      };
+      return obj[type]();
+    },
     async getWarningDetail() {
       this.loading = true;
       // let option = document.location.search.split("=")[1];
@@ -260,12 +299,25 @@ export default {
 .warn-icon {
   display: flex;
   justify-content: flex-start;
+  margin-bottom: 28px;
   &-box {
     width: 76px;
     height: 76px;
     border: 1px solid rgba(112, 112, 112, 0.14901960784313725);
     opacity: 1;
     border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 28px;
+    &-centent {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      & > span {
+        padding-top: 5px;
+      }
+    }
   }
 }
 </style>

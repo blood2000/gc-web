@@ -132,7 +132,12 @@ const warningLevelList = [
   { level: 1, name: "二级告警" },
   { level: 2, name: "三级告警" }
 ];
-
+const warningLevelObj =
+{
+  0: { text: "一级告警", img: require('@/assets/images/detail/warn_lelve_1.png') },
+  1: { text: "二级告警", img: require('@/assets/images/detail/warn_lelve_2.png') },
+  2: { text: "三级告警", img: require('@/assets/images/detail/warn_lelve_3.png') }
+};
 const deviceTypeList = [
   {
     label: "小黑盒",
@@ -395,5 +400,6 @@ export default {
   driverColumn,
   warningTabs,
   mockData,
-  videoList
+  videoList,
+  warningLevelObj,
 };
