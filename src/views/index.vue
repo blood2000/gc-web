@@ -78,7 +78,7 @@ export default {
 }
 
 .home-row-1 {
-  height: 55%;
+  height: 444px;
 }
 
 .home-col {

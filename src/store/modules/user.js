@@ -150,6 +150,28 @@ const user = {
       });
     },
 
+    getLoginInfo({
+      commit,
+      state
+    }) {
+      return new Promise((resolve, reject) => {
+        const obj = {
+          moduleName: "http_login",
+          method: "get",
+          url_alias: "getInfo"
+        };
+        http_request(obj)
+          .then(res => {
+            console.log('res logininfo', res.data)
+           
+            resolve(res.data);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+
     // 退出系统
     LogOut({
       commit,
