@@ -24,12 +24,12 @@
           <span class="dispatch-base-label">归属组织:</span>
           <span class="dispatch-base-text"> {{ orgName }}</span>
         </el-col>
-        <el-col :span="8" style="padding-bottom: 16px">
+        <!-- <el-col :span="8" style="padding-bottom: 16px">
           <span class="dispatch-base-label">车辆分组:</span>
           <span class="dispatch-base-text">
             {{ isPageShow("vehicleInf", "group") }}</span
           >
-        </el-col>
+        </el-col> -->
         <el-col :span="8" style="padding-bottom: 16px">
           <span class="dispatch-base-label">车辆识别代号:</span>
           <span class="dispatch-base-text">
@@ -62,29 +62,23 @@
             {{ isPageShow("vehicleInf", "vehicleLicenseColorValue") }}</span
           >
         </el-col>
-        <el-col :span="8" style="padding-bottom: 16px">
+        <el-col :span="8" >
           <span class="dispatch-base-label">车辆能源类型:</span>
           <span class="dispatch-base-text">
             {{ isPageShow("vehicleInf", "vehicleEnergyTypeValue") }}</span
           >
         </el-col>
-        <el-col :span="8" style="padding-bottom: 16px">
+        <el-col :span="8" >
           <span class="dispatch-base-label">车辆总重量:</span>
           <span class="dispatch-base-text">
             {{ isPageShow("vehicleInf", "vehicleTotalWeight") }}</span
           >
         </el-col>
 
-        <el-col :span="8" style="padding-bottom: 16px">
+        <el-col :span="8" >
           <span class="dispatch-base-label">车辆可载重量:</span>
           <span class="dispatch-base-text">
             {{ isPageShow("vehicleInf", "vehicleLoadWeight") }}</span
-          >
-        </el-col>
-        <el-col :span="8">
-          <span class="dispatch-base-label">备注信息:</span>
-          <span class="dispatch-base-text">
-            {{ vehicleInfo.remark }}</span
           >
         </el-col>
       </el-row>
@@ -193,6 +187,13 @@
     <TitleSideBlueTip title="设备信息" />
     <div class="dispatch-base-contents-box">
       <el-row class="contents-box">
+        <!-- device -->
+         <el-col :span="12">
+          <span class="dispatch-base-label">设备名称:</span>
+          <span class="dispatch-base-text">
+            {{ vehicleInfo.deviceName }}</span
+          >
+        </el-col>
         <el-col :span="12">
           <span class="dispatch-base-label">设备编号:</span>
           <span class="dispatch-base-text">

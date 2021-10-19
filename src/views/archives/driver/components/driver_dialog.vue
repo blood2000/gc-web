@@ -48,7 +48,7 @@
         <el-col :span="12">
           <el-form-item
             ref="identificationImageRef"
-            label="身份证正面照:"
+            label="身份证人像面:"
             prop="identificationImage"
           >
             <!-- <p class="upload-image-label">
@@ -70,7 +70,7 @@
         <el-col :span="12">
           <el-form-item
             ref="identificationBackImageRef"
-            label=" 身份证背面照:"
+            label=" 身份证国徽面:"
             prop="identificationBackImage"
           >
             <!-- <p class="upload-image-label">
