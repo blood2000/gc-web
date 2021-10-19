@@ -13,6 +13,7 @@ import http_dispatch from './dispatch/dispatch'
 import http_purse from './finance/purse'
 import http_map from './map/map';
 import http_monitor from './monitor/carlist'
+import http_home from './home/home'
 import Vue from 'vue'
 
 export const defaultH = {
@@ -44,7 +45,8 @@ const selModuleName = (name) => {
     http_warning,
     http_purse,
     http_map,
-    http_monitor
+    http_monitor,
+    http_home
   }
   return tmpObj[name]
 }
