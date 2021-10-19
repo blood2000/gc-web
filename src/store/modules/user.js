@@ -1,21 +1,35 @@
-import { login, logout, getInfo } from "@/api/login";
-import { getToken, setToken, removeToken } from "@/utils/auth";
-import { http_request } from "../../api";
+import {
+  login,
+  logout,
+  getInfo
+} from "@/api/login";
+import {
+  getToken,
+  getOnceToken,
+  setToken,
+  setOnceToken,
+  removeToken,
+  removeOnceToken
+} from "@/utils/auth";
+import {
+  http_request
+} from "../../api";
 
 const user = {
   state: {
     token: getToken(),
+    onceToken: getOnceToken(),
     name: "",
     avatar: "",
     permissions: [],
-    menus:[],
+    menus: [],
     nickName: "",
-    test:'',
-    company_name:''
+    test: '',
+    company_name: ''
   },
 
   mutations: {
-    SET_TEST:(state ,data) =>{
+    SET_TEST: (state, data) => {
       console.log(' state.test', state.test)
       state.test = data
     },
@@ -31,20 +45,25 @@ const user = {
     SET_PERMISSIONS: (state, permissions) => {
       state.permissions = permissions;
     },
-    SET_MENUS:(state, menus)=>{
+    SET_MENUS: (state, menus) => {
       state.menus = menus
     },
     SET_NICKNAME: (state, nickName) => {
       state.nickName = nickName;
     },
-    SET_COMPANY_NAME: (state, company_name)=> {
+    SET_COMPANY_NAME: (state, company_name) => {
       state.company_name = company_name;
+    },
+    SET_ONCETOKEN: (state, onceToken) => {
+      state.onceToken = onceToken;
     }
   },
 
   actions: {
     // 登录
-    Login({ commit }, userInfo) {
+    Login({
+      commit
+    }, userInfo) {
       userInfo.telephone = userInfo.telephone.trim();
       return new Promise((resolve, reject) => {
         const obj = {
@@ -53,12 +72,14 @@ const user = {
           url_alias: "login",
           data: userInfo
         };
-        console.log('登录参数',obj)
+        console.log('登录参数', obj)
         http_request(obj)
           .then(res => {
-            if(!res.data.access_token) return resolve();
+            if (!res.data.access_token) return resolve();
             setToken(res.data.access_token);
             commit("SET_TOKEN", res.data.access_token);
+            setOnceToken(res.data.access_token);
+            commit("SET_ONCETOKEN", res.data.access_token);
             resolve();
           })
           .catch(error => {
@@ -66,7 +87,9 @@ const user = {
           });
       });
     },
-    LoginBySms({ commit }, userInfo) {
+    LoginBySms({
+      commit
+    }, userInfo) {
       userInfo.telephone = userInfo.telephone.trim();
       return new Promise((resolve, reject) => {
         const obj = {
@@ -75,12 +98,14 @@ const user = {
           url_alias: "loginBySms",
           data: userInfo
         };
-        console.log('短信登录参数',obj)
+        console.log('短信登录参数', obj)
         http_request(obj)
           .then(res => {
-            if(!res.data.access_token) return resolve();
+            if (!res.data.access_token) return resolve();
             setToken(res.data.access_token);
             commit("SET_TOKEN", res.data.access_token);
+            setOnceToken(res.data.access_token);
+            commit("SET_ONCETOKEN", res.data.access_token);
             resolve();
           })
           .catch(error => {
@@ -90,7 +115,10 @@ const user = {
     },
 
     // 获取用户信息
-    GetInfo({ commit, state }) {
+    GetInfo({
+      commit,
+      state
+    }) {
       return new Promise((resolve, reject) => {
         const obj = {
           moduleName: "http_login",
@@ -99,7 +127,7 @@ const user = {
         };
         http_request(obj)
           .then(res => {
-            console.log('res userinfo',res.data)
+            console.log('res userinfo', res.data)
             if (!res) return;
             const user = res.data.user;
             user.avatar = user.avatar || '';
@@ -123,7 +151,10 @@ const user = {
     },
 
     // 退出系统
-    LogOut({ commit, state }) {
+    LogOut({
+      commit,
+      state
+    }) {
       return new Promise((resolve, reject) => {
         const obj = {
           moduleName: "http_login",
@@ -131,26 +162,37 @@ const user = {
           url_alias: "logout"
         };
         http_request(state).then(() => {
-          commit("SET_TOKEN", "");
-          // commit("SET_ROLES", []);
-          commit("SET_PERMISSIONS", []);
-          removeToken();
-          resolve();
-        })
-        .catch(error => {
-          reject(error);
-        });
+            commit("SET_TOKEN", "");
+            // commit("SET_ROLES", []);
+            commit("SET_PERMISSIONS", []);
+            removeToken();
+            resolve();
+          })
+          .catch(error => {
+            reject(error);
+          });
       });
     },
 
     // 前端 登出
-    FedLogOut({ commit }) {
+    FedLogOut({
+      commit
+    }) {
       return new Promise(resolve => {
         commit("SET_TOKEN", "");
         removeToken();
         resolve();
       });
-    }
+    },
+    //无登录权限处理
+    NoAuth({commit}) {
+      return new Promise( resolve => {
+        //清楚缓存token,但是保留vuex中的token用户身份认证信息获取
+        removeToken();
+        resolve();
+      })
+    },
+    
   }
 };
 

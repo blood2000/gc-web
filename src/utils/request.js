@@ -21,6 +21,7 @@ service.interceptors.request.use(config => {
   if (getToken() && !isToken) {
     config.headers['Authorization'] = 'Bearer ' + getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
   }
+  // console.log(config)
   // get请求映射params参数
   if (config.method === 'get' && config.params) {
     let url = config.url + '?';
@@ -69,6 +70,8 @@ service.interceptors.response.use(res => {
         })
       }).catch(() => {});
       return Promise.reject('令牌验证失败')
+    // } else if (code === 500 && res.data.msg === '手机号已存在') {
+
     } else if (code === 500) {
       Message({
         message: msg,
@@ -76,7 +79,7 @@ service.interceptors.response.use(res => {
         duration: 3 * 1000,
         showClose: true
       })
-      return Promise.reject(new Error(msg))
+      return Promise.reject(new Error(msg))  //原代码
     } else if (code !== 200) {
       Notification.error({
         title: msg

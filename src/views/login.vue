@@ -7,7 +7,10 @@
       class="login-form"
     >
       <!-- <h3 class="title">智慧车队后台管理系统</h3> -->
-      <div class="login-type" :class="captchaOnOff ? 'captcha-login' : 'acct-login'">
+      <div
+        class="login-type"
+        :class="captchaOnOff ? 'captcha-login' : 'acct-login'"
+      >
         <div :class="captchaOnOff ? 'cur-login' : ''" @click="login(0)">
           短信登录
         </div>
@@ -21,6 +24,7 @@
           type="text"
           auto-complete="off"
           placeholder="账号"
+          clearable
         >
           <svg-icon
             slot="prefix"
@@ -35,6 +39,7 @@
           type="password"
           auto-complete="off"
           placeholder="密码"
+          clearable
           @keyup.enter.native="handleLogin"
         >
           <svg-icon
@@ -49,6 +54,7 @@
           v-model="loginForm.captcha"
           auto-complete="off"
           placeholder="验证码"
+          clearable
           @keyup.enter.native="handleLogin"
         >
           <svg-icon
@@ -83,13 +89,13 @@
         </el-button>
       </el-form-item>
       <div class="form-bottom">
-          <router-link class="link-type" :to="'/register'">
-            立即注册
-          </router-link>
-          <router-link class="link-type" :to="'/resetPwd'" v-show="!captchaOnOff">
-            忘记密码
-          </router-link>
-        </div>
+        <router-link class="link-type" :to="'/register'">
+          立即注册
+        </router-link>
+        <router-link class="link-type" :to="'/resetPwd'" v-show="!captchaOnOff">
+          忘记密码
+        </router-link>
+      </div>
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
@@ -104,6 +110,7 @@ import { http_request } from "@/api";
 import Cookies from "js-cookie";
 import { encrypt, decrypt } from "@/utils/jsencrypt";
 import formValidate from "../utils/formValidate";
+import { Notification, MessageBox, Message } from "element-ui";
 export default {
   name: "Login",
   data() {
@@ -149,7 +156,7 @@ export default {
   watch: {
     $route: {
       handler: function (route) {
-        console.log(route)
+        console.log(route);
         this.redirect = route.query && route.query.redirect;
       },
       immediate: true,
@@ -167,6 +174,32 @@ export default {
         this.captchaOnOff = false;
       }
       this.$refs.loginForm.clearValidate();
+    },
+    // 验证手机号
+    //验证手机号是否已注册
+    checkPhone() {
+      if (!this.sendCode) {
+        return;
+      }
+      this.$refs.loginForm.validateField("telephone", (msg) => {
+        if (msg) {
+          return;
+        }
+        const data = {
+          phoneNumber: this.loginForm.telephone,
+        };
+        const obj = {
+          moduleName: "http_login",
+          method: "get",
+          url_alias: "checkPhoneNumber",
+          data: data,
+        };
+        http_request(obj)
+          .then((res) => {})
+          .catch((msg) => {
+            console.log(msg);
+          });
+      });
     },
     getCode() {
       if (!this.sendCode) {
@@ -242,13 +275,30 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          this.loading = true;
           if (!this.captchaOnOff) {
+            this.loading = true;
             this.pwdLogin();
           } else {
-            this.smsLogin();
+            this.checkCode();
           }
         }
+      });
+    },
+    checkCode() {
+      const data = {
+        type: "login",
+        telno: this.loginForm.telephone,
+        captcha: this.loginForm.captcha,
+      };
+      const obj = {
+        moduleName: "http_login",
+        method: "post",
+        url_alias: "checkCode",
+        data: data,
+      };
+      http_request(obj).then((res) => {
+        this.loading = true;
+        this.smsLogin();
       });
     },
     pwdLogin() {
@@ -270,7 +320,7 @@ export default {
         .dispatch("Login", this.loginForm)
         .then(() => {
           // this.loading = false;
-          this.$router.push({ path: this.redirect || "/" }).catch(() => {});
+          this.getUserInfo();
         })
         .catch(() => {
           this.loading = false;
@@ -285,11 +335,33 @@ export default {
         .dispatch("LoginBySms", loginInfo)
         .then(() => {
           // this.loading = false;
-          this.$router.push({ path: this.redirect || "/" }).catch(() => {});
+          this.getUserInfo();
         })
         .catch(() => {
           this.loading = false;
         });
+    },
+    //获取用户信息判断是否已审核
+    getUserInfo() {
+      this.$store.dispatch("GetInfo").then((res) => {
+        console.log("用户信息==>", res);
+        if (res.team.authStatus !== 3) {
+          let message = ['欢迎来到至简管车，您提交的注册信息正在认证中，请耐心等待', '欢迎来到至简管车，您提交的注册信息正在认证中，请耐心等待', '欢迎来到至简管车，您提交的注册信息认证失败，请修改注册信息后重新提交。']
+          this.$store.dispatch("NoAuth").then(() => {
+            this.$message({
+              message: message[res.team.authStatus],
+              type: "warning",
+            });
+            let timer = setTimeout(() => {
+              // location.href = "/index";
+              this.$router.push("/register?registerStatus=2");
+              clearTimeout(timer);
+            }, 1000);
+          });
+          return;
+        }
+        this.$router.push({ path: this.redirect || "/" }).catch(() => {});
+      });
     },
   },
 };
@@ -324,26 +396,26 @@ export default {
 }
 
 .login-type::before {
-  content: '';
-  transition: all .25s linear;
+  content: "";
+  transition: all 0.25s linear;
 }
 
 .captcha-login::before {
   position: absolute;
-  content: '';
+  content: "";
   width: 40px;
   height: 2px;
-  background: #4682FA;
+  background: #4682fa;
   left: 30px;
   bottom: -10px;
 }
 
 .acct-login::before {
   position: absolute;
-  content: '';
+  content: "";
   width: 40px;
   height: 2px;
-  background: #4682FA;
+  background: #4682fa;
   left: 130px;
   bottom: -10px;
 }

@@ -256,6 +256,7 @@ export default {
   },
   data() {
     return {
+      lockState:false,
       // 快捷选项时间
       activeTime: 0,
       timeGroup: [
@@ -306,12 +307,12 @@ export default {
   computed:{
     changeLocationProp(){
       console.log('ddddd',this.locationProp)
-      if(this.isShowVehicleInfo&&this.locationProp){
+      if(this.isShowVehicleInfo&&this.locationProp&&!this.lockState){
+        this.lockState = true
         this.getJimi()
       }
     }
   },
-
   mounted() {
     // 时间默认选中当天
     const beginTime = this.parseTime(new Date(), "{y}-{m}-{d} 00:00:00");
