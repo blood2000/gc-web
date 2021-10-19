@@ -69,7 +69,7 @@
                     <el-input
                       v-model="form.loadAlias"
                       clearable
-                      style="width: 200px"
+                      style="width: 90%"
                     />
                   </el-form-item>
                 </el-col>
@@ -125,7 +125,7 @@
                     <el-input
                       v-model="form.unloadAlias"
                       clearable
-                      style="width: 200px"
+                      style="width: 90%"
                     />
                   </el-form-item>
                 </el-col>
