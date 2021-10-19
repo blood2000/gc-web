@@ -343,7 +343,7 @@ export default {
     },
     //获取用户信息判断是否已审核
     getUserInfo() {
-      this.$store.dispatch("GetInfo").then((res) => {
+      this.$store.dispatch("getLoginInfo").then((res) => {
         console.log("用户信息==>", res);
         if (res.team.authStatus !== 3) {
           let message = ['欢迎来到至简管车，您提交的注册信息正在认证中，请耐心等待', '欢迎来到至简管车，您提交的注册信息正在认证中，请耐心等待', '欢迎来到至简管车，您提交的注册信息认证失败，请修改注册信息后重新提交。']

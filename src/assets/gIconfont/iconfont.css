@@ -1,0 +1,112 @@
+
+/* 
+@ 仓库地址
+@ https://www.iconfont.cn/manage/index?spm=a313x.7781069.1998910419.13&manage_type=myprojects&projectId=2549106&keyword=&project_type=&page= 
+@ 使用 <i v-once class="iconfont icon-22800" />
+@ 最后是使用 src: url('iconfont.ttf?t=1621591571878') format('truetype');
+*/
+
+@font-face {
+  font-family: "gIconfont"; /* Project id 2549106 */
+  src: url('//at.alicdn.com/t/font_2549106_sxuag6l6d7.ttf?t=1630748601820') format('truetype');
+}
+
+.iconfont {
+  font-family: "gIconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-xiayiye1:before {
+  content: "\e634";
+}
+
+.icon-zuoshuangjiantou:before {
+  content: "\e645";
+}
+
+.icon-youshuangjiantou:before {
+  content: "\e646";
+}
+
+.icon-shangyiye:before {
+  content: "\e769";
+}
+
+.icon-a-zu23240:before {
+  content: "\e61f";
+}
+
+.icon-a-zu23241:before {
+  content: "\e620";
+}
+
+.icon-a-zu23161:before {
+  content: "\e621";
+}
+
+.icon-a-zu23244:before {
+  content: "\e622";
+}
+
+.icon-a-zu23243:before {
+  content: "\e624";
+}
+
+.icon-a-zu23150:before {
+  content: "\e625";
+}
+
+.icon-a-zu23163:before {
+  content: "\e626";
+}
+
+.icon-a-zu23242:before {
+  content: "\e627";
+}
+
+.icon-a-zu23156:before {
+  content: "\e628";
+}
+
+.icon-a-zu23160:before {
+  content: "\e629";
+}
+
+.icon-a-zu23151:before {
+  content: "\e62a";
+}
+
+.icon-a-zu23245:before {
+  content: "\e62b";
+}
+
+.icon-a-zu23155:before {
+  content: "\e62c";
+}
+
+.icon-a-zu23159:before {
+  content: "\e62d";
+}
+
+.icon-laba:before {
+  content: "\e600";
+}
+
+.icon-jiantou:before {
+  content: "\e84f";
+}
+
+.icon-22801:before {
+  content: "\e62f";
+}
+
+.icon-22800:before {
+  content: "\e630";
+}
+
+.icon-22803:before {
+  content: "\e623";
+}

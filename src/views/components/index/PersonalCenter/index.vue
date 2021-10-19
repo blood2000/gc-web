@@ -1,7 +1,7 @@
 <template>
   <div class="personalCenter">
     <!-- 个人中心 -->
-    <div class="title_name">个人中心</div>
+    <div class="home-title">个人中心</div>
     <div class="ly-flex bg-info">
       <div class="information g-single-row">
         <div class="top g-single-row">HI, {{ user.nickName }}</div>
@@ -248,6 +248,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.home-title {
+  color: #3d4050;
+  font-size: 16px;
+  font-weight: bold;
+}
 .schedule {
   line-height: 5px;
   font-weight: bold;
@@ -265,6 +270,7 @@ export default {
 .tag-frame {
   border-top: 1px solid #e4ecf4;
   padding: 5px;
+  margin-top: 10px;
 }
 
 .personalCenter {

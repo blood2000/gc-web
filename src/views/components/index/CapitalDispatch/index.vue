@@ -47,41 +47,41 @@
       <div class="home-item">
         <div class="home-item-info">
           <div class="home-item-title">
-            <div class="home-item-icon vehicle-icon"></div>
-            <div class="home-item-name">车辆</div>
+            <div class="home-item-icon dispatch-icon"></div>
+            <div class="home-item-name">调度单</div>
           </div>
           <div class="home-item-value">
-            <div>20</div>
-            <span>辆</span>
+            <div>200</div>
+            <span>单</span>
           </div>
         </div>
-        <div class="home-item-bg vehicle-bg"></div>
+        <div class="home-item-bg dispatch-bg"></div>
       </div>
       <div class="home-item">
         <div class="home-item-info">
           <div class="home-item-title">
-            <div class="home-item-icon driver-icon"></div>
-            <div class="home-item-name">司机</div>
+            <div class="home-item-icon vehicle-report-icon"></div>
+            <div class="home-item-name">派车记录</div>
           </div>
           <div class="home-item-value">
             <div>105</div>
-            <span>位</span>
+            <span>条</span>
           </div>
         </div>
-        <div class="home-item-bg driver-bg"></div>
+        <div class="home-item-bg vehicle-report-bg"></div>
       </div>
       <div class="home-item">
         <div class="home-item-info">
           <div class="home-item-title">
-            <div class="home-item-icon device-icon"></div>
-            <div class="home-item-name">设备</div>
+            <div class="home-item-icon vehicle-list-icon"></div>
+            <div class="home-item-name">派车单</div>
           </div>
           <div class="home-item-value">
-            <div>15</div>
-            <span>台</span>
+            <div>215</div>
+            <span>单</span>
           </div>
         </div>
-        <div class="home-item-bg device-bg"></div>
+        <div class="home-item-bg vehicle-list-bg"></div>
       </div>
     </div>
   </div>
@@ -107,6 +107,9 @@ export default {
 
 <style lang="scss" scoped>
 .home-title {
+  
+  color: #3d4050;
+  font-size: 16px;
   font-weight: bold;
   padding-bottom: 10px;
 }
@@ -159,6 +162,21 @@ export default {
   background-size: 100% 100%;
 }
 
+.dispatch-icon {
+  background: url("../../../../assets/images/home/dispatch.png");
+  background-size: 100% 100%;
+}
+
+.vehicle-report-icon {
+  background: url("../../../../assets/images/home/vehicle_report.png");
+  background-size: 100% 100%;
+}
+
+.vehicle-list-icon {
+  background: url("../../../../assets/images/home/vehicle_list.png");
+  background-size: 100% 100%;
+}
+
 .home-item-name {
   font-size: 14px;
   font-family: PingFang SC;
@@ -202,6 +220,17 @@ export default {
 
 .device-bg {
   background: url("../../../../assets/images/home/device_bg.png");
+}
+.dispatch-bg {
+  background: url("../../../../assets/images/home/dispatch_bg.png");
+}
+
+.vehicle-report-bg {
+  background: url("../../../../assets/images/home/vehicle_report_bg.png");
+}
+
+.vehicle-list-bg {
+  background: url("../../../../assets/images/home/vehicle_list_bg.png");
 }
 </style>
 
