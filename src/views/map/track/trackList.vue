@@ -385,6 +385,10 @@ export default {
       this.jmTracklist = [];
       this.jmTrackInfolist = [];
       this.$emit("clearPathSimplifierIns");
+      this.currentTrackAllTime = 0;
+      this.currentTrackAllMileage = 0;
+      this.currentTrackTime = null;
+      this.currentTrackSpeed = null;
       if (
         !this.isShowVehicleInfo ||
         !this.orgOrVehicleCode 
