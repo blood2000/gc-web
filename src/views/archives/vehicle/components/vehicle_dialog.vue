@@ -180,7 +180,7 @@
               v-model="form.defaultDriverCode"
               clearable
               filterable
-              placeholder="请选择车辆类型"
+              placeholder="请选择司机"
             >
               <el-option
                 v-for="(item, index) in defaultDriverList"

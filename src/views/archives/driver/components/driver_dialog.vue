@@ -23,7 +23,7 @@
             <treeselect
               v-model="form.orgCode"
               :options="deptOptions"
-               :disabled="isDetail"
+              :disabled="isDetail"
               :normalizer="normalizer"
               :show-count="true"
               placeholder="请选择所属组织"
@@ -59,11 +59,14 @@
               v-model="form.identificationImage"
               @input="chooseImg"
             >
-            <template slot="initImage">
+              <template slot="initImage">
                 <div class="dispatch-bg-upload dispatch-id_front">
-                  <img  src="../../../../assets/images/certificate/photograph.png" alt="">
+                  <img
+                    src="../../../../assets/images/certificate/photograph.png"
+                    alt=""
+                  />
                 </div>
-            </template>
+              </template>
             </ImageUploadSimple>
           </el-form-item>
         </el-col>
@@ -81,11 +84,14 @@
               v-model="form.identificationBackImage"
               @input="chooseImgBack"
             >
-             <template slot="initImage">
+              <template slot="initImage">
                 <div class="dispatch-bg-upload dispatch-id_back">
-                  <img  src="../../../../assets/images/certificate/photograph.png" alt="">
+                  <img
+                    src="../../../../assets/images/certificate/photograph.png"
+                    alt=""
+                  />
                 </div>
-            </template>
+              </template>
             </ImageUploadSimple>
           </el-form-item>
         </el-col>
@@ -145,13 +151,26 @@
           </el-form-item>
         </el-col>
         <el-col :span="10" v-if="!isIdDateValid">
-          <el-date-picker
+          <!-- <el-date-picker
             v-model="form.idDateRange[0]"
             align="right"
             type="date"
             placeholder="选择日期"
-            :picker-options="pickerOptions"
           >
+          </el-date-picker> -->
+          <el-date-picker
+            popper-class="idcard-date"
+            v-model="form.idDateRange[0]"
+            type="date"
+            align="right"
+            placeholder="有效起始日期"
+            value-format="yyyy-MM-dd"
+          >
+            <svg-icon
+              slot="prefix"
+              icon-class="date"
+              class="el-input__icon input-icon"
+            />
           </el-date-picker>
         </el-col>
         <el-col :span="6" v-if="!isIdDateValid">
@@ -169,11 +188,14 @@
               v-model="form.driverLicenseImage"
               @input="driverChooseImg"
             >
-             <template slot="initImage">
+              <template slot="initImage">
                 <div class="dispatch-bg-upload dispatch-driving_front">
-                  <img  src="../../../../assets/images/certificate/photograph.png" alt="">
+                  <img
+                    src="../../../../assets/images/certificate/photograph.png"
+                    alt=""
+                  />
                 </div>
-            </template>
+              </template>
             </ImageUploadSimple>
           </el-form-item>
         </el-col>
@@ -372,11 +394,11 @@ export default {
     this.getTree();
   },
   methods: {
-    isDisabled(){
-      let result = false
-      if(this.isDetail) result = true
-      if(this.options&&this.options.editType == 'update') result = true
-      return result
+    isDisabled() {
+      let result = false;
+      if (this.isDetail) result = true;
+      if (this.options && this.options.editType == "update") result = true;
+      return result;
     },
     changeBlurTel(e) {
       this.checkIdOrphone("0", this.form.telphone);
@@ -440,8 +462,8 @@ export default {
               me.form.telphone = null;
             } else {
               me.form.identificationNumber = null;
-              me.form.name = null
-              me.form.identificationImage = null
+              me.form.name = null;
+              me.form.identificationImage = null;
             }
           });
       }
@@ -539,6 +561,7 @@ export default {
       };
       this.resetForm("form");
       this.isDetail = false;
+      this.isIdDateValid = true;
     },
     //身份证正面照/身份证反面照 上传结束后回调
     chooseImg(e) {
@@ -566,8 +589,8 @@ export default {
           side,
         },
       };
-      if(type === 2){
-        obj.data.return_issuing_authority = true
+      if (type === 2) {
+        obj.data.return_issuing_authority = true;
       }
       const res = await http_request(obj);
       console.log("ocr请求", res);
@@ -586,6 +609,9 @@ export default {
           if (data.name) me.form.name = data.name;
           if (data.valid_from && data.valid_to) {
             console.log("ocrDataToForm data", data);
+            if (data.valid_to == "长期") {
+              this.isIdDateValid = false;
+            }
             me.form.idDateRange = [data.valid_from, data.valid_to];
           }
         },
