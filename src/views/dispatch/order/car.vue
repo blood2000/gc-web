@@ -21,7 +21,7 @@
               <el-input
                 v-model="pageData.companyName"
                 clearable
-                style="width: 200px"
+                style="width: 95%"
               />
             </el-form-item>
           </el-col>
@@ -30,7 +30,7 @@
               <el-input
                 v-model="pageData.shipmentName"
                 clearable
-                style="width: 156px"
+                style="width: 70%"
               />
             </el-form-item>
           </el-col>
@@ -90,7 +90,7 @@
                 <el-input
                   v-model="pageData.loadAlias"
                   clearable
-                  style="width: 220px"
+                    style="width: 90%"
                 />
               </el-form-item>
             </el-col>
@@ -143,7 +143,7 @@
                 <el-input
                   v-model="pageData.unloadAlias"
                   clearable
-                  style="width: 220px"
+                    style="width: 90%"
                 />
               </el-form-item>
             </el-col>
