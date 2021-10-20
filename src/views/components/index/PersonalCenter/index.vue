@@ -39,11 +39,13 @@
 
     <div class="ly-flex my_calendar_header">
       <span class="shou" @click="skip('preYear')">
-        <i v-once class="iconfont icon-zuoshuangjiantou" />
+        <!-- <i v-once class="iconfont icon-zuoshuangjiantou" /> -->
+        <i class="el-icon-d-arrow-left"></i>
       </span>
 
       <span class="shou" @click="skip('preMon')">
-        <i v-once class="iconfont icon-shangyiye" />
+        <!-- <i v-once class="iconfont icon-shangyiye" /> -->
+        <i class="el-icon-arrow-left"></i>
       </span>
 
       <span class="shou el-calendar__title mtime" @click="skip('today')">
@@ -51,11 +53,11 @@
       </span>
 
       <span class="shou" @click="skip('nextMon')">
-        <i v-once class="iconfont icon-xiayiye1" />
+        <i class="el-icon-arrow-right"></i>
       </span>
 
       <span class="shou" @click="skip('nextYear')">
-        <i v-once class="iconfont icon-youshuangjiantou" />
+        <i class="el-icon-d-arrow-right"></i>
       </span>
     </div>
     <el-calendar ref="monChild" v-model="value" :first-day-of-week="7">
@@ -208,6 +210,7 @@ export default {
       });
     },
     handleClick(data) {
+      return;
       this.$refs.ScheduleDialog.reset();
       this.title = "今日事项（" + data.day + "）";
       this.openSchedule = true;

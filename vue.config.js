@@ -39,12 +39,12 @@ module.exports = {
         // target:'http://192.168.30.224:8080', //本地 
         // target: `http://192.168.30.160:8080`, //本地 -- 调度
         // target: `http://192.168.30.67:8080`, //本地
-        // target: `http://192.168.30.90:8080`, //本地--强强
+        // target: `http://192.168.1.18:8080`, //本地--强强
         // target: `http://192.168.30.166:8080`, //本地
         // target: `http://192.168.30.10:8080`, //本地---地图
         // target:`http://192.168.30.36:8080`,
         // target:`http://192.168.1.34:8080`,
-        // target:`http://192.168.40.16:8080`,    //萌旗
+        // target:`http://192.168.30.26:8080`,    //萌旗
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''

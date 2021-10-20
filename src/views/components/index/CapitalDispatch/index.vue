@@ -9,7 +9,7 @@
             <div class="home-item-name">车辆</div>
           </div>
           <div class="home-item-value">
-            <div>20</div>
+            <div>{{vehicle}}</div>
             <span>辆</span>
           </div>
         </div>
@@ -22,7 +22,7 @@
             <div class="home-item-name">司机</div>
           </div>
           <div class="home-item-value">
-            <div>105</div>
+            <div>{{driver}}</div>
             <span>位</span>
           </div>
         </div>
@@ -35,7 +35,7 @@
             <div class="home-item-name">设备</div>
           </div>
           <div class="home-item-value">
-            <div>15</div>
+            <div>{{device}}</div>
             <span>台</span>
           </div>
         </div>
@@ -51,7 +51,7 @@
             <div class="home-item-name">调度单</div>
           </div>
           <div class="home-item-value">
-            <div>200</div>
+            <div>{{dispatchOrder}}</div>
             <span>单</span>
           </div>
         </div>
@@ -64,7 +64,7 @@
             <div class="home-item-name">派车记录</div>
           </div>
           <div class="home-item-value">
-            <div>105</div>
+            <div>{{carRecord}}</div>
             <span>条</span>
           </div>
         </div>
@@ -77,7 +77,7 @@
             <div class="home-item-name">派车单</div>
           </div>
           <div class="home-item-value">
-            <div>215</div>
+            <div>{{carOrderCount}}</div>
             <span>单</span>
           </div>
         </div>
@@ -96,18 +96,100 @@ export default {
     // ScheduleDialog,
   },
   data() {
-    return {};
+    return {
+      vehicle: '',
+      driver: '',
+      device: '',
+      dispatchOrder: '',
+      carRecord: '',
+      carOrderCount: ''
+    };
   },
 
   computed: {},
   created() {},
-  methods: {},
+  mounted() {
+    this.getVehicle();
+    this.getDriver();
+    this.getDevice();
+    this.getDispatchOrder();
+    this.getCarRecord();
+    this.getCarOrderCount();
+  },
+
+  methods: {
+    getVehicle() {
+      const obj = {
+        moduleName: "http_home",
+        method: "get",
+        url_alias: "vehicle",
+      };
+      http_request(obj).then((res) => {
+        console.log("车辆统计--->", res);
+        this.vehicle = res.data;
+      });
+    },
+    getDriver() {
+      const obj = {
+        moduleName: "http_home",
+        method: "get",
+        url_alias: "driver",
+      };
+      http_request(obj).then((res) => {
+        console.log("司机统计--->", res);
+        this.driver = res.data;
+      });
+    },
+    getDevice() {
+      const obj = {
+        moduleName: "http_home",
+        method: "get",
+        url_alias: "device",
+      };
+      http_request(obj).then((res) => {
+        console.log("设备统计--->", res);
+        this.device = res.data;
+      });
+    },
+    getDispatchOrder() {
+      const obj = {
+        moduleName: "http_home",
+        method: "get",
+        url_alias: "dispatchOrder",
+      };
+      http_request(obj).then((res) => {
+        console.log("调度单统计--->", res);
+        this.dispatchOrder = res.data;
+      });
+    },
+    getCarRecord() {
+      const obj = {
+        moduleName: "http_home",
+        method: "get",
+        url_alias: "carRecord",
+      };
+      http_request(obj).then((res) => {
+        console.log("派车记录统计--->", res);
+        this.carRecord = res.data;
+      });
+    },
+    getCarOrderCount() {
+      const obj = {
+        moduleName: "http_home",
+        method: "get",
+        url_alias: "carOrderCount",
+      };
+      http_request(obj).then((res) => {
+        console.log("派车单统计--->", res);
+        this.carOrderCount = res.data;
+      });
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 .home-title {
-  
   color: #3d4050;
   font-size: 16px;
   font-weight: bold;

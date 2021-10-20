@@ -373,8 +373,8 @@ export default {
   justify-content: flex-end;
   align-items: center;
   height: 100%;
-  background-image: url("../assets/images/login-background.png");
-  background-size: cover;
+  background-image: url("../assets/images/login-background.gif");
+  background-size: 100% 100%;
 }
 .title {
   margin: 0px auto 10px auto;
