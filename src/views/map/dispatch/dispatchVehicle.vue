@@ -55,7 +55,7 @@
         :model="carForm"
         label-position="top"
       >
-        <el-row class="dispatch-base-contents-box" style="padding-top: 20px">
+        <el-row class="vehicleDrivers-content">
           <el-col :span="8">
             <el-form-item label="开始日期:" prop="startDate">
               <el-date-picker
