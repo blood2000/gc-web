@@ -554,13 +554,18 @@ export default {
     //车辆校验
     async checkVhicle(result = null) {
       const me = this;
-      const licenseNumber = result.number || me.form.licenseNumber;
-      console.log("ckc------", result.number, me.form.licenseNumber);
+      console.log("result", result);
+      let licenseNumber = "";
+      if (result && result.number) {
+        licenseNumber = result.number;
+        console.log("ckc------", result.number, me.form.licenseNumber);
+      } else {
+        licenseNumber = me.form.licenseNumber;
+      }
       console.log("licenseNumber", licenseNumber);
       const orgCode = me.options.orgCode;
       if (!licenseNumber) return;
       console.log("orgCode", orgCode);
-      console.log("licenseNumber", licenseNumber);
       const obj = {
         moduleName: "http_vehicle",
         method: "post",
