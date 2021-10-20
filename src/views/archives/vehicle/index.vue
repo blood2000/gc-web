@@ -45,6 +45,8 @@
       />
       <!-- 分割线 -->
       <div class="divier"></div>
+            <div class="page-table-layout-set">
+
       <!-- 操作栏 -->
       <el-row :gutter="10" class="toolsbar">
         <el-col :span="1.5">
@@ -137,14 +139,12 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="handleUpdate(row)"
             >修改</el-button
           >
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-delete"
             style="color: red"
             @click="handleDelete(row)"
             >删除</el-button
@@ -152,36 +152,35 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-position"
             @click="handlePosition(row)"
             >定位</el-button
           >
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-tickets"
             @click="handleDetail(row)"
             >详情</el-button
           >
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-tickets"
             @click="handleDevice(row)"
             >绑定设备</el-button
           >
         </template>
       </RefactorTable>
+            </div>
       <!-- 分页 -->
       <pagination
         v-show="total > 0"
         :total="total"
-        layout="prev, pager, next, sizes, total,  jumper"
+        layout="prev, pager, next,jumper, total,sizes"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="vehicleHttpReq"
       />
     </div>
+    <Detail :code="currCode" :detailDrawer="detailDrawer" :options="{title:'车辆信息'}" @colseDetailDrawer='colseDetailDrawer' />
     <VehicleDialog
       :options="{
         editType: editType,
@@ -214,10 +213,12 @@ import GroupDialog from "./components/group_dialog.vue";
 import DeviceDialog from "./components/device_dialog.vue";
 import { http_request } from "@/api";
 import store from "@/store";
+import Detail from './detail.vue'
+
 // import { mapState, mapMutations } from "vuex";
 export default {
   name: "vehicle", // 车辆管理
-  components: { QueryForm, VehicleDialog, GroupDialog, DeviceDialog },
+  components: { QueryForm, VehicleDialog, GroupDialog, DeviceDialog ,Detail},
   data() {
     return {
       showSearch: true, //搜索显隐
@@ -259,7 +260,9 @@ export default {
       deviceOptions: {
         title: "",
       },
-      authStatusValue:null
+      authStatusValue:null,
+      currCode:null,
+      detailDrawer:false
     };
   },
   created() {},
@@ -523,9 +526,10 @@ export default {
       );
     },
     handleDetail(obj) {
-      const code = obj.code;
-      console.log(" index code", code);
-      this.$router.push("detail?code=" + code);
+      this.currCode  = obj.code;
+      this.detailDrawer = true
+      console.log('ckc code',this.currCode )
+      // this.$router.push("detail?code=" + code);
     },
     handleDevice(obj) {
       console.log("ckc obj", obj);
@@ -550,6 +554,9 @@ export default {
       console.log("device关闭。。。");
       this.deviceOpen = false;
       this.vehicleHttpReq();
+    },
+       colseDetailDrawer(){
+      this.detailDrawer = false
     },
   },
 };

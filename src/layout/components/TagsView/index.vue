@@ -311,11 +311,10 @@ export default {
 
 <style lang="scss" scoped>
 .tags-view-container {
-  height: 49px;
+  height: 44px;
   width: 100%;
   background: #fff;
   position: relative;
-  border-bottom: 5px solid rgb(242, 245, 248);
   box-sizing: border-box;
   .tags-view-wrapper {
     width: calc(100% - 36px);
@@ -365,7 +364,7 @@ export default {
       }
       &.active {
         > .label {
-          color: rgba(64, 158, 255, 1);
+          color: #3D4050;
           font-weight: bold;
           padding-left: 14px;
           position: relative;
@@ -374,7 +373,7 @@ export default {
             width: 6px;
             height: 6px;
             border-radius: 50%;
-            background-color: rgba(64, 158, 255, 0.9);
+            background-color: #4682FA;
             position: absolute;
             left: 0;
             top: 50%;
@@ -394,7 +393,6 @@ export default {
             &.unactive {
         > .label {
           color:#CCCCCC ;
-          font-weight: bold;
           padding-left: 14px;
           position: relative;
           &::before {

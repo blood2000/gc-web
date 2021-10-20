@@ -168,7 +168,19 @@ export default {
       });
     },
     cancel() {
+      this.reset()
       this.$emit("colseDialog", "no");
+    },
+    reset(){
+      this.form.account = null
+      this.form.bankCode = null
+      this.form.bankName = null
+      this.form.mobile = null
+      this.form.name = null
+      this.form.province = null
+      this.form.city = null
+      this.uploadImage = null
+
     },
     async submitForm() {
       this.dealBankData();
@@ -183,6 +195,7 @@ export default {
       const res = await http_request(obj);
       console.log("res", res);
       this.loading = false;
+      this.reset()
       this.$emit("colseDialog", "ok");
     },
     dealBankData() {

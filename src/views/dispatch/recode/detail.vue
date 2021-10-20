@@ -5,7 +5,7 @@
     direction="rtl"
     style="z-index: 2200"
     :before-close="handleClose"
-    size="40%"
+    size="45%"
     :append-to-body="true"
   >
     <div>
@@ -43,7 +43,7 @@
           <div class="dispatch-title-item start_address">出发地信息</div>
           <div class="dispatch-info-content" style="padding-left: 0">
             <div class="dispatch-contents-box">
-              <el-row>
+              <el-row :gutter="15">
                 <el-col :span="12">
                   <el-form-item label="省 / 市 / 区:" prop="loadAddress">
                     <el-input
@@ -63,13 +63,13 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-row>
+              <el-row :gutter="15">
                 <el-col :span="8">
                   <el-form-item label="地址别名:" prop="loadAlias">
                     <el-input
                       v-model="form.loadAlias"
                       clearable
-                      style="width: 220px"
+                      style="width: 90%"
                     />
                   </el-form-item>
                 </el-col>
@@ -99,7 +99,7 @@
           <div class="dispatch-title-item end_address">目的地信息</div>
           <div class="dispatch-info-content" style="padding-left: 0">
             <div class="dispatch-contents-box">
-              <el-row>
+              <el-row :gutter="15">
                 <el-col :span="12">
                   <el-form-item label="省 / 市 / 区:" prop="unloadAddress">
                     <el-input
@@ -119,13 +119,13 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-row>
+              <el-row :gutter="15">
                 <el-col :span="8">
                   <el-form-item label="地址别名:" prop="unloadAlias">
                     <el-input
                       v-model="form.unloadAlias"
                       clearable
-                      style="width: 220px"
+                      style="width: 90%"
                     />
                   </el-form-item>
                 </el-col>
@@ -157,7 +157,7 @@
     <div>
       <div>
         <TitleSideBlueTip title="派车信息" />
-        <el-row class="dispatch-contents-box">
+        <el-row class="dispatch-contents-box" style="padding-bottom:114px">
           <el-col :span="12" style="padding-bottom: 16px">
             <span class="dispatch-base-label">派车时间:</span>
             <span class="dispatch-base-text">

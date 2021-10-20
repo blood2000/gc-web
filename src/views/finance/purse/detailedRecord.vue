@@ -46,7 +46,7 @@
             @click="handleQuery"
             >搜索</el-button
           >
-          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+          <el-button icon="el-icon-refresh" class="ddc-queryParams-right-reset" size="mini" @click="resetQuery"
             >重置</el-button
           >
         </el-form-item>
@@ -54,6 +54,8 @@
       </el-form>
       <!-- 分割线 -->
       <div class="divier"></div>
+            <div class="page-table-layout-set">
+
       <!-- 按钮组 -->
       <div class="toolsbar">
         <el-radio-group v-model="activeName" size="small" @change="handleClick">
@@ -90,7 +92,7 @@
             <span>{{ dealPaidItem(row.paidItem) }}</span>
           </template>
         </RefactorTable>
-
+            </div>
       <pagination
         v-show="total > 0"
         :total="total"

@@ -1,0 +1,28 @@
+.el-pagination.is-background .btn-prev,
+.el-pagination.is-background .btn-next,
+.el-pagination.is-background .el-pager li {
+    margin: 0 4px;
+    background-color: #ffff;
+    border: 1px solid #E4ECF4;
+    border-radius: 2px;
+
+}
+
+.el-pagination.is-background .btn-prev, .el-pagination.is-background .btn-next, .el-pagination.is-background .el-pager li{
+    font-size: 14px;
+    font-family: PingFang SC;
+    font-weight: 400;
+    color:#3D4050;
+}
+.el-pagination span:not([class*=suffix]), .el-pagination button{
+    font-size: 14px;
+    font-family: PingFang SC;
+    font-weight: 400;
+    color:#3D4050
+}
+.el-pagination__jump{
+    margin:0 24px;
+}
+.el-pagination .el-select .el-input{
+    margin:0 10px 0 8px;
+}

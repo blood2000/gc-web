@@ -32,22 +32,22 @@
         stripe 
         :data="dataList"
         :row-key="getRowKeys"
-        :expand-row-keys="expands"
-        @row-click="clickRowHandle"
       >
+      <!-- :expand-row-keys="expands"
+        @row-click="clickRowHandle" -->
         <el-table-column label="序号" type="index" width="50" />
-        <el-table-column label="告警时间" prop="alarmTime" width="150" />
-        <el-table-column label="驾驶司机" prop="nickName" :show-overflow-tooltip="true" width="100" />
-        <el-table-column label="告警时速(km/h)" prop="alarmValue" :show-overflow-tooltip="true" width="140" />
+        <el-table-column label="告警时间" prop="alarmTime" width="190" />
+        <el-table-column label="驾驶司机" prop="nickName" :show-overflow-tooltip="true" width="130" />
+        <el-table-column label="告警时速(km/h)" prop="alarmValue" :show-overflow-tooltip="true" width="170" />
         <el-table-column label="告警位置" prop="alarmAddress" :show-overflow-tooltip="true" />
-        <el-table-column label="告警图片/视频" width="110">
+        <!-- <el-table-column label="告警图片/视频" width="110">
           <template slot-scope="scope">
             <img class="mr5" src="~@/assets/images/device/warn_detail_image.png">
             <img src="~@/assets/images/device/warn_detail_camera_d.png">
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <!-- 展开行 -->
-        <el-table-column type="expand">
+        <!-- <el-table-column type="expand">
           <template slot-scope="scope">
             <ul class="table-images-list ly-flex ly-flex-pack-start">
               <li>
@@ -69,7 +69,7 @@
               </li>
             </ul>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
       <pagination
         v-show="total>0"

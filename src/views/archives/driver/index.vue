@@ -45,6 +45,8 @@
       />
       <!-- 分割线 -->
       <div class="divier"></div>
+            <div class="page-table-layout-set">
+
       <!-- 操作栏 -->
       <el-row :gutter="10" class="toolsbar">
         <el-col :span="1.5">
@@ -127,14 +129,12 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="handleUpdate(row)"
             >修改</el-button
           >
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-delete"
             style="color: red"
             @click="handleDelete(row)"
             >删除</el-button
@@ -142,7 +142,6 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-position"
             @click="handleReset(row)"
             >密码重置</el-button
           >
@@ -157,18 +156,17 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-tickets"
             @click="handleDetail(row)"
             >详情</el-button
           >
         </template>
       </RefactorTable>
-
+            </div>
       <!-- 分页 -->
       <pagination
         v-show="total > 0"
         :total="total"
-        layout="prev, pager, next, sizes, total,  jumper"
+        layout="prev, pager, next,jumper, total,sizes"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="driverHttpReq"
@@ -295,12 +293,12 @@ export default {
             url_alias: "driver_del",
             data: { list: ids },
           };
-          http_request(tmp);
-        })
-        .then(() => {
+          http_request(tmp).then(() => {
           this.searchQuery();
           this.msgSuccess("删除成功");
         });
+        })
+       
     },
     handleReset(data) {
       this.$refs.resetPwdDialog.reset(data.userCode);

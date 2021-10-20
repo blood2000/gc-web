@@ -158,8 +158,11 @@ export default {
           };
           http_request(obj)
             .then((res) => {
+              if(res.code == 200)
+              this.msgSuccess(res.msg)
               console.log("transferApply", res);
               this.loading = false;
+              this.initForm()
               this.$emit("colseDialog", "ok");
             })
             .catch((err) => {
@@ -170,6 +173,7 @@ export default {
     },
     //关闭弹窗
     cancel() {
+      this.initForm()
       this.$emit("colseDialog", "no");
     },
     initForm() {

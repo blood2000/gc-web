@@ -51,32 +51,34 @@ export const tableColumnsConfig = [
     {
         isShow: true,
         label: "最近告警",
-        prop: "createTime",
-        sortNum: 7,
+        prop: "alarm_type",
+        sortNum: 8,
         tooltip: true,
     },
     {
         isShow: true,
         label: "最近告警时间",
-        prop: "createTime",
-        sortNum: 7,
+        prop: "alarm_time",
+        sortNum: 9,
         tooltip: true,
+        width: 150,
     },
     {
         isShow: true,
         label: "最近告警位置",
-        prop: "createTime",
-        sortNum: 7,
+        prop: "alarm_address",
+        sortNum: 10,
         tooltip: true,
+        width: 200,
     },
     {
         isShow: true,
         label: "操作",
         prop: "edit",
-        sortNum: 8,
+        sortNum: 99,
         tooltip: true,
         width: 200,
-        fixed:'right'
+        fixed: 'right'
     },
 ]
 

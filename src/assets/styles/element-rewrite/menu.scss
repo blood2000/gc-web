@@ -1,0 +1,18 @@
+#app .hideSidebar .el-submenu, #app .hideSidebar .el-menu-item{
+    height: 60px;
+  
+}
+#app .sidebar-container .el-menu>div{
+    height: 60px;
+    margin-bottom: 28px;
+}
+#app .hideSidebar .el-submenu .svg-icon-box, #app .hideSidebar .el-menu-item .svg-icon-box{
+    height: 28px;
+    width: 28px;
+}
+#app .hideSidebar .el-menu--collapse{
+    padding-top: 36px;
+}
+#app .hideSidebar .el-submenu .label, #app .hideSidebar .el-menu-item .label{
+    margin-top: -5px;
+}

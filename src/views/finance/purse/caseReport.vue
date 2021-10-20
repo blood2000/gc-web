@@ -10,6 +10,8 @@
       />
     <!-- 分割线 -->
       <div class="divier"></div>
+            <div class="page-table-layout-set">
+
     <div class="toolsbar">
       <div class="purse-tool-bar">
         <div class="apply">
@@ -52,11 +54,12 @@
           <span :style="{color:dealStatusColor(row.status)}">{{ dealStatusText(row.status) }}</span>
         </template>
       </RefactorTable>
+            </div>
       <!-- 分页 -->
       <pagination
          v-show="total > 0"
         :total="total"
-        layout="prev, pager, next, sizes, total,  jumper"
+        layout="prev, pager, next,jumper, total,sizes"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="getList"
@@ -175,9 +178,16 @@ export default {
         bankUserPhone: this.queryParams.bankUserPhone,
       };
       obj.status = [];
-      if (this.statusing) obj.status.push("0");
+      if (this.statusing){
+         obj.status.push("0")
+         obj.status.push("1")
+         obj.status.push("4")
+      };
       if (this.statused) obj.status.push("2");
-      if (this.statusErr) obj.status.push("3");
+      if (this.statusErr){
+obj.status.push("3")
+obj.status.push("5")
+      } ;
 
       return obj;
     },

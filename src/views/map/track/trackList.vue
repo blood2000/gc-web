@@ -256,6 +256,7 @@ export default {
   },
   data() {
     return {
+      lockState:false,
       // 快捷选项时间
       activeTime: 0,
       timeGroup: [
@@ -306,17 +307,20 @@ export default {
   computed:{
     changeLocationProp(){
       console.log('ddddd',this.locationProp)
-      if(this.isShowVehicleInfo&&this.locationProp){
+      if(this.isShowVehicleInfo&&this.locationProp&&!this.lockState){
+        this.lockState = true
         this.getJimi()
       }
     }
   },
-
   mounted() {
     // 时间默认选中当天
     const beginTime = this.parseTime(new Date(), "{y}-{m}-{d} 00:00:00");
     const endTime = this.parseTime(new Date());
     this.setTimeValue(beginTime, endTime);
+    if (this.orgOrVehicleCode) {
+      this.getJimi();
+    }
   },
   methods: {
     /** 快捷时间选中 */
@@ -364,6 +368,7 @@ export default {
     },
     /** 选择日期 */
     dateChoose(date) {
+      this.activeTime = -1;
       if (date) {
         this.jimiQueryParams.beginTime = this.parseTime(date[0]);
         this.jimiQueryParams.endTime = this.parseTime(date[1]);
@@ -375,8 +380,16 @@ export default {
     /** 获取硬件轨迹 */
     async getJimi() {
       const _this = this;
-      // 参数不能为空
-      console.log('参数不能为空',this.isShowVehicleInfo,this.orgOrVehicleCode)
+      this.eventTrackList = [];
+      this.trackList = {};
+      this.parkingList = [];
+      this.jmTracklist = [];
+      this.jmTrackInfolist = [];
+      this.$emit("clearPathSimplifierIns");
+      this.currentTrackAllTime = 0;
+      this.currentTrackAllMileage = 0;
+      this.currentTrackTime = null;
+      this.currentTrackSpeed = null;
       if (
         !this.isShowVehicleInfo ||
         !this.orgOrVehicleCode 
@@ -408,13 +421,13 @@ export default {
         url_alias: "getVehicleEventTrack",
         data: {
           vehicleCode: this.jimiQueryParams.vehicleCode,
-          startTime: this.jimiQueryParams.beginTime,
+          beginTime: this.jimiQueryParams.beginTime,
           endTime: this.jimiQueryParams.endTime,
         },
       });
       this.eventTrackList = [];
       this.trackList = {};
-      if (evenTrackRes.data && evenTrackRes.data.rows) {
+      if (evenTrackRes.data && evenTrackRes.data.rows && evenTrackRes.data.rows.length > 0) {
         // 构造事件轨迹
         this.eventTrackList = evenTrackRes.data.rows.filter((el) => {
           return el.event_type !== "vehicle-run";
@@ -428,7 +441,7 @@ export default {
         url_alias: "getVehicleEventTrack",
         data: {
           vehicleCode: this.jimiQueryParams.vehicleCode,
-          startTime: this.jimiQueryParams.beginTime,
+          beginTime: this.jimiQueryParams.beginTime,
           endTime: this.jimiQueryParams.endTime,
           eventType: "vehicle-stop",
         },

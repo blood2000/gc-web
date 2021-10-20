@@ -33,3 +33,12 @@
 .el-table--border th {
   border-right: 1px solid #F3F3F3;
 }
+.el-table--striped .el-table__body tr.el-table__row--striped td{
+  background-color: #F8FCFF;
+}
+.el-table .el-table__header-wrapper th, .el-table .el-table__fixed-header-wrapper th{
+  background-color: #F8FCFF !important;
+ }
+ .el-table td, .el-table th.is-leaf{
+   border-color: #E4ECF4;
+ }

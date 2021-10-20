@@ -16,13 +16,13 @@
             {{ vehicleInfo.driverName ? vehicleInfo.driverName : '暂无' }}
             <span style="margin: 0 10px">|</span>
             <!-- 无数据 -->
-            {{ vehicleInfo.carrierTypeName ? vehicleInfo.carrierTypeName : '暂无' }}
+            {{ vehicleInfo.carrierTypeName ? vehicleInfo.carrierTypeName : '其他' }}
             <span style="margin: 0 10px">|</span>
             {{ vehicleInfo.orgName ? vehicleInfo.orgName : '暂无' }}
           </p>
           <p class="car-type">
             <span class="label">车辆类型</span>
-            {{ vehicleInfo.classificationName ? vehicleInfo.classificationName : '暂无' }}
+            {{ vehicleInfo.classificationName ? vehicleInfo.classificationName : '其他' }}
           </p>
         </div>
       </div>
@@ -55,7 +55,7 @@
       <!-- content -->
       <div class="device-content ly-flex ly-flex-align-center">
         <div class="img-box ly-flex-pack-center ly-flex-align-center">
-          <img :src="deviceInfo.modelImageUrl.replace(/\{tag\}/g, 'icon')">
+          <img v-if="deviceInfo.modelImageUrl" :src="deviceInfo.modelImageUrl.replace(/\{tag\}/g, 'icon')">
         </div>
         <div class="info-box ly-flex-1">
           <h5 class="g-single-row">{{ `${deviceInfo.modelName ? deviceInfo.modelName : ''} | ${deviceInfo.seriesName ? deviceInfo.seriesName : ''}` }}</h5>

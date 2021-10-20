@@ -10,6 +10,8 @@
       />
       <!-- 分割线 -->
       <div class="divier"></div>
+            <div class="page-table-layout-set">
+
       <RefactorTable
         is-show-index
         :loading="loading"
@@ -26,7 +28,6 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="handleDetail(row)"
           >
             详情
@@ -37,23 +38,23 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-position"
             @click="handleCarlog(row)"
           >
             派车记录
           </el-button>
         </template>
       </RefactorTable>
+            </div>
       <!-- 分页 -->
       <pagination
         :total="total"
-        layout="prev, pager, next, sizes, total,  jumper"
+                layout="prev, pager, next,jumper, total,sizes"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="getList"
       />
     </div>
-    <Detail :code="currCode" :detailDrawer="detailDrawer" :options="{title:'调度单派车'}" @colseDetailDrawer='colseDetailDrawer' />
+    <Detail :code="currCode" :detailDrawer="detailDrawer" :options="{title:'调度单详情'}" @colseDetailDrawer='colseDetailDrawer' />
     <Car :code="currCode" :carDrawer='carDrawer' :options="{title:'调度单派车'}" @colseCarDrawer='colseCarDrawer'/>
   </div>
 </template>

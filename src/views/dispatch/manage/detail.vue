@@ -5,7 +5,7 @@
     direction="rtl"
     style="z-index: 2200"
     :before-close="handleClose"
-    size="40%"
+    size="45%"
     :append-to-body="true"
   >
     <TitleSideBlueTip title="订单信息" />
@@ -40,7 +40,7 @@
           >
         </el-col>
         <el-col :span="12">
-          <span class="dispatch-base-label" style="padding-bottom: 16px"
+          <span class="dispatch-base-label" 
             >备注:</span
           >
           <span class="dispatch-dispatch-base-text">
@@ -54,12 +54,11 @@
         :model="addressInfo"
         label-width="100px"
         label-position="top"
-        style="margin-bottom:30px;margin-left:20px"
       >
         <div class="dispatch-title-item start_address">出发地信息</div>
         <div class="dispatch-info-content">
           <!-- <TitleSideBlueTip title="出发地信息" /> -->
-          <div class="dispatch-base-contents-box">
+          <div>
             <el-row>
               <el-col :span="12">
                 <el-form-item label="省 / 市 / 区:" prop="loadFormattedAddress">
@@ -86,7 +85,7 @@
                   <el-input
                     v-model="addressInfo.loadAddressAlias"
                     clearable
-                    style="width: 200px"
+                    style="width: 90%"
                   />
                 </el-form-item>
               </el-col>
@@ -113,7 +112,6 @@
         </div>
         <div class="dispatch-title-item end_address">目的地信息</div>
         <div class="dispatch-info-content">
-          <div class="dispatch-base-contents-box">
             <el-row>
               <el-col :span="12">
                 <el-form-item
@@ -144,7 +142,7 @@
                   <el-input
                     v-model="addressInfo.unloadAddressAlias"
                     clearable
-                    style="width: 200px"
+                    style="width: 90%"
                   />
                 </el-form-item>
               </el-col>
@@ -167,13 +165,12 @@
                 </el-form-item>
               </el-col>
             </el-row>
-          </div>
         </div>
       </el-form>
     </div>
     <TitleSideBlueTip title="承运信息" />
     <div class="dispatch-base-contents-box">
-      <el-row class="contents-box">
+      <el-row >
         <el-col :span="12" style="padding-bottom: 16px">
           <span class="dispatch-base-label">承运车辆:</span>
           <span class="dispatch-base-text">
@@ -238,7 +235,7 @@
           >
         </el-col>
 
-        <el-col :span="12" style="padding-bottom: 16px">
+        <el-col :span="12" >
           <span class="dispatch-base-label">调度者电话:</span>
           <span class="dispatch-base-text">
             {{ waybillInfo.teamLeaderPhone }}</span
@@ -247,19 +244,19 @@
       </el-row>
     </div>
     <TitleSideBlueTip title="费用信息" />
-    <div class="dispatch-contents-box">
+    <div class="dispatch-base-contents-box" style="padding-bottom:114px">
       <template v-if="waybillInfo.status === 10">
-        <div class="dispatch-contents-box">
+        <div style="padding-bottom: 16px">
           <span class="dispatch-base-label">运费单价:</span>
           <span class="dispatch-base-text">
             {{ settlementInfo.unitPrice }}</span
           >
         </div>
-        <div class="dispatch-contents-box">
+        <div  style="padding-bottom: 16px">
           <span class="dispatch-base-label">计费重量:</span>
           <span class="dispatch-base-text"> {{ settlementInfo.weight }}</span>
         </div>
-        <div class="dispatch-contents-box">
+        <div  style="padding-bottom: 16px">
           <span class="dispatch-base-label">货物单价:</span>
           <span class="dispatch-base-text">
             {{ settlementInfo.goodsPrice }}</span
@@ -267,13 +264,13 @@
         </div>
       </template>
       <template v-else>
-        <div class="dispatch-contents-box">
+        <div style="padding-bottom: 16px" >
           <span class="dispatch-base-label">司机应收:</span>
           <span class="dispatch-base-text">
             {{ settlementInfo.driverFreight }}</span
           >
         </div>
-        <el-row class="dispatch-contents-box">
+        <el-row style="padding-bottom: 16px" >
           <el-col :span="8">
             <span class="dispatch-base-label">路耗扣费:</span>
             <span class="dispatch-base-text">
@@ -293,19 +290,19 @@
             >
           </el-col>
         </el-row>
-        <div class="dispatch-contents-box">
+        <div  style="padding-bottom: 16px">
           <span class="dispatch-base-label">司机实收:</span>
           <span class="dispatch-base-text">
             {{ settlementInfo.driverRealFreight }}</span
           >
         </div>
-        <div class="dispatch-contents-box">
+        <div style="padding-bottom: 16px">
           <span class="dispatch-base-label">纳税金额:</span>
           <span class="dispatch-base-text">
             {{ settlementInfo.servicePrice }}</span
           >
         </div>
-        <div class="dispatch-contents-box">
+        <div  style="padding-bottom: 16px">
           <span class="dispatch-base-label">货主实付:</span>
           <span class="dispatch-base-text">
             {{ settlementInfo.shipmentPrice }}</span
@@ -394,10 +391,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.contents-box {
-  font-size: 16px;
-  margin: 20px 0 20px 20px;
-}
 .title-item {
   font-size: 18px;
   font-weight: 700;

@@ -10,103 +10,105 @@
         class="ddc-queryParams"
         label-position="top"
       >
-       <div class="ddc-queryParams-left">
-      <div class="up">
-        <el-form-item label="组织名称" prop="orgName">
-          <el-input
-            v-model="queryParams.orgName"
-            placeholder="请输入组织名称"
-            clearable
-            size="small"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
+        <div class="ddc-queryParams-left">
+          <div class="up">
+            <el-form-item label="组织名称" prop="orgName">
+              <el-input
+                v-model="queryParams.orgName"
+                placeholder="请输入组织名称"
+                clearable
+                size="small"
+                @keyup.enter.native="handleQuery"
+              />
+            </el-form-item>
+          </div>
         </div>
+        <div class="ddc-queryParams-right">
+          <el-form-item>
+            <el-button
+              type="primary"
+              icon="el-icon-search"
+              size="mini"
+              @click="handleQuery"
+              >搜索</el-button
+            >
+            <el-button
+              type="primary"
+              plain
+              icon="el-icon-refresh"
+              size="mini"
+              class="ddc-queryParams-right-reset"
+              @click="resetQuery"
+              >重置</el-button
+            >
+          </el-form-item>
         </div>
-            <div class="ddc-queryParams-right">
-
-        <el-form-item>
-          <el-button
-            type="primary"
-            icon="el-icon-search"
-            size="mini"
-            @click="handleQuery"
-            >搜索</el-button
-          >
-          <el-button
-            type="primary"
-            plain
-            icon="el-icon-refresh"
-            size="mini"
-            @click="resetQuery"
-            >重置</el-button
-          >
-        </el-form-item>
-         </div>
       </el-form>
       <!-- 分割线 -->
       <div class="divier"></div>
-      <el-row :gutter="10" class="toolsbar">
-        <el-col :span="1.5">
-          <el-button
-            v-hasPermi="['org:add']"
-            type="primary"
-            icon="el-icon-plus"
-            size="mini"
-            @click="handleAdd"
-            >新增</el-button
-          >
-        </el-col>
-        <!-- <right-toolbar :show-search.sync="showSearch" @queryTable="getList" /> -->
-      </el-row>
-
-      <el-table
-        v-loading="loading"
-        :data="dataList"
-        row-key="id"
-        highlight-current-row
-        stripe
-        default-expand-all
-        :tree-props="{
-          children: 'childrenOrgList',
-          hasChildren: 'hasChildren',
-        }"
-      >
-        <el-table-column prop="orgName" label="组织名称" />
-        <el-table-column prop="orderNum" align="center" label="排序" />
-        <el-table-column prop="createTime" align="center" label="创建时间">
-          <template slot-scope="scope">
-            <span>{{ parseTime(scope.row.createTime) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" align="center">
-          <template slot-scope="scope">
+      <div class="page-table-layout-set">
+        <el-row :gutter="10" class="toolsbar">
+          <el-col :span="1.5">
             <el-button
               v-hasPermi="['org:add']"
+              type="primary"
+              icon="el-icon-plus"
               size="mini"
-              type="text"
-              @click="handleAdd(scope.row)"
+              @click="handleAdd"
               >新增</el-button
             >
-            <template v-if="scope.row.parentId !== 0">
-              <el-button
-                v-hasPermi="['org:edit']"
-                size="mini"
-                type="text"
-                @click="handleUpdate(scope.row)"
-                >修改</el-button
-              >
-              <el-button
-                v-hasPermi="['org:delete']"
-                size="mini"
-                type="text"
-                @click="handleDelete(scope.row)"
-                >删除</el-button
-              >
+          </el-col>
+          <!-- <right-toolbar :show-search.sync="showSearch" @queryTable="getList" /> -->
+        </el-row>
+
+        <el-table
+          v-loading="loading"
+          :data="dataList"
+          row-key="id"
+          highlight-current-row
+          stripe
+          default-expand-all
+          :tree-props="{
+            children: 'childrenOrgList',
+            hasChildren: 'hasChildren',
+          }"
+        >
+          <el-table-column prop="orgName" label="组织名称" />
+          <el-table-column prop="orderNum" align="center" label="排序" />
+          <el-table-column prop="createTime" align="center" label="创建时间">
+            <template slot-scope="scope">
+              <span>{{ parseTime(scope.row.createTime) }}</span>
             </template>
-          </template>
-        </el-table-column>
-      </el-table>
+          </el-table-column>
+          <el-table-column label="操作" align="center">
+            <template slot-scope="scope">
+              <el-button
+                v-hasPermi="['org:add']"
+                size="mini"
+                type="text"
+                @click="handleAdd(scope.row)"
+                >新增</el-button
+              >
+              <template v-if="scope.row.parentId !== 0">
+                <el-button
+                  v-hasPermi="['org:edit']"
+                  size="mini"
+                  type="text"
+                  @click="handleUpdate(scope.row)"
+                  >修改</el-button
+                >
+                <el-button
+                  v-hasPermi="['org:delete']"
+                  size="mini"
+                  type="text"
+                  @click="handleDelete(scope.row)"
+                  >删除</el-button
+                >
+              </template>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
 
     <OrgDialog

@@ -209,7 +209,7 @@ export default {
   width: 97%;
 }
 .full{
-  height: 46px;
+  height: 36px;
 }
 .no-label {
   .el-form-item__label {

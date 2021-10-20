@@ -28,7 +28,7 @@
           <span slot-scope="{ node, data }">
             <span class="node-label">
               <i class="tree-node-icon" :class="data.icon" />
-              {{ node.label }}
+              <span class="tree-node-title"> {{ node.label }} </span>
             </span>
           </span>
         </el-tree>
@@ -44,64 +44,58 @@
       />
       <!-- 分割线 -->
       <div class="divier"></div>
-      <el-row :gutter="10" class="toolsbar"> </el-row>
-      <RefactorTable
-        is-show-index
-        :loading="loading"
-        :data="list"
-        row-key="id"
-        :table-columns-config="tableColumnsConfig"
-        :border="false"
-        :stripe="true"
-      >
-        <template #edit="{ row }">
-          <!--   -->
-          <el-button
-            v-show="row.vehicle_status == 1"
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="lookCarOrder(row)"
-            >查看派车单</el-button
-          >
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="mapSearch(row)"
-            >地图查看</el-button
-          >
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="travelSeach(row)"
-            >轨迹查看</el-button
-          >
-        </template>
-        <!-- <template #attribute="{ row }">
+      <!-- <el-row :gutter="10" class="toolsbar"> </el-row> -->
+      <div class="page-table-layout-set">
+        <RefactorTable
+          is-show-index
+          :loading="loading"
+          :data="list"
+          row-key="id"
+          :table-columns-config="tableColumnsConfig"
+          :border="false"
+          :stripe="true"
+        >
+          <template #edit="{ row }">
+            <!--   -->
+            <el-button
+              v-show="row.vehicle_status == 1"
+              size="mini"
+              type="text"
+              @click="lookCarOrder(row)"
+              >查看派车单</el-button
+            >
+            <el-button size="mini" type="text" @click="mapSearch(row)"
+              >地图查看</el-button
+            >
+            <el-button size="mini" type="text" @click="travelSeach(row)"
+              >轨迹查看</el-button
+            >
+          </template>
+          <!-- <template #attribute="{ row }">
                 <span>{{ getDetailAddress(row) }}</span>
               </template> -->
-        <template #vehicle_status="{ row }">
-          <span>{{ dealVehicleStatus(row.vehicle_status) }}</span>
-        </template>
-        <!-- model_name -->
-        <template #model_name="{ row }">
-          <span>{{
-            row.model_name ? `${row.model_name}(${row.series_name})` : null
-          }}</span>
-        </template>
-      </RefactorTable>
-      <!-- 分页 -->
+          <template #vehicle_status="{ row }">
+            <span>{{ dealVehicleStatus(row.vehicle_status) }}</span>
+          </template>
+          <!-- model_name -->
+          <template #model_name="{ row }">
+            <span>{{
+              row.model_name ? `${row.model_name}(${row.series_name})` : null
+            }}</span>
+          </template>
+        </RefactorTable>
+        <!-- 分页 -->
+      </div>
       <pagination
         v-show="total > 0"
         :total="total"
-        layout="prev, pager, next, sizes, total,  jumper"
+        layout="prev, pager, next,jumper, total,sizes"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="getList"
       />
     </div>
+
     <Detail
       :code="currCode"
       :detailDrawer="detailDrawer"
@@ -147,6 +141,11 @@ export default {
       currCode: null,
       detailDrawer: false,
     };
+  },
+  watch: {
+    orgName(val) {
+      this.$refs.tree.filter(val);
+    },
   },
   mounted() {
     this.getOrgHttp();
@@ -241,10 +240,6 @@ export default {
     //组织树节点过滤
     filterNode(value, data) {
       if (!value) return true;
-      console.log(
-        "data.orgName.indexOf(value) !== -1",
-        data.orgName.indexOf(value) !== -1
-      );
       return data.orgName.indexOf(value) !== -1;
     },
     handleNodeClick(data) {

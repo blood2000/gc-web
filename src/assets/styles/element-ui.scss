@@ -98,5 +98,13 @@ white-space: nowrap;
 // 列表搜索栏表单上下间距
 .el-form--inline .el-form-item{
   margin-bottom: 12px;
+  margin-right: 36px;
   
+}
+
+.el-form--label-top .el-form-item__label{
+  padding:0;
+}
+.el-form-item__label{
+    line-height: 25px;
 }

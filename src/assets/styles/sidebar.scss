@@ -114,7 +114,9 @@
     .el-menu--collapse{
       padding-top: 20px;
     }
-
+    .el-menu-item.is-active{
+      color:#ffffff !important;
+    }
     .submenu-title-noDropdown {
       padding: 0 !important;
       position: relative;
@@ -135,7 +137,7 @@
       align-items: center;
       padding-bottom: 20px;
       transition: all 0.3s;
-      color: #9FA2B5 !important;
+      color: #9FA2B5 ;
       &:hover{
         color: #ffffff !important;
       }
@@ -325,7 +327,7 @@
       }
       .label{
         font-size: 14px;
-        color:$menuText;
+        color:$subMenuText;
         padding-left: 12px;
         transition: all 0.2s;
       }

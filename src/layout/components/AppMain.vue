@@ -38,7 +38,7 @@ export default {
   width: 100%;
   position: relative;
   // overflow: hidden;
-  padding-top: 10px;
+  padding-top: 20px;
 }
 
 .hasTagsView {

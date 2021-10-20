@@ -1,14 +1,19 @@
 .dispatch-base-contents-box {
-  padding-left: 20px;
+  padding-left: 40px;
+  padding-right: 20px;
 }
 .dispatch-base-contents-big {
   padding-left: 40px !important;
 }
 .dispatch-contents-box {
-  padding-left: 20px;
+  padding-left: 40px;
+  padding-right: 20px;
   font-size: 16px;
-  margin: 10px 0;
+  .el-form-item--medium .el-form-item__label{
+    line-height: 30px;
+  }
 }
+
 .dispatch-title-item {
   height: 20px;
   font-size: 14px;
@@ -17,7 +22,7 @@
   line-height: 24px;
   color: #262626;
   opacity: 1;
-  margin: 16px 0;
+  margin:24px 0 16px 0;
 }
 .start_address {
   padding-left: 25px;
@@ -32,10 +37,14 @@
 .dispatch-info-content {
   min-height: 100px;
   width: 100%;
-  background: rgba(176, 224, 230, 0.5);
+  background: #F2F2F2;
   border-radius: 10px;
-  padding: 20px 20px;
+  padding-top: 16px;
+  padding-right: 16px;
+  padding-left:28px;
+  padding-bottom:0px
 }
+
 .dispatch-order-content {
   padding: 20px;
 }
@@ -47,7 +56,6 @@
   color: #adb5bd;
   margin-right: 5px;
   /* margin-bottom: 16px; */
-  width: 88px;
   display: inline-block;
   /* float: right; */
   text-align: right;

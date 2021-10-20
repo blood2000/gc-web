@@ -106,7 +106,7 @@
               :filter-node-method="vehicleFilterNode"
               :indent="24"
               :highlight-current="true"
-              node-key="code"
+              node-key="orgOrVehicleCode"
               :current-node-key="orgOrVehicleCode"
               default-expand-all
               @node-click="vehicleNodeClick"
@@ -264,6 +264,12 @@
     <!-- 地图 -->
     <div id="device-map-container" />
 
+    <!-- 定时刷新 -->
+    <div class="time-refresh-box">
+      <img src="~@/assets/images/device/icon_notify.png" />
+      {{ refreshMarkerTime }}秒后刷新
+    </div>
+
     <!-- 设备信息 -->
     <Infos
       v-if="
@@ -340,6 +346,11 @@ export default {
     DispatchVehicle,
     VehicleDetail,
     TrackList,
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.routerFrom = from.path;
+    });
   },
   data() {
     return {
@@ -449,8 +460,12 @@ export default {
       endMarker: null,
       // 地图点位集合
       markerList: {},
+      // 聚合
+      cluster: null,
       // 定时刷新地图点位
       refreshMarkerTimer: null,
+      refreshMarkerTime: 60,
+      readTimer: null,
       // 不同承运类型车辆图片大小不同所以点位偏移不同
       offsetList: {
         ztc: [-17, -38],
@@ -462,7 +477,9 @@ export default {
       // showVehicleDetail: false,  //车辆详情组件显示
       locationProp: null, //路由上有参数时
       // 实时告警点位marker
-      realWarnMarker: null
+      realWarnMarker: null,
+      // 记录上一页面路由
+      routerFrom: '/'
     };
   },
 
@@ -498,6 +515,40 @@ export default {
     //   return this.$store.getters.vehicleInfo;
     // },
   },
+  created() {
+    // 这里是用来解决地图偶尔加载失败的问题
+    localStorage.removeItem("_AMap_vectorlayer");
+    localStorage.removeItem("_AMap_wgl");
+    localStorage.removeItem("_AMap_sync");
+    localStorage.removeItem("_AMap_raster");
+    localStorage.removeItem("_AMap_overlay");
+    localStorage.removeItem("_AMap_mouse");
+    localStorage.removeItem("_AMap_AMap.ToolBar");
+    localStorage.removeItem("_AMap_AMap.Scale");
+    localStorage.removeItem("_AMap_AMap.RangingTool");
+    localStorage.removeItem("_AMap_AMap.PolyEditor");
+    localStorage.removeItem("_AMap_AMap.PlaceSearch");
+    localStorage.removeItem("_AMap_AMap.OverView");
+    localStorage.removeItem("_AMap_AMap.MouseTool");
+    localStorage.removeItem("_AMap_AMap.MarkerClusterer");
+    localStorage.removeItem("_AMap_AMap.MapType");
+    localStorage.removeItem("_AMap_AMap.Geolocation");
+    localStorage.removeItem("_AMap_AMap.CitySearch");
+    localStorage.removeItem("_AMap_AMap.CircleEditor");
+    localStorage.removeItem("_AMap_AMap.Autocomplete");
+    localStorage.removeItem("_AMap_AMap.IndoorMap3D");
+    localStorage.removeItem("_AMap_Map3D");
+    localStorage.removeItem("_AMap_labelcanvas");
+    localStorage.removeItem("_AMap_labelDir");
+    localStorage.removeItem("_AMap_data.tileKeys");
+    localStorage.removeItem("_AMap_AMap.CustomLayer");
+    localStorage.removeItem("_AMap_AMap.Geocoder");
+    localStorage.removeItem("_AMap_AMap.CustomLayer");
+    localStorage.removeItem("_AMap_AMap.IndoorMap");
+    localStorage.removeItem("_AMap_anole");
+    localStorage.removeItem("_AMap_cmng");
+    localStorage.removeItem("_AMap_cvector");
+  },
   mounted() {
     if (document.location.search.includes("trackType")) {
       console.log('document.location.search.split("=")', document.location);
@@ -520,13 +571,14 @@ export default {
     this.getOrgVehicleTree();
     this.getOrgDriverTree();
     // 获取全部车定位
-    this.getVehicleLoLocations();
+    this.getVehicleLoLocations(null, true);
     // 开启车辆位置定时刷新
     this.refreshMarker();
   },
   beforeDestroy() {
     this.clearTimer();
     this.clearRefreshMarkerTimer();
+    this.clearReadTime();
   },
   methods: {
     locationQueryDeal() {
@@ -545,26 +597,18 @@ export default {
 
     /** 初始化地图 */
     initMap() {
-      if (!AMap) {
-        this.msgWarning("地图加载失败，请刷新页面重试");
-        return;
-      }
+      const _this = this;
       this.map = new AMap.Map("device-map-container", {
         mapStyle: "amap://styles/2fe468ae95b55caa76404a537353e63a", //设置地图的显示样式
         resizeEnable: true,
         center: [119.358267, 26.04577],
         zoom: 11,
       });
-      console.log(
-        "==========>",
-        new AMap.Geocoder({
+      this.map.plugin(['AMap.Geocoder',], function(){
+        _this.geocoder = new AMap.Geocoder({
           radius: 1000,
           extensions: "all",
-        })
-      );
-      this.geocoder = new AMap.Geocoder({
-        radius: 1000,
-        extensions: "all",
+        });
       });
     },
     /** 绘制标记
@@ -941,6 +985,7 @@ export default {
       this.$refs.TrackListRef && this.$refs.TrackListRef.setSlideValue(0);
       this.$refs.TrackListRef && this.$refs.TrackListRef.setPlayStatus(0);
       this.pathSimplifierIns && this.pathSimplifierIns.setData([]);
+      this.closeInfoWindow();
     },
     /** 进度条滑块触发改变巡航轨迹 */
     handleSlideChange(value) {
@@ -959,7 +1004,8 @@ export default {
     },
     // 返回上一页
     backPage() {
-      this.$router.go(-1);
+      // this.$router.go(-1);
+      this.$router.push(this.routerFrom);
     },
     // 实时获取当前时间
     getCurrentTime() {
@@ -1121,7 +1167,7 @@ export default {
     },
     // 车树节点选中
     vehicleNodeClick(data) {
-      if (this.orgOrVehicleCode === data.orgOrVehicleCode) return;
+      // if (this.orgOrVehicleCode === data.orgOrVehicleCode) return;
       console.log("tree-node: ", data);
       this.orgOrVehicleCode = data.orgOrVehicleCode;
       this.orgOrVehicleInfo = data;
@@ -1129,12 +1175,24 @@ export default {
         // 选中车
         this.isShowVehicleInfo = true;
         this.$store.commit("set_showVehicleDetail", true);
-        this.getDeviceLocationInfo(data.orgOrlicenseNumber);
+        this.getDeviceLocationInfo(data.orgOrlicenseNumber, true);
+        // 轨迹回放页面，选中车直接搜索
+        this.$nextTick(() => {
+          if (this.headerTab === 3) {
+            this.$refs.TrackListRef.getJimi();
+          }
+        })
       } else {
         // 选中组织
         this.isShowVehicleInfo = false;
         this.$store.commit("set_showVehicleDetail", false);
-        this.getVehicleLoLocations(data.orgOrVehicleCode);
+        this.getVehicleLoLocations(data.orgOrVehicleCode, true);
+        // 轨迹回放页面，选中车直接搜索
+        this.$nextTick(() => {
+          if (this.headerTab === 3) {
+            this.$refs.TrackListRef.getJimi();
+          }
+        })
       }
     },
     // 司机小tab
@@ -1189,7 +1247,7 @@ export default {
     // 司机节点选中
     driverNodeClick(data) {},
     // 获取车辆定位列表
-    getVehicleLoLocations(orgCode) {
+    getVehicleLoLocations(orgCode, isFresh) {
       const params = orgCode ? { orgCode } : {};
       const obj = {
         moduleName: "http_map",
@@ -1216,8 +1274,8 @@ export default {
               this.drawVehicleMarker(el);
             }
           });
-          // 只有在监控页，刷新点位后才有重新设置视野
-          if(this.headerTab === 1) {
+          // 刷新点位后不重新设置视野
+          if(isFresh && this.headerTab !== 3) {
             this.$nextTick(() => {
               this.map.setFitView();
             }); 
@@ -1228,7 +1286,7 @@ export default {
       });
     },
     // 获取设备定位信息
-    getDeviceLocationInfo(plateNumber) {
+    getDeviceLocationInfo(plateNumber, isFresh) {
       const obj = {
         moduleName: "http_map",
         method: "get",
@@ -1252,8 +1310,8 @@ export default {
             attribute.coordinate.value[1]
           ) {
             this.drawVehicleMarker(data);
-            // 只有在监控页，刷新点位后才有重新设置视野
-            if(this.headerTab === 1) {
+            // 刷新点位后不重新设置视野
+            if(isFresh && this.headerTab !== 3) {
               this.$nextTick(() => {
                 this.map.setZoomAndCenter(13, attribute.coordinate.value);
               });
@@ -1321,12 +1379,53 @@ export default {
       });
       // 单击
       marker.on("click", function (e) {
-        if (JSON.stringify(marker.getLabel()) === "{}") {
-          _this.setLabel(marker, content);
-        } else {
-          _this.setLabel(marker, {});
+        // if (JSON.stringify(marker.getLabel()) === "{}") {
+        //   _this.setLabel(marker, content);
+        // } else {
+        //   _this.setLabel(marker, {});
+        // }
+        if (_this.headerTab !== 3) {
+          // 和树节点字段保持一致
+          row.orgOrVehicleCode = row.vehicle_code;
+          row.carrierType = row.carrier_type;
+          row.orgOrlicenseNumber = plate_number;
+          row.vehicleFlag = true;
+          // 同步树的节点高亮状态
+          _this.orgOrVehicleCode = row.orgOrVehicleCode;
+          _this.$refs.vehicleTree.setCurrentKey(_this.orgOrVehicleCode);
+          // 显示车辆信息
+          _this.orgOrVehicleInfo = row;
+          _this.isShowVehicleInfo = true;
+          _this.$store.commit("set_showVehicleDetail", true);
         }
       });
+      // 标记点聚合
+      const sts = [{
+          url: "https://a.amap.com/jsapi_demos/static/images/blue.png",
+          size: new AMap.Size(32, 32),
+          offset: new AMap.Pixel(-16, -16)
+      }, {
+          url: "https://a.amap.com/jsapi_demos/static/images/green.png",
+          size: new AMap.Size(32, 32),
+          offset: new AMap.Pixel(-16, -16)
+      }, {
+          url: "https://a.amap.com/jsapi_demos/static/images/orange.png",
+          size: new AMap.Size(36, 36),
+          offset: new AMap.Pixel(-18, -18)
+      }, {
+          url: "https://a.amap.com/jsapi_demos/static/images/red.png",
+          size: new AMap.Size(48, 48),
+          offset: new AMap.Pixel(-24, -24)
+      }, {
+          url: "https://a.amap.com/jsapi_demos/static/images/darkRed.png",
+          size: new AMap.Size(48, 48),
+          offset: new AMap.Pixel(-24, -24)
+      }];
+      this.cluster = new AMap.MarkerClusterer(this.map, this.markerList, {
+        minClusterSize: 1,
+        styles: sts,
+        gridSize: 80
+      })
     },
     // 切换地图tab
     handleHeaderTab(code) {
@@ -1344,14 +1443,21 @@ export default {
     refreshMarker() {
       this.clearRefreshMarkerTimer();
       this.refreshMarkerTimer = setInterval(() => {
-        if (this.isShowVehicleInfo) {
-          // 选中车
-          this.getDeviceLocationInfo(this.orgOrVehicleInfo.orgOrlicenseNumber);
-        } else {
-          // 选中组织
-          this.getVehicleLoLocations(this.orgOrVehicleCode);
-        }
+        this.getDeviceLocationInfoByCode();
       }, 60 * 1000);
+      // 车定位刷新读秒
+      this.setReadTime();
+    },
+    getDeviceLocationInfoByCode() {
+      if (this.isShowVehicleInfo) {
+        // 选中车
+        this.getDeviceLocationInfo(this.orgOrVehicleInfo.orgOrlicenseNumber);
+      } else {
+        // 选中组织
+        this.getVehicleLoLocations(this.orgOrVehicleCode);
+      }
+      // 车定位刷新读秒
+      this.setReadTime();
     },
     // 清除定时刷新车位置
     clearRefreshMarkerTimer() {
@@ -1362,7 +1468,8 @@ export default {
       console.log('绘制告警点位：', row)
       // 绘制前先清除
       this.clearRealWarnMarker();
-      if (row.lng && row.lat) {
+      
+      if (row && row.lng && row.lat) {
         const styleObj = {
           content:
             '<div style="transform:rotate(' +
@@ -1374,7 +1481,7 @@ export default {
           angle: 0,
         };
         this.realWarnMarker = this.drawMarker([row.lng, row.lat], styleObj);
-        this.map.setCenter([row.lng, row.lat]);
+        // this.map.setCenter([row.lng, row.lat]);
       }
     },
     // 清除告警点位
@@ -1382,6 +1489,25 @@ export default {
       if (this.realWarnMarker) {
         this.realWarnMarker.setMap(null);
         this.realWarnMarker = null;
+      }
+    },
+    /** 定时器读秒 */
+    setReadTime() {
+      const _this = this;
+      this.clearReadTime();
+      this.readTimer = setInterval(() => {
+        if (_this.refreshMarkerTime < 1) {
+          _this.clearReadTime();
+          return;
+        }
+        _this.refreshMarkerTime = _this.refreshMarkerTime - 1;
+      }, 1000);
+    },
+    clearReadTime() {
+      if (this.readTimer) {
+        clearInterval(this.readTimer);
+        this.readTimer = null;
+        this.refreshMarkerTime = 60;
       }
     }
   }
@@ -1617,6 +1743,29 @@ export default {
     .device-info-list-box {
       height: calc(100% - 124px);
       overflow: auto;
+    }
+  }
+
+  // 定时刷新 
+  .time-refresh-box{
+    width: 120px;
+    height: 40px;
+    line-height: 40px;
+    background: #FFFFFF;
+    border: 1px solid #E4ECF4;
+    border-radius: 4px;
+    padding-left: 10px;
+    position: absolute;
+    top: calc(#{$header-height} + 22px);
+    left: calc(#{$left-tree-width} + 30px);
+    z-index: 998;
+    font-size: 14px;
+    font-family: PingFang SC;
+    font-weight: bold;
+    color: #3D4050;
+    >img{
+      vertical-align: middle;
+      margin-top: -4px;
     }
   }
 

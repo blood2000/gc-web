@@ -1,40 +1,6 @@
 <!-- 告警 -->
 <template>
   <div class="pages-info">
-    <!-- <div class="pages-info-left"> 
-          <div class="head-container">
-            <el-input
-              v-model="orgName"
-              placeholder="请输入组织名称"
-              clearable
-              size="small"
-              prefix-icon="el-icon-search"
-              class="mb20"
-            />
-          </div>
-          <div class="head-container el-tree-scroll-container">
-            <el-tree
-              ref="tree"
-              :data="orgTreeData"
-              :props="defaultTreeProps"
-              :expand-on-click-node="true"
-              :filter-node-method="filterNode"
-              :indent="0"
-              :highlight-current="true"
-              node-key="code"
-              :current-node-key="orgCode"
-              default-expand-all
-              @node-click="handleNodeClick"
-            >
-              <span slot-scope="{ node, data }">
-                <span class="node-label">
-                  <i class="tree-node-icon" :class="data.icon" />
-                  {{ node.label }}
-                </span>
-              </span>
-            </el-tree>
-          </div>
-        </div> -->
     <div class="pages-info-right">
       <!-- 上：搜索 -->
       <QueryForm
@@ -47,7 +13,7 @@
       />
       <!-- 分割线 -->
       <div class="divier"></div>
-      <div class="device-info-right-bottom">
+      <div class="page-table-layout-set">
         <el-tabs v-model="tabIndex" @tab-click="tabClick">
           <el-tab-pane
             v-for="item in warningTabs"
@@ -77,11 +43,7 @@
                     {{ row.alarmValue || '-' }}
                   </template> -->
               <template #handle="{ row }">
-                <el-button
-                  size="mini"
-                  type="text"
-                  icon="el-icon-tickets"
-                  @click="toDetail(row)"
+                <el-button size="mini" type="text" @click="toDetail(row)"
                   >详情
                 </el-button>
               </template>
@@ -90,7 +52,7 @@
             <pagination
               v-show="total > 0"
               :total="total"
-              layout="prev, pager, next, sizes, total,  jumper"
+              layout="prev, pager, next,jumper, total,sizes"
               :page.sync="queryParams.pageNum"
               :limit.sync="queryParams.pageSize"
               @pagination="warningDataReq"
@@ -99,6 +61,12 @@
         </el-tabs>
       </div>
     </div>
+    <Detail
+      :id="currId"
+      :detailDrawer="detailDrawer"
+      :options="{ title: '告警详情' ,warningTypeList}"
+      @colseDetailDrawer="colseDetailDrawer"
+    />
   </div>
 </template>
 
@@ -106,10 +74,11 @@
 import { http_request } from "@/api";
 import QueryForm from "./components/queryForm.vue";
 import warningConfig from "./config";
+import Detail from "./warningDetail.vue";
 // import store from "@/store";
 export default {
   name: "warning", // 告警管理
-  components: { QueryForm },
+  components: { QueryForm, Detail },
   data() {
     return {
       orgName: "", //组织查询
@@ -138,6 +107,8 @@ export default {
       warningTabs: [],
       tableColumnsConfig: [], //配置表头数据
       total: 0,
+      detailDrawer: false,
+      currId: null,
     };
   },
 
@@ -336,7 +307,10 @@ export default {
     },
     // 详情
     toDetail(obj) {
-      this.$router.push("warningDetail?id=" + obj.id);
+      console.log("详情", obj);
+      this.currId = obj.id;
+      this.detailDrawer = true;
+      // this.$router.push("warningDetail?id=" + obj.id);
       // this.$router.push("/warning/warning/warningDetail/" + obj.driver);
     },
     //选项卡切换
@@ -354,6 +328,9 @@ export default {
       }
       this.searchQuery();
       console.log(this.tableColumnsConfig);
+    },
+    colseDetailDrawer() {
+      this.detailDrawer = false;
     },
   },
 };
@@ -382,9 +359,13 @@ export default {
     }
     .device-info-right-bottom {
       @include box-shadow;
+      margin-top: 28px;
     }
   }
 }
+// .device-info-right-bottom {
+//       margin-top: 28px;
+//     }
 .deviceInf-cion {
   display: flex;
   flex-direction: row;

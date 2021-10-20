@@ -17,7 +17,7 @@
         <img
           v-else
           class="user-avator"
-          src="../../../../assets/images/profile.jpg"
+          src="../../../../assets/images/profile.png"
           alt="默认头像"
         />
       </div>

@@ -89,7 +89,7 @@
         <el-row>
           <el-col :span="24" v-if="form.parentId !== 0">
             <el-form-item label="上级部门" prop="parentId">
-              <treeselect v-model="form.parentId" :options="deptOptions" :normalizer="normalizer" placeholder="选择上级部门" />
+              <treeselect v-model="form.parentId" :options="deptOptions" :normalizer="normalizer" placeholder="选择上级部门" no-results-text="无匹配数据" />
             </el-form-item>
           </el-col>
           <el-col :span="12">

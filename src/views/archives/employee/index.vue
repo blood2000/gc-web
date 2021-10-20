@@ -121,6 +121,7 @@
             plain
             icon="el-icon-refresh"
             size="mini"
+            class="ddc-queryParams-right-reset"
             @click="resetQuery"
             >重置</el-button
           >
@@ -130,6 +131,8 @@
       </el-form>
       <!-- 分割线 -->
       <div class="divier"></div>
+            <div class="page-table-layout-set">
+
       <el-row :gutter="10" class="toolsbar">
         <el-col :span="1.5">
           <el-button
@@ -207,8 +210,9 @@
           <template slot-scope="scope">
             <el-switch
               v-model="scope.row.employeeStatus"
-              active-value="0"
-              inactive-value="1"
+              :active-value="0"
+              :inactive-value="1"
+              :disabled="scope.row.teamLeaderFlag"
               @change="handleStatusChange(scope.row)"
             />
           </template>
@@ -268,10 +272,11 @@
           </template>
         </el-table-column>
       </el-table>
+            </div>
       <pagination
         v-show="total > 0"
         :total="total"
-        layout="prev, pager, next, sizes, total,  jumper"
+        layout="prev, pager, next,jumper, total,sizes"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="getList"
@@ -347,8 +352,8 @@ export default {
       title: "",
       // 字典
       employeeStatusOptions: [
-        { dictLabel: "启用", dictValue: "0" },
-        { dictLabel: "禁用", dictValue: "1" },
+        { dictLabel: "启用", dictValue: 0 },
+        { dictLabel: "禁用", dictValue: 1 },
       ],
       // 导出按钮
       exportLoading: false,
@@ -466,7 +471,7 @@ export default {
     },
     /** 用户状态修改 */
     handleStatusChange(row) {
-      const text = row.employeeStatus === "0" ? "启用" : "停用";
+      const text = row.employeeStatus === 0 ? "启用" : "停用";
       this.$confirm("确认要" + text + '"' + row.nickName + '"用户吗?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -488,7 +493,7 @@ export default {
           this.msgSuccess(text + "成功");
         })
         .catch(function () {
-          row.employeeStatus = row.employeeStatus === "1" ? "0" : "1";
+          row.employeeStatus = row.employeeStatus === 1 ? 0 : 1;
         });
     },
     /** 重置密码 */

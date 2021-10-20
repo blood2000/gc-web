@@ -155,7 +155,8 @@ const warningInfoTableColumnsConfig = [
     prop: "handle",
     sortNum: 7,
     tooltip: true,
-    width: 80
+    width: 80,
+    fixed:'right'
   }
 ];
 

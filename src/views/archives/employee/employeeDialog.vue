@@ -19,6 +19,7 @@
           :normalizer="normalizer"
           :show-count="true"
           placeholder="请选择所属组织"
+          no-results-text="无匹配数据"
           @select="selectOrgCode"
         />
       </el-form-item>

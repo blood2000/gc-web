@@ -132,12 +132,12 @@ const user = {
             const user = res.data.user;
             user.avatar = user.avatar || '';
             const avatar =
-              user.avatar == "" ?
-              require("@/assets/images/profile.jpg") :
-              process.env.VUE_APP_BASE_API + user.avatar;
-            console.log('avatar', avatar)
-            commit('SET_MENUS', res.data.menus)
-            commit("SET_PERMISSIONS", res.data.permissions);
+              user.avatar == ""
+                ? require("@/assets/images/profile.png")
+                : process.env.VUE_APP_BASE_API + user.avatar;
+                console.log('avatar',avatar)
+              commit('SET_MENUS',res.data.menus)
+              commit("SET_PERMISSIONS", res.data.permissions);
             commit("SET_NAME", user.userName);
             commit("SET_NICKNAME", user.nickName);
             commit("SET_AVATAR", avatar);

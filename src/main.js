@@ -50,7 +50,7 @@ import VueAMap from 'vue-amap';
 Vue.use(VueAMap);
 VueAMap.initAMapApiLoader({
   key: '2066cb0dafaa492aee47fa1090227a38', // 高德企业key
-  plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.Driving', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor', 'AMap.Geocoder', 'AMap.Marker'],
+  plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.Driving', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor', 'AMap.Geocoder', 'AMap.Marker', 'AMap.MarkerClusterer'],
   v: '1.4.4',
   uiVersion: '1.1.1'
 });
@@ -87,7 +87,7 @@ Vue.prototype.msgWarning = function (msg) {
 }
 
 Vue.prototype.msgInfo = function (msg) {
-  this.$message.info(msg);
+  this.$message.info({ showClose: true, message: msg, type: 'info' });
 }
 
 // 全局组件挂载

@@ -1,245 +1,246 @@
-<template>
-  <div class="device-info">
-    <el-row :gutter="15">
-      <el-col :span="9">
-        <el-card class="box-card detail-left">
-          <div class="info">
-            <div class="info-title">
-              <span>基础信息</span>
-              <el-divider></el-divider>
-            </div>
-            <div class="base-info">
-              <div>
-                <span> 车牌号： </span>
-                <span>{{
-                  isPageShow("vehicleLicenseInf", "licenseNumber")
-                }}</span>
-              </div>
-              <div>
-                <span> 归属组织： </span>
-                <span> {{ orgName }}</span>
-              </div>
-              <!-- <div>
-                <span> 车辆分组： </span>
-                <span>{{ isPageShow("vehicleInf", "group") }} </span>
-              </div> -->
+ <template>
+  <el-drawer
+    :title="options.title"
+    :visible.sync="detailDrawer"
+    direction="rtl"
+    style="z-index: 2200"
+    :before-close="handleClose"
+    size="50%"
+    :append-to-body="true"
+  >
+  <div>
 
-              <div>
-                <span> 发动机号： </span>
-                <span>
-                  {{ isPageShow("vehicleLicenseInf", "engineNumber") }}</span
-                >
-              </div>
 
-              <div>
-                <span> 车辆类型： </span>
-                <span> {{ isPageShow("vehicleInf", "vehicleTypeValue") }}</span>
-              </div>
-              <div>
-                <span> 车辆承运类型： </span>
-                <span>
-                  {{ vehicleInfo.carrierTypeValue }}
-                </span>
-              </div>
-              <div>
-                <span> 车牌类型： </span>
-                <span
-                  >{{ isPageShow("vehicleInf", "vehicleLicenseColorValue") }}
-                </span>
-              </div>
+    <TitleSideBlueTip title="基础信息" />
+    <div class="dispatch-base-contents-box">
+      <el-row class="contents-box">
+        <el-col :span="8" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">车牌号:</span>
+          <span class="dispatch-base-text">
+            {{ isPageShow("vehicleLicenseInf", "licenseNumber") }}</span
+          >
+        </el-col>
+        <el-col :span="8" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">归属组织:</span>
+          <span class="dispatch-base-text"> {{ orgName }}</span>
+        </el-col>
+        <!-- <el-col :span="8" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">车辆分组:</span>
+          <span class="dispatch-base-text">
+            {{ isPageShow("vehicleInf", "group") }}</span
+          >
+        </el-col> -->
+        <el-col :span="8" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">车辆识别代号:</span>
+          <span class="dispatch-base-text">
+            {{ isPageShow("vehicleLicenseInf", "chassisNumber") }}</span
+          >
+        </el-col>
+        <el-col :span="8" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">发动机号:</span>
+          <span class="dispatch-base-text">
+            {{ isPageShow("vehicleLicenseInf", "engineNumber") }}</span
+          >
+        </el-col>
+      </el-row>
+      <el-row class="contents-box">
+        <el-col :span="8" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">车辆类型:</span>
+          <span class="dispatch-base-text">
+            {{ isPageShow("vehicleInf", "vehicleTypeValue") }}</span
+          >
+        </el-col>
+        <el-col :span="8" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">车辆承运类型:</span>
+          <span class="dispatch-base-text">
+            {{ vehicleInfo.carrierTypeValue }}</span
+          >
+        </el-col>
+        <el-col :span="8" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">车牌类型:</span>
+          <span class="dispatch-base-text">
+            {{ isPageShow("vehicleInf", "vehicleLicenseColorValue") }}</span
+          >
+        </el-col>
+        <el-col :span="8" >
+          <span class="dispatch-base-label">车辆能源类型:</span>
+          <span class="dispatch-base-text">
+            {{ isPageShow("vehicleInf", "vehicleEnergyTypeValue") }}</span
+          >
+        </el-col>
+        <el-col :span="8" >
+          <span class="dispatch-base-label">车辆总重量:</span>
+          <span class="dispatch-base-text">
+            {{ isPageShow("vehicleInf", "vehicleTotalWeight") }}</span
+          >
+        </el-col>
 
-              <div>
-                <span> 车辆能源类型： </span>
-                <span
-                  >{{ isPageShow("vehicleInf", "vehicleEnergyTypeValue") }}
-                </span>
-              </div>
-              <div>
-                <span> 车辆总重量： </span>
-                <span
-                  >{{ isPageShow("vehicleInf", "vehicleTotalWeight") }} 吨
-                </span>
-              </div>
-              <div>
-                <span> 车辆可载重量： </span>
-                <span
-                  >{{ isPageShow("vehicleInf", "vehicleLoadWeight") }} 吨
-                </span>
-              </div>
-              <div>
-                <span> 车辆识别代号： </span>
-                <span
-                  >{{ isPageShow("vehicleLicenseInf", "chassisNumber") }}
-                </span>
-              </div>
-              <div>
-                <span> 备注信息： </span>
-                <span>{{ vehicleInfo.remark }} </span>
-              </div>
-            </div>
-          </div>
-          <div class="info">
-            <div class="info-title">
-              <span>状态信息</span>
-              <el-divider></el-divider>
-            </div>
-            <el-row>
-              <el-col :span="8">
-                <span>车辆状态：</span>
-                <span>{{ vehicleInfo.vehicleStatusValue }}</span>
-              </el-col>
-              <el-col :span="8">
-                <span>停用状态：</span>
-                <span>{{ vehicleInfo.enabledValue }}</span>
-              </el-col>
-              <el-col :span="8">
-                <span>审核状态：</span>
-                <span>{{ vehicleInfo.authStatusValue }}</span>
-              </el-col>
-            </el-row>
-          </div>
-          <div class="info">
-            <div class="info-title">
-              <span>默认司机</span>
-              <el-divider></el-divider>
-            </div>
-            <el-row>
-              <el-col :span="12">
-                <span>司机姓名：</span>
-                <span>{{ vehicleInfo.defaultDriverName }}</span>
-              </el-col>
-              <el-col :span="12">
-                <span>司机电话：</span>
-                <span>{{ vehicleInfo.defaultDriverTelphone }}</span>
-              </el-col>
-            </el-row>
-          </div>
-          <div class="info">
-            <div class="info-title">
-              <span>证件资料</span>
-              <el-divider></el-divider>
-            </div>
-            <el-row :gutter="10">
-              <el-col :span="8">
-                <div class="img-box">
-                  <img
-                    width="100%"
-                    :src="isPageShow('vehicleLicenseInf', 'vehicleLicenseImg')"
-                    alt=""
-                  />
-                </div>
-                <div><span>驾驶证主页</span></div>
-              </el-col>
-              <el-col :span="8">
-                <div class="img-box">
-                  <img
-                    width="100%"
-                    :src="
-                      isPageShow('vehicleLicenseInf', 'vehicleLicenseSecondImg')
-                    "
-                    alt=""
-                  />
-                </div>
-                <div><span>驾驶证副页</span></div>
-              </el-col>
-              <el-col :span="8">
-                <div class="img-box">
-                  <img
-                    width="100%"
-                    :src="vehicleInfo.roadTransportCertificateImg"
-                    alt=""
-                  />
-                </div>
-                <div><span>道路运输许可证</span></div>
-              </el-col>
-            </el-row>
-            <el-row :gutter="10">
-              <el-col :span="8">
-                <p>注册时间：</p>
-                <span>{{
-                  parseTime(
-                    isPageShow("vehicleLicenseInf", "registerDate"),
-                    "{y}-{m}-{d}"
-                  )
-                }}</span>
-              </el-col>
-              <el-col :span="8">
-                <p>发证日期：</p>
-                <span>{{
-                  parseTime(
-                    isPageShow("vehicleLicenseInf", "issueDate"),
-                    "{y}-{m}-{d}"
-                  )
-                }}</span>
-              </el-col>
-              <el-col :span="8">
-                <p>发证机关：</p>
-                <span>{{
-                  isPageShow("vehicleLicenseInf", "issuingOrganizations")
-                }}</span>
-              </el-col>
-            </el-row>
-          </div>
-          <div class="info">
-            <div class="info-title">
-              <span>设备信息</span>
-              <el-divider></el-divider>
-            </div>
-            <el-row :gutter="10">
-              <el-col :span="8">
-                <span>设备编号：</span>
-                <span>{{ vehicleInfo.deviceNumber }} </span>
-              </el-col>
-            </el-row>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="15">
-        <el-card class="box-card detail-right">
-          <div class="maps">
-            <!-- 地图 -->
-            <div id="device-map-container" />
-          </div>
-          <div class="tables">
-            <div class="table-title">
-              告警信息
-              {{ warningInfo.length ? "(" + warningInfo.length + ")" : "" }}
-            </div>
-            <RefactorTable
-              :loading="loading"
-              :data="warningInfo"
-              row-key="id"
-              :table-columns-config="warningInfoTableColumnsConfig"
-            >
-              <!-- <template #warinigType="{ row }">
-                    {{ getWarinigTypeName(row.warinigType) }}
-                  </template>
-                  <template #warningLevel="{ row }">
-                    {{ getWarningLevelName(row.warningLevel) }}
-                  </template> -->
-              <template #handle="{ row }">
-                <el-button
-                  size="mini"
-                  type="text"
-                  icon="el-icon-tickets"
-                  @click="toWarningDetail(row)"
-                  >详情
-                </el-button>
-              </template>
-            </RefactorTable>
-            <!-- 分页 -->
-            <pagination
-              v-show="warningTotal > 0"
-              :total="warningTotal"
-              :page.sync="warningQuerys.pageNum"
-              :limit.sync="warningQuerys.pageSize"
-              @pagination="warningDataReq"
+        <el-col :span="8" >
+          <span class="dispatch-base-label">车辆可载重量:</span>
+          <span class="dispatch-base-text">
+            {{ isPageShow("vehicleInf", "vehicleLoadWeight") }}</span
+          >
+        </el-col>
+      </el-row>
+    </div>
+    <TitleSideBlueTip title="状态信息" />
+    <div class="dispatch-base-contents-box">
+      <el-row class="contents-box">
+        <el-col :span="8" >
+          <span class="dispatch-base-label">车辆状态:</span>
+          <span class="dispatch-base-text">
+            {{ vehicleInfo.vehicleStatusValue }}</span
+          >
+        </el-col>
+
+        <el-col :span="8" >
+          <span class="dispatch-base-label">停用状态:</span>
+          <span class="dispatch-base-text">
+            {{ vehicleInfo.enabledValue }}</span
+          >
+        </el-col>
+
+        <el-col :span="8">
+          <span class="dispatch-base-label">认证状态:</span>
+          <span class="dispatch-base-text">
+            {{ vehicleInfo.authStatusValue }}</span
+          >
+        </el-col>
+      </el-row>
+    </div>
+    <TitleSideBlueTip title="默认司机" />
+    <div class="dispatch-base-contents-box">
+      <el-row class="contents-box">
+        <el-col :span="8" >
+          <span class="dispatch-base-label">司机姓名:</span>
+          <span class="dispatch-base-text">
+            {{ vehicleInfo.defaultDriverName }}</span
+          >
+        </el-col>
+        <el-col :span="8" >
+          <span class="dispatch-base-label">司机电话:</span>
+          <span class="dispatch-base-text">
+            {{ vehicleInfo.defaultDriverTelphone }}</span
+          >
+        </el-col>
+      </el-row>
+    </div>
+    <TitleSideBlueTip title="证件资料" />
+    <div class="dispatch-base-contents-box">
+      <el-row class="contents-box">
+        <el-col :span="8" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">注册时间:</span>
+          <span class="dispatch-base-text">
+            {{
+              parseTime(
+                isPageShow("vehicleLicenseInf", "registerDate"),
+                "{y}-{m}-{d}"
+              )
+            }}</span
+          >
+        </el-col>
+        <el-col :span="8" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">发证日期:</span>
+          <span class="dispatch-base-text">
+            {{
+              parseTime(
+                isPageShow("vehicleLicenseInf", "issueDate"),
+                "{y}-{m}-{d}"
+              )
+            }}</span
+          >
+        </el-col>
+        <el-col :span="8" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">发证机关:</span>
+          <span class="dispatch-base-text">
+            {{ isPageShow("vehicleLicenseInf", "issuingOrganizations") }}</span
+          >
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          <span class="dispatch-base-label">驾驶证主页:</span>
+          <div class="img-box">
+            <img
+              :src="isPageShow('vehicleLicenseInf', 'vehicleLicenseImg')"
+              alt=""
             />
           </div>
-        </el-card>
-      </el-col>
-    </el-row>
-  </div>
+        </el-col>
+        <el-col :span="8">
+          <span class="dispatch-base-label">驾驶证副页:</span>
+          <div class="img-box">
+            <img
+              :src="isPageShow('vehicleLicenseInf', 'vehicleLicenseSecondImg')"
+              alt=""
+            />
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <span class="dispatch-base-label">道路运输许可证:</span>
+          <div class="img-box">
+            <img :src="vehicleInfo.roadTransportCertificateImg" alt="" />
+          </div>
+        </el-col>
+      </el-row>
+    </div>
+    <TitleSideBlueTip title="设备信息" />
+    <div class="dispatch-base-contents-box">
+      <el-row class="contents-box">
+        <!-- device -->
+         <el-col :span="12">
+          <span class="dispatch-base-label">设备名称:</span>
+          <span class="dispatch-base-text">
+            {{ vehicleInfo.deviceName }}</span
+          >
+        </el-col>
+        <el-col :span="12">
+          <span class="dispatch-base-label">设备编号:</span>
+          <span class="dispatch-base-text">
+            {{ vehicleInfo.deviceNumber }}</span
+          >
+        </el-col>
+      </el-row>
+    </div>
+    <TitleSideBlueTip title="位置信息" />
+    <div class="dispatch-base-contents-box" style="height: 400px;">
+      <!-- 地图 -->
+      <div id="device-map-container" style="height: 400px" />
+    </div>
+    <TitleSideBlueTip title="告警信息">
+      {{ warningInfo.length ? "(" + warningInfo.length + ")" : "" }}
+    </TitleSideBlueTip>
+
+    <div class="dispatch-base-contents-box" style="padding-bottom: 114px">
+      <!-- <div > -->
+      <RefactorTable
+        :loading="loading"
+        :data="warningInfo"
+        row-key="id"
+        :table-columns-config="warningInfoTableColumnsConfig"
+        :isShowIndex="true"
+        :border="false"
+        :stripe="true"
+      >
+        <template #handle="{ row }">
+          <el-button size="mini" type="text" @click="toWarningDetail(row)"
+            >详情
+          </el-button>
+        </template>
+      </RefactorTable>
+      <!-- </div> -->
+
+      <!-- 分页 -->
+      <pagination
+        v-show="warningTotal > 0"
+        :total="warningTotal"
+        :page.sync="warningQuerys.pageNum"
+        :limit.sync="warningQuerys.pageSize"
+        @pagination="warningDataReq"
+      />
+    </div>
+      </div>
+  </el-drawer>
 </template>
 
 <script>
@@ -254,7 +255,6 @@ export default {
       map: null,
       geocoder: null,
       marker: null,
-      code: "",
       vehicleInfo: {},
       orgName: "",
       warningInfo: [], //告警列表信息
@@ -269,18 +269,39 @@ export default {
       offsetList: null,
     };
   },
+  props: {
+    code: {
+      type: String,
+      default: "",
+    },
+    detailDrawer: {
+      type: Boolean,
+      default: false,
+    },
+    options: {
+      type: Object,
+      default: {},
+    },
+  },
+  watch: {
+    detailDrawer() {
+      console.log("我在监听");
+      if (this.detailDrawer) {
+        console.log("他变成true", this.code);
+        // 地图
+        this.$nextTick(() => {
+          this.initMap();
+        });
+        this.getVehicleDetailHttp();
+      }
+    },
+  },
+  computed: {},
   mounted() {
     this.offsetList = vehicleConfig.offsetList;
-    this.getVehicleDetailHttp();
     this.warningInfoTableColumnsConfig =
       vehicleConfig.warningInfoTableColumnsConfig;
-    // 地图
-    this.$nextTick(() => {
-      this.initMap();
-    });
   },
-  created() {},
-  computed: {},
   methods: {
     /** 初始化地图 */
     initMap() {
@@ -324,7 +345,7 @@ export default {
       };
       const res = await http_request(obj);
       console.log("获取车辆定位列表   res", res);
-      if (res.data.total !== 1) return this.msgWarning("车辆异常");
+      if (res.data.total !== 1) return ;
       const attribute = res.data.rows[0].attribute;
       console.log("attribute", attribute);
       if (
@@ -464,7 +485,6 @@ export default {
     },
     getVehicleDetailHttp() {
       const me = this;
-      me.code = document.location.search.split("=")[1];
       console.log("code", me.code);
       const obj = {
         moduleName: "http_vehicle",
@@ -519,6 +539,9 @@ export default {
     toWarningDetail(obj) {
       this.$router.push("../../warning/warningDetail?id=" + obj.id);
       // this.$router.push({name: "warningDetail", params: {driver: obj.driver}});
+    },
+    handleClose() {
+      this.$emit("colseDetailDrawer");
     },
   },
 };
@@ -587,15 +610,12 @@ export default {
     }
   }
 }
-.detail-right {
-  min-height: 829px;
-  .maps {
-    height: 580px;
-    width: 100%;
+.dispatch-base-contents-box {
     // 地图
     > #device-map-container {
       width: 100%;
       height: 100%;
+      padding: 0 20px;
       // 地图信息窗体样式-覆盖
       ::v-deep.amap-info-sharp {
         display: none;
@@ -828,7 +848,6 @@ export default {
         }
       }
     }
-  }
 }
 // 告警信息表格标题
 .table-title {
@@ -838,9 +857,15 @@ export default {
   line-height: 40px;
 }
 .img-box {
-  background: url('../../../assets/images/certificate/none_data.png') no-repeat center;
-  width: 130px;
-  height: 97px;
+  padding-top:12px;
+  background: url("../../../assets/images/certificate/none_data.png") no-repeat
+    center;
+  width: 90%;
+  height: 132px;
   border-radius: 10px;
+  & > img {
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>
