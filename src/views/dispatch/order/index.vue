@@ -24,6 +24,9 @@
       <template #dispatchOrderStatus="{ row }">
           <span :style="{color:dealDispatchOrderStatus(row.dispatchOrderStatus,'color')}">{{dealDispatchOrderStatus(row.dispatchOrderStatus,'text')}}</span>
       </template>
+      <template #source="{row}">
+        <span>{{sourceConfig[row.source]}}</span>
+      </template>
         <template #edit="{ row }">
           <el-button
             size="mini"
@@ -60,7 +63,7 @@
 </template>
 
 <script>
-import { dispatchOrderStatusList, tableColumnsConfig } from "./order_config";
+import { dispatchOrderStatusList, tableColumnsConfig,sourceConfig } from "./order_config";
 import QueryForm from "./components/queryForm.vue";
 import { http_request } from "../../../api";
 import Detail from './detail.vue'
@@ -93,6 +96,7 @@ export default {
       total: 0,
       dispatchOrderStatusList,
       tableColumnsConfig,
+      sourceConfig,
       tableData: [],
       goodsTypeList: [],
     };

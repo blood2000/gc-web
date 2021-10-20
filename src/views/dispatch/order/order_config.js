@@ -19,6 +19,12 @@ export const dispatchOrderStatusList = [
     },
 ]
 
+//调度单来源
+export const sourceConfig = {
+    'chy':"超好运",
+    'zj':'自建'
+}
+
 export const tableColumnsConfig = [
     {
         isShow: true,
