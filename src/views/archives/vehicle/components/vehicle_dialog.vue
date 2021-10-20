@@ -527,9 +527,11 @@ export default {
       if (this.options && this.options.editType == "update") return true;
     },
     disabledDeal() {
+      if (this.options && this.options.editType != "update") return false;
       if (this.options && this.options.authStatusValue == "未认证")
         return false;
-      if (this.options && this.options.editType != "update") return false;
+      if (this.options && this.options.authStatusValue == "认证失败")
+        return false;
       return true;
     },
     //强制限制
@@ -552,9 +554,9 @@ export default {
     //车辆校验
     async checkVhicle(result = null) {
       const me = this;
-      const licenseNumber = result.number ||me.form.licenseNumber;
-      console.log('ckc------',result.number,me.form.licenseNumber)
-      console.log('licenseNumber',licenseNumber)
+      const licenseNumber = result.number || me.form.licenseNumber;
+      console.log("ckc------", result.number, me.form.licenseNumber);
+      console.log("licenseNumber", licenseNumber);
       const orgCode = me.options.orgCode;
       if (!licenseNumber) return;
       console.log("orgCode", orgCode);
@@ -753,7 +755,7 @@ export default {
       console.log("LoadChooseImg", e);
     },
     ocrToform(result) {
-       this.form.licenseNumber = result.number;
+      this.form.licenseNumber = result.number;
       this.form.engineNumber = result.engine_no;
       this.form.chassisNumber = result.vin;
       this.form.issueDate = result.issue_date;
