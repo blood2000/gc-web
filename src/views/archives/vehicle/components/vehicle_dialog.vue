@@ -165,8 +165,9 @@
               :normalizer="normalizer"
               :show-count="true"
               placeholder="请选择所属组织"
-              no-results-text="无匹配数据"
+              noResultsText="无匹配数据"
               @select="selectOrgCode"
+              @input="treeselectchange"
             />
           </el-form-item>
         </el-col>
@@ -650,6 +651,36 @@ export default {
       this.$nextTick(() => {
         this.$refs.form.validateField("orgCode");
       });
+    },
+    treeselectchange(e){
+      console.log('树e',e)
+      if(this.options.editType == 'update'){
+        console.log('deptOptions',this.deptOptions)
+        const result = {
+          result:null
+        }
+        this.recursionorgTree(this.deptOptions,e,result)
+        console.log('result',result)
+        if(!result.result){
+          this.form.orgCode = null
+        }
+      }
+    },
+    recursionorgTree(data,e, result) {
+      const me = this;
+      for (const el of data) {
+        console.log(el);
+        if (
+          el.code == e
+        ) {
+          result.result = el.orgName
+          break
+        } else {
+          if (el.childrenOrgList) {
+            me.recursionorgTree(el.childrenOrgList, e,result);
+          }
+        }
+      }
     },
     //获取详情
     requsetDetail() {
