@@ -256,7 +256,7 @@ export default {
   methods: {
     //数据处理
     driverStatusDeal(status, type) {
-      if (!status) return null;
+      if (!status&&status !== 0) return null;
       return driverConfig.driverStatusCongfig[status][type];
     },
     //实名状态处理
