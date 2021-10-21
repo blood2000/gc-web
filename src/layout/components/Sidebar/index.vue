@@ -72,8 +72,6 @@ export default {
           this.eachMenu(firstMenu, child);
         }
       });
-      console.log('ckc 原路由:', this.sidebarRouters);
-      console.log('ckc 重构目录:', this.sidebarMenu);
     },
     eachMenu(firstMenu, children, path) {
       children.forEach(el => {
