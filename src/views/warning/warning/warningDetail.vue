@@ -4,7 +4,7 @@
     :title="options.title"
     :visible.sync="detailDrawer"
     direction="rtl"
-    style="z-index: 2200"
+    style="z-index: 2000"
     :before-close="handleClose"
     size="40%"
     :append-to-body="true"

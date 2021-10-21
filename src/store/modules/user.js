@@ -135,7 +135,6 @@ const user = {
               user.avatar == ""
                 ? require("@/assets/images/profile.png")
                 : process.env.VUE_APP_BASE_API + user.avatar;
-                console.log('avatar',avatar)
               commit('SET_MENUS',res.data.menus)
               commit("SET_PERMISSIONS", res.data.permissions);
             commit("SET_NAME", user.userName);

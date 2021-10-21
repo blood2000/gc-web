@@ -86,7 +86,6 @@ export default {
     },
   },
   mounted() {
-    console.log("company_name", this.$store.state);
   },
   methods: {
     toggleSideBar() {
