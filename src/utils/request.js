@@ -32,7 +32,7 @@ service.interceptors.request.use(config => {
         if (typeof value === 'object') {
           for (const key of Object.keys(value)) {
             if (value[key] !== null && typeof (value[key]) !== 'undefined') {
-              let params =  propName + '[' + key + ']';
+              let params = propName + '[' + key + ']';
               let subPart = encodeURIComponent(params) + '='
               url += subPart + encodeURIComponent(value[key]) + '&'
             }
@@ -48,47 +48,47 @@ service.interceptors.request.use(config => {
   }
   return config
 }, error => {
-    console.log(error)
-    Promise.reject(error)
+  console.log(error)
+  Promise.reject(error)
 })
 
 // 响应拦截器
 service.interceptors.response.use(res => {
-    // 未设置状态码则默认成功状态
-    const code = res.data.code || 200;
-    // 获取错误信息
-    const msg = errorCode[code] || res.data.msg || errorCode['default']
-    if (code === 401) {
-      MessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', {
-          confirmButtonText: '重新登录',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      ).then(() => {
-        store.dispatch('LogOut').then(() => {
-          location.href = '/index';
-        })
-      }).catch(() => {});
-      return Promise.reject('令牌验证失败')
+  // 未设置状态码则默认成功状态
+  const code = res.data.code || 200;
+  // 获取错误信息
+  const msg = errorCode[code] || res.data.msg || errorCode['default']
+  if (code === 401) {
+    MessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', {
+      confirmButtonText: '重新登录',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }
+    ).then(() => {
+      store.dispatch('LogOut').then(() => {
+        location.href = '/index';
+      })
+    }).catch(() => { });
+    return Promise.reject('令牌验证失败')
     // } else if (code === 500 && res.data.msg === '手机号已存在') {
 
-    } else if (code === 500) {
-      Message({
-        message: msg,
-        type: 'error',
-        duration: 3 * 1000,
-        showClose: true
-      })
-      return Promise.reject(new Error(msg))  //原代码
-    } else if (code !== 200) {
-      Notification.error({
-        title: msg
-      })
-      return Promise.reject('error')
-    } else {
-      return res.data
-    }
-  },
+  } else if (code === 500) {
+    Message({
+      message: msg,
+      type: 'error',
+      duration: 3 * 1000,
+      showClose: true
+    })
+    return Promise.reject(new Error(msg))  //原代码
+  } else if (code !== 200) {
+    Notification.error({
+      title: msg
+    })
+    return Promise.reject('error')
+  } else {
+    return res.data
+  }
+},
   error => {
     console.log('err' + error)
     let { message } = error;
@@ -131,7 +131,7 @@ export function download(url, params, filename, headers, type = '.xlsx') {
     timeout: 10 * 60 * 1000 // 有些表导出数据量太大, 超时时间设为10分钟
   }).then((data) => {
     var reader = new FileReader();
-    reader.onload = function(event) {
+    reader.onload = function (event) {
       const result = reader.result.length < 100 ? JSON.parse(reader.result) : '';// 内容就在这里
       if (Object.prototype.toString.call(result) === '[object Object]' && (result.code === 400 || result.code === 404)) {
         // 400
@@ -178,9 +178,16 @@ export function download(url, params, filename, headers, type = '.xlsx') {
 }
 
 // 通用下载字典方法
-export function getDicts(dictType) {
-  const formData =  new FormData()
-  formData.append('dictType',dictType)
+export function getDicts(dictType, dictObj) {
+  const formData = new FormData()
+  if (!dictType && dictObj) {
+    formData.append('status', dictObj.status)
+    formData.append('dictPid', dictObj.dictPid)
+    formData.append('dictType', dictObj.dictType)
+  } else {
+    formData.append('dictType', dictType)
+  }
+  console.log('formData',formData)
   return service.post('/chy/system/dict/data/listByDict', formData, {
     headers: Object.assign({}, defaultH, {
       'Content-Type': 'application/x-www-form-urlencoded'

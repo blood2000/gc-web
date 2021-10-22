@@ -5,24 +5,24 @@ export const dispatchOrderStatusList = [
     {
         label: "关闭",
         value: 0,
-        color:"#333333"
+        color: "#333333"
     },
     {
         label: "未派车",
         value: 1,
-        color:'#67C23A'
+        color: '#67C23A'
     },
     {
         label: "已派车",
         value: 2,
-        color:'#E6A23C'
+        color: '#E6A23C'
     },
 ]
 
 //调度单来源
 export const sourceConfig = {
-    'chy':"超好运",
-    'zj':'自建'
+    'chy': "超好运",
+    'zj': '自建'
 }
 
 export const tableColumnsConfig = [
@@ -82,7 +82,7 @@ export const tableColumnsConfig = [
     },
     {
         isShow: true,
-        label:'调度单状态',
+        label: '调度单状态',
         prop: "dispatchOrderStatus",
         sortNum: 7,
         tooltip: true,
@@ -144,6 +144,17 @@ export const tableColumnsConfig = [
         sortNum: 8,
         tooltip: true,
         width: 200,
-        fixed:'right'
+        fixed: 'right'
     },
+]
+
+export const settlementWayConfig = [
+    {
+        label: "按趟结算",
+        value: "1"
+    },
+    {
+        label: "按净重结算",
+        value: "2"
+    }
 ]

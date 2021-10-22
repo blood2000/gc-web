@@ -79,7 +79,7 @@
     />
     <CreateD
       :createDrawer="createDrawer"
-      :options="{ title: '自建订单' }"
+      :options="{ title: '创建调度单' }"
       @colseCreateDrawer="colseCreateDrawer"
     />
   </div>
@@ -234,7 +234,10 @@ export default {
     colseCarDrawer() {
       this.carDrawer = false;
     },
-    colseCreateDrawer() {
+    colseCreateDrawer(e) {
+      if(e == 'ok'){
+        this.searchQuery()
+      }
       this.createDrawer = false;
     },
   },
