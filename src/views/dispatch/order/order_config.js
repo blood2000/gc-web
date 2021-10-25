@@ -60,7 +60,7 @@ export const tableColumnsConfig = [
     }, {
         isShow: true,
         label: "企业名称",
-        prop: "companyName",
+        prop: "projectName",
         sortNum: 5,
         tooltip: true,
         //width:200
