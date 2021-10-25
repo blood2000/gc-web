@@ -150,7 +150,7 @@ export const tableColumnsConfig = [
 
 export const settlementWayConfig = [
     {
-        label: "按趟结算",
+        label: "按车次结算",
         value: "1"
     },
     {
@@ -158,3 +158,20 @@ export const settlementWayConfig = [
         value: "2"
     }
 ]
+
+export const sourceListConfig = [
+    {
+        label: "超好运",
+        value: 'chy'
+    },
+    {
+        label: "自建",
+        value: 'zj'
+    }
+]
+
+export const sourceObjConfig ={
+    'chy': "超好运",
+    'zj': "自建",
+}
+

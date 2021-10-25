@@ -22,6 +22,10 @@
             <span class="dispatch-base-label">所属项目:</span>
             <span class="dispatch-base-text"> {{ pageData.projectName }}</span>
           </el-col>
+            <el-col :span="24" v-if="pageData.source == 'zj'" style="padding-bottom: 16px">
+            <span class="dispatch-base-label">结算方式:</span>
+            <span class="dispatch-base-text"> {{ isPageShow('expenseInfoVO','settlementWayStr')}}</span>
+          </el-col>
           <el-col :span="24" style="padding-bottom: 16px">
             <span class="dispatch-base-label">货源大类:</span>
             <span class="dispatch-base-text">
@@ -48,7 +52,11 @@
           </el-col>
           <el-col :span="24" style="padding-bottom: 16px">
             <span class="dispatch-base-label">调度单来源:</span>
-            <span class="dispatch-base-text"> {{ pageData.source }}</span>
+            <span class="dispatch-base-text"> {{ sourceObj[pageData.source] }}</span>
+          </el-col>
+           <el-col :span="24" v-if="pageData.source == 'zj'" style="padding-bottom: 16px">
+            <span class="dispatch-base-label">{{isPageShow('expenseInfoVO','settlementWay') == '2'?'运费总价':'运费单价'}}:</span>
+            <span class="dispatch-base-text"> {{ isPageShow('expenseInfoVO','freight')}}</span>
           </el-col>
           <el-col :span="24" style="padding-bottom: 16px">
             <span class="dispatch-base-label">货源小类:</span>
@@ -240,6 +248,7 @@
 
 <script>
 import { http_request } from "../../../api";
+import { sourceObjConfig } from './order_config'
 export default {
   name: "detail",
   components: {},
@@ -260,9 +269,13 @@ export default {
   data() {
     return {
       pageData: {},
+      sourceObj:{}
     };
   },
   created() {},
+  mounted(){
+    this.sourceObj = sourceObjConfig
+  },
   watch: {
     detailDrawer() {
       console.log("我在监听");

@@ -4,7 +4,7 @@
     :visible.sync="createDrawer"
     direction="rtl"
     style="z-index: 2000"
-    :before-close="handleClose"
+    :before-close="clearAll"
     size="45%"
     :append-to-body="true"
   >
@@ -23,7 +23,7 @@
               v-model="queryParams.companyName"
               clearable
               filterable
-              style="width: 252px"
+              style="width: 200px"
               placeholder="请选择用车企业"
               @change="shipmentChange"
             >
@@ -42,7 +42,7 @@
               v-model="queryParams.shipmentName"
               clearable
               placeholder="请输入姓名"
-              style="width: 156px"
+              style="width: 185px"
             />
           </el-form-item>
         </el-col>
@@ -52,7 +52,7 @@
               v-model="queryParams.shipmentPhone"
               clearable
               placeholder="请输入电话"
-              style="width: 186px"
+              style="width: 185px"
             />
           </el-form-item>
         </el-col>
@@ -62,7 +62,7 @@
               v-model="queryParams.settlementWay"
               clearable
               filterable
-              style="width: 252px"
+              style="width: 185px"
               placeholder="请选择结算方式"
               @change="settlementWayChange"
             >
@@ -75,9 +75,11 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8" :offset="4">
+        <el-col :span="8">
           <el-form-item :label="changePriceText" prop="freight">
             <el-input
+              @input="imposeInput"
+              type="number"
               style="width: 192px"
               placeholder="请输入运费"
               v-model="queryParams.freight"
@@ -86,48 +88,50 @@
             </el-input>
           </el-form-item>
         </el-col>
-
-        <el-col :span="8">
-          <el-form-item label="货物大类：" prop="goodsBigTypeName">
-            <el-select
-              v-model="queryParams.goodsBigTypeName"
-              clearable
-              filterable
-              style="width: 188px"
-              placeholder="请选择货物大类"
-              @change="goodsBigTypeChange"
-            >
-              <el-option
-                class="test"
-                v-for="(item, index) in goodsBigTypeList"
-                :key="index"
-                :label="item.dictLabel"
-                :value="item.dictLabel"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col v-show="queryParams.goodsBigTypeName" :span="8">
-          <el-form-item label="货物类型：" prop="goodsTypeCode">
-            <el-select
-              v-model="queryParams.goodsTypeCode"
-              clearable
-              filterable
-              style="width: 188px"
-              placeholder="请选择货物类型"
-              @change="goodsTypeChange"
-            >
-              <el-option
-                class="test"
-                v-for="(item, index) in goodsTypeList"
-                :key="index"
-                :label="item.dictLabel"
-                :value="item.dictValue"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
+        </el-row>
+        <el-row class="dispatch-contents-box">
+          <el-col :span="8">
+            <el-form-item label="货物大类：" prop="goodsBigTypeName">
+              <el-select
+                v-model="queryParams.goodsBigTypeName"
+                clearable
+                filterable
+                style="width: 188px"
+                placeholder="请选择货物大类"
+                @change="goodsBigTypeChange"
+              >
+                <el-option
+                  class="test"
+                  v-for="(item, index) in goodsBigTypeList"
+                  :key="index"
+                  :label="item.dictLabel"
+                  :value="item.dictLabel"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col v-show="queryParams.goodsBigTypeName" :span="8">
+            <el-form-item label="货物类型：" prop="goodsTypeCode">
+              <el-select
+                v-model="queryParams.goodsTypeCode"
+                clearable
+                filterable
+                style="width: 188px"
+                placeholder="请选择货物类型"
+                @change="goodsTypeChange"
+              >
+                <el-option
+                  class="test"
+                  v-for="(item, index) in goodsTypeList"
+                  :key="index"
+                  :label="item.dictLabel"
+                  :value="item.dictValue"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      
     </el-form>
     <div class="dispatch-title-item start_address" style="margin-left: 24px">
       <span> 出发地信息</span>
@@ -142,7 +146,7 @@
         label-position="top"
       >
         <el-row :gutter="15">
-          <el-col :span="6">
+          <el-col :span="6" >
             <el-form-item label="省" prop="provinceCode">
               <el-select
                 v-model="loadAddressParams.provinceCode"
@@ -161,7 +165,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="6" offset="2">
             <el-form-item label="市" prop="cityCode">
               <el-select
                 v-model="loadAddressParams.cityCode"
@@ -180,7 +184,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="6" offset="2">
             <el-form-item label="县/区" prop="districtCode">
               <el-select
                 v-model="loadAddressParams.districtCode"
@@ -213,7 +217,7 @@
                 placeholder="请输入关键词"
                 :remote-method="remote1Method"
                 :loading="loadList.loading"
-                :style="{ width: '250px' }"
+                :style="{ width: '252px' }"
                 @change="
                   (value) => {
                     handlechengDetail(value, this.loadAddressParams.type);
@@ -247,7 +251,7 @@
                 v-model="loadAddressParams.addressAlias"
                 placeholder="请输入地址别名"
                 clearable
-                style="width: 185px"
+                style="width: 252px"
               />
             </el-form-item>
           </el-col>
@@ -257,7 +261,7 @@
                 v-model="loadAddressParams.linkManName"
                 clearable
                 placeholder="请输入联系人"
-                style="width: 182px"
+                style="width: 185px"
               />
             </el-form-item>
           </el-col>
@@ -267,7 +271,7 @@
                 v-model="loadAddressParams.linkManPhone"
                 clearable
                 placeholder="请输入联系人电话"
-                style="width: 182px"
+                style="width: 185px"
               />
             </el-form-item>
           </el-col>
@@ -306,7 +310,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="6" offset="2">
             <el-form-item label="市" prop="cityCode">
               <el-select
                 v-model="unloadAddressParams.cityCode"
@@ -325,7 +329,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="6" offset="2">
             <el-form-item label="县/区" prop="districtCode">
               <el-select
                 v-model="unloadAddressParams.districtCode"
@@ -357,7 +361,7 @@
                 placeholder="请输入关键词"
                 :remote-method="remote2Method"
                 :loading="unLoadList.loading"
-                :style="{ width: '250px' }"
+                :style="{ width: '252px' }"
                 @change="
                   (value) => {
                     handlechengDetail(value, this.unloadAddressParams.type);
@@ -391,7 +395,7 @@
                 v-model="unloadAddressParams.addressAlias"
                 placeholder="请输入地址别名"
                 clearable
-                style="width: 185px"
+                style="width: 252px"
               />
             </el-form-item>
           </el-col>
@@ -401,7 +405,7 @@
                 v-model="unloadAddressParams.linkManName"
                 clearable
                 placeholder="请输入联系人"
-                style="width: 182px"
+                style="width: 185px"
               />
             </el-form-item>
           </el-col>
@@ -411,7 +415,7 @@
                 v-model="unloadAddressParams.linkManPhone"
                 clearable
                 placeholder="请输入联系人电话"
-                style="width: 182px"
+                style="width: 185px"
               />
             </el-form-item>
           </el-col>
@@ -446,6 +450,8 @@
 <script>
 import { http_request } from "../../../api";
 import AddressDialog from "./components/address_dialog.vue";
+import formValidate from "../../../utils/formValidate";
+
 const geocoder = new AMap.Geocoder({
   radius: 1000,
   extensions: "all",
@@ -550,10 +556,14 @@ export default {
           },
         ],
         shipmentName: [
-          { required: true, message: "请输入姓名", trigger: "blur" },
+          { required: true, message: "姓名不能为空", trigger: "blur" },
+          { required: true, message: "姓名不能为空", trigger: "change" },
         ],
         shipmentPhone: [
-          { required: true, message: "请输入姓名", trigger: "blur" },
+          { required: true, message: "手机不能为空", trigger: "blur" },
+          { validator: formValidate.telphone, trigger: "blur" },
+          { required: true, message: "手机不能为空", trigger: "change" },
+          { validator: formValidate.telphone, trigger: "change" },
         ],
         settlementWay: [
           { required: true, message: "请选择结算方式", trigger: "change" },
@@ -564,6 +574,7 @@ export default {
         goodsTypeCode: [
           { required: true, message: "请选择货物类型", trigger: "change" },
         ],
+        freight: [{ required: true, message: "运费不能为空", trigger: "blur" }],
       },
       loadRules: {
         provinceCode: [
@@ -583,6 +594,7 @@ export default {
         ],
         linkManPhone: [
           { required: true, message: "请输入联系人电话", trigger: "blur" },
+          { validator: formValidate.telphone, trigger: "blur" },
         ],
       },
       addressOpen: false,
@@ -606,6 +618,13 @@ export default {
     },
   },
   methods: {
+    //强制限制
+    imposeInput(e) {
+      console.log("强制限制", e);
+      const tmp = e.match(/^[0-9]+(\.[0-9]{0,2})?/g) ?? [""];
+      console.log("tmp", tmp[0]);
+      this.queryParams.freight = tmp[0];
+    },
     hanleAddressOpen(type) {
       this.addressOpen = true;
       this.currAddressType = type;
@@ -680,15 +699,19 @@ export default {
     provinceChange(e, type) {
       console.log("provinceChange e", e);
       console.log("provinceChange type", type);
+      if (!type) return;
       if (type == "1") {
         this.loadAddressParams.cityCode = null;
+        this.loadAddressParams.districtCode = null;
         this.loadList.cityList = [];
-        this.getCityListFun(e, type);
+        this.loadList.districtList = [];
       } else if (type == "2") {
         this.unloadAddressParams.cityCode = null;
+        this.unloadAddressParams.districtCode = null;
         this.unLoadList.cityList = [];
-        this.getCityListFun(e, type);
+        this.unLoadList.districtList = [];
       }
+      this.getCityListFun(e, type);
     },
     // 市更新
     cityChange(e, type) {
@@ -941,12 +964,8 @@ export default {
         locations: [], //坐标
       };
       this.resetForm("form");
-
       this.resetForm("loadForm");
-
       this.resetForm("unloadForm");
-
-      this.$emit("colseCreateDrawer");
     },
     // 根据value匹配数组中的一项
     _zhaovalue(arr, value) {
@@ -956,18 +975,30 @@ export default {
         return e.dictValue === value;
       })[0];
     },
-    async confrims() {
-      const bodyData = this.formToPaging();
-      console.log("bodyData", bodyData);
-      const obj = {
-        moduleName: "http_dispatch",
-        method: "post",
-        url_alias: "addDispatchOrder",
-        data: bodyData,
-      };
-      const res = await http_request(obj);
-      console.log("confrims res", res);
-      this.$emit("colseCreateDrawer", "ok");
+    confrims() {
+      const me = this;
+      me.$refs.form.validate((valid) => {
+        if (valid && valid1 && valid2) {
+          const bodyData = me.formToPaging();
+          console.log("bodyData", bodyData);
+          const obj = {
+            moduleName: "http_dispatch",
+            method: "post",
+            url_alias: "addDispatchOrder",
+            data: bodyData,
+          };
+          http_request(obj).then((res) => {
+            console.log("confrims res", res);
+            if (res.code != "200") {
+              this.msgError("订单建立失败");
+            } else {
+              this.msgSuccess("订单建立成功");
+            }
+            this.handleClose();
+            this.$emit("colseCreateDrawer", "ok");
+          });
+        }
+      });
     },
     formToPaging() {
       let obj = {};
@@ -979,6 +1010,7 @@ export default {
     },
     clearAll() {
       this.handleClose();
+      this.$emit("colseCreateDrawer");
     },
     radioSelection(data) {
       if (!data || !this.currAddressType) return;
@@ -1002,9 +1034,9 @@ export default {
         locations: [data.latitude, data.longitude], //坐标
       };
 
-      this.currAddressType = null
-      this.addressOpen = false
-      console.log('this[objName]',this[objName])
+      this.currAddressType = null;
+      this.addressOpen = false;
+      console.log("this[objName]", this[objName]);
     },
   },
 };
