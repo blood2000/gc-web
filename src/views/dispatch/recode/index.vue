@@ -38,6 +38,9 @@
         :border="false"
         :stripe="true"
       >
+      <template #driverName ="{row}">
+        <span>{{`${row.driverName}[${row.driverPhone}]`}}</span>
+      </template>
         <template #edit="{ row }">
           <el-button
             size="mini"

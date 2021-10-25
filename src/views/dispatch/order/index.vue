@@ -27,6 +27,9 @@
           :border="false"
           :stripe="true"
         >
+          <template #shipmentName="{ row }">
+            <span>{{ `${row.shipmentName}[${row.shipmentPhone}]` }}</span>
+          </template>
           <template #dispatchOrderStatus="{ row }">
             <span
               :style="{
@@ -71,6 +74,12 @@
       :options="{ title: '调度单详情' }"
       @colseDetailDrawer="colseDetailDrawer"
     />
+    <CreatedDetail
+      :code="currCode"
+      :detailDrawer="createDetailDrawer"
+      :options="{ title: '调度单详情' }"
+      @colsecreateDetailDrawer="colsecreateDetailDrawer"
+    />
     <Car
       :code="currCode"
       :carDrawer="carDrawer"
@@ -94,16 +103,18 @@ import {
 import QueryForm from "./components/queryForm.vue";
 import { http_request } from "../../../api";
 import Detail from "./detail.vue";
+import CreatedDetail from "./createdDetail.vue";
 import Car from "./car.vue";
 import CreateD from "./create.vue";
 export default {
   name: "order",
-  components: { QueryForm, Detail, Car, CreateD },
+  components: { QueryForm, Detail, CreatedDetail, Car, CreateD },
   data() {
     return {
       showSearch: true,
       loading: false,
       detailDrawer: false, //详情抽屉
+      createDetailDrawer: false, // 自建详情
       carDrawer: false, // 派车抽屉
       currCode: null,
       queryParams: {
@@ -165,8 +176,14 @@ export default {
     },
     //详情
     handleDetail(data) {
+      console.log("data", data);
       this.currCode = data.dispatchOrderCode;
-      this.detailDrawer = true;
+      if (data.source === "zj") {
+        this.createDetailDrawer = true;
+      } else {
+        this.detailDrawer = true;
+      }
+
       // this.$router.push("order/detail?code=" + code);
     },
     //派车
@@ -230,13 +247,16 @@ export default {
     colseDetailDrawer() {
       this.detailDrawer = false;
     },
+    colsecreateDetailDrawer() {
+      this.createDetailDrawer = false;
+    },
     // 关闭车辆弹窗
     colseCarDrawer() {
       this.carDrawer = false;
     },
     colseCreateDrawer(e) {
-      if(e == 'ok'){
-        this.searchQuery()
+      if (e == "ok") {
+        this.searchQuery();
       }
       this.createDrawer = false;
     },

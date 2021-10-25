@@ -4,6 +4,7 @@ export const tableColumnsConfig = [
         label: "派车记录编号",
         prop: "appointCarRecordNo",
         sortNum: 1,
+        width:180,
         tooltip: true,
     },
     {
@@ -11,6 +12,7 @@ export const tableColumnsConfig = [
         label: "派车时间",
         prop: "createTime",
         sortNum: 2,
+        width:180,
         tooltip: true,
     },
     {
@@ -18,6 +20,7 @@ export const tableColumnsConfig = [
         label: "调度单号",
         prop: "dispatchOrderNo",
         sortNum:3,
+        width:180,
         tooltip: true,
     },
     {
@@ -25,6 +28,7 @@ export const tableColumnsConfig = [
         label: "司机",
         prop: "driverName",
         sortNum: 4,
+        width:180,
         tooltip: true,
     },
     {
@@ -32,6 +36,7 @@ export const tableColumnsConfig = [
         label: "车辆",
         prop: "vehicleNumber",
         sortNum: 5,
+        width:180,
         tooltip: true,
     },
     {
@@ -39,6 +44,7 @@ export const tableColumnsConfig = [
         label: "出车时间",
         prop: "outCarTime",
         sortNum: 6,
+        width:180,
         tooltip: true,
     },
     {
@@ -46,6 +52,7 @@ export const tableColumnsConfig = [
         label: "出发地",
         prop: "loadAddress",
         sortNum: 7,
+        width:280,
         tooltip: true,
     },
     {
@@ -53,6 +60,7 @@ export const tableColumnsConfig = [
         label: "目的地",
         prop: "unloadAddress",
         sortNum: 8,
+        width:280,
         tooltip: true,
     },
     {
@@ -60,6 +68,7 @@ export const tableColumnsConfig = [
         label: "项目",
         prop: "projectName",
         sortNum: 9,
+        width:120,
         tooltip: true,
     },
     // {
@@ -74,6 +83,7 @@ export const tableColumnsConfig = [
         label: "货物类型",
         prop: "goodsSmallTypeName",
         sortNum: 11,
+        width:180,
         tooltip: true,
     },
     {

@@ -26,7 +26,7 @@ export const tableColumnsConfig = [
     {
         isShow: true,
         label: "承运组织",
-        prop: "source",
+        prop: "vehicleOrgName",
         sortNum: 1,
         tooltip: true,
         width:'140'
@@ -114,6 +114,10 @@ export const tableColumnsConfig = [
 ]
 //10已接单 20已出车 30已回车 40已失效 50待付款 60 已付款
 export const statusList = [
+    {
+        label: '未接单',
+        value: 0
+    },
     {
         label: '已接单',
         value: 10

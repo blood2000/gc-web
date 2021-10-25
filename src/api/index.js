@@ -14,6 +14,8 @@ import http_purse from './finance/purse'
 import http_map from './map/map';
 import http_monitor from './monitor/carlist'
 import http_home from './home/home'
+import http_company from './archives/company'
+import http_address from './archives/address'
 import Vue from 'vue'
 
 export const defaultH = {
@@ -46,7 +48,9 @@ const selModuleName = (name) => {
     http_purse,
     http_map,
     http_monitor,
-    http_home
+    http_home,
+    http_company,
+    http_address
   }
   return tmpObj[name]
 }
