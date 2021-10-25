@@ -252,6 +252,7 @@ export default {
       );
       if (this.$store.getters.showDispatchVehicle) {
         this.renderPageObj();
+         this.initTimeDate();
       }
       return this.$store.getters.showDispatchVehicle;
     },
@@ -263,6 +264,13 @@ export default {
   },
 
   methods: {
+     initTimeDate() {
+      this.carForm.startDate = this.carForm.endDate = this.parseTime(
+        new Date(),
+        "{y}-{m}-{d}"
+      );
+      this.carForm.outCarTime = this.parseTime(new Date(), "{h}:{i}");
+    },
     renderPageObj() {
       this.pageObj = this.$store.getters.dispatchInfo;
       this.pageObj.dispatchOrderCode =

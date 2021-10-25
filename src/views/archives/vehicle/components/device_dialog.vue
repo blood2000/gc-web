@@ -149,7 +149,7 @@ export default {
       console.log("e", e);
       this.unList = [];
       this.targetList.forEach((el) => {
-        const name = el.series_name;
+        const name = el.sn;
         if (name && name.includes(e)) {
           this.unList.push(el);
         }

@@ -69,7 +69,7 @@
       />
     </div>
     <el-dialog
-      title="分享文案"
+      title="分享调度信息"
       :visible.sync="open"
       width="800px"
       :close-on-click-modal="false"

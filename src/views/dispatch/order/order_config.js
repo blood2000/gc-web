@@ -59,7 +59,7 @@ export const tableColumnsConfig = [
         //width:200
     }, {
         isShow: true,
-        label: "项目名称",
+        label: "企业名称",
         prop: "companyName",
         sortNum: 5,
         tooltip: true,

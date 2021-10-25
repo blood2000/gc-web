@@ -86,7 +86,7 @@
 import { http_request } from "../../../../api";
 import NoImageUpload from "@/components/ImageUpload/noImage.vue";
 import ProvinceCityCounty from "@/components/ProvinceCityCounty";
-
+import formValidate from "@/utils/formValidate";
 export default {
   components: { NoImageUpload, ProvinceCityCounty },
   data() {
@@ -103,6 +103,10 @@ export default {
         city: null, //开户行城市
       },
       rules: {
+        name:[
+              { required: true, message: "姓名不能为空", trigger: "blur" },
+          { validator: formValidate.name, trigger: "blur" },
+        ],
         account: [
           { required: true, message: "银行卡不能为空", trigger: "blur" },
           { validator: this.formValidate.bankCard, trigger: "blur" },

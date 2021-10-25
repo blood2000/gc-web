@@ -223,7 +223,7 @@
         </el-col>
 
         <el-col :span="12" style="padding-bottom: 16px">
-          <span class="dispatch-base-label">调度者:</span>
+          <span class="dispatch-base-label">  调度者:</span>
           <span class="dispatch-base-text">
             {{ waybillInfo.teamLeaderName }}</span
           >

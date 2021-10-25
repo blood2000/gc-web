@@ -18,11 +18,18 @@
         <el-row :gutter="10">
           <el-col :span="7">
             <el-form-item label="用车企业:" prop="companyName">
-              <el-input
-                v-model="pageData.companyName"
-                clearable
-                style="width: 95%"
-              />
+              <el-tooltip
+                class="item"
+                effect="dark"
+                :content="pageData.companyName"
+                placement="top"
+              >
+                <el-input
+                  v-model="pageData.companyName"
+                  clearable
+                  style="width: 95%"
+                />
+              </el-tooltip>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -45,11 +52,18 @@
           </el-col>
           <el-col :span="5">
             <el-form-item label="货物类型:" prop="goodsTypeName">
-              <el-input
-                v-model="pageData.goodsTypeName"
-                clearable
-                style="width: 128px"
-              />
+              <el-tooltip
+                class="item"
+                effect="dark"
+                :content="pageData.goodsTypeName"
+                placement="top"
+              >
+                <el-input
+                  v-model="pageData.goodsTypeName"
+                  clearable
+                  style="width: 128px"
+                />
+              </el-tooltip>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -90,7 +104,7 @@
                 <el-input
                   v-model="pageData.loadAlias"
                   clearable
-                    style="width: 90%"
+                  style="width: 90%"
                 />
               </el-form-item>
             </el-col>
@@ -143,7 +157,7 @@
                 <el-input
                   v-model="pageData.unloadAlias"
                   clearable
-                    style="width: 90%"
+                  style="width: 90%"
                 />
               </el-form-item>
             </el-col>
@@ -613,12 +627,13 @@ export default {
     },
     //详情绑定页面数据填写
     DetailToPageData(data) {
+      console.log('DetailToPageData data',data)
       this.pageData = {
         companyName: data.companyName,
         shipmentName: data.shipmentName,
         shipmentPhone: data.shipmentPhone,
         goodsTypeName: data.goodsTypeName,
-        freightStr: data.orderGoodses[0].freightStr,
+        freightStr: data.orderGoodses&&data.orderGoodses[0].freightStr ||null,
         loadAddress: `${data.orderAddress.loadProvince}${data.orderAddress.loadCity}${data.orderAddress.loadDistrict}`,
         loadDetail: data.orderAddress.loadDetail,
         loadAlias: data.orderAddress.loadAlias,
