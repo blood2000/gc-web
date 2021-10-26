@@ -88,50 +88,49 @@
             </el-input>
           </el-form-item>
         </el-col>
-        </el-row>
-        <el-row class="dispatch-contents-box">
-          <el-col :span="8">
-            <el-form-item label="货物大类：" prop="goodsBigTypeName">
-              <el-select
-                v-model="queryParams.goodsBigTypeName"
-                clearable
-                filterable
-                style="width: 188px"
-                placeholder="请选择货物大类"
-                @change="goodsBigTypeChange"
-              >
-                <el-option
-                  class="test"
-                  v-for="(item, index) in goodsBigTypeList"
-                  :key="index"
-                  :label="item.dictLabel"
-                  :value="item.dictLabel"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col v-show="queryParams.goodsBigTypeName" :span="8">
-            <el-form-item label="货物类型：" prop="goodsTypeCode">
-              <el-select
-                v-model="queryParams.goodsTypeCode"
-                clearable
-                filterable
-                style="width: 188px"
-                placeholder="请选择货物类型"
-                @change="goodsTypeChange"
-              >
-                <el-option
-                  class="test"
-                  v-for="(item, index) in goodsTypeList"
-                  :key="index"
-                  :label="item.dictLabel"
-                  :value="item.dictValue"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      
+      </el-row>
+      <el-row class="dispatch-contents-box">
+        <el-col :span="8">
+          <el-form-item label="货物大类：" prop="goodsBigTypeName">
+            <el-select
+              v-model="queryParams.goodsBigTypeName"
+              clearable
+              filterable
+              style="width: 188px"
+              placeholder="请选择货物大类"
+              @change="goodsBigTypeChange"
+            >
+              <el-option
+                class="test"
+                v-for="(item, index) in goodsBigTypeList"
+                :key="index"
+                :label="item.dictLabel"
+                :value="item.dictLabel"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col v-show="queryParams.goodsBigTypeName" :span="8">
+          <el-form-item label="货物类型：" prop="goodsTypeCode">
+            <el-select
+              v-model="queryParams.goodsTypeCode"
+              clearable
+              filterable
+              style="width: 188px"
+              placeholder="请选择货物类型"
+              @change="goodsTypeChange"
+            >
+              <el-option
+                class="test"
+                v-for="(item, index) in goodsTypeList"
+                :key="index"
+                :label="item.dictLabel"
+                :value="item.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <div class="dispatch-title-item start_address" style="margin-left: 24px">
       <span> 出发地信息</span>
@@ -146,7 +145,7 @@
         label-position="top"
       >
         <el-row :gutter="15">
-          <el-col :span="6" >
+          <el-col :span="6">
             <el-form-item label="省" prop="provinceCode">
               <el-select
                 v-model="loadAddressParams.provinceCode"
@@ -165,7 +164,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6" offset="2">
+          <el-col :span="6" :offset="2">
             <el-form-item label="市" prop="cityCode">
               <el-select
                 v-model="loadAddressParams.cityCode"
@@ -184,7 +183,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6" offset="2">
+          <el-col :span="6" :offset="2">
             <el-form-item label="县/区" prop="districtCode">
               <el-select
                 v-model="loadAddressParams.districtCode"
@@ -310,7 +309,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6" offset="2">
+          <el-col :span="6" :offset="2">
             <el-form-item label="市" prop="cityCode">
               <el-select
                 v-model="unloadAddressParams.cityCode"
@@ -329,7 +328,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6" offset="2">
+          <el-col :span="6" :offset="2">
             <el-form-item label="县/区" prop="districtCode">
               <el-select
                 v-model="unloadAddressParams.districtCode"
@@ -421,6 +420,18 @@
           </el-col>
         </el-row>
       </el-form>
+      <div>
+        <div><span class="remark">备注：</span></div>
+        <div>
+          <el-input
+            type="textarea"
+            :rows="3"
+            placeholder="请输入内容"
+            v-model="remark"
+          >
+          </el-input>
+        </div>
+      </div>
     </div>
     <div class="create-btn">
       <div>
@@ -978,7 +989,7 @@ export default {
     confrims() {
       const me = this;
       me.$refs.form.validate((valid) => {
-        if (valid && valid1 && valid2) {
+        if (valid) {
           const bodyData = me.formToPaging();
           console.log("bodyData", bodyData);
           const obj = {
@@ -1006,6 +1017,7 @@ export default {
       obj.addresses = [];
       obj.addresses.push(this.loadAddressParams);
       obj.addresses.push(this.unloadAddressParams);
+      obj.remark = this.remark;
       return obj;
     },
     clearAll() {
@@ -1058,5 +1070,14 @@ export default {
   background-position-x: 6px;
   color: #4682fa;
   cursor: pointer;
+}
+.remark {
+  vertical-align: middle;
+  font-size: 14px;
+  color: #606266;
+  line-height: 40px;
+  padding: 0 12 px 0 0;
+  box-sizing: border-box;
+  font-weight: bold;
 }
 </style>
