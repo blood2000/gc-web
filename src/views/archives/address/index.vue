@@ -8,8 +8,8 @@
       <div class="page-table-layout-set">
         <!-- 操作栏 -->
         <div class="toolsbar">
-          <el-button type="primary" size="mini" @click="addCompany"
-            >添加用车企业</el-button
+          <el-button type="primary" size="mini" @click="addAddress"
+            >添加常用地址</el-button
           >
           <el-button
             size="mini"
@@ -52,7 +52,7 @@
         @pagination="getList"
       />
     </div>
-    <AddCompany
+    <AddAddress
       :options="{ editType: editType, code: dialogCode }"
       :open="open"
       :title="title"
@@ -63,12 +63,15 @@
 
 <script>
 import QueryForm from "./components/queryForm.vue";
-import AddCompany from "./components/company_dialog.vue";
+import AddAddress from "./components/address_dialog.vue";
 import { tableColumnsConfig } from "./config";
 import { http_request } from "../../../api";
 export default {
   name: "company",
-  components: { QueryForm, AddCompany },
+  components: {
+    QueryForm,
+       AddAddress
+  },
   data() {
     return {
       loading: false,
@@ -77,7 +80,8 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        shipmentName: null, //企业名称
+        addressAlias: null, //地址别名
+        addressName: null, //地址
         contactName: null, //联系人
         contactPhone: null, //联系人电话
       },
@@ -98,25 +102,25 @@ export default {
   },
   methods: {
     handleUpdate(obj) {
-      this.title = "修改企业弹窗";
+      this.title = "修改常用地址";
       this.editType = "update";
       this.open = true;
-      console.log("修改企业弹窗 ckc obj ", obj.id);
+      console.log("修改常用弹窗 ckc obj ", obj.id);
       this.dialogCode = obj.id;
     },
     async handleDelete(obj = {}) {
       console.log("obj", obj);
       const ids = obj.id ? [Number(obj.id)] : this.ids;
-      this.$confirm("删除操作不可恢复，确认要删除该常用企业吗？", "警告", {
+      this.$confirm("删除操作不可恢复，确认要删除该常用地址吗？", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        console.log("开始删了 ids", ids);
+        console.log("开始删了");
         const tmp = {
-          moduleName: "http_company",
+          moduleName: "http_address",
           method: "post",
-          url_alias: "shipment_common_del",
+          url_alias: "address_del",
           data: { ids },
         };
         http_request(tmp).then(() => {
@@ -128,9 +132,9 @@ export default {
     async getList() {
       this.loading = true;
       const obj = {
-        moduleName: "http_company",
+        moduleName: "http_address",
         method: "post",
-        url_alias: "shipment_list",
+        url_alias: "address_list",
         data: this.pagingToFrom(),
       };
       console.log("所有参数列表", obj);
@@ -153,8 +157,8 @@ export default {
       }
       return tmp;
     },
-    addCompany() {
-      this.title = "新增企业弹窗";
+    addAddress() {
+      this.title = "新增常用地址";
       this.editType = "add";
       this.open = true;
     },

@@ -88,7 +88,7 @@ export const http_request = async  (obj) =>  {
   //header
   tmp.headers = defaultH
   if (obj.header) tmp.headers = { ...tmp.headers, ...obj.header }
-  // console.log('最终结果',tmp)
+   console.log('最终结果',tmp)
   const res  = await  request(tmp);
   return res
 };

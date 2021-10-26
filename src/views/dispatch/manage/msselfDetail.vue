@@ -197,7 +197,6 @@
           <span class="dispatch-base-label">出车时间:</span>
           <span class="dispatch-base-text"> {{ waybillInfo.loadTime }}</span>
         </el-col>
-        <!-- unloadWeight -->
 
         <el-col :span="12" style="padding-bottom: 16px">
           <span class="dispatch-base-label">承运组织:</span>

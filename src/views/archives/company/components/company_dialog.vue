@@ -17,9 +17,9 @@
     >
       <el-row>
         <el-col :span="16">
-          <el-form-item label="用车企业名称:" prop="issuingOrganizations">
+          <el-form-item label="用车企业名称:" prop="shipmentName">
             <el-input
-              v-model="form.issuingOrganizations"
+              v-model="form.shipmentName"
               placeholder="请输入用车企业名称"
               clearable
             />
@@ -28,9 +28,9 @@
       </el-row>
       <el-row>
         <el-col :span="16">
-          <el-form-item label="联系人:" prop="issuingOrganizations">
+          <el-form-item label="联系人:" prop="contactName">
             <el-input
-              v-model="form.issuingOrganizations"
+              v-model="form.contactName"
               placeholder="请输入联系人姓名"
               clearable
             />
@@ -39,9 +39,9 @@
       </el-row>
       <el-row>
         <el-col :span="16">
-          <el-form-item label="联系人电话:" prop="issuingOrganizations">
+          <el-form-item label="联系人电话:" prop="contactPhone">
             <el-input
-              v-model="form.issuingOrganizations"
+              v-model="form.contactPhone"
               placeholder="请输入联系人电话"
               clearable
             />
@@ -57,7 +57,9 @@
   </el-dialog>
 </template>
 <script>
-import { http_request } from '../../../../api';
+import { http_request } from "../../../../api";
+import formValidate from "../../../../utils/formValidate";
+
 export default {
   props: {
     open: {
@@ -80,6 +82,7 @@ export default {
         shipmentName: null, //货主名称
         contactName: null, //联系人姓名
         contactPhone: null, //联系人电话
+        id: null,
       },
       rules: {
         shipmentName: [
@@ -90,6 +93,7 @@ export default {
         ],
         contactPhone: [
           { required: true, message: "联系人电话不能为空", trigger: "blur" },
+          { validator: formValidate.telphone, trigger: "blur" },
         ],
       },
       isDetail: false,
@@ -124,7 +128,7 @@ export default {
       console.log("tmp", tmp);
       http_request(tmp)
         .then((res) => {
-            if(!res.data) return this.msgError('暂无数据')
+          if (!res.data) return this.msgError("暂无数据");
           console.log("driver_detail res", res);
           this.detailToForm(res.data);
         })
@@ -136,6 +140,8 @@ export default {
       this.form.shipmentName = data.shipmentName;
       this.form.contactName = data.contactName;
       this.form.contactPhone = data.contactPhone;
+      this.form.id = this.options.code;
+      console.log("this.form", this.form);
     },
     reset() {
       this.form.shipmentName = null;

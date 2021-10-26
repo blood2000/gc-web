@@ -1,5 +1,5 @@
 export default {
-    shipment_del: (id) => `/fmsweb/basic/shipment/v1/del/${id}`,//删除常用货主
+    shipment_common_del: `/fmsweb/basic/shipment/v1/del`,//删除常用货主
     shipment_add: '/fmsweb/basic/shipment/v1/add',//新增常用货主
     shipment_update: '/fmsweb/basic/shipment/v1/update',//修改常用货主
     shipment_get_id: (id) => `/fmsweb/basic/shipment/v1/get/${id}`,//根据id获取常用货主
