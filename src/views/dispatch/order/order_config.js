@@ -5,19 +5,25 @@ export const dispatchOrderStatusList = [
     {
         label: "关闭",
         value: 0,
-        color:"#333333"
+        color: "#333333"
     },
     {
         label: "未派车",
         value: 1,
-        color:'#67C23A'
+        color: '#67C23A'
     },
     {
         label: "已派车",
         value: 2,
-        color:'#E6A23C'
+        color: '#E6A23C'
     },
 ]
+
+//调度单来源
+export const sourceConfig = {
+    'chy': "超好运",
+    'zj': '自建'
+}
 
 export const tableColumnsConfig = [
     {
@@ -26,7 +32,7 @@ export const tableColumnsConfig = [
         prop: "dispatchOrderNo",
         sortNum: 1,
         tooltip: true,
-        //width:200
+        width:200
     },
     {
         isShow: true,
@@ -34,15 +40,15 @@ export const tableColumnsConfig = [
         prop: "source",
         sortNum: 2,
         tooltip: true,
-        //width:200
+        width:200
     },
-    {
+    {   
         isShow: true,
         label: "下单客户姓名",
         prop: "shipmentName",
         sortNum: 3,
         tooltip: true,
-        //width:200
+        width:200
     },
     {
         isShow: true,
@@ -50,14 +56,14 @@ export const tableColumnsConfig = [
         prop: "companyName",
         sortNum: 4,
         tooltip: true,
-        //width:200
+        width:200
     }, {
         isShow: true,
-        label: "项目名称",
-        prop: "companyName",
+        label: "企业名称",
+        prop: "projectName",
         sortNum: 5,
         tooltip: true,
-        //width:200
+        width:200
     },
     // {
     //     isShow: true,
@@ -72,15 +78,15 @@ export const tableColumnsConfig = [
         prop: "goodsTypeName",
         sortNum: 7,
         tooltip: true,
-        //width:200
+        width:200
     },
     {
         isShow: true,
-        label:'调度单状态',
+        label: '调度单状态',
         prop: "dispatchOrderStatus",
         sortNum: 7,
         tooltip: true,
-        //width:200
+        width:200
     },
     {
         isShow: true,
@@ -88,7 +94,7 @@ export const tableColumnsConfig = [
         prop: "remark",
         sortNum: 9,
         tooltip: true,
-        //width:200
+        width:200
     },
 
     {
@@ -113,7 +119,7 @@ export const tableColumnsConfig = [
         prop: "freightStr",
         sortNum: 9,
         tooltip: true,
-        //width:200
+        width:200
     },
     {
         isShow: true,
@@ -121,7 +127,7 @@ export const tableColumnsConfig = [
         prop: "createTime",
         sortNum: 9,
         tooltip: true,
-        //width:200
+        width:200
     },
     {
         isShow: true,
@@ -129,7 +135,7 @@ export const tableColumnsConfig = [
         prop: "remark",
         sortNum: 9,
         tooltip: true,
-        //width:200
+        width:200
     },
     {
         isShow: true,
@@ -138,6 +144,34 @@ export const tableColumnsConfig = [
         sortNum: 8,
         tooltip: true,
         width: 200,
-        fixed:'right'
+        fixed: 'right'
     },
 ]
+
+export const settlementWayConfig = [
+    {
+        label: "按车次结算",
+        value: "1"
+    },
+    {
+        label: "按净重结算",
+        value: "2"
+    }
+]
+
+export const sourceListConfig = [
+    {
+        label: "超好运",
+        value: 'chy'
+    },
+    {
+        label: "自建",
+        value: 'zj'
+    }
+]
+
+export const sourceObjConfig ={
+    'chy': "超好运",
+    'zj': "自建",
+}
+

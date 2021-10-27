@@ -38,6 +38,9 @@
         :border="false"
         :stripe="true"
       >
+      <template #driverName ="{row}">
+        <span>{{`${row.driverName}[${row.driverPhone}]`}}</span>
+      </template>
         <template #edit="{ row }">
           <el-button
             size="mini"
@@ -69,7 +72,7 @@
       />
     </div>
     <el-dialog
-      title="分享文案"
+      title="分享调度信息"
       :visible.sync="open"
       width="800px"
       :close-on-click-modal="false"

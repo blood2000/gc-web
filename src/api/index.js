@@ -14,6 +14,8 @@ import http_purse from './finance/purse'
 import http_map from './map/map';
 import http_monitor from './monitor/carlist'
 import http_home from './home/home'
+import http_company from './archives/company'
+import http_address from './archives/address'
 import Vue from 'vue'
 
 export const defaultH = {
@@ -46,7 +48,9 @@ const selModuleName = (name) => {
     http_purse,
     http_map,
     http_monitor,
-    http_home
+    http_home,
+    http_company,
+    http_address
   }
   return tmpObj[name]
 }
@@ -84,7 +88,7 @@ export const http_request = async  (obj) =>  {
   //header
   tmp.headers = defaultH
   if (obj.header) tmp.headers = { ...tmp.headers, ...obj.header }
-  // console.log('最终结果',tmp)
+  //  console.log('最终结果',tmp)
   const res  = await  request(tmp);
   return res
 };

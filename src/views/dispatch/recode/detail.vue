@@ -3,7 +3,7 @@
     :title="options.title"
     :visible.sync="detailDrawer"
     direction="rtl"
-    style="z-index: 2200"
+    style="z-index: 2000"
     :before-close="handleClose"
     size="45%"
     :append-to-body="true"
@@ -54,13 +54,22 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
+               
                   <el-form-item label="详细地址:" prop="loadDetail">
+                          <el-tooltip
+                class="item"
+                effect="dark"
+                :content="form.loadDetail"
+                placement="top"
+              >
                     <el-input
                       v-model="form.loadDetail"
                       clearable
                       style="width: 220px"
                     />
+                          </el-tooltip> 
                   </el-form-item>
+                  
                 </el-col>
               </el-row>
               <el-row :gutter="15">
@@ -111,11 +120,18 @@
                 </el-col>
                  <el-col :span="12">
                   <el-form-item label="详细地址:" prop="unloadDetail">
+                     <el-tooltip
+                class="item"
+                effect="dark"
+                :content="form.unloadDetail"
+                placement="top"
+              >
                     <el-input
                       v-model="form.unloadDetail"
                       clearable
                       style="width: 220px"
                     />
+                     </el-tooltip>
                   </el-form-item>
                 </el-col>
               </el-row>

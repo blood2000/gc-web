@@ -9,32 +9,31 @@
       />
       <!-- 分割线 -->
       <div class="divier"></div>
-            <div class="page-table-layout-set">
+      <div class="page-table-layout-set">
+        <!-- 操作栏 -->
+        <!-- <div class="toolsbar"></div> -->
+        <!-- 表格 -->
 
-      <!-- 操作栏 -->
-      <!-- <div class="toolsbar"></div> -->
-      <!-- 表格 -->
-      
-      <RefactorTable
-        is-show-index
-        :loading="loading"
-        :data="tableData"
-        row-key="id"
-        :table-columns-config="tableColumnsConfig"
-        :border="false"
-        :stripe="true"
-      >
-        <template #edit="{ row }">
-          <el-button size="mini" type="text" @click="handleDetail(row)"
-            >详情</el-button
-          >
-        </template>
-        <!-- status -->
-        <template #status="{ row }">
-          <span>{{ dealSattus(row.status) }}</span>
-        </template>
-      </RefactorTable>
-            </div>
+        <RefactorTable
+          is-show-index
+          :loading="loading"
+          :data="tableData"
+          row-key="id"
+          :table-columns-config="tableColumnsConfig"
+          :border="false"
+          :stripe="true"
+        >
+          <template #edit="{ row }">
+            <el-button size="mini" type="text" @click="handleDetail(row)"
+              >详情</el-button
+            >
+          </template>
+          <!-- status -->
+          <template #status="{ row }">
+            <span>{{ dealSattus(row.status) }}</span>
+          </template>
+        </RefactorTable>
+      </div>
       <!-- 分页 -->
       <pagination
         v-show="total > 0"
@@ -45,7 +44,18 @@
         @pagination="getList"
       />
     </div>
-        <Detail :code="currCode" :detailDrawer="detailDrawer" :options="{title:'派车单详情'}" @colseDetailDrawer='colseDetailDrawer' />
+    <Detail
+      :code="currCode"
+      :detailDrawer="detailDrawer"
+      :options="{ title: '派车单详情' }"
+      @colseDetailDrawer="colseDetailDrawer"
+    />
+    <MyselfDetail
+      :code="currCode"
+      :detailDrawer="myselfdetailDrawer"
+      :options="{ title: '派车单详情' }"
+      @colseMyselfDetailDrawer="colseMyselfDetailDrawer"
+    />
   </div>
 </template>
 
@@ -53,11 +63,12 @@
 import { statusList, tableColumnsConfig } from "./manage_config";
 import QueryForm from "./components/queryForm.vue";
 import { http_request } from "../../../api";
-import Detail from './detail.vue'
+import Detail from "./detail.vue";
+import MyselfDetail from "./msselfDetail.vue";
 
 export default {
   name: "manage",
-  components: { QueryForm,Detail },
+  components: { QueryForm, Detail, MyselfDetail },
   data() {
     return {
       showSearch: true,
@@ -66,7 +77,7 @@ export default {
         pageNum: 1, //页码
         pageSize: 10, //每页显示条数
         appointCarRecordCode: null, //派单记录Code
-        appointCarRecordNo:null,//派单记录号
+        appointCarRecordNo: null, //派单记录号
         appointCarOrderNo: null, //派单号
         shipmentName: null, //下单客户
         companyName: null, //用车企业
@@ -84,8 +95,9 @@ export default {
       tableColumnsConfig,
       tableData: [],
       statusList,
-      currCode:null,
-      detailDrawer:false
+      currCode: null,
+      detailDrawer: false,
+      myselfdetailDrawer: false,
     };
   },
   created() {
@@ -111,8 +123,12 @@ export default {
       return result;
     },
     handleDetail(data) {
-       this.currCode = data.appointCarOrderCode;
-      this.detailDrawer = true
+      this.currCode = data.appointCarOrderCode;
+      if (data.source === "chy") {
+        this.detailDrawer = true;
+      } else {
+        this.myselfdetailDrawer = true;
+      }
       console.log("manage data", data);
       // const code = data.appointCarOrderCode;
       // this.$router.push("manage/detail?code=" + code);
@@ -137,13 +153,15 @@ export default {
       this.queryParams.pageNum = 1;
       this.getList();
     },
-     colseDetailDrawer(){
-      this.detailDrawer = false
+    colseDetailDrawer() {
+      this.detailDrawer = false;
+    },
+    colseMyselfDetailDrawer() {
+      this.myselfdetailDrawer = false;
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-
 </style>

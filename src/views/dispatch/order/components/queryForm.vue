@@ -67,13 +67,29 @@
         </el-form-item>
 
         <el-form-item label="调度单来源" prop="source">
-          <el-input
+          <!-- <el-input
             v-model="queryParams.source"
             placeholder=" 请输入调度单来源"
             clearable
             style="width: 185px"
             @keyup.enter.native="$emit('handleQuery')"
-          />
+
+          /> -->
+            <el-select
+            v-model="queryParams.source"
+            clearable
+            filterable
+            style="width: 185px"
+            placeholder="选择调度单来源"
+            @change="$emit('handleQuery')"
+          >
+            <el-option
+              v-for="(item, index) in sourceList"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="调度单状态" prop="dispatchOrderStatus">
           <el-select
@@ -148,7 +164,7 @@
 
 <script>
 import { pickerOptions } from "@/utils/dateRange";
-
+import {sourceListConfig} from '../order_config'
 export default {
   props: {
     value: {
@@ -170,6 +186,7 @@ export default {
     return {
       pickerOptions,
       isShow: false,
+      sourceList:[]
       // 'projectList': []
     };
   },
@@ -183,8 +200,12 @@ export default {
       },
     },
   },
+  mounted(){
+    this.sourceList = sourceListConfig
+  },
   created() {},
   methods: {
+
     reset() {
       this.queryParams.pageNum = 1;
       // this.resetForm('queryForm');

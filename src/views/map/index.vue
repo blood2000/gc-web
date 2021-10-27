@@ -235,23 +235,30 @@
                     class="tree-node-driver-box ly-flex ly-flex-align-center"
                   >
                     <img class="driver-avatar" src="~@/assets/images/device/driver_avatar.png" />
-                    <span class="driver-name">{{ data.orgOrDriverName }}</span>
-                    <!-- 司机状态 -->
-                    <span
-                      v-if="
-                        data.driverStatus !== null &&
-                        data.driverStatus !== undefined
-                      "
-                      class="status"
-                      :class="
-                        selectDictColor(driverStatusOptions, data.driverStatus)
-                      "
-                    >
-                      <strong>· </strong
-                      >{{
-                        selectDictLabel(driverStatusOptions, data.driverStatus)
-                      }}
-                    </span>
+                    <div>
+                      <div>
+                        <span class="driver-name">{{ data.orgOrDriverName }}</span>
+                        <!-- 司机状态 -->
+                        <span
+                          v-if="
+                            data.driverStatus !== null &&
+                            data.driverStatus !== undefined
+                          "
+                          class="status"
+                          :class="
+                            selectDictColor(driverStatusOptions, data.driverStatus)
+                          "
+                        >
+                          <strong>· </strong
+                          >{{
+                            selectDictLabel(driverStatusOptions, data.driverStatus)
+                          }}
+                        </span>
+                      </div>
+                      <div>
+                        <span class="driver-vehicleNumber">{{ data.vehicleNumber }}</span>
+                      </div>
+                    </div>
                   </div>
                 </template>
               </span>
@@ -460,6 +467,7 @@ export default {
       endMarker: null,
       // 地图点位集合
       markerList: {},
+      clusterMarkerList: [],
       // 聚合
       cluster: null,
       // 定时刷新地图点位
@@ -770,6 +778,9 @@ export default {
         this.markerList[key] = null;
       }
       this.markerList = {};
+      this.clusterMarkerList = [];
+      if (this.cluster) this.cluster.setMap(null);
+      this.cluster = null;
     },
     /** 判断当前位置是否在可视区域 */
     isPointInRing(position) {
@@ -1274,6 +1285,11 @@ export default {
               this.drawVehicleMarker(el);
             }
           });
+          // 标记点聚合
+          // console.log(this.clusterMarkerList)
+          // this.cluster = new AMap.MarkerClusterer(this.map, this.clusterMarkerList, {
+          //   gridSize: 80
+          // })
           // 刷新点位后不重新设置视野
           if(isFresh && this.headerTab !== 3) {
             this.$nextTick(() => {
@@ -1310,6 +1326,10 @@ export default {
             attribute.coordinate.value[1]
           ) {
             this.drawVehicleMarker(data);
+            // 标记点聚合
+            // this.cluster = new AMap.MarkerClusterer(this.map, this.clusterMarkerList, {
+            //   gridSize: 80
+            // })
             // 刷新点位后不重新设置视野
             if(isFresh && this.headerTab !== 3) {
               this.$nextTick(() => {
@@ -1353,6 +1373,7 @@ export default {
       };
       const marker = this.drawMarker(position, styleObj);
       this.markerList[vehicle_code] = marker;
+      this.clusterMarkerList.push(marker);
       // 绘制文本框
       const info = [];
       info.push("<div class='own-map-vehicle-marker-label'>");
@@ -1399,33 +1420,6 @@ export default {
           _this.$store.commit("set_showVehicleDetail", true);
         }
       });
-      // 标记点聚合
-      const sts = [{
-          url: "https://a.amap.com/jsapi_demos/static/images/blue.png",
-          size: new AMap.Size(32, 32),
-          offset: new AMap.Pixel(-16, -16)
-      }, {
-          url: "https://a.amap.com/jsapi_demos/static/images/green.png",
-          size: new AMap.Size(32, 32),
-          offset: new AMap.Pixel(-16, -16)
-      }, {
-          url: "https://a.amap.com/jsapi_demos/static/images/orange.png",
-          size: new AMap.Size(36, 36),
-          offset: new AMap.Pixel(-18, -18)
-      }, {
-          url: "https://a.amap.com/jsapi_demos/static/images/red.png",
-          size: new AMap.Size(48, 48),
-          offset: new AMap.Pixel(-24, -24)
-      }, {
-          url: "https://a.amap.com/jsapi_demos/static/images/darkRed.png",
-          size: new AMap.Size(48, 48),
-          offset: new AMap.Pixel(-24, -24)
-      }];
-      this.cluster = new AMap.MarkerClusterer(this.map, this.markerList, {
-        minClusterSize: 1,
-        styles: sts,
-        gridSize: 80
-      })
     },
     // 切换地图tab
     handleHeaderTab(code) {
@@ -2260,8 +2254,8 @@ export default {
   .tree-node-driver-box {
     margin: 8px 0;
     .driver-avatar{
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
     }
     .driver-name{
       font-size: 14px;
@@ -2269,6 +2263,11 @@ export default {
       font-weight: bold;
       line-height: 24px;
       color: #3D4050;
+      margin: 0 18px 0 8px;
+    }
+    .driver-vehicleNumber{
+      font-size: 12px;
+      color: #a7aabb;
       margin: 0 18px 0 8px;
     }
   }

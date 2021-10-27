@@ -45,25 +45,24 @@
       />
       <!-- 分割线 -->
       <div class="divier"></div>
-            <div class="page-table-layout-set">
-
-      <!-- 操作栏 -->
-      <el-row :gutter="10" class="toolsbar">
-        <el-col :span="1.5">
-          <el-button type="primary" size="mini" @click="handleAdd"
-            >新增</el-button
-          >
-        </el-col>
-        <el-col :span="1.5">
-          <el-button
-            type="danger"
-            size="mini"
-            :disabled="multiple"
-            @click="handleDelete"
-            >删除</el-button
-          >
-        </el-col>
-        <!-- <el-col :span="1.5">
+      <div class="page-table-layout-set">
+        <!-- 操作栏 -->
+        <el-row :gutter="10" class="toolsbar">
+          <el-col :span="1.5">
+            <el-button type="primary" size="mini" @click="handleAdd"
+              >新增</el-button
+            >
+          </el-col>
+          <el-col :span="1.5">
+            <el-button
+              type="danger"
+              size="mini"
+              :disabled="multiple"
+              @click="handleDelete"
+              >删除</el-button
+            >
+          </el-col>
+          <!-- <el-col :span="1.5">
                 <el-button type="primary" size="mini" @click="handleImport"
                   >导入</el-button
                 >
@@ -77,99 +76,87 @@
                   >导出</el-button
                 >
               </el-col> -->
-        <el-col :span="1.5">
-          <el-button type="primary" size="mini" @click="handleGroup"
-            >车辆分组管理</el-button
-          >
-        </el-col>
-        <!-- <el-col :span="1.5" class="loadTemplate"
+          <el-col :span="1.5">
+            <el-button type="primary" size="mini" @click="handleGroup"
+              >车辆分组管理</el-button
+            >
+          </el-col>
+          <!-- <el-col :span="1.5" class="loadTemplate"
                 ><a> 下载导入模板</a>
               </el-col> -->
-        <!-- <right-toolbar
+          <!-- <right-toolbar
           :show-search.sync="showSearch"
           @queryTable="searchQuery"
         /> -->
-      </el-row>
-      <!-- 表格 -->
-      <RefactorTable
-        is-show-index
-        :loading="loading"
-        :data="vehicleList"
-        row-key="id"
-        :table-columns-config="tableColumnsConfig"
-        @selection-change="handleSelectionChange"
-        :border="false"
-        :stripe="true"
-      >
-        <template #vehicleStatus="{ row }">
-          <span
-            :style="{
-              color: getVehicleStatusConfigOption(row.vehicleStatus).color,
-            }"
-          >
-            {{ getVehicleStatusConfigOption(row.vehicleStatus).label }}
-          </span>
-        </template>
-        <template #enabled="{ row }">
-          <el-switch
-            v-model="row.enabled"
-            :active-value="1"
-            :inactive-value="0"
-            @change="handleStatusChange(row)"
-          />
-        </template>
-        <template #deviceInf="{ row }">
-          <div
-            class="deviceInf-cion"
-            v-for="item in row.deviceInf"
-            :key="item.img"
-          >
-            <el-tooltip
-              class="item"
-              effect="dark"
-              :content="item.name"
-              placement="top"
+        </el-row>
+        <!-- 表格 -->
+        <RefactorTable
+          is-show-index
+          :loading="loading"
+          :data="vehicleList"
+          row-key="id"
+          :table-columns-config="tableColumnsConfig"
+          @selection-change="handleSelectionChange"
+          :border="false"
+          :stripe="true"
+        >
+          <template #vehicleStatus="{ row }">
+            <span
+              :style="{
+                color: getVehicleStatusConfigOption(row.vehicleStatus).color,
+              }"
             >
-              <img :src="item.img" alt="" />
-            </el-tooltip>
-          </div>
-        </template>
-
-        <template #edit="{ row }" width="200">
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleUpdate(row)"
-            >修改</el-button
-          >
-          <el-button
-            size="mini"
-            type="text"
-            style="color: red"
-            @click="handleDelete(row)"
-            >删除</el-button
-          >
-          <el-button
-            size="mini"
-            type="text"
-            @click="handlePosition(row)"
-            >定位</el-button
-          >
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleDetail(row)"
-            >详情</el-button
-          >
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleDevice(row)"
-            >绑定设备</el-button
-          >
-        </template>
-      </RefactorTable>
+              {{ getVehicleStatusConfigOption(row.vehicleStatus).label }}
+            </span>
+          </template>
+          <template #enabled="{ row }">
+            <el-switch
+              v-model="row.enabled"
+              :active-value="1"
+              :inactive-value="0"
+              @change="handleStatusChange(row)"
+            />
+          </template>
+          <template #deviceInf="{ row }">
+            <div
+              class="deviceInf-cion"
+              v-for="item in row.deviceInf"
+              :key="item.img"
+            >
+              <el-tooltip
+                class="item"
+                effect="dark"
+                :content="item.name"
+                placement="top"
+              >
+                <img :src="item.img" alt="" />
+              </el-tooltip>
             </div>
+          </template>
+
+          <template #edit="{ row }" width="200">
+            <el-button size="mini" type="text" @click="handleUpdate(row)"
+              >修改</el-button
+            >
+            <el-button
+              size="mini"
+              type="text"
+              style="color: red"
+              @click="handleDelete(row)"
+              >删除</el-button
+            >
+            <el-button size="mini" type="text" @click="handlePosition(row)"
+              >定位</el-button
+            >
+            <el-button size="mini" type="text" @click="handleDetail(row)"
+              >详情</el-button
+            >
+            <el-button size="mini" type="text" @click="handleDevice(row)"
+              >绑定设备</el-button
+            >
+          </template>
+        </RefactorTable>
+      </div>
       <!-- 分页 -->
       <pagination
         v-show="total > 0"
@@ -180,14 +167,19 @@
         @pagination="vehicleHttpReq"
       />
     </div>
-    <Detail :code="currCode" :detailDrawer="detailDrawer" :options="{title:'车辆信息'}" @colseDetailDrawer='colseDetailDrawer' />
+    <Detail
+      :code="currCode"
+      :detailDrawer="detailDrawer"
+      :options="{ title: '车辆信息' }"
+      @colseDetailDrawer="colseDetailDrawer"
+    />
     <VehicleDialog
       :options="{
         editType: editType,
         code: vehicleCode,
         defaultDriverList: defaultDriverList,
         orgCode: queryParams.orgCode,
-        authStatusValue:authStatusValue
+        authStatusValue: authStatusValue,
       }"
       :open="open"
       :title="title"
@@ -213,12 +205,12 @@ import GroupDialog from "./components/group_dialog.vue";
 import DeviceDialog from "./components/device_dialog.vue";
 import { http_request } from "@/api";
 import store from "@/store";
-import Detail from './detail.vue'
+import Detail from "./detail.vue";
 
 // import { mapState, mapMutations } from "vuex";
 export default {
   name: "vehicle", // 车辆管理
-  components: { QueryForm, VehicleDialog, GroupDialog, DeviceDialog ,Detail},
+  components: { QueryForm, VehicleDialog, GroupDialog, DeviceDialog, Detail },
   data() {
     return {
       showSearch: true, //搜索显隐
@@ -260,9 +252,9 @@ export default {
       deviceOptions: {
         title: "",
       },
-      authStatusValue:null,
-      currCode:null,
-      detailDrawer:false
+      authStatusValue: null,
+      currCode: null,
+      detailDrawer: false,
     };
   },
   created() {},
@@ -403,7 +395,7 @@ export default {
       this.vehicleHttpReq();
     },
     formToPaging() {
-      console.log('this.queryParams.dateRange',this.queryParams.dateRange)
+      console.log("this.queryParams.dateRange", this.queryParams.dateRange);
       const tmp = {
         pageNum: this.queryParams.pageNum,
         pageSize: this.queryParams.pageSize,
@@ -412,9 +404,15 @@ export default {
         groupName: this.queryParams.groupName || null, //分组
         enabled: this.queryParams.enabled || null, //是否启用
         createBeginTime:
-          (this.queryParams.dateRange&&this.queryParams.dateRange.length>0 && this.queryParams.dateRange[0]) || null,
+          (this.queryParams.dateRange &&
+            this.queryParams.dateRange.length > 0 &&
+            this.queryParams.dateRange[0]) ||
+          null,
         createEndTime:
-          (this.queryParams.dateRange&&this.queryParams.dateRange.length>0 && this.queryParams.dateRange[1]) || null,
+          (this.queryParams.dateRange &&
+            this.queryParams.dateRange.length > 0 &&
+            this.queryParams.dateRange[1]) ||
+          null,
         orgCode: this.queryParams.orgCode,
       };
       for (const item in tmp) {
@@ -422,13 +420,12 @@ export default {
           delete tmp[item];
         }
       }
-      console.log('tmp.createBeginTime',tmp.createBeginTime)
+      console.log("tmp.createBeginTime", tmp.createBeginTime);
       if (tmp.createBeginTime) {
         tmp.createBeginTime = tmp.createBeginTime + " " + "00:00:00";
       }
-      if (tmp.createEndTime){
+      if (tmp.createEndTime) {
         tmp.createEndTime = tmp.createEndTime + " " + "23:59:59";
-
       }
 
       return tmp;
@@ -490,32 +487,36 @@ export default {
       console.log("obj", obj);
       const ids = obj.code ? [obj.code] : this.ids;
       console.log("this.ids", ids, this.ids, obj.code);
-      this.$confirm("删除操作不可恢复，确认要删除改车辆吗？", "警告", {
+      this.$confirm("删除操作不可恢复，确认要删除该车辆吗？", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
+          console.log("进来请求了");
           const tmp = {
             moduleName: "http_vehicle",
             method: "post",
             url_alias: "vehicle_del",
             data: { list: ids },
           };
-          http_request(tmp);
+          return http_request(tmp);
         })
-        .then(() => {
-          this.vehicleHttpReq();
-          this.msgSuccess("删除成功");
+        .then((res) => {
+          console.log("看看数据", res);
+          if (res && res.code == "200") {
+            this.msgSuccess("删除成功");
+          }
+          this.searchQuery();
         });
     },
     handleUpdate(obj) {
-      console.log('修改车辆弹窗',obj)
+      console.log("修改车辆弹窗", obj);
       this.title = "修改车辆弹窗";
       this.editType = "update";
       this.open = true;
       this.vehicleCode = obj.code;
-      this.authStatusValue = obj.authStatusValue
+      this.authStatusValue = obj.authStatusValue;
     },
     handlePosition(obj) {
       console.log("obj", obj);
@@ -526,9 +527,9 @@ export default {
       );
     },
     handleDetail(obj) {
-      this.currCode  = obj.code;
-      this.detailDrawer = true
-      console.log('ckc code',this.currCode )
+      this.currCode = obj.code;
+      this.detailDrawer = true;
+      console.log("ckc code", this.currCode);
       // this.$router.push("detail?code=" + code);
     },
     handleDevice(obj) {
@@ -555,8 +556,8 @@ export default {
       this.deviceOpen = false;
       this.vehicleHttpReq();
     },
-       colseDetailDrawer(){
-      this.detailDrawer = false
+    colseDetailDrawer() {
+      this.detailDrawer = false;
     },
   },
 };

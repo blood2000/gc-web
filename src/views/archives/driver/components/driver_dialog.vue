@@ -421,6 +421,7 @@ export default {
       if (res.code != "200") return;
       const msgData = res.data;
       console.log("msgData", msgData);
+      if(!msgData) return
       if (msgData.type != "2") {
         console.log("0000000");
         me.$confirm(`${msgData.value}`, "系统提示", {
@@ -428,11 +429,12 @@ export default {
           showCancelButton: false,
           type: "warning",
         }).then(() => {
-          if (type == "0") {
-            me.form.telphone = null;
-          } else {
-            me.form.identificationNumber = null;
-          }
+          // if (type == "0") {
+          //   me.form.telphone = null;
+          // } else {
+          //   me.form.identificationNumber = null;
+          // }
+          this.reset()
         });
       } else {
         me.$confirm(`${msgData.value}`, "系统提示", {
@@ -452,6 +454,8 @@ export default {
             http_request(bindObj).then((rsp) => {
               console.log("111111", rsp);
               me.reset();
+                    this.isDetail = false;
+
               me.$emit("colseDialog", "ok");
               me.msgSuccess("添加成功");
             });
@@ -542,6 +546,8 @@ export default {
     //关闭
     cancel() {
       this.reset();
+            this.isDetail = false;
+
       this.$emit("colseDialog", "no");
     },
     reset(orgCode = null) {
@@ -560,7 +566,6 @@ export default {
         remark: null, //备注
       };
       this.resetForm("form");
-      this.isDetail = false;
       this.isIdDateValid = true;
     },
     //身份证正面照/身份证反面照 上传结束后回调

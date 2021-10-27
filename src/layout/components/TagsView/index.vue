@@ -179,7 +179,6 @@ export default {
     },
     addTags() {
       const { name } = this.$route;
-      console.log("tag name", name);
       if (name) {
         this.$store.dispatch("tagsView/addView", this.$route);
       }

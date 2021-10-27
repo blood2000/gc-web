@@ -12,7 +12,7 @@ const whiteList = ['/login', '/auth-redirect', '/bind', '/register', '/resetPwd'
 router.beforeEach((to, from, next) => {
   NProgress.start()
   // setToken('233434234')
-  console.log('getToken()',getToken())
+  console.log('getToken:',getToken())
   if (getToken()) {
     /* has token*/
     if (to.path === '/login') {

@@ -165,8 +165,9 @@
               :normalizer="normalizer"
               :show-count="true"
               placeholder="请选择所属组织"
-              no-results-text="无匹配数据"
+              noResultsText="无匹配数据"
               @select="selectOrgCode"
+              @input="treeselectchange"
             />
           </el-form-item>
         </el-col>
@@ -554,13 +555,18 @@ export default {
     //车辆校验
     async checkVhicle(result = null) {
       const me = this;
-      const licenseNumber = result.number || me.form.licenseNumber;
-      console.log("ckc------", result.number, me.form.licenseNumber);
+      console.log("result", result);
+      let licenseNumber = "";
+      if (result && result.number) {
+        licenseNumber = result.number;
+        console.log("ckc------", result.number, me.form.licenseNumber);
+      } else {
+        licenseNumber = me.form.licenseNumber;
+      }
       console.log("licenseNumber", licenseNumber);
       const orgCode = me.options.orgCode;
       if (!licenseNumber) return;
       console.log("orgCode", orgCode);
-      console.log("licenseNumber", licenseNumber);
       const obj = {
         moduleName: "http_vehicle",
         method: "post",
@@ -645,6 +651,36 @@ export default {
       this.$nextTick(() => {
         this.$refs.form.validateField("orgCode");
       });
+    },
+    treeselectchange(e){
+      console.log('树e',e)
+      if(this.options.editType == 'update'){
+        console.log('deptOptions',this.deptOptions)
+        const result = {
+          result:null
+        }
+        this.recursionorgTree(this.deptOptions,e,result)
+        console.log('result',result)
+        if(!result.result){
+          this.form.orgCode = null
+        }
+      }
+    },
+    recursionorgTree(data,e, result) {
+      const me = this;
+      for (const el of data) {
+        console.log(el);
+        if (
+          el.code == e
+        ) {
+          result.result = el.orgName
+          break
+        } else {
+          if (el.childrenOrgList) {
+            me.recursionorgTree(el.childrenOrgList, e,result);
+          }
+        }
+      }
     },
     //获取详情
     requsetDetail() {
