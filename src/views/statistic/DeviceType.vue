@@ -1,9 +1,5 @@
 <template>
   <div class="s-container">
-    <ul class="s-container__list">
-
-    </ul>
-
     <div ref="chart" class="s-container__chart" />
   </div>
 </template>
@@ -59,11 +55,8 @@ export default {
 .s-container{
   height: 100%;
   padding-top: 1rem;
-  &__list{
-    height: 3.75rem;
-  }
   &__chart{
-    height: calc(100% - 3.75rem);
+    height: 100%;
   }
 }
 </style>

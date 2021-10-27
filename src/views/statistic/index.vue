@@ -9,15 +9,21 @@
     <div class="ly-left ly-border">
       <div class="ly-left-top ly-border">
         <Title>用户总览<span>The user overview</span></Title>
-        <div class="content-box ly-border">内容</div>
+        <div class="content-box ly-border">
+          <UserOverView refs="UserOverViewRef" />
+        </div>
       </div>
       <div class="ly-left-center ly-border">
         <Title :show-after="true" after-text="TOP5">地区分布<span>Regional distribution</span></Title>
-        <div class="content-box ly-border">内容</div>
+        <div class="content-box ly-border">
+          <RegionalDistribute />
+        </div>
       </div>
       <div class="ly-left-bottom ly-border">
         <Title :show-after="true" after-text="TOP8">车辆类型<span>Vehicle type</span></Title>
-        <div class="content-box ly-border">内容</div>
+        <div class="content-box ly-border">
+          <VehicleType ref="VehicleTypeRef" />
+        </div>
       </div>
     </div>
 
@@ -31,20 +37,28 @@
       <div class="ly-right-top ly-border">
         <div class="ly-right-top-top ly-border">
           <Title>设备资产信息<span>Equipment asset information</span></Title>
-          <div class="content-box ly-border">内容</div>
+          <div class="content-box ly-border">
+            <DeviceAssetInfo />
+          </div>
         </div>
         <div class="ly-right-top-bottom ly-border">
           <Title>设备类型占比<span>Device type accounted for</span></Title>
-          <div class="content-box ly-border">内容</div>
+          <div class="content-box ly-border">
+            <DeviceType ref="DeviceTypeRef" />
+          </div>
         </div>
       </div>
       <div class="ly-right-center ly-border">
         <Title :show-after="true" after-text="TOP8">告警事件统计<span>The alarm event statistics</span></Title>
-        <div class="content-box ly-border">内容</div>
+        <div class="content-box ly-border">
+          <AlarmEvent />
+        </div>
       </div>
       <div class="ly-right-bottom ly-border">
         <Title>告警信息<span>The alarm rate</span></Title>
-        <div class="content-box ly-border">内容</div>
+        <div class="content-box ly-border">
+          <AlarmInfo />
+        </div>
       </div>
     </div>
 
@@ -63,11 +77,25 @@ import { http_request } from "@/api";
 import { ThrottleFun } from '@/utils/index.js';
 import Title from './components/title';
 import Map from './Map.vue';
+import UserOverView from './UserOverView.vue'; // 用户总览
+import RegionalDistribute from './RegionalDistribute.vue'; // 地区分布
+import VehicleType from './VehicleType.vue'; // 车辆类型
+import DeviceAssetInfo from './DeviceAssetInfo.vue'; // 设备资产信息
+import DeviceType from './DeviceType.vue'; // 设备类型占比
+import AlarmEvent from './AlarmEvent.vue'; // 告警事件统计
+import AlarmInfo from './AlarmInfo.vue'; // 告警信息
 export default {
   name: 'Statistic',
   components: {
     Title,
-    Map
+    Map,
+    UserOverView,
+    RegionalDistribute,
+    VehicleType,
+    DeviceAssetInfo,
+    DeviceType,
+    AlarmEvent,
+    AlarmInfo
   },
   data() {
     return {
@@ -89,7 +117,9 @@ export default {
     // 图表自适应
     refreshChart() {
       this.setHtmlFontSize();
-      // ...
+      // this.$refs.UserOverViewRef.refreshChart();
+      this.$refs.VehicleTypeRef.refreshChart();
+      // this.$refs.DeviceTypeRef.refreshChart();
     },
     // 计算根节点fontsize
     setHtmlFontSize() {
