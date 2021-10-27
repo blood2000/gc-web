@@ -268,6 +268,7 @@ export default {
         this.form.provinceCode &&
         this.isCreateCity
       ) {
+        console.log("我不该触发的provinceCode");
         this.getCityListFun(this.form.provinceCode);
         this.isCreateCity = false;
       }
@@ -280,6 +281,7 @@ export default {
         this.form.cityCode &&
         this.isDistrictCity
       ) {
+        console.log("我不该触发的 cityCode");
         this.getDistrictFun(this.form.cityCode);
         this.isDistrictCity = false;
       }
@@ -311,7 +313,7 @@ export default {
         addressAlias: data.addressAlias, //地址别名
         latitude: data.latitude, //经度
         longitude: data.longitude, //维度
-        detail: data.longitude, //地址详情
+        detail: data.detail, //地址详情
         contact: data.contact, //联系人
         contactPhone: data.contactPhone, //手机号码
         provinceCode: data.provinceCode, //省份编码
@@ -460,11 +462,9 @@ export default {
     },
     // 市更新
     cityChange(e) {
-      this.form.cityCode = null;
       this.form.districtCode = null;
-      this.cityList = [];
       this.districtList = [];
-      this.getCityListFun(e);
+      this.getDistrictFun(e);
     },
     //区更新
     districtChange(e) {},

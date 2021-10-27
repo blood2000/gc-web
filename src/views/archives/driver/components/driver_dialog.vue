@@ -466,7 +466,7 @@ export default {
               me.form.telphone = null;
             } else {
               me.form.identificationNumber = null;
-              me.form.name = null;
+              // me.form.name = null;
               me.form.identificationImage = null;
             }
           });
@@ -599,6 +599,19 @@ export default {
       }
       const res = await http_request(obj);
       console.log("ocr请求", res);
+      if(res.data&&res.data.error_msg){
+        this.msgError('该照片非身份证类型，请重新上传')
+        if(type === 0 ){
+            if(side ==="front" ){
+              this.identificationImage = null
+            }else{
+              this.identificationBackImage = null
+            }
+        }else{
+          this.driverLicenseImage = null
+        }
+        return
+      }
       this.ocrDataToForm(res.data.result, type);
     },
     //ocr数据渲染页面

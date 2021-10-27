@@ -50,7 +50,7 @@
             <el-button size="mini" type="text" @click="handleDetail(row)">
               详情
             </el-button>
-            <el-button size="mini" type="text" @click="handleDispatch(row)">
+            <el-button size="mini" type="text" @click="handleDispatch(row)" v-show="row.dispatchOrderStatus !== 0">
               派车
             </el-button>
             <el-button size="mini" type="text" @click="handleCarlog(row)">
@@ -137,23 +137,61 @@ export default {
       tableColumnsConfig,
       sourceConfig,
       tableData: [], //表格数据
+      goodsBigTypeConfig: {
+        status: "0",
+        dictPid: "0",
+        dictType: "goodsType",
+      },
+      goodsTypeConfig: {
+        status: "0",
+        dictPid: "",
+        dictType: "goodsType",
+      },
       goodsTypeList: [],
       createDrawer: false, //创建调度单
     };
   },
   created() {
-    const me = this;
-    const formData = new FormData();
-    formData.append("dictType", "goodsType");
-    this.getDicts("goodsType").then((res) => {
-      me.$store.commit("set_goodsTypeList", res.data);
-      me.goodsTypeList = me.$store.state.dict.goodsTypeList;
-    });
+    // this.getDicts(null, this.goodsTypeConfig).then((response) => {
+    //   console.log("goodsType   response====>", response);
+    //   me.$store.commit("set_goodsTypeList", response.data);
+    //   me.goodsTypeList = me.$store.state.dict.goodsTypeList;
+    // });
+    this.getGoodsTypeList();
   },
   mounted() {
     this.searchQuery();
   },
   methods: {
+    //获取级联形式大类小类
+    async getGoodsTypeList() {
+      const resBig = await this.getDicts(null, this.goodsBigTypeConfig);
+      if (resBig.code != "200") return;
+      const bigList = resBig.data;
+      const result = [];
+      for (const item of bigList) {
+        const bigObj = {};
+        if (item.dictCode && item.dictLabel) {
+          bigObj.value = item.dictCode;
+          bigObj.label = item.dictLabel;
+          bigObj.children = [];
+          this.goodsTypeConfig.dictPid = item.dictCode;
+          const res = await this.getDicts(null, this.goodsTypeConfig);
+          if (res.code != "200") return;
+          for (const el of res.data) {
+            const obj = {};
+            obj.value = el.dictCode;
+            obj.label = el.dictLabel;
+            bigObj.children.push(obj);
+          }
+          result.push(bigObj);
+        }
+      }
+      this.goodsTypeList = result;
+      //  .then((response) => {
+      //         this.goodsBigTypeList = response.data;
+      //       });
+    },
     // 创建调度单
     createDispatchOrder() {
       this.createDrawer = true;
@@ -189,6 +227,9 @@ export default {
     //派车
     handleDispatch(data) {
       //dispatch/order/car
+      if(data.dispatchOrderStatus === 0){
+        return this.msgWarning('该调度状态已经关闭，无法进行派车')
+      }
       console.log("data", data);
       this.carDrawer = true;
       this.currCode = data.dispatchOrderCode;
@@ -197,29 +238,35 @@ export default {
     // 表单到分页请求参数
     formToPaging() {
       const tmp = { ...this.queryParams };
+      console.log("tmp", tmp);
       if (tmp.dispatchOrderStatus != null) {
         const statusList = [];
+        console.log("tmp.dispatchOrderStatus", tmp.dispatchOrderStatus);
         statusList.push(tmp.dispatchOrderStatus);
+        console.log("statusList", statusList);
         tmp.dispatchOrderStatus = statusList;
+        console.log(";tmp.dispatchOrderStatus", tmp.dispatchOrderStatus);
       }
       if (tmp.dateRange) {
         tmp.startDate = tmp.dateRange[0];
         tmp.endDate = tmp.dateRange[1];
         delete tmp.dateRange;
       }
-      if (
-        tmp.dispatchOrderStatus &&
-        tmp.dispatchOrderStatus.length == 1 &&
-        !tmp.dispatchOrderStatus[0]
-      ) {
-        delete tmp.dispatchOrderStatus;
+      if (tmp.dispatchOrderStatus && tmp.dispatchOrderStatus.length == 1) {
+        console.log("tmp.dispatchOrderStatus[0]", tmp.dispatchOrderStatus[0]);
+        if (!tmp.dispatchOrderStatus[0] && tmp.dispatchOrderStatus[0] !== 0)
+          delete tmp.dispatchOrderStatus;
       }
 
-      for (const item in tmp) {
-        if (!tmp[item]) {
-          delete tmp[item];
-        }
-      }
+      // for (const item in tmp) {
+      //   console.log('tmp item ',item,tmp[item])
+      //   if(tmp[item] == 0){
+      //     console.log('tmp[item]',tmp[item])
+      //   }
+      //   if (!tmp[item] && tmp[item] != 0) {
+      //     delete tmp[item];
+      //   }
+      // }
       return tmp;
     },
     // 请求列表

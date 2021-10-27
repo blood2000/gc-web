@@ -12,7 +12,7 @@
       ref="form"
       :model="form"
       :rules="rules"
-      label-width="100px"
+      label-width="120px"
       size="small"
     >
       <el-row>

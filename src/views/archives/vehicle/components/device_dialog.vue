@@ -170,7 +170,7 @@ export default {
       const result = await http_request(obj);
       console.log("ckc result bind", result,this.deviceInfo);
       if (result.code != 200) return;
-      result.data.device.deviceSN
+      result.data.device.deviceCode
         ? (this.isbang = true)
         : (this.isbang = false);
       // this.$nextTick(() => {
@@ -208,6 +208,7 @@ export default {
         data: { sn: item.deviceSN, vehicleCode: this.options.vehicleCode },
       };
       const res = await http_request(obj);
+      if(res.code != 200) return
       console.log("res", res);
       this.getBindInfo();
       this.getUnbindList();
