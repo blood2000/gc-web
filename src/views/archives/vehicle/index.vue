@@ -494,21 +494,55 @@ export default {
       })
         .then(() => {
           console.log("进来请求了");
-          const tmp = {
+          //checkDelete
+          const checkTmp = {
             moduleName: "http_vehicle",
             method: "post",
-            url_alias: "vehicle_del",
+            url_alias: "checkDelete",
             data: { list: ids },
           };
-          return http_request(tmp);
+          return http_request(checkTmp);
         })
-        .then((res) => {
-          console.log("看看数据", res);
-          if (res && res.code == "200") {
-            this.msgSuccess("删除成功");
-          }
-          this.searchQuery();
+        .then((el) => {
+          this.$confirm(el.data.msg, "警告", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+          }).then(() => {
+            console.log("开始删了");
+            //删除
+            const tmp = {
+              moduleName: "http_vehicle",
+              method: "post",
+              url_alias: "vehicle_del",
+              data: { list: ids },
+            };
+            http_request(tmp).then((res) => {
+              console.log("看看数据", res);
+              if (res && res.code == "200") {
+                this.msgSuccess("删除成功");
+              }
+              this.searchQuery();
+            });
+          });
         });
+
+      // //删除
+      // const tmp = {
+      //   moduleName: "http_vehicle",
+      //   method: "post",
+      //   url_alias: "vehicle_del",
+      //   data: { list: ids },
+      // };
+      // http_request(tmp);
+
+      // .then((res) => {
+      //   console.log("看看数据", res);
+      //   if (res && res.code == "200") {
+      //     this.msgSuccess("删除成功");
+      //   }
+      //   this.searchQuery();
+      // });
     },
     handleUpdate(obj) {
       console.log("修改车辆弹窗", obj);
@@ -533,13 +567,14 @@ export default {
       // this.$router.push("detail?code=" + code);
     },
     handleDevice(obj) {
-      console.log("ckc obj", obj);
+      console.log("ckc obj", obj, obj.deviceCode);
 
       this.deviceOptions = {
-        title: obj.seriesCode ? "更换设备" : "绑定设备",
+        title: obj.deviceCode ? "更换设备" : "绑定设备",
         vehicleCode: obj.code,
-        isbang: obj.seriesCode ? true : false,
+        isbang: obj.deviceCode ? true : false,
       };
+      console.log("deviceOptions", this.deviceOptions);
       this.deviceOpen = true;
     },
     colseDialog(e) {

@@ -187,7 +187,6 @@ export function getDicts(dictType, dictObj) {
   } else {
     formData.append('dictType', dictType)
   }
-  console.log('formData',formData)
   return service.post('/chy/system/dict/data/listByDict', formData, {
     headers: Object.assign({}, defaultH, {
       'Content-Type': 'application/x-www-form-urlencoded'

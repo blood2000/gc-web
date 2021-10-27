@@ -49,8 +49,8 @@
       </div>
       <div class="down" v-show="isShow">
         <el-form-item label="货物类型：" prop="goodsType">
-          <el-select
-            v-model="queryParams.goodsType"
+          <!-- <el-select
+            
             clearable
             filterable
             style="width: 185px"
@@ -63,7 +63,15 @@
               :label="item.dictLabel"
               :value="item.dictValue"
             />
-          </el-select>
+          </el-select> -->
+          <el-cascader
+          clearable
+            filterable
+            v-model="queryParams.goodsType"
+            @change="cascaderChange"
+            :options="goodsTypeList"
+            :show-all-levels="false"
+          ></el-cascader>
         </el-form-item>
 
         <el-form-item label="调度单来源" prop="source">
@@ -75,7 +83,7 @@
             @keyup.enter.native="$emit('handleQuery')"
 
           /> -->
-            <el-select
+          <el-select
             v-model="queryParams.source"
             clearable
             filterable
@@ -111,7 +119,7 @@
         <el-form-item label="货源备注：" prop="remark">
           <el-input
             v-model="queryParams.remark"
-            placeholder="请输入手机号码"
+            placeholder="请输入货源备注"
             clearable
             style="width: 185px"
             @keyup.enter.native="$emit('handleQuery')"
@@ -164,7 +172,7 @@
 
 <script>
 import { pickerOptions } from "@/utils/dateRange";
-import {sourceListConfig} from '../order_config'
+import { sourceListConfig } from "../order_config";
 export default {
   props: {
     value: {
@@ -186,7 +194,7 @@ export default {
     return {
       pickerOptions,
       isShow: false,
-      sourceList:[]
+      sourceList: [],
       // 'projectList': []
     };
   },
@@ -200,12 +208,15 @@ export default {
       },
     },
   },
-  mounted(){
-    this.sourceList = sourceListConfig
+  mounted() {
+    this.sourceList = sourceListConfig;
   },
   created() {},
   methods: {
-
+    cascaderChange(e) {
+      this.queryParams.goodsType = this.queryParams.goodsType[1];
+      this.$emit("handleQuery");
+    },
     reset() {
       this.queryParams.pageNum = 1;
       // this.resetForm('queryForm');

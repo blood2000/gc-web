@@ -25,6 +25,7 @@
               filterable
               style="width: 200px"
               placeholder="请选择用车企业"
+              allow-create
               @change="shipmentChange"
             >
               <el-option

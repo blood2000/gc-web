@@ -15,5 +15,6 @@ export default {
   device_unbind: '/fmsweb/vehicle/device/v1/unbinding',//解除绑定
   qrcode_decode: (type) => `/fmsweb/basic/common/v1/qrcode/decode/${type}`,
   checkAdd: '/fmsweb/basic/vehicle/v1/checkAdd',  //校验车辆
-  confirmAdd: '/fmsweb/basic/vehicle/v1/confirmAdd' //确认添加
+  confirmAdd: '/fmsweb/basic/vehicle/v1/confirmAdd', //确认添加
+  checkDelete:'/fmsweb/basic/vehicle/v1/checkDelete',//校验车辆删除
 }
