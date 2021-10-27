@@ -10,7 +10,7 @@
       <div class="ly-left-top ly-border">
         <Title>用户总览<span>The user overview</span></Title>
         <div class="content-box ly-border">
-          <UserOverView refs="UserOverViewRef" />
+          <UserOverView ref="UserOverViewRef" />
         </div>
       </div>
       <div class="ly-left-center ly-border">
@@ -117,9 +117,9 @@ export default {
     // 图表自适应
     refreshChart() {
       this.setHtmlFontSize();
-      // this.$refs.UserOverViewRef.refreshChart();
+      this.$refs.UserOverViewRef.refreshChart();
       this.$refs.VehicleTypeRef.refreshChart();
-      // this.$refs.DeviceTypeRef.refreshChart();
+      this.$refs.DeviceTypeRef.refreshChart();
     },
     // 计算根节点fontsize
     setHtmlFontSize() {
@@ -144,7 +144,7 @@ export default {
 // 辅助线
 .ly-border {
   box-sizing: border-box;
-  border: 0.05rem dashed rgba(255, 255, 255, 0.2);
+  // border: 0.05rem dashed rgba(255, 255, 255, 0.2);
 }
 
 // 设计稿大小：1920*1080

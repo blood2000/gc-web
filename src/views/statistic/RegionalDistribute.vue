@@ -149,6 +149,7 @@ export default {
             font-weight: 300;
             color: #FFE6F4;
             transform: scale(0.95);
+            transform-origin: 0 50%;
           }
           >.value{
             font-size: 0.7rem;

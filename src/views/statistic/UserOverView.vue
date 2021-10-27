@@ -1,7 +1,50 @@
 <template>
   <div class="s-container">
-    <ul class="s-container__list">
-
+    <ul class="s-container__list ly-flex ly-flex-pack-justify ly-flex-w">
+      <li class="ly-flex ly-flex-pack-justify ly-flex-align-center">
+        <img src="~@/assets/images/statistic/count_before.png">
+        <div class="line-box ly-flex ly-flex-pack-justify">
+          <p class="label ly-flex ly-flex-align-center">接入企业</p>
+          <div class="count-content ly-flex ly-flex-pack-justify ly-flex-align-center">
+            <count-to class="count" :end-val="2224" :decimal-places="0" />
+            <img src="~@/assets/images/statistic/count_up.png">
+            <span class="count-up">12.6%</span>
+          </div>
+        </div>
+      </li>
+      <li class="ly-flex ly-flex-pack-justify ly-flex-align-center">
+        <img src="~@/assets/images/statistic/count_before.png">
+        <div class="line-box ly-flex ly-flex-pack-justify">
+          <p class="label ly-flex ly-flex-align-center">接入车队</p>
+          <div class="count-content ly-flex ly-flex-pack-justify ly-flex-align-center">
+            <count-to class="count" :end-val="2224" :decimal-places="0" />
+            <img src="~@/assets/images/statistic/count_up.png">
+            <span class="count-up">12.6%</span>
+          </div>
+        </div>
+      </li>
+      <li class="ly-flex ly-flex-pack-justify ly-flex-align-center">
+        <img src="~@/assets/images/statistic/count_before.png">
+        <div class="line-box ly-flex ly-flex-pack-justify">
+          <p class="label ly-flex ly-flex-align-center">接入车辆</p>
+          <div class="count-content ly-flex ly-flex-pack-justify ly-flex-align-center">
+            <count-to class="count" :end-val="115" :decimal-places="0" />
+            <img src="~@/assets/images/statistic/count_down.png">
+            <span class="count-down">12.6%</span>
+          </div>
+        </div>
+      </li>
+      <li class="ly-flex ly-flex-pack-justify ly-flex-align-center">
+        <img src="~@/assets/images/statistic/count_before.png">
+        <div class="line-box ly-flex ly-flex-pack-justify">
+          <p class="label ly-flex ly-flex-align-center">接入司机</p>
+          <div class="count-content ly-flex ly-flex-pack-justify ly-flex-align-center">
+            <count-to class="count" :end-val="115" :decimal-places="0" />
+            <img src="~@/assets/images/statistic/count_down.png">
+            <span class="count-down">12.6%</span>
+          </div>
+        </div>
+      </li>
     </ul>
 
     <div ref="chart" class="s-container__chart" />
@@ -11,8 +54,12 @@
 <script>
 import * as echarts from 'echarts';
 import { setfontSize } from '@/utils/fontSize';
+import CountTo from '@/components/CountTo';
 import { http_request } from "@/api";
 export default {
+  components: {
+    CountTo
+  },
   props: {
 
   },
@@ -33,10 +80,12 @@ export default {
   },
   methods: {
     getData() {
-
+      this.$nextTick(() => {
+        this.initChart();
+      });
     },
     initChart() {
-      this.chart = echarts.init(this.$refs.pie, 'macarons');
+      this.chart = echarts.init(this.$refs.chart, 'macarons');
       this.setOption();
       this.setFontOption();
     },
@@ -46,10 +95,234 @@ export default {
       this.setFontOption();
     },
     setOption() {
-
+      const timeData = ['10号','10号','10号','10号','10号','10号','10号','10号'];
+      const priseData = [5, 6, 7, 2, 6, 5, 1, 6];
+      const fmsData = [6, 5, 1, 5, 8, 7, 2, 6];
+      const vehicleData = [4, 8, 9, 12, 10, 2, 1, 3];
+      const driverData = [10, 2, 3, 4, 5, 1, 6, 4];
+      this.chart.setOption({
+        legend: {
+          show: true,
+          right: 0,
+          top: '4%',
+          icon: 'circle',
+          textStyle: {
+            color: '#EBEBEB',
+            fontFamily: 'PingFang SC'
+          },
+          data: [{
+            name: '接入企业'
+          }, {
+            name: '接入车队'
+          }, {
+            name: '接入车辆'
+          }, {
+            name: '接入司机'
+          }]
+        },
+        grid: {
+          left: '1%',
+          right: 0,
+          bottom: '8%',
+          top: '20%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          // x轴字体样式
+          axisLabel: {
+            show: true,
+            textStyle: {
+              color: '#F2E9FA',
+              fontFamily: 'PingFang SC'
+            }
+          },
+          // x轴颜色
+          axisLine: {
+            lineStyle: {
+              color: '#65378B'
+            }
+          },
+          axisTick: {
+            show: true // 显示x坐标轴刻度
+          },
+          data: timeData
+        },
+        yAxis: {
+          name: '数量(万)',
+          nameTextStyle: {
+            color: '#F9EBFF',
+            paddingLeft: '2%',
+            fontFamily: 'PingFang SC'
+          },
+          type: 'value',
+          minInterval: 1, // 只显示整数
+          axisLine: {
+            show: false
+          },
+          // y轴字体样式
+          axisLabel: {
+            show: true,
+            textStyle: {
+              color: '#F2E9FA',
+              fontFamily: 'PingFang SC'
+            }
+          },
+          // 网格样式
+          splitLine: {
+            show: true,
+            lineStyle: {
+              color: 'rgba(130, 85, 168, 0.6)',
+              type: 'dashed'
+            }
+          },
+          axisTick: {
+            show: false // 隐藏y坐标轴刻度
+          }
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            lineStyle: {
+              color: '#3F5C84'
+            }
+          },
+          borderColor: 'rgba(0, 0, 0, 0)',
+          backgroundColor: 'rgba(70, 70, 70, 0.5)',
+          textStyle: {
+            color: '#ffffff',
+            fontFamily: 'PingFang SC'
+          }
+        },
+        series: [{
+          name: '接入企业',
+          data: priseData,
+          type: 'line',
+          symbol: 'circle',
+          color: '#F23AA1', // 拐点颜色
+          // 折线样式
+          itemStyle: {
+            normal: {
+              lineStyle: {
+                color: 'rgba(242, 58, 161, 0.42)'
+              }
+            }
+          }
+        },{
+          name: '接入车队',
+          data: fmsData,
+          type: 'line',
+          symbol: 'circle',
+          color: '#373AD8', // 拐点颜色
+          // 折线样式
+          itemStyle: {
+            normal: {
+              lineStyle: {
+                color: '#201E6E'
+              }
+            }
+          }
+        },{
+          name: '接入车辆',
+          data: vehicleData,
+          type: 'line',
+          symbol: 'circle',
+          color: '#A943F9', // 拐点颜色
+          // 折线样式
+          itemStyle: {
+            normal: {
+              lineStyle: {
+                color: 'rgba(199, 134, 250, 0.47)'
+              }
+            }
+          }
+        },{
+          name: '接入司机',
+          data: driverData,
+          type: 'line',
+          symbol: 'circle',
+          color: '#8B9BF7', // 拐点颜色
+          // 折线样式
+          itemStyle: {
+            normal: {
+              lineStyle: {
+                color: 'rgba(165, 175, 228, 0.47)'
+              }
+            }
+          }
+        }]
+      });
     },
     setFontOption() {
-
+      this.chart.setOption({
+        legend: {
+          itemWidth: setfontSize(6),
+          itemHeight: setfontSize(6),
+          textStyle: {
+            fontSize: setfontSize(10)
+          }
+        },
+        tooltip: {
+          padding: setfontSize(8),
+          textStyle: {
+            fontSize: setfontSize(12)
+          }
+        },
+        xAxis: {
+          axisLabel: {
+            textStyle: {
+              fontSize: setfontSize(11)
+            }
+          }
+        },
+        yAxis: {
+          nameTextStyle: {
+            fontSize: setfontSize(11)
+          },
+          axisLabel: {
+            textStyle: {
+              fontSize: setfontSize(11)
+            }
+          }
+        },
+        series: [{
+          symbolSize: setfontSize(5),
+          itemStyle: {
+            normal: {
+              lineStyle: {
+                width: setfontSize(1.5)
+              }
+            }
+          }
+        },{
+          symbolSize: setfontSize(5),
+          itemStyle: {
+            normal: {
+              lineStyle: {
+                width: setfontSize(1.5)
+              }
+            }
+          }
+        },{
+          symbolSize: setfontSize(5),
+          itemStyle: {
+            normal: {
+              lineStyle: {
+                width: setfontSize(1.5)
+              }
+            }
+          }
+        },{
+          symbolSize: setfontSize(5),
+          itemStyle: {
+            normal: {
+              lineStyle: {
+                width: setfontSize(1.5)
+              }
+            }
+          }
+        }]
+      });
     }
   }
 }
@@ -58,12 +331,77 @@ export default {
 <style lang="scss" scoped>
 .s-container{
   height: 100%;
-  padding-top: 1rem;
   &__list{
-    height: 3.75rem;
+    height: 4.75rem;
+    padding: 0.8rem 0 0.5rem;
+    >li{
+      height: calc(50% - 0.4rem);
+      width: calc(50% - 1.48rem);
+      margin-right: 1.48rem;
+      position: relative;
+      &:nth-child(1), &:nth-child(2){
+        margin-bottom: 0.8rem;
+      }
+      >img{
+        width: 1.05rem;
+        height: 0.9rem;
+      }
+      >.line-box{
+        width: calc(100% - 1.1rem);
+        height: 100%;
+        position: relative;
+        padding-left: 0.25rem;
+        >.label{
+          height: 100%;
+          font-size: 0.6rem;
+          font-family: PingFang SC;
+          font-weight: 400;
+          color: rgba(223, 215, 230, 0.88);
+          transform: scale(0.9);
+        }
+        >.count-content{
+          height: 100%;
+          padding: 0.1rem 0;
+          >.count{
+            font-size: 0.85rem;
+            font-family: PingFang SC;
+            font-weight: bold;
+            color: rgba(242, 233, 250, 0.88);
+          }
+          >img{
+            width: 0.65rem;
+            height: 0.425rem;
+            margin: 0 0.1rem 0 0.5rem;
+          }
+          >.count-up, >.count-down{
+            font-size: 0.6rem;
+            font-family: PingFang SC;
+            font-weight: 500;
+            transform: scale(0.8);
+          }
+          >.count-up{
+            color: #FF99D5;
+          }
+          >.count-down{
+            color: #BB71FF; 
+          }
+        }
+        &::after{
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          width: 100%;
+          height: 0.225rem;
+          background: url('~@/assets/images/statistic/line_bottom.png') no-repeat;
+          background-size: 100% 100%;
+        }
+      }
+    }
   }
   &__chart{
-    height: calc(100% - 3.75rem);
+    height: calc(100% - 4.75rem);
   }
 }
 </style>

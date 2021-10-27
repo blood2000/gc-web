@@ -77,7 +77,7 @@ export default {
           data: labelData
         },
         yAxis: {
-          name: '数量/(辆)',
+          name: '数量(辆)',
           nameTextStyle: {
             color: '#FFE6F4',
             paddingLeft: '2%',
@@ -146,42 +146,33 @@ export default {
     },
     setFontOption() {
       this.chart.setOption({
-        legend: {
-          top: setfontSize(2),
-          itemWidth: setfontSize(8),
-          itemHeight: setfontSize(8),
+        tooltip: {
+          padding: setfontSize(8),
           textStyle: {
             fontSize: setfontSize(12)
-          },
-          itemGap: setfontSize(36)
-        },
-        tooltip: {
-          padding: setfontSize(10),
-          textStyle: {
-            fontSize: setfontSize(14)
           }
         },
         xAxis: {
           axisLabel: {
             textStyle: {
-              fontSize: setfontSize(12)
+              fontSize: setfontSize(11)
             }
           }
         },
         yAxis: {
           nameTextStyle: {
-            fontSize: setfontSize(12)
+            fontSize: setfontSize(11)
           },
           axisLabel: {
             textStyle: {
-              fontSize: setfontSize(12)
+              fontSize: setfontSize(11)
             }
           }
         },
         series: [{
-          barWidth: setfontSize(8)
+          barWidth: setfontSize(6)
         }, {
-          barWidth: setfontSize(8)
+          barWidth: setfontSize(6)
         }]
       });
     }
