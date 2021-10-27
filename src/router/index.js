@@ -169,6 +169,11 @@ export const constantRoutes = [
     path: '/map/mapInfo',
     component: (resolve) => require(['@/views/map/index'], resolve),
     hidden: true
+  },
+  {
+    path: '/statistic',
+    component: (resolve) => require(['@/views/statistic/index'], resolve),
+    hidden: true
   }
 ]
 
