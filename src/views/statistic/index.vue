@@ -29,7 +29,9 @@
 
     <!-- center -->
     <div class="ly-center ly-border ly-flex-v ly-flex-pack-justify">
-
+      <TotalCount />
+      <Map ref="MapRef" />
+      <RankingCard />
     </div>
 
     <!-- right -->
@@ -69,6 +71,7 @@
     <img class="bg-img bg-top-left" src="~@/assets/images/statistic/bg_top_left.png" />
     <img class="bg-img bg-top-right" src="~@/assets/images/statistic/bg_top_right.png" />
     <img class="bg-img bg-map" src="~@/assets/images/statistic/bg.png" />
+    <div class="bg-img bg-circle" />
   </div>
 </template>
 
@@ -84,6 +87,8 @@ import DeviceAssetInfo from './DeviceAssetInfo.vue'; // 设备资产信息
 import DeviceType from './DeviceType.vue'; // 设备类型占比
 import AlarmEvent from './AlarmEvent.vue'; // 告警事件统计
 import AlarmInfo from './AlarmInfo.vue'; // 告警信息
+import TotalCount from './TotalCount.vue';
+import RankingCard from './RankingCard.vue';
 export default {
   name: 'Statistic',
   components: {
@@ -95,7 +100,9 @@ export default {
     DeviceAssetInfo,
     DeviceType,
     AlarmEvent,
-    AlarmInfo
+    AlarmInfo,
+    TotalCount,
+    RankingCard
   },
   data() {
     return {
@@ -120,6 +127,7 @@ export default {
       this.$refs.UserOverViewRef.refreshChart();
       this.$refs.VehicleTypeRef.refreshChart();
       this.$refs.DeviceTypeRef.refreshChart();
+      this.$refs.MapRef.refreshChart();
     },
     // 计算根节点fontsize
     setHtmlFontSize() {
@@ -199,6 +207,7 @@ export default {
     float: left;
     position: relative;
     z-index: 9;
+    padding: 0 1rem;
   }
   .ly-right{
     width: $width_right;
@@ -227,7 +236,7 @@ export default {
 
   // background
   .bg-img{
-    z-index: 1;
+    z-index: 2;
     position: absolute;
     &.bg-bottom{
       width: 100%;
@@ -265,6 +274,16 @@ export default {
       top: 11.05rem;
       left: 0;
       right: 0;
+      z-index: 0;
+    }
+    &.bg-circle{
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      z-index: 1;
+      background: url('~@/assets/images/statistic/bg_circle.png') no-repeat 0.8rem center;
+      background-size: cover;
     }
   }
 

@@ -122,7 +122,7 @@ export default {
         },
         grid: {
           left: '1%',
-          right: 0,
+          right: '1%',
           bottom: '8%',
           top: '20%',
           containLabel: true
@@ -332,7 +332,7 @@ export default {
 .s-container{
   height: 100%;
   &__list{
-    height: 4.75rem;
+    height: 5rem;
     padding: 0.8rem 0 0.5rem;
     >li{
       height: calc(50% - 0.4rem);
@@ -361,7 +361,6 @@ export default {
         }
         >.count-content{
           height: 100%;
-          padding: 0.1rem 0;
           >.count{
             font-size: 0.85rem;
             font-family: PingFang SC;
@@ -386,6 +385,17 @@ export default {
             color: #BB71FF; 
           }
         }
+        &::before{
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          width: 100%;
+          height: 0.2rem;
+          background: url('~@/assets/images/statistic/line_top.png') no-repeat;
+          background-size: 100% 100%;
+        }
         &::after{
           content: '';
           position: absolute;
@@ -401,7 +411,7 @@ export default {
     }
   }
   &__chart{
-    height: calc(100% - 4.75rem);
+    height: calc(100% - 5rem);
   }
 }
 </style>

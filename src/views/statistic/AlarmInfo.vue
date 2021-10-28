@@ -50,7 +50,7 @@ export default {
     >li{
       background: linear-gradient(to right, rgba(23, 6, 18, 0.77), rgba(23, 6, 18, 0.77), rgba(23, 6, 18, 0.77),  rgba(23, 6, 18, 0.66), rgba(23, 6, 18, 0.4));
       border-radius: 8px;
-      padding: 0.2rem 0 0.3rem;
+      padding: 0.2rem 0 0.3rem 0.2rem;
       >h5{
         width: 4.15rem;
         line-height: 1.05rem;
