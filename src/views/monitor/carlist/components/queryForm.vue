@@ -5,10 +5,10 @@
     :inline="true"
     label-width="120px"
     size="small"
-    class="ddc-queryParams"
+    class="ddc-monitor-queryParams"
     label-position="top"
   >
-    <div class="ddc-queryParams-left">
+    <div class="ddc-monitor-queryParams-left">
       <div class="up">
         <el-form-item label="车牌号" prop="plateNumber">
           <el-input
@@ -28,23 +28,6 @@
             @keyup.enter.native="$emit('handleQuery')"
           />
         </el-form-item>
-        <!-- <el-form-item label="设备类型" prop="status">
-      <el-select
-        v-model="queryParams.status"
-        clearable
-        filterable
-        style="width: 150px"
-        placeholder="全部"
-        @change="$emit('handleQuery')"
-      >
-        <el-option
-          v-for="(item, index) in snList"
-          :key="index"
-          :label="item.label"
-          :value="item.value"
-        />
-      </el-select>
-    </el-form-item> -->
         <el-form-item label="车辆状态" prop="vehicleStatus">
           <el-select
             v-model="queryParams.vehicleStatus"
@@ -63,24 +46,6 @@
           </el-select>
         </el-form-item>
 
-        <!-- <el-form-item label="在线状态" prop="onlineStatus">
-      <el-select
-        v-model="queryParams.onlineStatus"
-        clearable
-        filterable
-        style="width: 150px"
-        placeholder="请选择车辆状态"
-        @change="$emit('handleQuery')"
-      >
-        <el-option
-          v-for="(item, index) in onlineStatusList"
-          :key="index"
-          :label="item.label"
-          :value="item.value"
-        />
-      </el-select>
-    </el-form-item> -->
-
         <el-form-item label="设备号" prop="sn">
           <el-input
             v-model="queryParams.sn"
@@ -92,11 +57,7 @@
         </el-form-item>
       </div>
     </div>
-    <div class="ddc-queryParams-right">
-      <!-- <div @click="hanleIsShow">
-        <i :class="isShow ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i>
-        <span>{{ isShow ? "收起" : "展开" }}</span>
-      </div> -->
+    <div class="ddc-monitor-queryParams-right" >
       <el-form-item>
         <el-button
           type="primary"
@@ -105,7 +66,14 @@
         >
           搜索
         </el-button>
-        <el-button type="primary" class="ddc-queryParams-right-reset" plain icon="el-icon-refresh" @click="reset">
+        <el-button
+          type="primary"
+          class="ddc-queryParams-right-reset"
+          plain
+          icon="el-icon-refresh"
+          style="margin-left:16px"
+          @click="reset"
+        >
           重置
         </el-button>
       </el-form-item>
@@ -166,4 +134,47 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.ddc-monitor-queryParams {
+  display: flex;
+  padding: 0 28px;
+  background: #F0F2F5;
+  .ddc-monitor-queryParams-left {
+    flex: 1;
+    .down{
+      margin-bottom: 16px;
+    }
+    // background: brown;
+  }
+  .ddc-monitor-queryParams-right {
+    width: 310px;
+    box-sizing: border-box;
+    padding-top:30px;
+    padding-bottom:7px;
+    display: flex;
+    justify-content: flex-end;
+    & > div {
+      cursor: pointer;
+      color: #409eff;
+      font-size: 14px;
+       margin-right:20px;
+      line-height: 30px;
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    &-reset{
+      background-color: transparent !important;
+    }
+    &-reset:hover{
+      background-color: #409eff !important;
+      
+    }
+    &-reset:focus , &-reset:active{
+      background-color: transparent !important;
+      color: #1890ff;
+    }
+  }
+ 
+}
+</style>

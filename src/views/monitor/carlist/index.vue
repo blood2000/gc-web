@@ -1,6 +1,6 @@
 <template>
-  <div class="pages-info">
-    <div class="pages-info-left">
+  <div class="monitor-pages-info">
+    <div class="monitor-pages-info-left">
       <div class="head-container">
         <el-input
           v-model="orgName"
@@ -35,7 +35,7 @@
       </div>
     </div>
 
-    <div class="pages-info-right">
+    <div class="monitor-pages-info-right">
       <!-- 上：搜索 -->
       <QueryForm
         v-model="queryParams"
@@ -44,9 +44,9 @@
       />
       <!-- 分割线 -->
       <div class="divier"></div>
-      <!-- <el-row :gutter="10" class="toolsbar"> </el-row> -->
       <div class="page-table-layout-set">
-        <RefactorTable
+        <ItemCard/>
+        <!-- <RefactorTable
           is-show-index
           :loading="loading"
           :data="list"
@@ -56,7 +56,6 @@
           :stripe="true"
         >
           <template #edit="{ row }">
-            <!--   -->
             <el-button
               v-show="row.vehicle_status == 1"
               size="mini"
@@ -70,20 +69,20 @@
             <el-button size="mini" type="text" @click="travelSeach(row)"
               >轨迹查看</el-button
             >
+            <el-button size="mini" type="text" @click="seeVideo(row)"
+              >视频监控</el-button
+            >
           </template>
-          <!-- <template #attribute="{ row }">
-                <span>{{ getDetailAddress(row) }}</span>
-              </template> -->
+        
           <template #vehicle_status="{ row }">
             <span>{{ dealVehicleStatus(row.vehicle_status) }}</span>
           </template>
-          <!-- model_name -->
           <template #model_name="{ row }">
             <span>{{
               row.model_name ? `${row.model_name}(${row.series_name})` : null
             }}</span>
           </template>
-        </RefactorTable>
+        </RefactorTable> -->
         <!-- 分页 -->
       </div>
       <pagination
@@ -109,10 +108,11 @@ import { http_request } from "../../../api";
 import { tableColumnsConfig, vehicleStatusList } from "./config";
 import QueryForm from "./components/queryForm.vue";
 import Detail from "../../dispatch/manage/detail.vue";
+import ItemCard from './components/itemCard.vue'
 
 export default {
   name: "carlist",
-  components: { QueryForm, Detail },
+  components: { QueryForm, Detail,ItemCard},
   data() {
     return {
       loading: false,
@@ -202,6 +202,7 @@ export default {
       });
       return result;
     },
+    // 查看地图
     mapSearch(obj) {
       console.log("obj", obj);
       const vehicleCode = obj.vehicle_code;
@@ -210,6 +211,7 @@ export default {
         `/map/mapInfo?vehicleCode=${vehicleCode}&trackType=${trackType}`
       );
     },
+    // 轨迹查看
     travelSeach(obj) {
       console.log("obj", obj);
       const vehicleCode = obj.vehicle_code;
@@ -217,6 +219,10 @@ export default {
       this.$router.push(
         `/map/mapInfo?vehicleCode=${vehicleCode}&trackType=${trackType}`
       );
+    },
+    // 视频查看
+    seeVideo(obj) {
+      console.log("我是视频查看 obj", obj);
     },
     //获取组织树
     async getOrgHttp() {
@@ -242,6 +248,7 @@ export default {
       if (!value) return true;
       return data.orgName.indexOf(value) !== -1;
     },
+    // 点击组织树
     handleNodeClick(data) {
       console.log("data", data);
       this.queryParams.orgCode = data.code;
@@ -308,4 +315,57 @@ export default {
   },
 };
 </script>
+
+
+<style lang="scss" scoped>
+.monitor-pages-info {
+  margin: 0 24px;
+  display: flex;
+  height: calc(100vh - 146px);
+  margin: 0 20px 0 20px;
+  &-left {
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
+    border-radius: 3px;
+    margin-right: 12px;
+    width: 220px !important;
+    .el-tree > .el-tree-node {
+      width: 100% !important;
+    }
+    .el-tree-node__content > span {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+
+  &-right {
+    flex: 1 !important;
+    overflow: auto;
+    width: 0;
+    background: #f0f2f5;
+    box-sizing: border-box !important;
+    .pages-info-right-top {
+      padding-bottom: 8px;
+    }
+    .divier {
+      height: 1px;
+      border-bottom: 1px solid #dce3e9;
+    }
+    .page-table-layout-set {
+      padding: 16px 8px 0 16px;
+    }
+    .toolsbar {
+      display: flex;
+      flex-direction: row;
+      margin-bottom: 17px;
+    }
+  }
+}
+::v-deep .pagination-container {
+  background: #f0f2f5;
+  margin-top: 23px;
+}
+</style>
 

@@ -39,6 +39,7 @@ export default {
   position: relative;
   // overflow: hidden;
   padding-top: 20px;
+  background: #F0F2F5;
 }
 
 .hasTagsView {
