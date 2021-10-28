@@ -71,6 +71,7 @@
     <img class="bg-img bg-top-left" src="~@/assets/images/statistic/bg_top_left.png" />
     <img class="bg-img bg-top-right" src="~@/assets/images/statistic/bg_top_right.png" />
     <img class="bg-img bg-map" src="~@/assets/images/statistic/bg.png" />
+    <div class="bg-img bg-circle" />
   </div>
 </template>
 
@@ -126,6 +127,7 @@ export default {
       this.$refs.UserOverViewRef.refreshChart();
       this.$refs.VehicleTypeRef.refreshChart();
       this.$refs.DeviceTypeRef.refreshChart();
+      this.$refs.MapRef.refreshChart();
     },
     // 计算根节点fontsize
     setHtmlFontSize() {
@@ -234,7 +236,7 @@ export default {
 
   // background
   .bg-img{
-    z-index: 1;
+    z-index: 2;
     position: absolute;
     &.bg-bottom{
       width: 100%;
@@ -272,6 +274,16 @@ export default {
       top: 11.05rem;
       left: 0;
       right: 0;
+      z-index: 0;
+    }
+    &.bg-circle{
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      z-index: 1;
+      background: url('~@/assets/images/statistic/bg_circle.png') no-repeat 0.8rem center;
+      background-size: cover;
     }
   }
 

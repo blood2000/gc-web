@@ -71,7 +71,7 @@ export default {
 
 <style lang="scss" scoped>
 .s-container{
-  height: 17%;
+  height: 16.8%;
   &__list{
     height: 100%;
     >li{
