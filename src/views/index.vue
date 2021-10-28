@@ -35,13 +35,16 @@
             <div>系统公告</div>
             <div class="show-more">查看更多</div>
           </div>
-          <div class="home-main">
+          <!-- <div class="home-main">
             <div class="home-title">关于至简管车试运行通知</div>
             <div class="home-content">
               <span></span>
               至简管车内测运行啦！我们会随机在提出建议的用户中抽选3名幸运用户进行赠送一年车队服务！
             </div>
             <div class="public-date">2021-10-19</div>
+          </div> -->
+          <div class="home-main">
+            <div class="no-notice">暂无</div>
           </div>
           <div class="public-img">
             <img src="../assets/images/home/public.png" alt="">
@@ -117,8 +120,18 @@ export default {
 }
 
 .home-main {
-  max-height: 200px;
+  max-height: 180px;
   overflow-y: auto;
+}
+
+
+
+.no-notice {
+  height: 180px;
+  line-height: 160px;
+  font-size: 18px;
+  color: #999;
+  text-align: center;
 }
 
 .home-content {

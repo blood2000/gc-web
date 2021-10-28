@@ -67,9 +67,10 @@
         </el-button>
       </el-form-item>
       <div class="register-type">
-        <router-link class="link-type" :to="'/login'">
+        <!-- <router-link class="link-type" :to="'/login'">
           使用已有账户登录
-        </router-link>
+        </router-link> -->
+        <div class="link-type" @click="toLogin">使用已有账户登录</div>
       </div>
     </el-form>
 
@@ -212,9 +213,10 @@
         </el-button>
       </el-form-item>
       <div class="register-type">
-        <router-link class="link-type" :to="'/login'">
+        <!-- <router-link class="link-type" :to="'/login'">
           使用已有账户登录
-        </router-link>
+        </router-link> -->
+        <div class="link-type" @click="toLogin">使用已有账户登录</div>
       </div>
     </el-form>
 
@@ -230,7 +232,13 @@
 import { getCodeImg, register } from "@/api/login";
 import { http_request } from "../api";
 import formValidate from "../utils/formValidate";
-import { getOnceToken, setOnceToken, removeOnceToken } from "@/utils/auth";
+import {
+  getOnceToken,
+  setOnceToken,
+  removeOnceToken,
+  getToken,
+} from "@/utils/auth";
+import { Notification, MessageBox, Message } from "element-ui";
 export default {
   name: "Register",
   data() {
@@ -362,9 +370,18 @@ export default {
           url_alias: "checkPhoneNumber",
           data: data,
         };
-        http_request(obj).then((res) => {
-          this.getCode();
-        });
+        http_request(obj)
+          .then((res) => {
+            this.getCode();
+          })
+          .catch((msg) => {
+            Message({
+              message: msg,
+              type: "error",
+              duration: 3 * 1000,
+              showClose: true,
+            });
+          });
       });
     },
     getCode() {
@@ -430,7 +447,7 @@ export default {
     },
 
     checkCode() {
-      this.registerStatus = 1; //wyptest
+      // this.registerStatus = 1; //wyptest
       this.$refs.registerForm.validate((valid) => {
         if (valid) {
           this.loading = true;
@@ -575,13 +592,24 @@ export default {
             .then((res) => {
               this.loading = false;
               // const username = this.idCardForm.name;
-              this.$alert(" 注册成功！</font>", "系统提示", {
-                dangerouslyUseHTMLString: true,
-              })
-                .then(() => {
-                  this.$router.push("/login");
-                })
-                .catch(() => {});
+              // this.$alert(" 注册成功！</font>", "系统提示", {
+              //   dangerouslyUseHTMLString: true,
+              // })
+              //   .then(() => {
+              //     this.$router.push("/login");
+              //   })
+              //   .catch(() => {});
+              this.$confirm(
+                "注册信息提交成功，请耐心等待。如有其他问题可联系客服咨询。",
+                "信息",
+                {
+                  confirmButtonText: "确定",
+                  cancelButtonText: "取消",
+                  type: "warning",
+                }
+              ).then((res) => {
+                this.$router.push("/login");
+              });
             })
             .catch(() => {
               this.loading = false;
@@ -618,14 +646,14 @@ export default {
             method: "put",
             url_alias: "updateTeamInfo",
             data: data,
-            header: header
+            header: header,
             // Headers: { isToken: false },
           };
           http_request(obj)
             .then((res) => {
               this.loading = false;
               removeOnceToken();
-              this.$store.commit("SET_ONCETOKEN", '');
+              this.$store.commit("SET_ONCETOKEN", "");
               this.$alert(" 修改成功! </font>", "系统提示", {
                 dangerouslyUseHTMLString: true,
               })
@@ -642,6 +670,17 @@ export default {
             });
         }
       });
+    },
+    toLogin() {
+      console.log(getToken());
+      if (getToken()) {
+        this.$store.dispatch("LogOut").then(() => {
+          this.$router.push("/login");
+        });
+      } else {
+        this.$router.push("/login");
+      }
+      // this.$router.push("/login");
     },
   },
 };

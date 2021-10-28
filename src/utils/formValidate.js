@@ -4,7 +4,8 @@ const numberReg = /^\d+$|^\d+[.]?\d+$/;
 // 中文
 const cnReg = /^[\u4e00-\u9fa5]+$/;
 // 检测姓名 1-10个中文字符
-const nameReg = /^[\u4e00-\u9fa5]{1,10}$/;
+// const nameReg = /^[\u4e00-\u9fa5]{1,10}$/;
+const nameReg = /^([\u4e00-\u9fa5]|[a-zA-Z]| |•|-|‧|•|⋅|ㆍ|・|●|(\（+\）)|(\（[\u4e00-\u9fa5]+\）)|(\（[a-zA-Z]+\）))+$/;
 // 检测姓名,可以是中文/字母/数字
 // const nameReg = /^[\da-zA-Z\u4E00-\u9FA5]{1,10}$/;
 // 邮箱

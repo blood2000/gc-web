@@ -234,7 +234,7 @@ export default {
   background-size: 100% 100%;
 }
 
-.dirver-icon {
+.driver-icon {
   background: url("../../../../assets/images/home/driver.png");
   background-size: 100% 100%;
 }
