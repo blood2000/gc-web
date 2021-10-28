@@ -21,8 +21,16 @@
             :name="item.value"
             :label="item.label"
           >
+            <div class="warn-card-box">
+              <!-- 告警卡片组件 -->
+              <warn-card
+                v-for="(item, index) in testData"
+                :key="index"
+                :level="(index % 3) + 1"
+              ></warn-card>
+            </div>
             <!-- 表格 -->
-            <RefactorTable
+            <!-- <RefactorTable
               :loading="loading"
               :data="warningData"
               row-key="id"
@@ -30,28 +38,19 @@
               :border="false"
               :stripe="true"
             >
-              <!-- <template #warinigType="{ row }">
-                    {{ getWarinigTypeName(row.warinigType) }}
-                  </template>
-                  <template #warningLevel="{ row }">
-                    {{ getWarningLevelName(row.warningLevel) }}
-                  </template> -->
               <template #deviceType="{ row }">
                 {{ getDeviceTypeName(row.deviceType) }}
               </template>
-              <!-- <template #alarmValue="{ row }">
-                    {{ row.alarmValue || '-' }}
-                  </template> -->
               <template #handle="{ row }">
                 <el-button size="mini" type="text" @click="toDetail(row)"
                   >详情
                 </el-button>
               </template>
-            </RefactorTable>
+            </RefactorTable> -->
             <!-- 分页 -->
             <pagination
-              v-show="total > 0"
-              :total="total"
+              v-show="total1 > 0"
+              :total="total1"
               layout="prev, pager, next,jumper, total,sizes"
               :page.sync="queryParams.pageNum"
               :limit.sync="queryParams.pageSize"
@@ -64,7 +63,7 @@
     <Detail
       :id="currId"
       :detailDrawer="detailDrawer"
-      :options="{ title: '告警详情' ,warningTypeList}"
+      :options="{ title: '告警详情', warningTypeList }"
       @colseDetailDrawer="colseDetailDrawer"
     />
   </div>
@@ -73,12 +72,13 @@
 <script>
 import { http_request } from "@/api";
 import QueryForm from "./components/queryForm.vue";
+import WarnCard from "./components/WarnCard.vue";
 import warningConfig from "./config";
 import Detail from "./warningDetail.vue";
 // import store from "@/store";
 export default {
   name: "warning", // 告警管理
-  components: { QueryForm, Detail },
+  components: { QueryForm, Detail, WarnCard },
   data() {
     return {
       orgName: "", //组织查询
@@ -91,9 +91,10 @@ export default {
       showSearch: true, //搜索显隐
       loading: false, //表格load
       warningData: [],
+      testData: [],
       queryParams: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 12,
         vehicleCode: "",
         driver: "",
         deviceType: null,
@@ -107,6 +108,7 @@ export default {
       warningTabs: [],
       tableColumnsConfig: [], //配置表头数据
       total: 0,
+      total1: 10,
       detailDrawer: false,
       currId: null,
     };
@@ -136,6 +138,7 @@ export default {
   mounted() {
     // this.getOrgHttp();
     this.searchQuery();
+    this.testData = warningConfig.mockData;
   },
 
   methods: {
@@ -378,5 +381,13 @@ export default {
   padding-top: 3px !important;
   color: #409eff;
   font-size: 14px;
+}
+
+.warn-card-box {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 10px 2px 0 0;
 }
 </style>
