@@ -65,7 +65,7 @@ export default {
         legend: {
           show: true,
           orient: 'vertical',
-          itemStyle: {
+          textStyle: {
             color: '#FCF8FF'
           }
         },
@@ -85,21 +85,20 @@ export default {
           {
             name: '',
             type: 'pie',
-            radius: ['48%', '70%'],
-            center: ['50%', '48%'],
-            right: '30%',
+            radius: ['45%', '70%'],
+            center: ['50%', '40%'],
+            right: '26%',
             data: _this.dataList,
             // 标示线
             label: {
               show: true,
-              color: '#CDEDFF',
+              color: '#F2E9FA',
               alignTo: 'edge',
               formatter: function(obj) {
-                // '{name|{bconsole}}\n{time|数量：{c}}  {percentage| 占比：{c}}'
-                return `${obj.data.name}\n数量：${obj.data.value}  占比：${obj.data.percentage}%`;
+                return ` ${obj.data.name}\n {percentage|数量：${obj.data.value}  占比：${obj.data.percentage}%}`;
               },
               rich: {
-                time: {
+                percentage: {
                   color: '#F2E9FA'
                 }
               }
@@ -136,10 +135,10 @@ export default {
                     }]),
                     new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                       offset: 0,
-                      color: 'rgba(242, 58, 161, 1)'
+                      color: 'rgba(55, 58, 216, 1)'
                     }, {
                       offset: 1,
-                      color: 'rgba(55, 58, 216, 1)'
+                      color: 'rgba(242, 58, 161, 1)'
                     }]),
                     new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                       offset: 0,
@@ -177,11 +176,11 @@ export default {
           label: {
             fontSize: setfontSize(11),
             minMargin: setfontSize(5),
-            edgeDistance: setfontSize(10),
+            edgeDistance: setfontSize(8),
             lineHeight: setfontSize(26),
             rich: {
-              time: {
-                fontSize: setfontSize(11),
+              percentage: {
+                fontSize: setfontSize(11)
               }
             }
           }

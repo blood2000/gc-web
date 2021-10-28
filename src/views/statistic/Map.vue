@@ -8,6 +8,7 @@
 import * as echarts from 'echarts';
 import mapJson from '@/assets/json/china.json';
 import { setfontSize } from '@/utils/fontSize';
+import { http_request } from "@/api";
 export default {
   components: {
 
@@ -17,7 +18,8 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      heatmapData: []
     };
   },
   mounted() {
@@ -36,6 +38,18 @@ export default {
     this.chart = null;
   },
   methods: {
+    // 获取热力图数据
+    getData() {
+      const obj = {
+        moduleName: "http_statistic",
+        method: "get",
+        url_alias: "thermodynamicDiagramAlarm"
+      };
+      http_request(obj).then((res) => {
+        this.heatmapData = res.data || [];
+        this.setOption();
+      })
+    },
     initChart() {
       this.chart = echarts.init(this.$refs.map, null, {
         renderer: 'svg'
@@ -43,6 +57,7 @@ export default {
       echarts.registerMap('china', mapJson);
       this.setOption();
       this.setFontOption();
+      this.getData();
     },
     refreshChart() {
       if (!this.chart) return;
@@ -50,6 +65,7 @@ export default {
       this.setFontOption();
     },
     setOption() {
+      const _this = this;
       this.chart.setOption({
         geo: {
           map: 'china',
@@ -91,6 +107,15 @@ export default {
               areaColor: 'rgba(114, 35, 98, 0)'
             }
           }
+        },{
+          name: 'AQI',
+          type: 'heatmap', //热力图属性
+          coordinateSystem: 'geo',
+          pointSize:'20', // 每个点的大小，在地理坐标系(coordinateSystem: 'geo')上有效。
+          blurSize:'20', // 每个点模糊的大小，在地理坐标系(coordinateSystem: 'geo')上有效。
+          minOpacity:'1', // 最小的透明度，在地理坐标系(coordinateSystem: 'geo')上有效。
+          maxOpacity:'1', // 最大的透明度，在地理坐标系(coordinateSystem: 'geo')上有效。
+          data: _this.heatmapData
         }]
       });
     },

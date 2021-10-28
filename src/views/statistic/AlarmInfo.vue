@@ -2,15 +2,15 @@
   <div class="s-container">
     <ul class="s-container__list ly-flex-v ly-flex-pack-justify">
       <li v-for="(item, index) in dataList" :key="index" class="ly-flex ly-flex-pack-justify">
-        <h5 class="alarm_type_1 g-single-row">
-          <img class="index" src="~@/assets/images/statistic/alarm_1.png" />
-          <span class="title">偏离车道</span>
+        <h5 class="g-single-row" :class="`alarm_type_${item.alarmLevel}`">
+          <img class="index" :src="require(`@/assets/images/statistic/alarm_${item.alarmLevel}.png`)" />
+          <span class="title">{{ item.alarmTypeName }}</span>
         </h5>
         <div class="info-content">
-          <p class="g-single-row">张三丰 闽A12345 福建大苏打有限公司</p>
+          <p class="g-single-row">{{ item.name }} {{ item.licenseNumber }} {{ item.orgName }}</p>
           <div class="ly-flex ly-flex-pack-justify">
-            <p class="g-single-row">张三丰与什么时候在哪做了什么内容超速了调度单的在哪做了什么内容超速了调度单</p>
-            <p>2021-12-12 12:12</p>
+            <p class="g-single-row">{{ item.alarmDescribe ? item.alarmDescribe : '暂无描述' }}</p>
+            <p>{{ parseTime(item.alarmTime) }}</p>
           </div>
         </div>
       </li>
@@ -26,7 +26,11 @@ export default {
   },
   data() {
     return {
-      dataList: []
+      dataList: [],
+      queryParams: {
+        pageNum: 1,
+        pageSize: 4
+      }
     };
   },
   mounted() {
@@ -34,7 +38,19 @@ export default {
   },
   methods: {
     getData() {
-      this.dataList = [{}, {}, {}, {}]
+      const obj = {
+        moduleName: "http_statistic",
+        method: "get",
+        url_alias: "alarmInfo",
+        data: this.queryParams
+      };
+      http_request(obj).then((res) => {
+        if (res.data) {
+          this.dataList = res.data.rows || [];
+        } else {
+          this.dataList = [];
+        }
+      })
     }
   }
 }
