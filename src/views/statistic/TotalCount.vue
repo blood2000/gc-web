@@ -4,14 +4,14 @@
       <li class="ly-flex">
         <p class="label">用户量</p>
         <p class="value">
-          <count-to :end-val="23651" :decimal-places="0" />
-          <span class="unit">万</span>
+          <count-to :end-val="form.userTotal" :decimal-places="0" />
+          <!-- <span class="unit">万</span> -->
         </p>
       </li>
       <li class="ly-flex">
         <p class="label">设备量</p>
         <p class="value">
-          <count-to :end-val="23651" :decimal-places="0" />
+          <count-to :end-val="form.deviceTotal" :decimal-places="0" />
         </p>
       </li>
       <li class="ly-flex" style="width: 29%">
@@ -55,7 +55,7 @@ export default {
   },
   data() {
     return {
-      
+      form: {}
     };
   },
   mounted() {
@@ -63,7 +63,14 @@ export default {
   },
   methods: {
     getData() {
-
+      const obj = {
+        moduleName: "http_statistic",
+        method: "get",
+        url_alias: "totalScreen"
+      };
+      http_request(obj).then((res) => {
+        this.form = res.data || {};
+      });
     }
   }
 }

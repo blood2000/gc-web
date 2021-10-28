@@ -282,7 +282,7 @@ export default {
       left: 0;
       top: 0;
       z-index: 1;
-      background: url('~@/assets/images/statistic/bg_circle.png') no-repeat 0.8rem center;
+      background: url('~@/assets/images/statistic/bg_circle.png') no-repeat center center;
       background-size: cover;
     }
   }

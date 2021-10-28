@@ -6,7 +6,7 @@
         <div class="line-box ly-flex ly-flex-pack-justify">
           <p class="label ly-flex ly-flex-align-center">接入企业</p>
           <div class="count-content ly-flex ly-flex-pack-justify ly-flex-align-center">
-            <count-to class="count" :end-val="2224" :decimal-places="0" />
+            <count-to class="count" :end-val="countData.enterpriseCount" :decimal-places="0" />
             <img src="~@/assets/images/statistic/count_up.png">
             <span class="count-up">12.6%</span>
           </div>
@@ -17,7 +17,7 @@
         <div class="line-box ly-flex ly-flex-pack-justify">
           <p class="label ly-flex ly-flex-align-center">接入车队</p>
           <div class="count-content ly-flex ly-flex-pack-justify ly-flex-align-center">
-            <count-to class="count" :end-val="2224" :decimal-places="0" />
+            <count-to class="count" :end-val="countData.fmsCount" :decimal-places="0" />
             <img src="~@/assets/images/statistic/count_up.png">
             <span class="count-up">12.6%</span>
           </div>
@@ -28,7 +28,7 @@
         <div class="line-box ly-flex ly-flex-pack-justify">
           <p class="label ly-flex ly-flex-align-center">接入车辆</p>
           <div class="count-content ly-flex ly-flex-pack-justify ly-flex-align-center">
-            <count-to class="count" :end-val="115" :decimal-places="0" />
+            <count-to class="count" :end-val="countData.vehicleCount" :decimal-places="0" />
             <img src="~@/assets/images/statistic/count_down.png">
             <span class="count-down">12.6%</span>
           </div>
@@ -39,7 +39,7 @@
         <div class="line-box ly-flex ly-flex-pack-justify">
           <p class="label ly-flex ly-flex-align-center">接入司机</p>
           <div class="count-content ly-flex ly-flex-pack-justify ly-flex-align-center">
-            <count-to class="count" :end-val="115" :decimal-places="0" />
+            <count-to class="count" :end-val="countData.driverCount" :decimal-places="0" />
             <img src="~@/assets/images/statistic/count_down.png">
             <span class="count-down">12.6%</span>
           </div>
@@ -65,7 +65,12 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      countData: {},
+      priseData: [],
+      fmsData: [],
+      vehicleData: [],
+      driverData: []
     };
   },
   beforeDestroy() {
@@ -80,8 +85,35 @@ export default {
   },
   methods: {
     getData() {
-      this.$nextTick(() => {
-        this.initChart();
+      const obj = {
+        moduleName: "http_statistic",
+        method: "get",
+        url_alias: "userOverView"
+      };
+      http_request(obj).then((res) => {
+        if (res.data) {
+          const { 
+            enterpriseCount,
+            fmsCount,
+            vehicleCount,
+            driverCount,
+            nearlySevenDaysEnterpriseCount,
+            nearlySevenDaysFmsCount,
+            nearlySevenDaysVehicleCount,
+            nearlySevenDaysDriverCount
+          } = res.data;
+          this.$set(this.countData, 'enterpriseCount', enterpriseCount);
+          this.$set(this.countData, 'fmsCount', enterpriseCount);
+          this.$set(this.countData, 'vehicleCount', vehicleCount);
+          this.$set(this.countData, 'driverCount', driverCount);
+          this.priseData = nearlySevenDaysEnterpriseCount || [];
+          this.fmsData = nearlySevenDaysFmsCount || [];
+          this.vehicleData = nearlySevenDaysVehicleCount || [];
+          this.driverData = nearlySevenDaysDriverCount || [];
+          this.$nextTick(() => {
+            this.initChart();
+          });
+        }
       });
     },
     initChart() {
@@ -95,11 +127,27 @@ export default {
       this.setFontOption();
     },
     setOption() {
-      const timeData = ['10号','10号','10号','10号','10号','10号','10号','10号'];
-      const priseData = [5, 6, 7, 2, 6, 5, 1, 6];
-      const fmsData = [6, 5, 1, 5, 8, 7, 2, 6];
-      const vehicleData = [4, 8, 9, 12, 10, 2, 1, 3];
-      const driverData = [10, 2, 3, 4, 5, 1, 6, 4];
+      const timeData = [];
+      const priseData = [];
+      const fmsData = [];
+      const vehicleData = [];
+      const driverData = [];
+      this.priseData.forEach(el => {
+        timeData.push(el.datetime);
+        priseData.push(el.count);
+      })
+      this.fmsData.forEach(el => {
+        timeData.push(el.datetime);
+        fmsData.push(el.count);
+      })
+      this.vehicleData.forEach(el => {
+        timeData.push(el.datetime);
+        vehicleData.push(el.count);
+      })
+      this.driverData.forEach(el => {
+        timeData.push(el.datetime);
+        driverData.push(el.count);
+      })
       this.chart.setOption({
         legend: {
           show: true,

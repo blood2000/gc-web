@@ -3,25 +3,25 @@
     <ul class="s-container__list ly-flex ly-flex-pack-justify ly-flex-align-center">
       <li>
         <p class="value">
-          <count-to :end-val="23651" :decimal-places="0" />
+          <count-to :end-val="form.deviceCount" :decimal-places="0" />
         </p>
         <p class="label">设备总量</p>
       </li>
       <li>
         <p class="value">
-          <count-to :end-val="23651" :decimal-places="0" />
+          <count-to :end-val="form.deviceActivation" :decimal-places="0" />
         </p>
         <p class="label">设备激活量</p>
       </li>
       <li>
         <p class="value">
-          <count-to :end-val="23651" :decimal-places="0" />
+          <count-to :end-val="form.deviceOnline" :decimal-places="0" />
         </p>
         <p class="label">设备在线量</p>
       </li>
       <li>
         <p class="value">
-          <count-to :end-val="23651" :decimal-places="0" />
+          <count-to :end-val="form.deviceOffline" :decimal-places="0" />
         </p>
         <p class="label">设备离线量</p>
       </li>
@@ -41,7 +41,7 @@ export default {
   },
   data() {
     return {
-      
+      form: {}
     };
   },
   mounted() {
@@ -49,7 +49,14 @@ export default {
   },
   methods: {
     getData() {
-
+      const obj = {
+        moduleName: "http_statistic",
+        method: "get",
+        url_alias: "deviceScreenTotal"
+      };
+      http_request(obj).then((res) => {
+        this.form = res.data;
+      })
     }
   }
 }
