@@ -38,7 +38,7 @@
         <div
           class="register-code"
           :class="sendCode ? 'no-send' : ''"
-          @click="getCode"
+          @click="checkPhone"
         >
           {{ verCodeText }}
         </div>
@@ -73,7 +73,8 @@
         </el-button>
       </el-form-item>
       <div class="register-type">
-        <router-link class="link-type" :to="'/login'"> 返回登录 </router-link>
+        <!-- <router-link class="link-type" :to="'/login'"> 返回登录 </router-link> -->
+        <div class="link-type" @click="toLogin">返回登录</div>
       </div>
     </el-form>
 
@@ -89,6 +90,12 @@
 import { getCodeImg, register } from "@/api/login";
 import { http_request } from "../api";
 import formValidate from "../utils/formValidate";
+import { getToken, setToken } from "@/utils/auth";
+import {
+  Notification,
+  MessageBox,
+  Message
+} from 'element-ui'
 export default {
   name: "Register",
   data() {
@@ -100,14 +107,14 @@ export default {
     //   }
     // };
     const pwdValid = (rule, value, callback) => {
-      if (value === undefined || value === null || value === '') {
-        callback(new Error('请输入密码'));
+      if (value === undefined || value === null || value === "") {
+        callback(new Error("请输入密码"));
       } else if (value.length < 6) {
-        callback(new Error('密码长度不能小于6位'));
+        callback(new Error("密码长度不能小于6位"));
       } else {
         callback();
       }
-    }
+    };
     return {
       sendCode: true,
       verCodeText: "获取验证码",
@@ -131,12 +138,10 @@ export default {
         captcha: [
           { required: true, trigger: "change", message: "请输入验证码" },
         ],
-        password: [
-          { required: true, trigger: "change", validator: pwdValid },
-        ],
+        password: [{ required: true, trigger: "change", validator: pwdValid }],
       },
       loading: false,
-    }
+    };
   },
   created() {
     // this.getCode();
@@ -149,6 +154,41 @@ export default {
   },
 
   methods: {
+    //验证手机号是否已注册
+    checkPhone() {
+      if (!this.sendCode) {
+        return;
+      }
+      this.$refs.resetForm.validateField("telephone", (msg) => {
+        if (msg) {
+          return;
+        }
+        const data = {
+          phoneNumber: this.resetForm.telephone,
+        };
+        const obj = {
+          moduleName: "http_login",
+          method: "get",
+          url_alias: "checkPhoneNumber",
+          data: data,
+        };
+        http_request(obj)
+          .then((res) => {
+            Message({
+              message: '手机号未注册',
+              type: "error",
+              duration: 3 * 1000,
+              showClose: true,
+            });
+          })
+          .catch((msg) => {
+            console.log("wyp---", msg);
+            if (msg === "手机号已存在") {
+              this.getCode();
+            }
+          });
+      });
+    },
     getCode() {
       if (!this.sendCode) {
         return;
@@ -211,8 +251,6 @@ export default {
       }, that.countdownSeconds * 1000);
     },
 
-    
-
     handleReset() {
       this.$refs.resetForm.validate((valid) => {
         if (valid) {
@@ -227,14 +265,11 @@ export default {
           };
           http_request(obj)
             .then((res) => {
-              console.log('重设密码',res)
+              console.log("重设密码", res);
               this.loading = false;
-              this.$alert(
-                "操作成功",
-                {
-                  dangerouslyUseHTMLString: true,
-                }
-              )
+              this.$alert("操作成功", {
+                dangerouslyUseHTMLString: true,
+              })
                 .then(() => {
                   this.$router.push("/login");
                 })
@@ -245,6 +280,17 @@ export default {
             });
         }
       });
+    },
+    toLogin() {
+      console.log(getToken());
+      if (getToken()) {
+        this.$store.dispatch("LogOut").then(() => {
+          this.$router.push("/login");
+        });
+      } else {
+        this.$router.push("/login");
+      }
+      // this.$router.push("/login");
     },
   },
 };
@@ -271,7 +317,7 @@ export default {
   background: #ffffff;
   width: 400px;
   padding: 25px 25px 5px 25px;
-   margin-right: 100px;
+  margin-right: 100px;
   .el-input {
     height: 38px;
     input {
