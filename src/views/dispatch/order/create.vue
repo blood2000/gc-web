@@ -667,6 +667,7 @@ export default {
       if (code == null || code === "") {
         return;
       }
+      console.log('')
       const me = this;
       const obj = {
         moduleName: "http_purse",
@@ -709,8 +710,8 @@ export default {
     },
     //省更变
     provinceChange(e, type) {
-      console.log("provinceChange e", e);
-      console.log("provinceChange type", type);
+      console.log("省更变 e", e);
+      console.log("省更变 type", type);
       if (!type) return;
       if (type == "1") {
         this.loadAddressParams.cityCode = null;
@@ -1025,9 +1026,12 @@ export default {
       this.handleClose();
       this.$emit("colseCreateDrawer");
     },
+    //常用地址选择
     radioSelection(data) {
       if (!data || !this.currAddressType) return;
-      console.log("选择返回的数据", data);
+      console.log("选择返回的数据", data ,this.currAddressType);
+        this.getCityListFun(data.provinceCode , this.currAddressType +'')
+        this.getDistrictFun(data.cityCode , this.currAddressType +'')
       const objName =
         this.currAddressType == "1"
           ? "loadAddressParams"
