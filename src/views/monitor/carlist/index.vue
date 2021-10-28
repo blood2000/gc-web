@@ -37,6 +37,7 @@
 
     <div class="monitor-pages-info-right">
       <!-- 上：搜索 -->
+
       <QueryForm
         v-model="queryParams"
         :sn-list="snList"
@@ -45,7 +46,9 @@
       <!-- 分割线 -->
       <div class="divier"></div>
       <div class="page-table-layout-set">
-        <ItemCard/>
+        <div class="page-table-layout-set-item" :key="index"  v-for="(item,index) in list">
+        <ItemCard :data='item'/>
+        </div>
         <!-- <RefactorTable
           is-show-index
           :loading="loading"
@@ -119,7 +122,7 @@ export default {
       showSearch: true,
       queryParams: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 12,
         driverName: null,
         onlineStatus: null, //在线状态 0,离线; 1,在线
         sn: null, //对外序列号，等同于 imei
@@ -355,6 +358,16 @@ export default {
     }
     .page-table-layout-set {
       padding: 16px 8px 0 16px;
+      display: flex;
+      flex-wrap: wrap;
+      &-item {
+        margin-right:15px;
+        margin-bottom: 20px;
+      }
+       &-item:nth-child(4n) {
+        margin-right:0px;
+        margin-bottom: 20px;
+      }
     }
     .toolsbar {
       display: flex;
