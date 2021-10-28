@@ -3,15 +3,15 @@
     <ul class="s-container__list ly-flex-v ly-flex-pack-justify">
       <li v-for="(item, index) in dataList" :key="index" class="ly-flex ly-flex-pack-justify ly-flex-align-center">
         <h5 class="ly-flex ly-flex-align-center">
-          <span class="g-single-row">未系安全带告警</span>
+          <span class="g-single-row">{{ item.alarmTypeName }}</span>
         </h5>
         <div class="line-content ly-flex ly-flex-align-center">
-          <div v-if="15641 / maxCount * 100 > 1" class="line" :style="`width: calc(${15641 / maxCount * 100}% - 4.5rem);`" />
+          <div v-if="item.number / maxCount * 100 > 1" class="line" :style="`width: calc(${item.number / maxCount * 100}% - 4.5rem);`" />
           <!-- 避免百分比太小不显示 -->
           <div v-else class="line" :style="`width: 1%;`" />
 
           <div class="value">
-            <count-to :end-val="15641" :decimal-places="0" />
+            <count-to :end-val="item.number" :decimal-places="0" />
             <span class="unit">次</span>
           </div>
         </div>
@@ -33,7 +33,11 @@ export default {
   data() {
     return {
       dataList: [],
-      maxCount: 1
+      maxCount: 1,
+      queryParams: {
+        pageNum: 1,
+        pageSize: 5
+      }
     };
   },
   mounted() {
@@ -41,8 +45,24 @@ export default {
   },
   methods: {
     getData() {
-      this.dataList = [{}, {}, {}, {}, {}];
-      this.maxCount = 15641;
+      const obj = {
+        moduleName: "http_statistic",
+        method: "get",
+        url_alias: "alarmTypeStatistics",
+        data: this.queryParams
+      };
+      http_request(obj).then((res) => {
+        if (res.data) {
+          this.dataList = res.data.rows || [];
+          this.dataList.forEach(el => {
+            if (el.number > this.maxCount) {
+              this.maxCount = el.number;
+            }
+          })
+        } else {
+          this.dataList = [];
+        }
+      })
     }
   }
 }

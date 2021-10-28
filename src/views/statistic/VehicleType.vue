@@ -14,7 +14,8 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      dataList: []
     };
   },
   beforeDestroy() {
@@ -29,9 +30,17 @@ export default {
   },
   methods: {
     getData() {
-      this.$nextTick(() => {
-        this.initChart();
-      });
+      const obj = {
+        moduleName: "http_statistic",
+        method: "get",
+        url_alias: "vehicleType"
+      };
+      http_request(obj).then((res) => {
+        this.dataList = res.data || [];
+        this.$nextTick(() => {
+          this.initChart();
+        });
+      })
     },
     initChart() {
       this.chart = echarts.init(this.$refs.chart, 'macarons');
@@ -44,8 +53,12 @@ export default {
       this.setFontOption();
     },
     setOption() {
-      const labelData = ['重型半挂牵引车','重型半挂牵引车','重型半挂牵引车','重型半挂牵引车','重型半挂牵引车'];
-      const valueData = [30, 50, 100, 50, 100];
+      const labelData = [];
+      const valueData = [];
+      this.dataList.forEach(el => {
+        labelData.push(el.type);
+        valueData.push(el.count);
+      });
       this.chart.setOption({
         legend: {
           show: false

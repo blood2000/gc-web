@@ -16,6 +16,7 @@ import http_monitor from './monitor/carlist'
 import http_home from './home/home'
 import http_company from './archives/company'
 import http_address from './archives/address'
+import http_statistic from './statistic/statistic'
 import Vue from 'vue'
 
 export const defaultH = {
@@ -50,7 +51,8 @@ const selModuleName = (name) => {
     http_monitor,
     http_home,
     http_company,
-    http_address
+    http_address,
+    http_statistic
   }
   return tmpObj[name]
 }

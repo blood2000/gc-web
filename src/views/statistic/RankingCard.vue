@@ -5,8 +5,8 @@
         <h5>组织告警排行</h5>
         <div class="content-box">
           <div v-for="(item, index) in warnList" :key="index" class="content-item ly-flex ly-flex-pack-justify">
-            <span class="text g-single-row">福建省大华科技文化运输公司</span>
-            <count-to class="count" :end-val="23651" :decimal-places="0" />
+            <span class="text g-single-row">{{ item.orgName }}</span>
+            <count-to class="count" :end-val="item.number" :decimal-places="0" />
           </div>
         </div>
       </li>
@@ -15,12 +15,12 @@
         <div class="content-box">
           <div v-for="(item, index) in vehicleList" :key="index" class="content-item ly-flex ly-flex-pack-justify">
             <p class="text g-single-row">
-              闽A12345
-              <span class="small-card type1">H1</span>
-              <span class="small-card type2">超速</span>
-              <span class="small-card type2">车辆碰撞</span>
+              {{ item.licenseNumber }}
+              <span v-if="item.vehicleTypeName && item.vehicleTypeName !== ''" class="small-card type1">{{ item.vehicleTypeName }}</span>
+              <!-- <span class="small-card type2">超速</span>
+              <span class="small-card type2">车辆碰撞</span> -->
             </p>
-            <count-to class="count" :end-val="23651" :decimal-places="0" />
+            <count-to class="count" :end-val="item.number" :decimal-places="0" />
           </div>
         </div>
       </li>
@@ -28,8 +28,8 @@
         <h5>违规司机排行</h5>
         <div class="content-box">
           <div v-for="(item, index) in driverList" :key="index" class="content-item ly-flex ly-flex-pack-justify">
-            <span class="text g-single-row">张*凤</span>
-            <count-to class="count" :end-val="23651" :decimal-places="0" />
+            <span class="text g-single-row">{{ item.name }}</span>
+            <count-to class="count" :end-val="item.number" :decimal-places="0" />
           </div>
         </div>
       </li>
@@ -49,17 +49,65 @@ export default {
   },
   data() {
     return {
-      warnList: [{},{},{}],
-      vehicleList: [{},{},{}],
-      driverList: [{},{},{}]
+      queryParams: {
+        pageNum: 1,
+        pageSize: 3
+      },
+      warnList: [],
+      vehicleList: [],
+      driverList: []
     };
   },
   mounted() {
-    this.getData();
+    this.getWarnData();
+    this.getVehicleData();
+    this.getDriverData();
   },
   methods: {
-    getData() {
-
+    getWarnData() {
+      const obj = {
+        moduleName: "http_statistic",
+        method: "get",
+        url_alias: "organizationAlarm",
+        data: this.queryParams
+      };
+      http_request(obj).then((res) => {
+        if (res.data) {
+          this.warnList = res.data.rows || [];
+        } else {
+          this.warnList = [];
+        }
+      })
+    },
+    getVehicleData() {
+      const obj = {
+        moduleName: "http_statistic",
+        method: "get",
+        url_alias: "illegalVehicle",
+        data: this.queryParams
+      };
+      http_request(obj).then((res) => {
+        if (res.data) {
+          this.vehicleList = res.data.rows || [];
+        } else {
+          this.vehicleList = [];
+        }
+      })
+    },
+    getDriverData() {
+      const obj = {
+        moduleName: "http_statistic",
+        method: "get",
+        url_alias: "illegalDriver",
+        data: this.queryParams
+      };
+      http_request(obj).then((res) => {
+        if (res.data) {
+          this.driverList = res.data.rows || [];
+        } else {
+          this.driverList = [];
+        }
+      })
     }
   }
 }

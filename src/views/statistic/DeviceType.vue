@@ -14,7 +14,8 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      dataList: []
     };
   },
   beforeDestroy() {
@@ -29,8 +30,23 @@ export default {
   },
   methods: {
     getData() {
-      this.$nextTick(() => {
-        this.initChart();
+      const obj = {
+        moduleName: "http_statistic",
+        method: "get",
+        url_alias: "deviceTypeAccounted"
+      };
+      http_request(obj).then((res) => {
+        if (res.data && res.data.length > 0) {
+          this.dataList = res.data.map(el => {
+            el.value = el.count;
+            return el;
+          })
+        } else {
+          this.dataList = [];
+        }
+        this.$nextTick(() => {
+          this.initChart();
+        });
       });
     },
     initChart() {
@@ -45,19 +61,6 @@ export default {
     },
     setOption() {
       const _this = this;
-      const pieData = [{
-        value: 40, 
-        name: '超好运小黑盒A1便携款',
-        percentage: 20
-      },{
-        value: 40, 
-        name: '超好运小黑盒A2固线款',
-        percentage: 20
-      },{
-        value: 120, 
-        name: '行车记录仪T1基础款',
-        percentage: 60
-      }];
       this.chart.setOption({
         legend: {
           show: true,
@@ -75,7 +78,7 @@ export default {
             fontFamily: 'PingFang SC'
           },
           formatter: function(obj) {
-            return `${obj.data.name}：${obj.data.percentage}%`;
+            return `${obj.data.name}：${obj.data.percentage}`;
           }
         },
         series: [
@@ -85,15 +88,14 @@ export default {
             radius: ['48%', '70%'],
             center: ['50%', '48%'],
             right: '30%',
-            data: pieData,
+            data: _this.dataList,
             // 标示线
             label: {
               show: true,
               color: '#CDEDFF',
               alignTo: 'edge',
               formatter: function(obj) {
-                console.log(obj.data)
-                // '{name|{b}}\n{time|数量：{c}}  {percentage| 占比：{c}}'
+                // '{name|{bconsole}}\n{time|数量：{c}}  {percentage| 占比：{c}}'
                 return `${obj.data.name}\n数量：${obj.data.value}  占比：${obj.data.percentage}%`;
               },
               rich: {

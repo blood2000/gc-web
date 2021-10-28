@@ -57,37 +57,14 @@ export default {
   },
   methods: {
     getData() {
-      this.dataList = [{
-        cityName: '福建',
-        companyCount: 100,
-        fmsCount: 100,
-        vehicleCount: 100,
-        driverCount: 100
-      },{
-        cityName: '福建',
-        companyCount: 100,
-        fmsCount: 100,
-        vehicleCount: 100,
-        driverCount: 100
-      },{
-        cityName: '福建',
-        companyCount: 100,
-        fmsCount: 100,
-        vehicleCount: 100,
-        driverCount: 100
-      },{
-        cityName: '福建',
-        companyCount: 100,
-        fmsCount: 100,
-        vehicleCount: 100,
-        driverCount: 56664
-      },{
-        cityName: '福建',
-        companyCount: 100,
-        fmsCount: 100,
-        vehicleCount: 100,
-        driverCount: 56664
-      }]
+      const obj = {
+        moduleName: "http_statistic",
+        method: "get",
+        url_alias: "getCityTotal"
+      };
+      http_request(obj).then((res) => {
+        this.dataList = res.data || [];
+      })
     }
   }
 }
