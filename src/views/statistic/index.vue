@@ -216,7 +216,7 @@ export default {
     // 处理实时数据
     setData(dJson) {
       console.log('实时Json：', dJson);
-      
+      this.$refs.AlarmInfoRef.setData(dJson);
     }
   }
 }

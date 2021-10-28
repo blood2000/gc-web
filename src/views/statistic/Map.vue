@@ -107,15 +107,6 @@ export default {
               areaColor: 'rgba(114, 35, 98, 0)'
             }
           }
-        },{
-          name: 'AQI',
-          type: 'heatmap', //热力图属性
-          coordinateSystem: 'geo',
-          pointSize:'20', // 每个点的大小，在地理坐标系(coordinateSystem: 'geo')上有效。
-          blurSize:'20', // 每个点模糊的大小，在地理坐标系(coordinateSystem: 'geo')上有效。
-          minOpacity:'1', // 最小的透明度，在地理坐标系(coordinateSystem: 'geo')上有效。
-          maxOpacity:'1', // 最大的透明度，在地理坐标系(coordinateSystem: 'geo')上有效。
-          data: _this.heatmapData
         }]
       });
     },
