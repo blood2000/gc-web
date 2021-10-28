@@ -29,7 +29,9 @@
 
     <!-- center -->
     <div class="ly-center ly-border ly-flex-v ly-flex-pack-justify">
-
+      <TotalCount />
+      <Map ref="MapRef" />
+      <RankingCard />
     </div>
 
     <!-- right -->
@@ -84,6 +86,8 @@ import DeviceAssetInfo from './DeviceAssetInfo.vue'; // 设备资产信息
 import DeviceType from './DeviceType.vue'; // 设备类型占比
 import AlarmEvent from './AlarmEvent.vue'; // 告警事件统计
 import AlarmInfo from './AlarmInfo.vue'; // 告警信息
+import TotalCount from './TotalCount.vue';
+import RankingCard from './RankingCard.vue';
 export default {
   name: 'Statistic',
   components: {
@@ -95,7 +99,9 @@ export default {
     DeviceAssetInfo,
     DeviceType,
     AlarmEvent,
-    AlarmInfo
+    AlarmInfo,
+    TotalCount,
+    RankingCard
   },
   data() {
     return {
@@ -199,6 +205,7 @@ export default {
     float: left;
     position: relative;
     z-index: 9;
+    padding: 0 1rem;
   }
   .ly-right{
     width: $width_right;

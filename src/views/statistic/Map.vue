@@ -49,12 +49,12 @@ export default {
 
 <style lang="scss" scoped>
 .s-container{
-  width: 50%;
-  height: 50%;
+  width: 100%;
+  height: calc(100% - 17% - 5.2rem);
   >.map-box{
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.4); // 辅助线
+    background: rgba(255, 255, 255, 0.1); // 辅助线
   }
 }
 </style>
