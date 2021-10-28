@@ -51,7 +51,7 @@
         </div>
       </div>
       <div class="ly-right-center ly-border">
-        <Title :show-after="true" after-text="TOP8">告警事件统计<span>The alarm event statistics</span></Title>
+        <Title :show-after="true" after-text="TOP5">告警事件统计<span>The alarm event statistics</span></Title>
         <div class="content-box ly-border">
           <AlarmEvent />
         </div>

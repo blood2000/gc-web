@@ -8,7 +8,7 @@
           <div class="count-content ly-flex ly-flex-pack-justify ly-flex-align-center">
             <count-to class="count" :end-val="countData.enterpriseCount" :decimal-places="0" />
             <img src="~@/assets/images/statistic/count_up.png">
-            <span class="count-up">12.6%</span>
+            <span class="count-up">{{ countData.enterpriseYearValue }}</span>
           </div>
         </div>
       </li>
@@ -19,7 +19,7 @@
           <div class="count-content ly-flex ly-flex-pack-justify ly-flex-align-center">
             <count-to class="count" :end-val="countData.fmsCount" :decimal-places="0" />
             <img src="~@/assets/images/statistic/count_up.png">
-            <span class="count-up">12.6%</span>
+            <span class="count-up">{{ countData.fmsYearValue }}</span>
           </div>
         </div>
       </li>
@@ -30,7 +30,7 @@
           <div class="count-content ly-flex ly-flex-pack-justify ly-flex-align-center">
             <count-to class="count" :end-val="countData.vehicleCount" :decimal-places="0" />
             <img src="~@/assets/images/statistic/count_down.png">
-            <span class="count-down">12.6%</span>
+            <span class="count-down">{{ countData.vehicleYearValue }}</span>
           </div>
         </div>
       </li>
@@ -41,7 +41,7 @@
           <div class="count-content ly-flex ly-flex-pack-justify ly-flex-align-center">
             <count-to class="count" :end-val="countData.driverCount" :decimal-places="0" />
             <img src="~@/assets/images/statistic/count_down.png">
-            <span class="count-down">12.6%</span>
+            <span class="count-down">{{ countData.driverYearValue }}</span>
           </div>
         </div>
       </li>
@@ -92,20 +92,13 @@ export default {
       };
       http_request(obj).then((res) => {
         if (res.data) {
-          const { 
-            enterpriseCount,
-            fmsCount,
-            vehicleCount,
-            driverCount,
+          const {
             nearlySevenDaysEnterpriseCount,
             nearlySevenDaysFmsCount,
             nearlySevenDaysVehicleCount,
             nearlySevenDaysDriverCount
           } = res.data;
-          this.$set(this.countData, 'enterpriseCount', enterpriseCount);
-          this.$set(this.countData, 'fmsCount', enterpriseCount);
-          this.$set(this.countData, 'vehicleCount', vehicleCount);
-          this.$set(this.countData, 'driverCount', driverCount);
+          this.countData = res.data;
           this.priseData = nearlySevenDaysEnterpriseCount || [];
           this.fmsData = nearlySevenDaysFmsCount || [];
           this.vehicleData = nearlySevenDaysVehicleCount || [];

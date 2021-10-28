@@ -17,26 +17,26 @@
       <li class="ly-flex" style="width: 29%">
         <p class="label">降低事故率</p>
         <p class="value">
-          <count-to :end-val="23651" :decimal-places="0" />
+          <count-to :end-val="form.reduceAccidents" :decimal-places="0" />
           <span class="unit">%</span>
         </p>
       </li>
       <li class="ly-flex">
         <p class="label">高危告警量</p>
         <p class="value">
-          <count-to :end-val="23651" :decimal-places="0" />
+          <count-to :end-val="form.highRiskAlarmTotal" :decimal-places="0" />
         </p>
       </li>
       <li class="ly-flex">
         <p class="label">中危告警量</p>
         <p class="value">
-          <count-to :end-val="23651" :decimal-places="0" />
+          <count-to :end-val="form.seriousAlarmTotal" :decimal-places="0" />
         </p>
       </li>
       <li class="ly-flex" style="width: 29%">
         <p class="label">一般告警量</p>
         <p class="value">
-          <count-to :end-val="23651" :decimal-places="0" />
+          <count-to :end-val="form.commonlyAlarmTotal" :decimal-places="0" />
         </p>
       </li>
     </ul>
@@ -106,6 +106,7 @@ export default {
           font-family: PingFang SC;
           font-weight: 500;
           color: #B3A2C1;
+          margin-left: 0.2rem;
         }
       }
       &::before{
