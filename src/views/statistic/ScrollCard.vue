@@ -114,10 +114,14 @@ export default {
         height: 1.6rem;
         line-height: 1.6rem;
         transform: scale(0.9);
+        transform-origin: 50% 0;
         font-family: PingFang SC;
+        margin-top: 0.1rem;
+        padding-left: 0.1rem;
         >img{
           width: 1.025rem;
           height: 0.9rem;
+          margin-top: 0.1rem;
         }
         >span{
           margin-left: 0.4rem;
@@ -128,6 +132,8 @@ export default {
         font-weight: 400;
         color: #FFE6F4;
         transform: scale(0.9);
+        transform-origin: 0 0;
+        margin-top: 0.1rem;
       }
 
       // 动画

@@ -72,9 +72,8 @@ export default {
           zoom: 1.05,
           z: 2,
           aspectScale: 0.8,
-          // layoutCenter: ['49%', '48%'],
-          // layoutSize: '90%',
-          top: '14%',
+          layoutCenter: ['48%', '48%'],
+          layoutSize: '81%',
           itemStyle: {
             normal: {
               borderColor: 'rgba(172, 90, 155, 0.65)',
@@ -97,9 +96,8 @@ export default {
           map: 'china',
           zoom: 1.05,
           aspectScale: 0.8,
-          // layoutCenter: ['49%', '48.1%'],
-          // layoutSize: '90%',
-          top: '14%',
+          layoutCenter: ['48%', '48.1%'],
+          layoutSize: '81%',
           itemStyle: {
             normal: {
               borderColor: 'rgba(172, 90, 155, 0.65)',
