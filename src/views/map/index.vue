@@ -234,10 +234,15 @@
                   <div
                     class="tree-node-driver-box ly-flex ly-flex-align-center"
                   >
-                    <img class="driver-avatar" src="~@/assets/images/device/driver_avatar.png" />
+                    <img
+                      class="driver-avatar"
+                      src="~@/assets/images/device/driver_avatar.png"
+                    />
                     <div>
                       <div>
-                        <span class="driver-name">{{ data.orgOrDriverName }}</span>
+                        <span class="driver-name">{{
+                          data.orgOrDriverName
+                        }}</span>
                         <!-- 司机状态 -->
                         <span
                           v-if="
@@ -246,17 +251,25 @@
                           "
                           class="status"
                           :class="
-                            selectDictColor(driverStatusOptions, data.driverStatus)
+                            selectDictColor(
+                              driverStatusOptions,
+                              data.driverStatus
+                            )
                           "
                         >
                           <strong>· </strong
                           >{{
-                            selectDictLabel(driverStatusOptions, data.driverStatus)
+                            selectDictLabel(
+                              driverStatusOptions,
+                              data.driverStatus
+                            )
                           }}
                         </span>
                       </div>
                       <div>
-                        <span class="driver-vehicleNumber">{{ data.vehicleNumber }}</span>
+                        <span class="driver-vehicleNumber">{{
+                          data.vehicleNumber
+                        }}</span>
                       </div>
                     </div>
                   </div>
@@ -331,6 +344,11 @@
       @clearPathSimplifierIns="clearPathSimplifierIns"
       @handleSlideChange="handleSlideChange"
     />
+    <PlayBack
+      v-if="headerTab === 4"
+      ref="PlayBackRef"
+      class="play-back"
+    />
   </div>
 </template>
 
@@ -342,6 +360,7 @@ import DispatchVehicle from "./dispatch/dispatchVehicle";
 import VehicleDetail from "./dispatch/vehicleDetail";
 import TrackList from "./track/trackList.vue";
 import { http_request } from "@/api";
+import PlayBack from "./playback/playback.vue";
 import store from "@/store";
 import { mapState } from "vuex";
 export default {
@@ -353,9 +372,10 @@ export default {
     DispatchVehicle,
     VehicleDetail,
     TrackList,
+    PlayBack,
   },
   beforeRouteEnter(to, from, next) {
-    next(vm => {
+    next((vm) => {
       vm.routerFrom = from.path;
     });
   },
@@ -454,6 +474,7 @@ export default {
         { code: 1, label: "车辆监控" },
         { code: 2, label: "调度指派" },
         { code: 3, label: "轨迹回放" },
+        { code: 4, label: "视频回放" },
       ],
       // 巡航器轨迹
       pathSimplifierIns: null,
@@ -487,7 +508,7 @@ export default {
       // 实时告警点位marker
       realWarnMarker: null,
       // 记录上一页面路由
-      routerFrom: '/'
+      routerFrom: "/",
     };
   },
 
@@ -612,7 +633,7 @@ export default {
         center: [119.358267, 26.04577],
         zoom: 11,
       });
-      this.map.plugin(['AMap.Geocoder',], function(){
+      this.map.plugin(["AMap.Geocoder"], function () {
         _this.geocoder = new AMap.Geocoder({
           radius: 1000,
           extensions: "all",
@@ -1192,7 +1213,7 @@ export default {
           if (this.headerTab === 3) {
             this.$refs.TrackListRef.getJimi();
           }
-        })
+        });
       } else {
         // 选中组织
         this.isShowVehicleInfo = false;
@@ -1203,7 +1224,7 @@ export default {
           if (this.headerTab === 3) {
             this.$refs.TrackListRef.getJimi();
           }
-        })
+        });
       }
     },
     // 司机小tab
@@ -1267,7 +1288,7 @@ export default {
         data: params,
       };
       http_request(obj).then((res) => {
-        console.log('res',res)
+        console.log("res", res);
         // 绘制前先清空之前的绘制, 避免重复绘制
         this.clearMarkerList();
         if (res.data.rows && res.data.rows.length > 0) {
@@ -1291,10 +1312,10 @@ export default {
           //   gridSize: 80
           // })
           // 刷新点位后不重新设置视野
-          if(isFresh && this.headerTab !== 3) {
+          if (isFresh && this.headerTab !== 3) {
             this.$nextTick(() => {
               this.map.setFitView();
-            }); 
+            });
           }
         } else {
           this.msgWarning("该组织下暂无车辆定位信息");
@@ -1316,7 +1337,7 @@ export default {
         if (data) {
           // 绘制全部车辆点位
           const { attribute } = data;
-          console.log('attribute',attribute)
+          console.log("attribute", attribute);
           if (
             attribute &&
             attribute.coordinate &&
@@ -1331,7 +1352,7 @@ export default {
             //   gridSize: 80
             // })
             // 刷新点位后不重新设置视野
-            if(isFresh && this.headerTab !== 3) {
+            if (isFresh && this.headerTab !== 3) {
               this.$nextTick(() => {
                 this.map.setZoomAndCenter(13, attribute.coordinate.value);
               });
@@ -1349,16 +1370,17 @@ export default {
       const direction = attribute.direction || {};
       const speed = attribute.speed || {};
       const position = attribute.coordinate.value;
-      let statusColor = '#ADB5BD';
+      let statusColor = "#ADB5BD";
       if (tip.deviceStatus === 0) {
-        statusColor = '#ADB5BD'; // 离线
+        statusColor = "#ADB5BD"; // 离线
       } else if (tip.deviceStatus === 1) {
-        statusColor = '#43B91E'; // 在线
+        statusColor = "#43B91E"; // 在线
       } else if (tip.deviceStatus === -1) {
-        statusColor = '#EF6969'; // 异常
+        statusColor = "#EF6969"; // 异常
       }
       const contentValue = [];
-      if (tip.speedText !== null && tip.speedText !== undefined) contentValue.push(tip.speedText);
+      if (tip.speedText !== null && tip.speedText !== undefined)
+        contentValue.push(tip.speedText);
       if (tip.vehicleStatusText) contentValue.push(tip.vehicleStatusText);
       // 绘制标记
       const styleObj = {
@@ -1423,7 +1445,7 @@ export default {
     },
     // 切换地图tab
     handleHeaderTab(code) {
-      console.log('切换地图tab',code)
+      console.log("切换地图tab", code);
       if (this.headerTab === code) return;
       this.headerTab = code;
       // 清除巡航轨迹
@@ -1459,10 +1481,10 @@ export default {
     },
     // 绘制告警点位
     darwRealWarnMarker(row) {
-      console.log('绘制告警点位：', row)
+      console.log("绘制告警点位：", row);
       // 绘制前先清除
       this.clearRealWarnMarker();
-      
+
       if (row && row.lng && row.lat) {
         const styleObj = {
           content:
@@ -1503,8 +1525,8 @@ export default {
         this.readTimer = null;
         this.refreshMarkerTime = 60;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -1740,13 +1762,13 @@ export default {
     }
   }
 
-  // 定时刷新 
-  .time-refresh-box{
+  // 定时刷新
+  .time-refresh-box {
     width: 120px;
     height: 40px;
     line-height: 40px;
-    background: #FFFFFF;
-    border: 1px solid #E4ECF4;
+    background: #ffffff;
+    border: 1px solid #e4ecf4;
     border-radius: 4px;
     padding-left: 10px;
     position: absolute;
@@ -1756,8 +1778,8 @@ export default {
     font-size: 14px;
     font-family: PingFang SC;
     font-weight: bold;
-    color: #3D4050;
-    >img{
+    color: #3d4050;
+    > img {
       vertical-align: middle;
       margin-top: -4px;
     }
@@ -1791,6 +1813,20 @@ export default {
     z-index: 1000;
     width: 380px;
     max-height: calc(100% - #{$header-height} - #{$bottom} - 12px);
+  }
+  // 调度指派
+  > .play-back {
+    box-sizing: border-box;
+    height: 511px;
+    width: 380px;
+    background: #ffffff;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.05);
+    opacity: 0.85;
+    border-radius: 6px;
+    position: absolute;
+    top: calc(#{$header-height} + 12px);
+    right: $right;
+    z-index: 1000;
   }
 
   //车辆详情
@@ -2049,15 +2085,15 @@ export default {
       }
     }
     // 告警标记样式
-    ::v-deep.own-device-marker-warn{
+    ::v-deep.own-device-marker-warn {
       position: relative;
       transform-origin: center center;
-      .warn-car{
+      .warn-car {
         position: relative;
         z-index: 1;
       }
       &.ztc {
-        .warn-car{
+        .warn-car {
           width: 34px;
           height: 76px;
           background: url("~@/assets/images/device/map_car_ztc.png") no-repeat;
@@ -2065,7 +2101,7 @@ export default {
         }
       }
       &.jbc {
-        .warn-car{
+        .warn-car {
           width: 34px;
           height: 80px;
           background: url("~@/assets/images/device/map_car_jbc.png") no-repeat;
@@ -2073,7 +2109,7 @@ export default {
         }
       }
       &.llc {
-        .warn-car{
+        .warn-car {
           width: 28px;
           height: 62px;
           background: url("~@/assets/images/device/map_car_llc.png") no-repeat;
@@ -2081,7 +2117,7 @@ export default {
         }
       }
       &.phc {
-        .warn-car{
+        .warn-car {
           width: 31px;
           height: 79px;
           background: url("~@/assets/images/device/map_car_phc.png") no-repeat;
@@ -2089,14 +2125,14 @@ export default {
         }
       }
       &.qt {
-        .warn-car{
+        .warn-car {
           width: 31px;
           height: 79px;
           background: url("~@/assets/images/device/map_car_qt.png") no-repeat;
           background-size: 100% 100%;
         }
       }
-      .warn-cirle{
+      .warn-cirle {
         position: absolute;
         left: 50%;
         top: 50%;
@@ -2108,8 +2144,8 @@ export default {
         border-radius: 50%;
         background: rgba(239, 105, 105, 0.15);
         z-index: 0;
-        &::before{
-          content: '';
+        &::before {
+          content: "";
           position: absolute;
           left: 50%;
           top: 50%;
@@ -2121,8 +2157,8 @@ export default {
           border-radius: 50%;
           background: rgba(239, 105, 105, 0.08);
         }
-        &::after{
-          content: '';
+        &::after {
+          content: "";
           position: absolute;
           left: 50%;
           top: 50%;
@@ -2253,19 +2289,19 @@ export default {
   // 司机的树节点
   .tree-node-driver-box {
     margin: 8px 0;
-    .driver-avatar{
+    .driver-avatar {
       width: 32px;
       height: 32px;
     }
-    .driver-name{
+    .driver-name {
       font-size: 14px;
       font-family: PingFang SC;
       font-weight: bold;
       line-height: 24px;
-      color: #3D4050;
+      color: #3d4050;
       margin: 0 18px 0 8px;
     }
-    .driver-vehicleNumber{
+    .driver-vehicleNumber {
       font-size: 12px;
       color: #a7aabb;
       margin: 0 18px 0 8px;

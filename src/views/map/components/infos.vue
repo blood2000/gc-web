@@ -3,62 +3,109 @@
     <!-- 车辆信息 -->
     <div class="info-box info-car">
       <h5 class="info-box-title">车辆信息</h5>
-      <div class="info-box-status" :class="selectDictColor(vehicleStatusOptions, vehicleInfo.vehicleStatus)">
+      <div
+        class="info-box-status"
+        :class="
+          selectDictColor(vehicleStatusOptions, vehicleInfo.vehicleStatus)
+        "
+      >
         <strong class="mr8">·</strong>
         {{ selectDictLabel(vehicleStatusOptions, vehicleInfo.vehicleStatus) }}
       </div>
       <!-- content -->
       <div class="car-content ly-flex ly-flex-align-center">
-        <img class="img-box" :src="require('@/assets/images/device/car_type_'+ (vehicleInfo.carrierType || 'qt') +'.png')">
+        <img
+          class="img-box"
+          :src="
+            require('@/assets/images/device/car_type_' +
+              (vehicleInfo.carrierType || 'qt') +
+              '.png')
+          "
+        />
         <div class="info-box ly-flex-1">
           <h5>{{ vehicleInfo.plateNumber }}</h5>
           <p class="car-name">
-            {{ vehicleInfo.driverName ? vehicleInfo.driverName : '暂无' }}
+            {{ vehicleInfo.driverName ? vehicleInfo.driverName : "暂无" }}
             <span style="margin: 0 10px">|</span>
             <!-- 无数据 -->
-            {{ vehicleInfo.carrierTypeName ? vehicleInfo.carrierTypeName : '其他' }}
+            {{
+              vehicleInfo.carrierTypeName ? vehicleInfo.carrierTypeName : "其他"
+            }}
             <span style="margin: 0 10px">|</span>
-            {{ vehicleInfo.orgName ? vehicleInfo.orgName : '暂无' }}
+            {{ vehicleInfo.orgName ? vehicleInfo.orgName : "暂无" }}
           </p>
           <p class="car-type">
             <span class="label">车辆类型</span>
-            {{ vehicleInfo.classificationName ? vehicleInfo.classificationName : '其他' }}
+            {{
+              vehicleInfo.classificationName
+                ? vehicleInfo.classificationName
+                : "其他"
+            }}
           </p>
         </div>
       </div>
-      <p class="address g-single-row">{{ locationInfo.address ? locationInfo.address : '' }}</p>
-      <p class="time">{{ locationInfo.time ? locationInfo.time : '' }}</p>
+      <p class="address g-single-row">
+        {{ locationInfo.address ? locationInfo.address : "" }}
+      </p>
+      <p class="time">{{ locationInfo.time ? locationInfo.time : "" }}</p>
     </div>
 
     <!-- 调度信息 -->
     <div class="info-box info-dispatch">
       <h5 class="info-box-title">调度信息</h5>
-      <div class="info-box-status green" v-if="dispatchInfo.loadFormattedAddress"><strong class="mr8">·</strong>运输中</div>
+      <div
+        class="info-box-status green"
+        v-if="dispatchInfo.loadFormattedAddress"
+      >
+        <strong class="mr8">·</strong>运输中
+      </div>
       <!-- content -->
       <div class="address-node">
         <p class="g-single-row">
           <span class="start">起</span>
-          {{ dispatchInfo.loadFormattedAddress ? dispatchInfo.loadFormattedAddress + dispatchInfo.loadAddressAlias : '暂无' }}
+          {{
+            dispatchInfo.loadFormattedAddress
+              ? dispatchInfo.loadFormattedAddress +
+                dispatchInfo.loadAddressAlias
+              : "暂无"
+          }}
         </p>
       </div>
       <div class="address-node">
         <p class="g-single-row">
           <span class="end">终</span>
-          {{ dispatchInfo.unloadFormattedAddress ? dispatchInfo.unloadFormattedAddress + dispatchInfo.unloadAddressAlias : '暂无' }}
+          {{
+            dispatchInfo.unloadFormattedAddress
+              ? dispatchInfo.unloadFormattedAddress +
+                dispatchInfo.unloadAddressAlias
+              : "暂无"
+          }}
         </p>
       </div>
     </div>
 
     <!-- 设备信息 -->
-    <div class="info-box info-device" :style="warnIsClose ? '' : 'height: calc(100% - 304px)'">
+    <div
+      class="info-box info-device"
+      :style="warnIsClose ? '' : 'height: calc(100% - 304px)'"
+    >
       <h5 class="info-box-title">设备信息</h5>
       <!-- content -->
       <div class="device-content ly-flex ly-flex-align-center">
         <div class="img-box ly-flex-pack-center ly-flex-align-center">
-          <img v-if="deviceInfo.modelImageUrl" :src="deviceInfo.modelImageUrl.replace(/\{tag\}/g, 'icon')">
+          <img
+            v-if="deviceInfo.modelImageUrl"
+            :src="deviceInfo.modelImageUrl.replace(/\{tag\}/g, 'icon')"
+          />
         </div>
         <div class="info-box ly-flex-1">
-          <h5 class="g-single-row">{{ `${deviceInfo.modelName ? deviceInfo.modelName : ''} | ${deviceInfo.seriesName ? deviceInfo.seriesName : ''}` }}</h5>
+          <h5 class="g-single-row">
+            {{
+              `${deviceInfo.modelName ? deviceInfo.modelName : ""} | ${
+                deviceInfo.seriesName ? deviceInfo.seriesName : ""
+              }`
+            }}
+          </h5>
           <p class="warn-text">
             今日告警
             <span class="count">{{ warnCount }}</span>
@@ -67,18 +114,55 @@
       </div>
       <ul class="device-list ly-flex">
         <li v-for="item in functionsInfo" :key="item.functionCode">
-          <img :src="item.functionIcon">
+          <img :src="item.functionIcon" />
           <p :title="item.functionName">{{ item.functionName }}</p>
         </li>
       </ul>
-      <ul class="info-list ly-flex map-scroll-panel" :style="warnIsClose ? '' : 'height: calc(100% - 170px)'">
-        <li class="ly-flex ly-flex-align-center" v-for="item in attributesInfo" :key="item.attributeCode">
+      <!--  :style="warnIsClose ? '' : 'height: calc(100% - 170px)'" -->
+      <ul class="info-list ly-flex map-scroll-panel">
+        <li
+          class="ly-flex ly-flex-align-center"
+          v-for="item in attributesInfo"
+          :key="item.attributeCode"
+        >
           <div class="img-box ly-flex-align-center ly-flex-pack-center">
-            <img :src="item.attributeIcon">
+            <img :src="item.attributeIcon" />
           </div>
           <div>
             <p class="label">{{ item.attributeLabel }}</p>
-            <p :class="item.attributeUnit ? 'count' : 'text'" :style="`color:${item.attributeColor ? item.attributeColor : '#3D4050'}`"><span>{{ item.attributeText }}</span> {{ item.attributeUnit ? item.attributeUnit : '' }}</p>
+            <p
+              :class="item.attributeUnit ? 'count' : 'text'"
+              :style="`color:${
+                item.attributeColor ? item.attributeColor : '#3D4050'
+              }`"
+            >
+              <span>{{ item.attributeText }}</span>
+              {{ item.attributeUnit ? item.attributeUnit : "" }}
+            </p>
+          </div>
+        </li>
+      </ul>
+      <!-- 视频 -->
+      <ul v-show="warnIsClose" class="video-content">
+        <li
+          class="video-content-item"
+          :key="index"
+          v-for="(item, index) in videoList"
+          @click="handlePlay(item.type)"
+        >
+          <img :src="item.imgUrl" />
+          <div class="video-content-item-top">
+            <img src="../../../assets/images/detail/video-top-title.png" />
+            <span>{{ item.typeName }}</span>
+          </div>
+          <div class="video-content-item-middle">
+            <img src="../../../assets/images/detail/play-back-play.png" />
+          </div>
+          <div
+            @click.stop="handleMagnify(item.type)"
+            class="video-content-item-bottom"
+          >
+            <img src="../../../assets/images/detail/video-bottom-right.png" />
           </div>
         </li>
       </ul>
@@ -87,14 +171,14 @@
 </template>
 
 <script>
-import { http_request } from '@/api';
-import bus from './bus';
+import { http_request } from "@/api";
+import bus from "./bus";
 export default {
   props: {
     vehicleCode: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
@@ -107,14 +191,31 @@ export default {
       attributesInfo: [],
       dispatchInfo: {},
       warnCount: 0,
+      videoList: [
+        {
+          typeName: "车前摄像头",
+          type: 0,
+          imgUrl: "",
+        },
+        {
+          typeName: "车内摄像头",
+          type: 1,
+          imgUrl: "",
+        },
+        {
+          typeName: "车后摄像头",
+          type: 2,
+          imgUrl: "",
+        },
+      ],
       // 车辆状态字典
       vehicleStatusOptions: [
-        { dictLabel: '空闲中', dictValue: 0, color: 'blue' },
-        { dictLabel: '任务中', dictValue: 1, color: 'green' },
-        { dictLabel: '维修中', dictValue: 2, color: 'red' },
-        { dictLabel: '保养中', dictValue: 3, color: 'yellow' }
-      ]
-    }
+        { dictLabel: "空闲中", dictValue: 0, color: "blue" },
+        { dictLabel: "任务中", dictValue: 1, color: "green" },
+        { dictLabel: "维修中", dictValue: 2, color: "red" },
+        { dictLabel: "保养中", dictValue: 3, color: "yellow" },
+      ],
+    };
   },
   watch: {
     vehicleCode: {
@@ -125,49 +226,59 @@ export default {
           this.getWarnCount();
         }
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   mounted() {
     // bus
-    bus.$on('isClose', (data)=>{
+    bus.$on("isClose", (data) => {
       this.warnIsClose = data;
-		});
+    });
   },
   methods: {
+    //放大
+    handleMagnify(type) {},
+    // 播放
+    handlePlay(type) {},
     // 获取车辆信息
     getVehicleInfo() {
-      const type = 'vehicle,location,device,function,attribute'; // 获取信息类型, 可指定多个
+      const type = "vehicle,location,device,function,attribute"; // 获取信息类型, 可指定多个
       const obj = {
-        moduleName: 'http_map',
-        method: 'get',
-        url_alias: 'getVehicleInfo',
-        url_code: [this.vehicleCode, type]
-      }
-      http_request(obj).then(res => {
-        const { vehicle, location, device, functions, attributes } = res.data; 
+        moduleName: "http_map",
+        method: "get",
+        url_alias: "getVehicleInfo",
+        url_code: [this.vehicleCode, type],
+      };
+      http_request(obj).then((res) => {
+        const { vehicle, location, device, functions, attributes } = res.data;
         this.vehicleInfo = vehicle || {};
         this.locationInfo = location || {};
         this.deviceInfo = device || {};
         this.functionsInfo = functions || [];
         this.attributesInfo = attributes || [];
         // 根据经纬度获取点位
-        if (this.locationInfo && this.locationInfo.lng && this.locationInfo.lat) {
-          this.$parent.getAddressBylnglat([this.locationInfo.lng, this.locationInfo.lat]).then(result => {
-            this.$set(this.locationInfo, 'address', result);
-          });
+        if (
+          this.locationInfo &&
+          this.locationInfo.lng &&
+          this.locationInfo.lat
+        ) {
+          this.$parent
+            .getAddressBylnglat([this.locationInfo.lng, this.locationInfo.lat])
+            .then((result) => {
+              this.$set(this.locationInfo, "address", result);
+            });
         }
       });
     },
     // 获取调度信息
     getDispatchInfo() {
       const obj = {
-        moduleName: 'http_map',
-        method: 'get',
-        url_alias: 'getAppointCarOrderIng',
-        url_code: [this.vehicleCode]
-      }
-      http_request(obj).then(res => {
+        moduleName: "http_map",
+        method: "get",
+        url_alias: "getAppointCarOrderIng",
+        url_code: [this.vehicleCode],
+      };
+      http_request(obj).then((res) => {
         if (res.data) {
           const { addressInfo } = res.data;
           this.dispatchInfo = addressInfo || {};
@@ -179,14 +290,14 @@ export default {
     // 获取告警条数
     getWarnCount() {
       const obj = {
-        moduleName: 'http_map',
-        method: 'get',
-        url_alias: 'getWarnCount',
+        moduleName: "http_map",
+        method: "get",
+        url_alias: "getWarnCount",
         data: {
-          vehicleCode: this.vehicleCode
-        }
-      }
-      http_request(obj).then(res => {
+          vehicleCode: this.vehicleCode,
+        },
+      };
+      http_request(obj).then((res) => {
         this.warnCount = res.data || 0;
       });
     },
@@ -194,20 +305,20 @@ export default {
     selectDictColor(datas, value) {
       var actions = [];
       Object.keys(datas).some((key) => {
-        if (datas[key].dictValue == ('' + value)) {
+        if (datas[key].dictValue == "" + value) {
           actions.push(datas[key].color);
           return true;
         }
-      })
-      return actions.join('');
-    }
-  }
-}
+      });
+      return actions.join("");
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-.map-info-panel{
-  >.info-box{
+.map-info-panel {
+  > .info-box {
     position: relative;
     background: rgba(255, 255, 255, 0.7);
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.05);
@@ -215,21 +326,25 @@ export default {
     margin-bottom: 8px;
     padding: 12px;
     // 标题样式
-    .info-box-title{
+    .info-box-title {
       width: 284px;
       height: 28px;
       line-height: 28px;
-      background: linear-gradient(90deg, rgba(70, 130, 250, 0.16) 0%, rgba(70, 130, 250, 0) 100%);
+      background: linear-gradient(
+        90deg,
+        rgba(70, 130, 250, 0.16) 0%,
+        rgba(70, 130, 250, 0) 100%
+      );
       border-radius: 3px;
       font-size: 16px;
       font-family: PingFang SC;
       font-weight: bold;
-      color: #3D4050;
+      color: #3d4050;
       padding-left: 8px;
     }
 
     // 状态样式
-    .info-box-status{
+    .info-box-status {
       position: absolute;
       top: 15px;
       right: 18px;
@@ -237,97 +352,98 @@ export default {
       font-family: PingFang SC;
       font-weight: bold;
       line-height: 24px;
-      &.green{
-        color: #43B91E;
+      &.green {
+        color: #43b91e;
       }
-      &.blue{
-        color: #4682FA;  
+      &.blue {
+        color: #4682fa;
       }
-      &.red{
-        color: #EF6969;  
+      &.red {
+        color: #ef6969;
       }
-      &.yellow{
-        color: #FFBC00;  
+      &.yellow {
+        color: #ffbc00;
       }
     }
 
     // 车辆信息
-    &.info-car{
+    &.info-car {
       height: 172px;
-      .car-content{
+      .car-content {
         margin: 8px 0 10px 0;
-        >.img-box{
+        > .img-box {
           width: 60px;
           height: 60px;
           margin-right: 20px;
         }
-        >.info-box{
-          >h5{
+        > .info-box {
+          > h5 {
             font-size: 18px;
             font-family: PingFang SC;
             font-weight: bold;
             line-height: 20px;
-            color: #3D4050;
+            color: #3d4050;
             margin: -2px 0 2px 0;
           }
-          .car-name{
+          .car-name {
             font-size: 14px;
             font-family: PingFang SC;
             font-weight: 400;
             line-height: 20px;
-            color: #3D4050;
+            color: #3d4050;
           }
-          .car-type{
+          .car-type {
             font-size: 14px;
             font-family: PingFang SC;
             font-weight: bold;
             line-height: 20px;
-            color: #3D4050;
-            .label{
+            color: #3d4050;
+            .label {
               font-weight: 400;
-              color: #A6A8AD;
+              color: #a6a8ad;
               margin-right: 8px;
             }
           }
         }
       }
-      .address{
+      .address {
         font-size: 14px;
         font-family: PingFang SC;
         font-weight: 400;
         line-height: 22px;
-        color: #3D4050;
+        color: #3d4050;
       }
-      .time{
+      .time {
         font-size: 12px;
         font-family: PingFang SC;
         font-weight: 400;
         line-height: 22px;
-        color: #A6A8AD;
+        color: #a6a8ad;
       }
     }
 
     // 调度信息
-    &.info-dispatch{
+    &.info-dispatch {
       height: 116px;
-      .address-node{
+      .address-node {
         position: relative;
-        &:not(:last-child)::after{
-          content: '';
+        &:not(:last-child)::after {
+          content: "";
           position: absolute;
           bottom: -1px;
           left: 10px;
           width: 1px;
           height: 8px;
-          background: #C7CBD2;
+          background: #c7cbd2;
         }
-        >p{
+        > p {
           font-size: 14px;
           font-family: PingFang SC;
           font-weight: 400;
           line-height: 24px;
-          color: #3D4050;
-          >.start, >.end{
+          color: #3d4050;
+          > .start,
+          > .end {
             display: inline-block;
             width: 18px;
             height: 18px;
@@ -340,138 +456,198 @@ export default {
             font-weight: bold;
             margin: 0 8px 10px 2px;
           }
-          >.start{
+          > .start {
             margin-top: 13px;
-            background: #FFBC00;
+            background: #ffbc00;
           }
-          >.end{
-            background: #4682FA;
+          > .end {
+            background: #4682fa;
           }
         }
       }
     }
 
     // 设备信息
-    &.info-device{
+    &.info-device {
       padding-right: 0;
       min-height: 300px;
       max-height: 484px;
-      .device-content{
+      .device-content {
         padding: 8px 12px 0 0;
-        >.img-box{
+        > .img-box {
           width: 68px;
           height: 80px;
           margin-right: 16px;
-          >img{
+          > img {
             max-width: 100%;
             max-height: 100%;
           }
         }
-        >.info-box{
+        > .info-box {
           padding-bottom: 15px;
           width: 270px;
-          @mixin font{
+          @mixin font {
             font-size: 16px;
             font-family: PingFang SC;
             font-weight: bold;
             line-height: 24px;
-            color: #3D4050;
+            color: #3d4050;
           }
-          >h5{
+          > h5 {
             @include font;
             margin-bottom: 6px;
           }
-          >.warn-text{
+          > .warn-text {
             @include font;
             width: 262px;
             height: 32px;
             line-height: 32px;
-            background: linear-gradient(90deg, rgba(239, 105, 105, 0.16) 0%, rgba(239, 105, 105, 0) 100%);
+            background: linear-gradient(
+              90deg,
+              rgba(239, 105, 105, 0.16) 0%,
+              rgba(239, 105, 105, 0) 100%
+            );
             border-radius: 3px;
             padding-left: 12px;
-            .count{
-              color: #EF6969;
+            .count {
+              color: #ef6969;
             }
           }
         }
       }
-      .device-list{
+      .device-list {
         padding-right: 10px;
         height: 46px;
         overflow: hidden;
-        >li{
+        > li {
           text-align: center;
           width: 14.2%;
-          >img{
+          > img {
             width: 26px;
             height: 26px;
           }
-          >p{
+          > p {
             font-size: 10px;
             font-family: PingFang SC;
             font-weight: 400;
             line-height: 20px;
-            color: #3D4050;
+            color: #3d4050;
             transform: scale(0.9);
             margin-top: -3px;
           }
         }
       }
-      .info-list{
+      .info-list {
         margin-top: 12px;
         overflow-y: scroll;
         flex-wrap: wrap;
-        >li{
+        > li {
           width: 50%;
           height: 44px;
           margin-bottom: 15px;
-          &:last-child{
+          &:last-child {
             margin-bottom: 6px;
           }
-          >.img-box{
+          > .img-box {
             width: 44px;
             height: 44px;
             margin-right: 10px;
             background: #ebeff3;
             border-radius: 6px;
-            >img{
+            > img {
               width: 28px;
               height: 28px;
             }
           }
-          .label{
+          .label {
             font-size: 12px;
             font-family: PingFang SC;
             font-weight: bold;
             line-height: 22px;
-            color: #ADB5BD;
+            color: #adb5bd;
             margin-top: -4px;
           }
-          .count{
+          .count {
             font-size: 12px;
             font-family: PingFang SC;
             font-weight: bold;
             line-height: 24px;
-            color: #3D4050;
-            >span{
+            color: #3d4050;
+            > span {
               font-size: 24px;
               font-family: Bahnschrift;
               font-weight: 600;
               vertical-align: bottom;
             }
           }
-          .text{
+          .text {
             font-size: 15px;
             font-family: PingFang SC;
             font-weight: bold;
             line-height: 24px;
-            &.green{
-              color: #43B91E;
+            &.green {
+              color: #43b91e;
             }
-            &.red{
-              color: #EF6969;
+            &.red {
+              color: #ef6969;
             }
           }
+        }
+      }
+      .video-content {
+        height: 172px;
+        display: flex;
+        flex-wrap: wrap;
+        &-item {
+          margin-right: 25px;
+          margin-bottom: 8px;
+          height: 80px;
+          width: 142px;
+          border-radius: 2px;
+          background: #3d4050;
+          position: relative;
+          &-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            padding-left: 10px;
+            display: flex;
+            align-items: center;
+
+            background: rgba(15, 15, 15, 0.53);
+            opacity: 1;
+            border-radius: 2px 2px 0px 0px;
+            & > span {
+              font-size: 12px;
+              font-family: PingFang SC;
+              font-weight: bold;
+              color: #ffffff;
+            }
+          }
+          &-middle {
+            height: 30px;
+            width: 30px;
+            position: absolute;
+            top: calc(50% - 15px);
+            left: calc(50% - 15px);
+            & > img {
+              height: 30px;
+              width: 30px;
+            }
+          }
+          &-bottom {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 17px;
+            height: 17px;
+          }
+        }
+        &-item:nth-child(2n) {
+          margin-right: 0;
+          margin-bottom: 8px;
         }
       }
     }
