@@ -2,8 +2,8 @@
   <div class="s-container">
     <div class="s-scroll-box">
       <ul :class="{isRoll: isRoll}" class="s-container__list ly-flex-v ly-flex-pack-justify">
-        <li v-for="(item, index) in dataList" :key="index" class="ly-flex ly-flex-pack-justify">
-          <h5 class="g-single-row" :class="[`alarm_type_${item.alarmLevel}`, {isOpacity: isOpacity}]">
+        <li v-for="(item, index) in dataList" :key="index" :class="{isOpacity: isOpacity}" class="ly-flex ly-flex-pack-justify">
+          <h5 class="g-single-row" :class="`alarm_type_${item.alarmLevel}`">
             <img class="index" :src="require(`@/assets/images/statistic/alarm_${item.alarmLevel}.png`)" />
             <span class="title">{{ item.alarmTypeName }}</span>
           </h5>
@@ -133,7 +133,7 @@ export default {
       border-radius: 8px;
       padding: 0.2rem 0 0.3rem 0.2rem;
       >h5{
-        width: 4.15rem;
+        width: 5rem;
         line-height: 1.05rem;
         transform: scale(0.9);
         >.index{
@@ -165,7 +165,7 @@ export default {
         }
       }
       >.info-content{
-        width: calc(100% - 4.15rem);
+        width: calc(100% - 5rem);
         >p, >div{
           font-size: 0.6rem;
           font-family: PingFang SC;

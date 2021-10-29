@@ -29,9 +29,10 @@
 
     <!-- center -->
     <div class="ly-center ly-border ly-flex-v ly-flex-pack-justify">
-      <TotalCount />
+      <TotalCount ref="TotalCount" />
       <Map ref="MapRef" />
       <RankingCard />
+      <ScrollCard ref="ScrollCardRef" />
     </div>
 
     <!-- right -->
@@ -76,7 +77,6 @@
 </template>
 
 <script>
-import { http_request } from "@/api";
 import { ThrottleFun } from '@/utils/index.js';
 import Title from './components/title';
 import Map from './Map.vue';
@@ -89,6 +89,7 @@ import AlarmEvent from './AlarmEvent.vue'; // 告警事件统计
 import AlarmInfo from './AlarmInfo.vue'; // 告警信息
 import TotalCount from './TotalCount.vue';
 import RankingCard from './RankingCard.vue';
+import ScrollCard from './ScrollCard.vue';
 export default {
   name: 'Statistic',
   components: {
@@ -102,7 +103,8 @@ export default {
     AlarmEvent,
     AlarmInfo,
     TotalCount,
-    RankingCard
+    RankingCard,
+    ScrollCard
   },
   data() {
     return {
@@ -153,8 +155,8 @@ export default {
     // 创建websocket
     createWebSocket() {
       try {
-        // this.websock = new WebSocket(process.env.VUE_APP_WS_PROTOCOL + process.env.VUE_APP_BASE_HOST + this.wsurl);
-        this.websock = new WebSocket('ws://192.168.1.18:8080/fmsweb/tempAlarm');
+        this.websock = new WebSocket(process.env.VUE_APP_WS_PROTOCOL + process.env.VUE_APP_BASE_HOST + this.wsurl);
+        // this.websock = new WebSocket('ws://192.168.1.18:8080/fmsweb/tempAlarm');
         this.initWebSocket();
       } catch (e) {
         console.log('catch', e);
@@ -165,7 +167,7 @@ export default {
       this.websock.onmessage = (e) => {
         // 拿到pong说明当前连接是正常的
         if (e.data === 'pong') {
-          console.log('pong');
+          // console.log('pong');
           this.heartCheck();
         } else if (e.data && e.data.length > 10) {
           this.setData(JSON.parse(e.data));
@@ -217,6 +219,8 @@ export default {
     setData(dJson) {
       console.log('实时Json：', dJson);
       this.$refs.AlarmInfoRef.setData(dJson);
+      this.$refs.ScrollCardRef.setData(dJson);
+      this.$refs.TotalCount.setData(dJson);
     }
   }
 }
