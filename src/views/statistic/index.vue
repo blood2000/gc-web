@@ -237,8 +237,8 @@ export default {
 // 1rem = 40px;
 .g-statistic {
   $width: 96rem;
-  $width_left: 27.8rem;
-  $width_right: 26rem;
+  $width_left: 27.4rem;
+  $width_right: 26.8rem;
 
   //base
   position: relative;
@@ -259,14 +259,14 @@ export default {
   width: $width;
   height: 100%;
   overflow: hidden;
-  padding: 5.4rem 3.85rem 3.85rem;
+  padding: 5rem 3.85rem 3.85rem;
   .ly-left{
     width: $width_left;
     height: 100%;
     float: left;
     position: relative;
     z-index: 9;
-    padding-top: 0.45rem;
+    padding-top: 0.85rem;
     padding-left: 3rem;
     .ly-left-top{
       height: 40.3%;
@@ -293,7 +293,7 @@ export default {
     float: right;
     position: relative;
     z-index: 9;
-    padding-top: 0.45rem;
+    padding-top: 0.85rem;
     .ly-right-top{
       height: 38%;
       .ly-right-top-top{

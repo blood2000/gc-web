@@ -95,7 +95,7 @@ export default {
               color: '#F2E9FA',
               alignTo: 'edge',
               formatter: function(obj) {
-                return ` ${obj.data.name}\n {percentage|数量：${obj.data.value}  占比：${obj.data.percentage}%}`;
+                return ` ${obj.data.name}\n {percentage|数量：${obj.data.value}  占比：${obj.data.percentage}}`;
               },
               rich: {
                 percentage: {
