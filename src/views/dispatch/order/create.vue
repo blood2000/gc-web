@@ -376,7 +376,7 @@
                 >
                   <div class="option-item">
                     <div class="option-item_name">{{ dict.dictLabel }}</div>
-                    <div class="option-item_address">{{ dict.address }}</div>
+                    <div class="option-item_address">111 {{dict.address }}</div>
                   </div>
                 </el-option>
               </el-select>
@@ -384,7 +384,7 @@
                 v-show="false"
                 :ref="`amap2`"
                 class="search-box"
-                :search-option="searchOption"
+                :search-option="searchOption1"
                 :on-search-result="onUnSearchResult"
               />
             </el-form-item>
@@ -486,6 +486,10 @@ export default {
     return {
       pageData: {},
       searchOption: {
+        city: "全国",
+        citylimit: true,
+      },
+      searchOption1: {
         city: "全国",
         citylimit: true,
       },
@@ -623,9 +627,15 @@ export default {
       }
     },
     "searchOption.city"(val, oldval) {
-      console.log("oldval", oldval);
-      if (oldval !== "全国") {
+      console.log("searchOption.city oldval", oldval);
+      if (oldval !== "全国" &&this.loadAddressParams.detailAddress) {
         this.loadAddressParams.detailAddress = "";
+      }
+    },
+    "searchOption1.city"(val, oldval) {
+      console.log("searchOption1.city oldval", oldval);
+      if (oldval !== "全国"&&this.unloadAddressParams.detailAddress) {
+        this.unloadAddressParams.detailAddress = "";
       }
     },
   },
@@ -667,7 +677,7 @@ export default {
       if (code == null || code === "") {
         return;
       }
-      console.log('')
+      console.log("");
       const me = this;
       const obj = {
         moduleName: "http_purse",
@@ -724,6 +734,11 @@ export default {
         this.unLoadList.cityList = [];
         this.unLoadList.districtList = [];
       }
+      if (e !== null && e !== undefined && e !== "") {
+        this.addressSearchLimitByCode(e, type);
+      } else {
+        this.addressReset(type);
+      }
       this.getCityListFun(e, type);
     },
     // 市更新
@@ -733,18 +748,47 @@ export default {
       if (type == "1") {
         this.loadAddressParams.districtCode = null;
         this.loadList.districtList = [];
-        this.getDistrictFun(e, type);
       } else if (type == "2") {
         this.unloadAddressParams.districtCode = null;
         this.unLoadList.districtList = [];
-        this.getDistrictFun(e, type);
       }
+      if (e !== null && e !== undefined && e !== "") {
+        this.addressSearchLimitByCode(e, type);
+      } else {
+        this.addressReset(type);
+      }
+      this.getDistrictFun(e, type);
     },
     // 区更变
     districtChange(e, type) {
       console.log("districtChange e", e);
       console.log("districtChange type", type);
+       if (e !== null && e !== undefined && e !== "") {
+        this.addressSearchLimitByCode(e, type);
+      } else {
+        this.addressReset(type);
+      }
     },
+    // 选择完省/市/区以后,限定地址搜索只能在这个范围里面选
+    addressSearchLimitByCode(code, type) {
+      if (type == "1") {
+        this.searchOption.city = code;
+      } else if (type == "2") {
+        this.searchOption1.city = code;
+      }
+    },
+    // 重置搜索地址
+    addressReset(type) {
+      console.log('重置搜索地址',type)
+      if (type == "1") {
+        this.searchOption.city = "全国";
+        this.loadAddressParams.detailAddress = null;
+      } else if (type == "2") {
+        this.searchOption1.city = "全国";
+        this.unloadAddressParams.detailAddress = null;
+      }
+    },
+
     //用车企业列表
     shipmentChange(value) {
       console.log("用车企业列表 value", value);
@@ -817,6 +861,7 @@ export default {
       console.log("arr", arr);
       if (!arr) return;
       return arr.map((e) => {
+        console.log('e====>',e)
         return {
           ...e,
           dictValue: e[dictValue],
@@ -850,7 +895,11 @@ export default {
       if (!value) {
         this.selected = null;
         this.pccCode = null;
-        this.searchOption.city = "全国";
+        if (type == "1") {
+          this.searchOption.city = "全国";
+        } else {
+          this.searchOption1.city = "全国";
+        }
         return;
       }
       console.log("handlechengDetail ", value, type);
@@ -1029,13 +1078,14 @@ export default {
     //常用地址选择
     radioSelection(data) {
       if (!data || !this.currAddressType) return;
-      console.log("选择返回的数据", data ,this.currAddressType);
-        this.getCityListFun(data.provinceCode , this.currAddressType +'')
-        this.getDistrictFun(data.cityCode , this.currAddressType +'')
+      console.log("选择返回的数据", data, this.currAddressType);
+      this.getCityListFun(data.provinceCode, this.currAddressType + "");
+      this.getDistrictFun(data.cityCode, this.currAddressType + "");
       const objName =
-        this.currAddressType == "1"
+        this.currAddressType === 1
           ? "loadAddressParams"
           : "unloadAddressParams";
+          console.log('objName',objName)
       this[objName] = {
         province: data.province, //省
         city: data.city, //市
@@ -1047,7 +1097,7 @@ export default {
         addressAlias: data.addressAlias, //地址别名
         linkManName: data.contact, //联系人
         linkManPhone: data.contactPhone, //联系人电话
-        type: "1", //1 装货  2 卸货
+        type: data.addressType +'', //1 装货  2 卸货
         locations: [data.latitude, data.longitude], //坐标
       };
 
@@ -1084,5 +1134,15 @@ export default {
   padding: 0 12 px 0 0;
   box-sizing: border-box;
   font-weight: bold;
+}
+.option-item {
+  display: flex;
+}
+.option-item .option-item_name {
+  margin-right: 10px;
+}
+.option-item .option-item_address {
+  font-size: 12px;
+  color: #ccc;
 }
 </style>
