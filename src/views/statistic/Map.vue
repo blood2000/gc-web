@@ -46,8 +46,16 @@ export default {
         url_alias: "thermodynamicDiagramAlarm"
       };
       http_request(obj).then((res) => {
-        this.heatmapData = res.data || [];
-        this.setOption();
+        if (res.data && res.data.length > 0) {
+          this.heatmapData = res.data.map(el => {
+            const arr = [];
+            arr.push(el.lng, el.lat, el.number);
+            return arr;
+          });
+          this.$nextTick(() => {
+            this.setOption();
+          });
+        }
       })
     },
     initChart() {
@@ -67,14 +75,38 @@ export default {
     setOption() {
       const _this = this;
       this.chart.setOption({
-        geo: {
+        xAxis: {
+          show: false
+        },
+        yAxis: {
+          show: false
+        },
+
+        visualMap: {
+          type: "piecewise",
+          min: 0,
+          max: 100,
+          calculable: true,
+          realtime: false,
+          splitNumber: 10,
+          inRange: {
+            color: ["#005a88", "#04a4f6", "#00943e", "#fdf40f", "#cf2d14"],
+            opacity: [0.4, 0.4] // 透明度
+          },
+          right: "0",
+          bottom: "0",
+          textStyle: {
+            color: "#fff"
+          },
+          show: false // 不显示图例
+        },
+        geo: [{
           map: 'china',
           zoom: 1.05,
-          z: 2,
+          z: 9,
           aspectScale: 0.8,
-          // layoutCenter: ['49%', '48%'],
-          // layoutSize: '90%',
-          top: '14%',
+          layoutCenter: ['48%', '48%'],
+          layoutSize: '81%',
           itemStyle: {
             normal: {
               borderColor: 'rgba(172, 90, 155, 0.65)',
@@ -91,23 +123,115 @@ export default {
             }
           }
         },
-        series: [{
-          type: 'map',
-          z: 0,
+        // 开始叠加
+        {
           map: 'china',
           zoom: 1.05,
+          z: 8,
           aspectScale: 0.8,
-          // layoutCenter: ['49%', '48.1%'],
-          // layoutSize: '90%',
-          top: '14%',
+          layoutCenter: ['48%', '48.3%'],
+          layoutSize: '81%',
           itemStyle: {
             normal: {
-              borderColor: 'rgba(172, 90, 155, 0.65)',
-              shadowColor: 'rgba(172, 90, 155, 0.65)',
-              areaColor: 'rgba(114, 35, 98, 0)'
+              borderColor: 'rgba(172, 90, 155, 0)',
+              areaColor: 'rgba(132, 45, 120, 1)'
+            },
+            emphasis: {
+              areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
+            }
+          },
+        },{
+          map: 'china',
+          zoom: 1.05,
+          z: 8,
+          aspectScale: 0.8,
+          layoutCenter: ['48%', '48.6%'],
+          layoutSize: '81%',
+          itemStyle: {
+            normal: {
+              borderColor: 'rgba(172, 90, 155, 0)',
+              areaColor: 'rgba(132, 45, 120, 1)'
+            },
+            emphasis: {
+              areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
             }
           }
-        }]
+        },{
+          map: 'china',
+          zoom: 1.05,
+          z: 8,
+          aspectScale: 0.8,
+          layoutCenter: ['48%', '48.9%'],
+          layoutSize: '81%',
+          itemStyle: {
+            normal: {
+              borderColor: 'rgba(172, 90, 155, 0)',
+              areaColor: 'rgba(132, 45, 120, 1)'
+            },
+            emphasis: {
+              areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
+            }
+          }
+        },{
+          map: 'china',
+          zoom: 1.05,
+          z: 8,
+          aspectScale: 0.8,
+          layoutCenter: ['48%', '49.2%'],
+          layoutSize: '81%',
+          itemStyle: {
+            normal: {
+              borderColor: 'rgba(172, 90, 155, 0)',
+              areaColor: 'rgba(132, 45, 120, 1)'
+            },
+            emphasis: {
+              areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
+            }
+          }
+        },{
+          map: 'china',
+          zoom: 1.05,
+          z: 8,
+          aspectScale: 0.8,
+          layoutCenter: ['48%', '49.5%'],
+          layoutSize: '81%',
+          itemStyle: {
+            normal: {
+              borderColor: 'rgba(172, 90, 155, 0)',
+              areaColor: 'rgba(132, 45, 120, 1)'
+            },
+            emphasis: {
+              areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
+            }
+          }
+        },{
+          map: 'china',
+          zoom: 1.05,
+          z: 8,
+          aspectScale: 0.8,
+          layoutCenter: ['48%', '49.8%'],
+          layoutSize: '81%',
+          itemStyle: {
+            normal: {
+              borderColor: 'rgba(172, 90, 155, 0)',
+              areaColor: 'rgba(132, 45, 120, 1)'
+            },
+            emphasis: {
+              areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
+            }
+          }
+        }],
+        series: [
+        // {
+        //   name: "heatmap",
+        //   type: "heatmap",
+        //   data: _this.heatmapData,
+        //   coordinateSystem: "geo",
+        //   progressive: 1000,
+        //   animation: false,
+        //   z: 10
+        // }
+        ]
       });
     },
     setFontOption() {
@@ -118,15 +242,7 @@ export default {
               borderWidth: setfontSize(1)
             }
           }
-        },
-        series: [{
-          itemStyle: {
-            normal: {
-              borderWidth: setfontSize(1),
-              shadowBlur: setfontSize(30)
-            }
-          }
-        }]
+        }
       });
     }
   }
