@@ -7,7 +7,7 @@
             <img src="~@/assets/images/statistic/before.png" />
             <span style="font-weight: 700">{{ `[ ${item.name} ]` }}</span>
             <span>{{ item.licenseNumber }}</span>
-            <span>{{ item.address }}</span>
+            <span class="g-single-row address">{{ item.address }}</span>
           </p>
           <span>{{ parseTime(item.alarmTime, '{h}:{i}:{s}') }}</span>
         </li>
@@ -125,6 +125,10 @@ export default {
         }
         >span{
           margin-left: 0.4rem;
+        }
+        .address{
+          display: inline-block;
+          width: 10rem;
         }
       }
       >span{
