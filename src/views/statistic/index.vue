@@ -29,9 +29,10 @@
 
     <!-- center -->
     <div class="ly-center ly-border ly-flex-v ly-flex-pack-justify">
-      <TotalCount />
+      <TotalCount ref="TotalCount" />
       <Map ref="MapRef" />
       <RankingCard />
+      <ScrollCard ref="ScrollCardRef" />
     </div>
 
     <!-- right -->
@@ -59,7 +60,7 @@
       <div class="ly-right-bottom ly-border">
         <Title>告警信息<span>The alarm rate</span></Title>
         <div class="content-box ly-border">
-          <AlarmInfo />
+          <AlarmInfo ref="AlarmInfoRef" />
         </div>
       </div>
     </div>
@@ -76,7 +77,6 @@
 </template>
 
 <script>
-import { http_request } from "@/api";
 import { ThrottleFun } from '@/utils/index.js';
 import Title from './components/title';
 import Map from './Map.vue';
@@ -89,6 +89,7 @@ import AlarmEvent from './AlarmEvent.vue'; // 告警事件统计
 import AlarmInfo from './AlarmInfo.vue'; // 告警信息
 import TotalCount from './TotalCount.vue';
 import RankingCard from './RankingCard.vue';
+import ScrollCard from './ScrollCard.vue';
 export default {
   name: 'Statistic',
   components: {
@@ -102,16 +103,23 @@ export default {
     AlarmEvent,
     AlarmInfo,
     TotalCount,
-    RankingCard
+    RankingCard,
+    ScrollCard
   },
   data() {
     return {
-      
+      wsurl: '/fmsweb/tempAlarm',
+      websock: null,
+      lockReconnect: false,
+      timerReconnect: null,
+      heartTimeout: null,
+      serverTimeout: null
     };
   },
   mounted() {
     this.setHtmlFontSize();
     window.addEventListener('resize', this.resizeFun);
+    this.createWebSocket();
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.resizeFun);
@@ -143,6 +151,76 @@ export default {
       // console.log('clientWidth: ', clientWidth);
       // console.log('size: ', size);
       document.getElementsByTagName('html')[0].style.fontSize = `calc(100vw / ${size})`;
+    },
+    // 创建websocket
+    createWebSocket() {
+      try {
+        this.websock = new WebSocket(process.env.VUE_APP_WS_PROTOCOL + process.env.VUE_APP_BASE_HOST + this.wsurl);
+        // this.websock = new WebSocket('ws://192.168.1.18:8080/fmsweb/tempAlarm');
+        this.initWebSocket();
+      } catch (e) {
+        console.log('catch', e);
+        this.reconnect();
+      }
+    },
+    initWebSocket() {
+      this.websock.onmessage = (e) => {
+        // 拿到pong说明当前连接是正常的
+        if (e.data === 'pong') {
+          // console.log('pong');
+          this.heartCheck();
+        } else if (e.data && e.data.length > 10) {
+          this.setData(JSON.parse(e.data));
+        }
+      };
+      this.websock.onopen = () => {
+        console.log('连接成功', this.websock);
+        this.heartCheck();
+      };
+      this.websock.onerror = () => {
+        console.log('连接失败');
+        this.reconnect();
+      };
+      this.websock.onclose = (e) => {
+        console.log('断开连接', e);
+        this.reconnect();
+      };
+    },
+    // 重连
+    reconnect() {
+      if (this.lockReconnect) {
+        return;
+      }
+      console.log('发起重连');
+      this.lockReconnect = true;
+      // 没连接上会一直重连，设置延迟
+      this.timerReconnect && clearTimeout(this.timerReconnect);
+      this.timerReconnect = setTimeout(() => {
+        this.createWebSocket();
+        this.lockReconnect = false;
+      }, 3 * 1000);
+    },
+    // 心跳检测
+    heartCheck() {
+      this.heartTimeout && clearTimeout(this.heartTimeout);
+      this.serverTimeout && clearTimeout(this.serverTimeout);
+      this.heartTimeout = setTimeout(() => {
+        // 发送一个心跳包
+        // console.log('ping');
+        this.websock.send('ping');
+        // 计算答复的超时时间
+        this.serverTimeout = setTimeout(() => {
+          if (this.websock) this.websock.close();
+          console.log('答复超时');
+        }, 5 * 1000);
+      }, 4 * 1000);
+    },
+    // 处理实时数据
+    setData(dJson) {
+      console.log('实时Json：', dJson);
+      this.$refs.AlarmInfoRef.setData(dJson);
+      this.$refs.ScrollCardRef.setData(dJson);
+      this.$refs.TotalCount.setData(dJson);
     }
   }
 }
@@ -159,8 +237,8 @@ export default {
 // 1rem = 40px;
 .g-statistic {
   $width: 96rem;
-  $width_left: 27.8rem;
-  $width_right: 26rem;
+  $width_left: 27.4rem;
+  $width_right: 26.8rem;
 
   //base
   position: relative;
@@ -181,14 +259,14 @@ export default {
   width: $width;
   height: 100%;
   overflow: hidden;
-  padding: 5.4rem 3.85rem 3.85rem;
+  padding: 5rem 3.85rem 3.85rem;
   .ly-left{
     width: $width_left;
     height: 100%;
     float: left;
     position: relative;
     z-index: 9;
-    padding-top: 0.45rem;
+    padding-top: 0.85rem;
     padding-left: 3rem;
     .ly-left-top{
       height: 40.3%;
@@ -215,10 +293,9 @@ export default {
     float: right;
     position: relative;
     z-index: 9;
-    padding-top: 0.45rem;
+    padding-top: 0.85rem;
     .ly-right-top{
       height: 38%;
-      padding-right: 2.4rem;
       .ly-right-top-top{
         height: 37%;
       }

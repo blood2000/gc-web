@@ -9,5 +9,6 @@ export default {
   illegalVehicle: '/fmsweb/dashboard/tempAlarm/v1/illegalVehicle', // 违规车辆排行
   illegalDriver: '/fmsweb/dashboard/tempAlarm/v1/illegalDriver', // 违规司机排行
   alarmTypeStatistics: '/fmsweb/dashboard/tempAlarm/v1/alarmTypeStatistics', // 告警类型统计
-  tempAlarm: '/fmsweb/tempAlarm' // 获取告警信息
+  alarmInfo: '/fmsweb/dashboard/tempAlarm/v1/alarmInfo', // 获取告警信息
+  thermodynamicDiagramAlarm: '/fmsweb/dashboard/tempAlarm/v1/thermodynamicDiagramAlarm' // 热力图
 }

@@ -1,20 +1,22 @@
 <template>
   <div class="s-container">
-    <ul class="s-container__list ly-flex-v ly-flex-pack-justify">
-      <li v-for="(item, index) in dataList" :key="index" class="ly-flex ly-flex-pack-justify">
-        <h5 class="alarm_type_1 g-single-row">
-          <img class="index" src="~@/assets/images/statistic/alarm_1.png" />
-          <span class="title">偏离车道</span>
-        </h5>
-        <div class="info-content">
-          <p class="g-single-row">张三丰 闽A12345 福建大苏打有限公司</p>
-          <div class="ly-flex ly-flex-pack-justify">
-            <p class="g-single-row">张三丰与什么时候在哪做了什么内容超速了调度单的在哪做了什么内容超速了调度单</p>
-            <p>2021-12-12 12:12</p>
+    <div class="s-scroll-box">
+      <ul :class="{isRoll: isRoll}" class="s-container__list ly-flex-v ly-flex-pack-justify">
+        <li v-for="(item, index) in dataList" :key="index" :class="{isOpacity: isOpacity}" class="ly-flex ly-flex-pack-justify">
+          <h5 class="g-single-row" :class="`alarm_type_${item.alarmLevel}`">
+            <img class="index" :src="require(`@/assets/images/statistic/alarm_${item.alarmLevel}.png`)" />
+            <span class="title">{{ item.alarmTypeName }}</span>
+          </h5>
+          <div class="info-content">
+            <p class="g-single-row">{{ item.name }} {{ item.licenseNumber }} {{ item.orgName }}</p>
+            <div class="ly-flex ly-flex-pack-justify">
+              <p class="g-single-row">{{ item.alarmDescribe ? item.alarmDescribe : '暂无描述' }}</p>
+              <p>{{ parseTime(item.alarmTime) }}</p>
+            </div>
           </div>
-        </div>
-      </li>
-    </ul>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -26,15 +28,89 @@ export default {
   },
   data() {
     return {
-      dataList: []
+      queryParams: {
+        pageNum: 1,
+        pageSize: 4
+      },
+      dataList: [],
+      storageList: [], // 缓存数据
+      storageTimer: null,
+      isRoll: false,
+      rollTimer: null,
+      isOpacity: false,
+      opacityTimer: false
     };
+  },
+  beforeDestroy() {
+    if (this.storageTimer) this.clearReadStorage();
   },
   mounted() {
     this.getData();
   },
   methods: {
     getData() {
-      this.dataList = [{}, {}, {}, {}]
+      const obj = {
+        moduleName: "http_statistic",
+        method: "get",
+        url_alias: "alarmInfo",
+        data: this.queryParams
+      };
+      http_request(obj).then((res) => {
+        if (res.data) {
+          this.dataList = res.data.rows || [];
+        } else {
+          this.dataList = [];
+        }
+      })
+    },
+    setData(data) {
+      // 缓存数据
+      this.storageList.push(data);
+      // 开启缓存查询
+      this.readStorage();
+      // 接收数据，最快0.6s刷一条数据
+      this.rollCard();
+    },
+    rollCard() {
+      if (this.rollTimer || this.opacityTimer) return;
+      this.isRoll = true;
+      this.rollTimer = setTimeout(() => {
+        this.isRoll = false;
+        this.startAnimation();
+        this.clearAnimation();
+        // 从缓存读取数据
+        this.dataList.unshift(this.storageList[0]);
+        this.dataList.splice(4);
+        this.storageList.splice(0, 1);
+        // 保证一个完整的动画
+        this.rollTimer = null;
+      }, 0.4 * 1000);
+    },
+    startAnimation() {
+      this.isOpacity = true;
+    },
+    clearAnimation() {
+      this.opacityTimer = setTimeout(() => {
+        this.isOpacity = false;
+        this.opacityTimer = null;
+      }, 0.2 * 1000);
+    },
+    // 定时访问缓存里面是否还有数据
+    readStorage() {
+      if (this.storageList.length === 0) {
+        this.clearReadStorage();
+        return;
+      }
+      // 保证当前有且只有一个定时器在工作
+      if (this.storageTimer) return;
+      this.storageTimer = setInterval(() => {
+        if (this.storageList.length > 0) {
+          this.rollCard();
+        }
+      }, 0.4 * 1000);
+    },
+    clearReadStorage() {
+      clearInterval(this.storageTimer);
     }
   }
 }
@@ -44,7 +120,12 @@ export default {
 .s-container{
   height: 100%;
   padding-top: 0.8rem;
-  &__list{
+  overflow: hidden;
+  .s-scroll-box{
+    height: 100%;
+    overflow: hidden;
+  }
+  .s-container__list{
     width: calc(100% - 0.9rem);
     height: 100%;
     >li{
@@ -52,7 +133,7 @@ export default {
       border-radius: 8px;
       padding: 0.2rem 0 0.3rem 0.2rem;
       >h5{
-        width: 4.15rem;
+        width: 5rem;
         line-height: 1.05rem;
         transform: scale(0.9);
         >.index{
@@ -84,7 +165,7 @@ export default {
         }
       }
       >.info-content{
-        width: calc(100% - 4.15rem);
+        width: calc(100% - 5rem);
         >p, >div{
           font-size: 0.6rem;
           font-family: PingFang SC;
@@ -105,6 +186,24 @@ export default {
           color: rgba(227, 195, 218, 0.33);
         }
       }
+      // 动画
+      &.isOpacity:first-child{
+        animation: is-opacity 0.2s;
+      }
+      @keyframes is-opacity {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+    }
+    // 动画
+    transform: translateY(0);
+    &.isRoll{
+      transform: translateY(26.5%);
+      transition: transform 0.4s;
     }
   }
 }

@@ -71,6 +71,17 @@ export default {
       http_request(obj).then((res) => {
         this.form = res.data || {};
       });
+    },
+    setData(data) {
+      if (data.alarmLevel === '1') {
+        this.form.highRiskAlarmTotal += 1;
+      }
+      if (data.alarmLevel === '2') {
+        this.form.seriousAlarmTotal += 1;
+      }
+      if (data.alarmLevel === '3') {
+        this.form.commonlyAlarmTotal += 1;
+      } 
     }
   }
 }
