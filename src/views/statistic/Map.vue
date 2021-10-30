@@ -75,30 +75,6 @@ export default {
     setOption() {
       const _this = this;
       this.chart.setOption({
-        xAxis: {
-          show: false
-        },
-        yAxis: {
-          show: false
-        },
-        visualMap: {
-          type: "piecewise",
-          min: 0,
-          max: 100,
-          calculable: true,
-          realtime: false,
-          splitNumber: 10,
-          inRange: {
-            color: ["#005a88", "#04a4f6", "#00943e", "#fdf40f", "#cf2d14"],
-            opacity: [0.4, 0.4] // 透明度
-          },
-          right: "0",
-          bottom: "0",
-          textStyle: {
-            color: "#fff"
-          },
-          show: false // 不显示图例
-        },
         geo: [{
           map: 'china',
           zoom: 1.05,
@@ -321,17 +297,50 @@ export default {
             }
           ]
         }],
-        series: [
-        // {
-        //   name: "heatmap",
-        //   type: "heatmap",
-        //   data: _this.heatmapData,
-        //   coordinateSystem: "geo",
-        //   progressive: 1000,
-        //   animation: false,
-        //   z: 10
-        // }
-        ]
+        series: [{
+          name: 'scatter',
+          type: 'scatter',
+          coordinateSystem: 'geo',
+          data: _this.heatmapData,
+          // symbolSize: function (val) {
+          //   return val[2] / 200;
+          // },
+          itemStyle: {
+            color: 'rgba(168, 6, 138, 1)'
+          },
+          encode: {
+            value: 2
+          },
+          z: 10
+        },{
+          name: 'effectScatter',
+          type: 'effectScatter',
+          coordinateSystem: 'geo',
+          // data: _this.heatmapData
+          //   .sort(function (a, b) {
+          //     return b[2] - a[2];
+          //   })
+          //   .slice(0, 6),
+          data: _this.heatmapData
+            .filter(el => {
+              return el[2] > 5000;
+            }),
+          encode: {
+            value: 2
+          },
+          showEffectOn: 'render',
+          rippleEffect: {
+            brushType: 'stroke'
+          },
+          itemStyle: {
+            color: '#ffc001',
+            shadowColor: 'rgba(130, 7, 109, 0.5)'
+          },
+          emphasis: {
+            scale: true
+          },
+          zlevel: 1
+        }]
       });
     },
     setFontOption() {
@@ -341,6 +350,18 @@ export default {
             normal: {
               borderWidth: setfontSize(1)
             }
+          }
+        }],
+        series: [{
+          symbolSize: function (val) {
+            return setfontSize(10) + val[2]/1000;
+          }
+        },{
+          symbolSize: function (val) {
+            return setfontSize(15) + val[2]/1000;
+          },
+          itemStyle: {
+            shadowBlur: setfontSize(10)
           }
         }]
       });

@@ -143,7 +143,7 @@ export default {
           vertical-align: middle;
         }
         >.title{
-          font-size: 0.55rem;
+          font-size: 0.6rem;
           font-family: PingFang SC;
           font-weight: bold;
           vertical-align: middle;
