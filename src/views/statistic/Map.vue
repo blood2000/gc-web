@@ -365,6 +365,46 @@ export default {
           }
         }]
       });
+    },
+    // 处理实时数据
+    setData(data) {
+      this.createTooltip(data.alarmLevel, data.lng, data.lat);
+    },
+    createTooltip(type, lng, lat) {
+      if (!lng || !lat) return;
+      // 经纬度转换成屏幕xy坐标
+      const pixel = this.chart.convertToPixel('geo', [lng, lat]); // return Array
+      if (!pixel || !pixel.length || pixel.length < 2) return;
+      // createDom-box
+      const wrap = document.createElement('div');
+      wrap.setAttribute('class', 's-echart-map-warning-tooltip-wrap');
+      document.getElementsByClassName('s-map-container-relative')[0].appendChild(wrap);
+      // createDom-circle
+      const circle = document.createElement('div');
+      wrap.appendChild(circle);
+      // 动画-圆点闪烁1s
+      circle.setAttribute('class', 's-echart-map-warning-tooltip-circle alarm' + type);
+      // createDom-line
+      const line = document.createElement('div');
+      wrap.appendChild(line);
+      // 动画-线条出现1s
+      line.setAttribute('class', 's-echart-map-warning-tooltip-line alarm' + type);
+      // 设置光束位置
+      wrap.style.left = pixel[0] + 'px';
+      wrap.style.top = pixel[1] + 'px';
+      // 动画-线出现
+      setTimeout(() => {
+        line.style.height = '4.4rem';
+        line.style.opacity = 0.9;
+      }, 1.4 * 1000);
+      // 移除dom
+      setTimeout(() => {
+        wrap.classList.add('hide');
+      }, 2.2 * 1000);
+      // 移除dom
+      setTimeout(() => {
+        wrap.remove();
+      }, 2.8 * 1000);
     }
   }
 }
@@ -374,10 +414,72 @@ export default {
 .s-container{
   width: 100%;
   height: calc(100% - 16.8% - 5.2rem);
+  position: relative;
   >.map-box{
     width: 100%;
     height: 100%;
     // background: rgba(255, 255, 255, 0.1); // 辅助线
+  }
+}
+</style>
+
+<style lang="scss">
+.s-echart-map-warning-tooltip-wrap{
+  position: absolute;
+  opacity: 1;
+  &.hide{
+    opacity: 0;
+    transition: opacity 0.6s;
+  }
+  .s-echart-map-warning-tooltip-circle{
+    position: absolute;
+    top: -0.9rem;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    animation: s-echart-map-warning-tooltip-circle-flashing 1.4s;
+    animation-iteration-count: 1;
+    width: 2rem;
+    height: 1.8rem;
+    z-index: 2;
+    &.alarm1{
+      background: url('~@/assets/images/statistic/gs_c_1.png') no-repeat;
+      background-size: 100% 100%;
+    }
+    &.alarm2{
+      background: url('~@/assets/images/statistic/gs_c_2.png') no-repeat;
+      background-size: 100% 100%;
+    }
+    &.alarm3{
+      background: url('~@/assets/images/statistic/gs_c_3.png') no-repeat;
+      background-size: 100% 100%;
+    }
+  }
+  @keyframes s-echart-map-warning-tooltip-circle-flashing {
+    0% { opacity: 0.2; }
+    30% { opacity: 1; }
+    63% { opacity: 0.2; }
+    100% { opacity: 1; }
+  }
+  .s-echart-map-warning-tooltip-line{
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0.2rem;
+    height: 0;
+    opacity: 0;
+    transition: all 0.8s;
+    z-index: 1;
+    &.alarm1{
+      background: url('~@/assets/images/statistic/gs_l_1.png') no-repeat;
+    }
+    &.alarm2{
+      background: url('~@/assets/images/statistic/gs_l_2.png') no-repeat;
+    }
+    &.alarm3{
+      background: url('~@/assets/images/statistic/gs_l_3.png') no-repeat;
+    }
   }
 }
 </style>

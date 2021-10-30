@@ -232,6 +232,7 @@ export default {
       this.$refs.AlarmInfoRef.setData(dJson);
       this.$refs.ScrollCardRef.setData(dJson);
       this.$refs.TotalCount.setData(dJson);
+      this.$refs.MapRef.setData(dJson);
     }
   }
 }
