@@ -1,6 +1,6 @@
 <!-- 告警卡片组件 -->
 <template>
-  <div class="warn-card">
+  <div class="warn-card" @click="openList(0)">
     <div class="warn-card-more">
       <el-dropdown>
         <div class="warn-card-more-box">
@@ -34,19 +34,19 @@
       </div>
     </div>
     <div class="warn-card-bottom">
-      <div class="warn-card-bottom-item">
+      <div class="warn-card-bottom-item" @click.stop="openList(1)">
         <div class="warn-card-bottom-item-value">54</div>
         <div class="warn-card-bottom-item-name">行车事件</div>
       </div>
-      <div class="warn-card-bottom-item">
+      <div class="warn-card-bottom-item" @click.stop="openList(2)">
         <div class="warn-card-bottom-item-value">320</div>
         <div class="warn-card-bottom-item-name">设备异常</div>
       </div>
-      <div class="warn-card-bottom-item">
+      <div class="warn-card-bottom-item" @click.stop="openList(3)">
         <div class="warn-card-bottom-item-value">54</div>
         <div class="warn-card-bottom-item-name">辅助驾驶</div>
       </div>
-      <div class="warn-card-bottom-item">
+      <div class="warn-card-bottom-item" @click.stop="openList(4)">
         <div class="warn-card-bottom-item-value">54</div>
         <div class="warn-card-bottom-item-name">司机行为</div>
       </div>
@@ -66,15 +66,25 @@ export default {
       type: Number,
       default: 1,
     },
+    cardInfo: {
+      type: Object,
+      default() {
+        return {any};
+      },
+    },
   },
 
   computed: {},
 
   mounted() {
-    console.log("warnCard");
+    // console.log("warnCard", this.cardInfo);
   },
 
-  methods: {},
+  methods: {
+    openList(type) {
+      this.$emit('openList', {type: type, item: this.cardInfo});
+    }
+  },
 };
 </script>
 <style lang='scss' scoped>
@@ -84,8 +94,9 @@ export default {
   height: 192px;
   background: #fefefe;
   border-radius: 6px;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
   margin: 0 1% 20px 1%;
+  cursor: pointer;
   &-more {
     position: absolute;
     top: 0;
@@ -202,32 +213,32 @@ export default {
 }
 
 .warn-level-1::before {
-  background: #4682fa;
-}
-
-.warn-level-2::before {
   background: #ef6969;
 }
 
-.warn-level-3::before {
+.warn-level-2::before {
   background: #ff8f00;
 }
 
-.warn-level-1::after {
+.warn-level-3::before {
+  background: #4682fa;
+}
+
+.warn-level-3::after {
   background: linear-gradient(
     273deg,
     rgba(70, 130, 250, 0) 0%,
     rgba(70, 130, 250, 0.35) 100%
   );
 }
-.warn-level-2::after {
+.warn-level-1::after {
   background: linear-gradient(
     273deg,
     rgba(255, 0, 0, 0) 0%,
     rgba(255, 0, 0, 0.3) 100%
   );
 }
-.warn-level-3::after {
+.warn-level-2::after {
   background: linear-gradient(
     273deg,
     rgba(255, 143, 0, 0) 0%,

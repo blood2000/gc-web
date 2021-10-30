@@ -26,7 +26,9 @@
               <warn-card
                 v-for="(item, index) in testData"
                 :key="index"
+                :cardInfo="item"
                 :level="(index % 3) + 1"
+                @openList="openList"
               ></warn-card>
             </div>
             <!-- 表格 -->
@@ -49,7 +51,7 @@
             </RefactorTable> -->
             <!-- 分页 -->
             <pagination
-              v-show="total1 > 0"
+              v-show="total1 > 12"
               :total="total1"
               layout="prev, pager, next,jumper, total,sizes"
               :page.sync="queryParams.pageNum"
@@ -60,11 +62,13 @@
         </el-tabs>
       </div>
     </div>
-    <Detail
+    <warning-list
       :id="currId"
-      :detailDrawer="detailDrawer"
-      :options="{ title: '告警详情', warningTypeList }"
-      @colseDetailDrawer="colseDetailDrawer"
+      :listDrawer="listDrawer"
+      :tabIndex="tabIndex"
+      :keyWord="keyWord"
+      :options="{ title: '告警明细', warningTypeList }"
+      @colseListDrawer="colseListDrawer"
     />
   </div>
 </template>
@@ -74,11 +78,11 @@ import { http_request } from "@/api";
 import QueryForm from "./components/queryForm.vue";
 import WarnCard from "./components/WarnCard.vue";
 import warningConfig from "./config";
-import Detail from "./warningDetail.vue";
+import WarningList from "./warningList.vue";
 // import store from "@/store";
 export default {
   name: "warning", // 告警管理
-  components: { QueryForm, Detail, WarnCard },
+  components: { QueryForm, WarningList, WarnCard },
   data() {
     return {
       orgName: "", //组织查询
@@ -92,6 +96,7 @@ export default {
       loading: false, //表格load
       warningData: [],
       testData: [],
+      keyWord: '',
       queryParams: {
         pageNum: 1,
         pageSize: 12,
@@ -109,7 +114,7 @@ export default {
       tableColumnsConfig: [], //配置表头数据
       total: 0,
       total1: 10,
-      detailDrawer: false,
+      listDrawer: false,
       currId: null,
     };
   },
@@ -312,7 +317,7 @@ export default {
     toDetail(obj) {
       console.log("详情", obj);
       this.currId = obj.id;
-      this.detailDrawer = true;
+      this.listDrawer = true;
       // this.$router.push("warningDetail?id=" + obj.id);
       // this.$router.push("/warning/warning/warningDetail/" + obj.driver);
     },
@@ -332,8 +337,18 @@ export default {
       this.searchQuery();
       console.log(this.tableColumnsConfig);
     },
-    colseDetailDrawer() {
-      this.detailDrawer = false;
+    //打开详情明细
+    openList(params) {
+      console.log(params);
+      this.listDrawer = true;
+      if (this.tabIndex === '1') {
+        this.keyWord = params.item.licenseNumber;
+      } else {
+        this.keyWord = params.item.nickName;
+      }
+    },
+    colseListDrawer() {
+      this.listDrawer = false;
     },
   },
 };
@@ -388,6 +403,6 @@ export default {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  padding: 10px 2px 0 0;
+  padding: 10px 4px 0 0;
 }
 </style>
