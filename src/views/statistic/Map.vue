@@ -81,7 +81,6 @@ export default {
         yAxis: {
           show: false
         },
-
         visualMap: {
           type: "piecewise",
           min: 0,
@@ -121,7 +120,21 @@ export default {
               show: true,
               color: '#fff'
             }
-          }
+          },
+          regions: [
+            {
+              name: "南海诸岛",
+              value: 0,
+              itemStyle: {
+                normal: {
+                  opacity: 0,
+                  label: {
+                    show: false
+                  }
+                }
+              }
+            }
+          ]
         },
         // 开始叠加
         {
@@ -140,6 +153,20 @@ export default {
               areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
             }
           },
+          regions: [
+            {
+              name: "南海诸岛",
+              value: 0,
+              itemStyle: {
+                normal: {
+                  opacity: 0,
+                  label: {
+                    show: false
+                  }
+                }
+              }
+            }
+          ]
         },{
           map: 'china',
           zoom: 1.05,
@@ -155,7 +182,21 @@ export default {
             emphasis: {
               areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
             }
-          }
+          },
+          regions: [
+            {
+              name: "南海诸岛",
+              value: 0,
+              itemStyle: {
+                normal: {
+                  opacity: 0,
+                  label: {
+                    show: false
+                  }
+                }
+              }
+            }
+          ]
         },{
           map: 'china',
           zoom: 1.05,
@@ -171,7 +212,21 @@ export default {
             emphasis: {
               areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
             }
-          }
+          },
+          regions: [
+            {
+              name: "南海诸岛",
+              value: 0,
+              itemStyle: {
+                normal: {
+                  opacity: 0,
+                  label: {
+                    show: false
+                  }
+                }
+              }
+            }
+          ]
         },{
           map: 'china',
           zoom: 1.05,
@@ -187,7 +242,21 @@ export default {
             emphasis: {
               areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
             }
-          }
+          },
+          regions: [
+            {
+              name: "南海诸岛",
+              value: 0,
+              itemStyle: {
+                normal: {
+                  opacity: 0,
+                  label: {
+                    show: false
+                  }
+                }
+              }
+            }
+          ]
         },{
           map: 'china',
           zoom: 1.05,
@@ -203,7 +272,21 @@ export default {
             emphasis: {
               areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
             }
-          }
+          },
+          regions: [
+            {
+              name: "南海诸岛",
+              value: 0,
+              itemStyle: {
+                normal: {
+                  opacity: 0,
+                  label: {
+                    show: false
+                  }
+                }
+              }
+            }
+          ]
         },{
           map: 'china',
           zoom: 1.05,
@@ -214,12 +297,29 @@ export default {
           itemStyle: {
             normal: {
               borderColor: 'rgba(172, 90, 155, 0)',
-              areaColor: 'rgba(132, 45, 120, 1)'
+              areaColor: 'rgba(132, 45, 120, 1)',
+              shadowColor: 'rgba(0, 0, 0, 0.3)',
+              shadowBlur: 6,
+              shadowOffsetY: 6
             },
             emphasis: {
               areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
             }
-          }
+          },
+          regions: [
+            {
+              name: "南海诸岛",
+              value: 0,
+              itemStyle: {
+                normal: {
+                  opacity: 0,
+                  label: {
+                    show: false
+                  }
+                }
+              }
+            }
+          ]
         }],
         series: [
         // {
@@ -236,13 +336,13 @@ export default {
     },
     setFontOption() {
       this.chart.setOption({
-        geo: {
+        geo: [{
           itemStyle: {
             normal: {
               borderWidth: setfontSize(1)
             }
           }
-        }
+        }]
       });
     }
   }

@@ -16,9 +16,7 @@
           <div v-for="(item, index) in vehicleList" :key="index" class="content-item ly-flex ly-flex-pack-justify">
             <p class="text g-single-row">
               {{ item.licenseNumber }}
-              <span v-if="item.vehicleTypeName && item.vehicleTypeName !== ''" class="small-card type1">{{ item.vehicleTypeName }}</span>
-              <!-- <span class="small-card type2">超速</span>
-              <span class="small-card type2">车辆碰撞</span> -->
+              <span v-if="item.vehicleTypeName && item.vehicleTypeName !== ''" class="small-card type2">{{ item.vehicleTypeName }}</span>
             </p>
             <count-to class="count" :end-val="item.number" :decimal-places="0" />
           </div>
