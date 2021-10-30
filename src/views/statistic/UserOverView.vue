@@ -241,7 +241,7 @@ export default {
           name: '接入企业',
           data: priseData,
           type: 'line',
-          symbol: 'circle',
+          symbol: 'image://'+ require('@/assets/images/statistic/pot_1.png'),
           color: '#F23AA1', // 拐点颜色
           // 折线样式
           itemStyle: {
@@ -255,7 +255,7 @@ export default {
           name: '接入车队',
           data: fmsData,
           type: 'line',
-          symbol: 'circle',
+          symbol: 'image://'+ require('@/assets/images/statistic/pot_2.png'),
           color: '#373AD8', // 拐点颜色
           // 折线样式
           itemStyle: {
@@ -269,7 +269,7 @@ export default {
           name: '接入车辆',
           data: vehicleData,
           type: 'line',
-          symbol: 'circle',
+          symbol: 'image://'+ require('@/assets/images/statistic/pot_3.png'),
           color: '#A943F9', // 拐点颜色
           // 折线样式
           itemStyle: {
@@ -283,7 +283,7 @@ export default {
           name: '接入司机',
           data: driverData,
           type: 'line',
-          symbol: 'circle',
+          symbol: 'image://'+ require('@/assets/images/statistic/pot_4.png'),
           color: '#8B9BF7', // 拐点颜色
           // 折线样式
           itemStyle: {
@@ -329,7 +329,7 @@ export default {
           }
         },
         series: [{
-          symbolSize: setfontSize(5),
+          symbolSize: setfontSize(13.5),
           itemStyle: {
             normal: {
               lineStyle: {
@@ -338,7 +338,7 @@ export default {
             }
           }
         },{
-          symbolSize: setfontSize(5),
+          symbolSize: setfontSize(13.5),
           itemStyle: {
             normal: {
               lineStyle: {
@@ -347,7 +347,7 @@ export default {
             }
           }
         },{
-          symbolSize: setfontSize(5),
+          symbolSize: setfontSize(13.5),
           itemStyle: {
             normal: {
               lineStyle: {
@@ -356,7 +356,7 @@ export default {
             }
           }
         },{
-          symbolSize: setfontSize(5),
+          symbolSize: setfontSize(13.5),
           itemStyle: {
             normal: {
               lineStyle: {

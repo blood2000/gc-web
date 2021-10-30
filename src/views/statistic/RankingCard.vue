@@ -53,15 +53,35 @@ export default {
       },
       warnList: [],
       vehicleList: [],
-      driverList: []
+      driverList: [],
+      // 每5分钟刷新一次
+      time: 5 * 60 * 1000,
+      timer: null
     };
+  },
+  beforeDestroy() {
+    this.clearTimer();
   },
   mounted() {
     this.getWarnData();
     this.getVehicleData();
     this.getDriverData();
+    this.setTimer();
   },
   methods: {
+    setTimer() {
+      this.clearTimer();
+      this.timer = setInterval(() => {
+        this.getWarnData();
+        this.getVehicleData();
+        this.getDriverData();
+      }, this.time);
+    },
+    clearTimer() {
+      if (this.timer) {
+        clearInterval(this.timer);
+      }
+    },
     getWarnData() {
       const obj = {
         moduleName: "http_statistic",
