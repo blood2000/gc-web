@@ -129,6 +129,11 @@ export default {
               areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
             }
           },
+          label: {
+            emphasis: {
+              show: false
+            }
+          },
           regions: [
             {
               name: "南海诸岛",
@@ -157,6 +162,11 @@ export default {
             },
             emphasis: {
               areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
+            }
+          },
+          label: {
+            emphasis: {
+              show: false
             }
           },
           regions: [
@@ -189,6 +199,11 @@ export default {
               areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
             }
           },
+          label: {
+            emphasis: {
+              show: false
+            }
+          },
           regions: [
             {
               name: "南海诸岛",
@@ -219,6 +234,11 @@ export default {
               areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
             }
           },
+          label: {
+            emphasis: {
+              show: false
+            }
+          },
           regions: [
             {
               name: "南海诸岛",
@@ -247,6 +267,11 @@ export default {
             },
             emphasis: {
               areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
+            }
+          },
+          label: {
+            emphasis: {
+              show: false
             }
           },
           regions: [
@@ -280,6 +305,11 @@ export default {
             },
             emphasis: {
               areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
+            }
+          },
+          label: {
+            emphasis: {
+              show: false
             }
           },
           regions: [
@@ -396,15 +426,15 @@ export default {
       setTimeout(() => {
         line.style.height = '4.4rem';
         line.style.opacity = 0.9;
-      }, 1.4 * 1000);
+      }, 1 * 1000);
       // 移除dom
       setTimeout(() => {
         wrap.classList.add('hide');
-      }, 2.2 * 1000);
+      }, 1.8 * 1000);
       // 移除dom
       setTimeout(() => {
         wrap.remove();
-      }, 2.8 * 1000);
+      }, 2.4 * 1000);
     }
   }
 }
@@ -437,7 +467,7 @@ export default {
     left: 50%;
     transform: translateX(-50%);
     border-radius: 50%;
-    animation: s-echart-map-warning-tooltip-circle-flashing 1.4s;
+    animation: s-echart-map-warning-tooltip-circle-flashing 1s;
     animation-iteration-count: 1;
     width: 2rem;
     height: 1.8rem;

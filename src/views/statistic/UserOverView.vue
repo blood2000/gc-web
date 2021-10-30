@@ -301,6 +301,7 @@ export default {
         legend: {
           itemWidth: setfontSize(6),
           itemHeight: setfontSize(6),
+          itemGap: setfontSize(16),
           textStyle: {
             fontSize: setfontSize(10)
           }

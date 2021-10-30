@@ -5,7 +5,7 @@
       <img class="header-box__title" src="~@/assets/images/statistic/title.png">
       <img class="header-box__left" src="~@/assets/images/statistic/bg_title_left.webp">
       <img class="header-box__right" src="~@/assets/images/statistic/bg_title_right.webp">
-      <img class="header-box__block-left" src="~@/assets/images/statistic/block_top_left.webp">
+      <!-- <img class="header-box__block-left" src="~@/assets/images/statistic/block_top_left.webp"> -->
     </div>
 
     <!-- left -->
@@ -395,8 +395,8 @@ export default {
     &.angle-top-right{
       width: 1.825rem;
       height: 2rem;
-      right: 2.5rem;
-      top: 1.5rem;
+      right: 2.65rem;
+      top: 1.65rem;
     }
     &.block-bottom-left{
       width: 2.275rem;
