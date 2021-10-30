@@ -166,6 +166,7 @@ export default {
     // 创建websocket
     createWebSocket() {
       try {
+      console.log(process.env.VUE_APP_WS_PROTOCOL + process.env.VUE_APP_BASE_HOST + this.wsurl);
         this.websock = new WebSocket(process.env.VUE_APP_WS_PROTOCOL + process.env.VUE_APP_BASE_HOST + this.wsurl);
         // this.websock = new WebSocket('ws://192.168.1.18:8080/fmsweb/tempAlarm');
         this.initWebSocket();
