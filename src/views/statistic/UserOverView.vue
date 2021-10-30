@@ -21,8 +21,8 @@
           <div class="count-content ly-flex ly-flex-pack-justify ly-flex-align-center">
             <count-to class="count" :end-val="countData.fmsCount" :decimal-places="0" />
             <img :src="require(`@/assets/images/statistic/count_${countData.fmsYearType===0?'down':'up'}.png`)">
-            <span :class="countData.enterpriseYearType===0?'count-down':'count-up'">{{ countData.fmsYearValue ? countData.fmsYearValue : '0%' }}</span>
-            <img class="mouth" :src="require(`@/assets/images/statistic/mouth_${countData.enterpriseYearType===0?'down':'up'}.png`)">
+            <span :class="countData.fmsYearType===0?'count-down':'count-up'">{{ countData.fmsYearValue ? countData.fmsYearValue : '0%' }}</span>
+            <img class="mouth" :src="require(`@/assets/images/statistic/mouth_${countData.fmsYearType===0?'down':'up'}.png`)">
           </div>
         </div>
       </li>
@@ -33,8 +33,8 @@
           <div class="count-content ly-flex ly-flex-pack-justify ly-flex-align-center">
             <count-to class="count" :end-val="countData.vehicleCount" :decimal-places="0" />
             <img :src="require(`@/assets/images/statistic/count_${countData.vehicleYearType===0?'down':'up'}.png`)">
-            <span :class="countData.enterpriseYearType===0?'count-down':'count-up'">{{ countData.vehicleYearValue ? countData.vehicleYearValue : '0%' }}</span>
-            <img class="mouth" :src="require(`@/assets/images/statistic/mouth_${countData.enterpriseYearType===0?'down':'up'}.png`)">
+            <span :class="countData.vehicleYearType===0?'count-down':'count-up'">{{ countData.vehicleYearValue ? countData.vehicleYearValue : '0%' }}</span>
+            <img class="mouth" :src="require(`@/assets/images/statistic/mouth_${countData.vehicleYearType===0?'down':'up'}.png`)">
           </div>
         </div>
       </li>
@@ -45,8 +45,8 @@
           <div class="count-content ly-flex ly-flex-pack-justify ly-flex-align-center">
             <count-to class="count" :end-val="countData.driverCount" :decimal-places="0" />
             <img :src="require(`@/assets/images/statistic/count_${countData.driverYearType===0?'down':'up'}.png`)">
-            <span :class="countData.enterpriseYearType===0?'count-down':'count-up'">{{ countData.driverYearValue ? countData.driverYearValue : '0%' }}</span>
-            <img class="mouth" :src="require(`@/assets/images/statistic/mouth_${countData.enterpriseYearType===0?'down':'up'}.png`)">
+            <span :class="countData.driverYearType===0?'count-down':'count-up'">{{ countData.driverYearValue ? countData.driverYearValue : '0%' }}</span>
+            <img class="mouth" :src="require(`@/assets/images/statistic/mouth_${countData.driverYearType===0?'down':'up'}.png`)">
           </div>
         </div>
       </li>
