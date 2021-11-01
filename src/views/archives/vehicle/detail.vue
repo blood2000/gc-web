@@ -347,7 +347,6 @@ export default {
       console.log("获取车辆定位列表   res", res);
       if (res.data.total !== 1) return ;
       const attribute = res.data.rows[0].attribute;
-      console.log("attribute", attribute);
       if (
         attribute &&
         attribute.coordinate &&
