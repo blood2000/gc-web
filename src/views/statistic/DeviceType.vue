@@ -85,8 +85,8 @@ export default {
           {
             name: '',
             type: 'pie',
-            radius: ['45%', '70%'],
-            center: ['50%', '40%'],
+            radius: ['38%', '62%'],
+            center: ['50%', '48%'],
             right: '26%',
             data: _this.dataList,
             // 标示线
@@ -177,7 +177,7 @@ export default {
             fontSize: setfontSize(11),
             minMargin: setfontSize(5),
             edgeDistance: setfontSize(8),
-            lineHeight: setfontSize(26),
+            lineHeight: setfontSize(20),
             rich: {
               percentage: {
                 fontSize: setfontSize(11)
@@ -194,7 +194,6 @@ export default {
 <style lang="scss" scoped>
 .s-container{
   height: 100%;
-  padding-top: 1rem;
   &__chart{
     height: 100%;
   }
