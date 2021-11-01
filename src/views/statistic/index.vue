@@ -5,7 +5,8 @@
       <img class="header-box__title" src="~@/assets/images/statistic/title.png">
       <img class="header-box__left" src="~@/assets/images/statistic/bg_title_left.webp">
       <img class="header-box__right" src="~@/assets/images/statistic/bg_title_right.webp">
-      <!-- <img class="header-box__block-left" src="~@/assets/images/statistic/block_top_left.webp"> -->
+      <img class="header-box__block-left" src="~@/assets/images/statistic/block_top_left.webp">
+      <img class="header-box__block-right" src="~@/assets/images/statistic/block_top_right.webp">
     </div>
 
     <!-- left -->
@@ -427,8 +428,8 @@ export default {
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
-    width: 26.95rem;
-    height: 3.4rem;
+    width: 27rem;
+    height: 3.175rem;
     background: url('~@/assets/images/statistic/bg_title.png') no-repeat;
     background-size: 100% 100%;
     >.header-box__title{
@@ -448,12 +449,12 @@ export default {
       z-index: 1;
     }
     &::before{
-      left: -23.2rem;
+      left: -22.4rem;
       background: url('~@/assets/images/statistic/bg_title_left.png') no-repeat;
       background-size: 100% 100%;
     }
     &::after{
-      right: -23.2rem;
+      right: -22.6rem;
       background: url('~@/assets/images/statistic/bg_title_right.png') no-repeat;
       background-size: 100% 100%;
     }
@@ -462,21 +463,28 @@ export default {
       height: 1.6rem;
       position: absolute;
       top: 0;
-      left: -10.8rem;
+      left: -10rem;
     }
     >.header-box__right{
       width: 14.525rem;
       height: 1.6rem;
       position: absolute;
       top: 0;
-      right: -10rem;
+      right: -9.2rem;
     }
     >.header-box__block-left{
-      width: 2.4rem;
-      height: 0.875rem;
+      width: 2.45rem;
+      height: 0.825rem;
       position: absolute;
-      top: 2.5rem;
+      top: 2.6rem;
       left: 2.3rem;
+    }
+    >.header-box__block-right{
+      width: 2.4rem;
+      height: 0.675rem;
+      position: absolute;
+      top: 2.75rem;
+      right: 2.7rem;
     }
   }
 }
