@@ -143,36 +143,49 @@
         </li>
       </ul>
       <!-- 视频 -->
-      <ul v-show="warnIsClose" class="video-content">
+      <ul class="video-content" v-show="warnIsClose">
         <li
           class="video-content-item"
           :key="index"
           v-for="(item, index) in videoList"
-          @click="handlePlay(item.type)"
+          @click="handlePlay(item)"
         >
-          <img :src="item.imgUrl" />
+          <img
+            width="100%"
+            height="100%"
+            src="../../../utils/RVC/img/video.png"
+            alt=""
+          />
           <div class="video-content-item-top">
-            <img src="../../../assets/images/detail/video-top-title.png" />
             <span>{{ item.typeName }}</span>
           </div>
-          <div class="video-content-item-middle">
+          <div class="video-content-item-middle" v-show="videoShow">
             <img src="../../../assets/images/detail/play-back-play.png" />
           </div>
-          <div
+          <!-- <div
             @click.stop="handleMagnify(item.type)"
             class="video-content-item-bottom"
           >
             <img src="../../../assets/images/detail/video-bottom-right.png" />
-          </div>
+          </div> -->
         </li>
       </ul>
     </div>
+    <!-- showVideoDialog = false;videoShow = true -->
+    <videoDialog
+      @colseVideoDialog="colseVideoDialog"
+      :show="showVideoDialog"
+      :userId="videoUserId"
+      :options="videoOptions"
+    />
   </div>
 </template>
 
 <script>
 import { http_request } from "@/api";
 import bus from "./bus";
+import videoDialog from "./infoVideo.vue";
+
 export default {
   props: {
     vehicleCode: {
@@ -180,9 +193,10 @@ export default {
       default: null,
     },
   },
+  components: { videoDialog },
   data() {
     return {
-      warnIsClose: false,
+      videoShow: true,
       // 车辆信息
       vehicleInfo: {},
       locationInfo: {},
@@ -191,23 +205,46 @@ export default {
       attributesInfo: [],
       dispatchInfo: {},
       warnCount: 0,
+      showVideoDialog: false,
+      // form: {
+      //   VEHICLEID: "0",
+      //   CHANNEL: "1",
+      //   VEHICLELICENSE: "91750",
+      //   DEVICENO: "015800091750",
+      //   PLATECOLOR: "2",
+      //   STREAMTYPE: "1",
+      // },
+      videoUserId: "1",
       videoList: [
         {
           typeName: "车前摄像头",
-          type: 0,
-          imgUrl: "",
+          VEHICLEID: "0", ////车辆ID
+          CHANNEL: "1", //通道号
+          VEHICLELICENSE: "91750", //车牌号
+          DEVICENO: "015800091750", //设备编码
+          PLATECOLOR: "2", //车牌颜色
+          STREAMTYPE: "1", //主/子码流
         },
         {
           typeName: "车内摄像头",
-          type: 1,
-          imgUrl: "",
+          VEHICLEID: "0",
+          CHANNEL: "2",
+          VEHICLELICENSE: "91750",
+          DEVICENO: "015800091750",
+          PLATECOLOR: "2",
+          STREAMTYPE: "1",
         },
         {
           typeName: "车后摄像头",
-          type: 2,
-          imgUrl: "",
+          VEHICLEID: "0",
+          CHANNEL: "3",
+          VEHICLELICENSE: "91750",
+          DEVICENO: "015800091750",
+          PLATECOLOR: "2",
+          STREAMTYPE: "1",
         },
       ],
+      videoOptions: {},
       // 车辆状态字典
       vehicleStatusOptions: [
         { dictLabel: "空闲中", dictValue: 0, color: "blue" },
@@ -229,17 +266,26 @@ export default {
       immediate: true,
     },
   },
+  computed:{
+    warnIsClose(){
+      console.log('this.$sotre.getters.isClose',this.$store.getters.isClose)
+      return  this.$store.getters.isClose
+    }
+  },
   mounted() {
     // bus
-    bus.$on("isClose", (data) => {
-      this.warnIsClose = data;
-    });
+    // bus.$on("isClose", (data) => {
+    //   console.log("data", data);
+    //   this.warnIsClose = data;
+    // });
   },
   methods: {
-    //放大
-    handleMagnify(type) {},
     // 播放
-    handlePlay(type) {},
+    handlePlay(item) {
+      console.log("item", item);
+      this.videoOptions = JSON.parse(JSON.stringify(item));
+      this.showVideoDialog = true;
+    },
     // 获取车辆信息
     getVehicleInfo() {
       const type = "vehicle,location,device,function,attribute"; // 获取信息类型, 可指定多个
@@ -312,6 +358,10 @@ export default {
       });
       return actions.join("");
     },
+    colseVideoDialog(){
+      this.showVideoDialog = false;
+      this.videoShow = true
+    }
   },
 };
 </script>
@@ -606,6 +656,16 @@ export default {
           border-radius: 2px;
           background: #3d4050;
           position: relative;
+          video {
+            position: absolute;
+            z-index: 199;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 142px;
+            height: 80px;
+          }
           &-top {
             position: absolute;
             top: 0;
@@ -615,7 +675,7 @@ export default {
             padding-left: 10px;
             display: flex;
             align-items: center;
-
+            z-index: 200;
             background: rgba(15, 15, 15, 0.53);
             opacity: 1;
             border-radius: 2px 2px 0px 0px;
@@ -630,6 +690,7 @@ export default {
             height: 30px;
             width: 30px;
             position: absolute;
+            z-index: 200;
             top: calc(50% - 15px);
             left: calc(50% - 15px);
             & > img {
@@ -638,6 +699,7 @@ export default {
             }
           }
           &-bottom {
+            z-index: 200;
             position: absolute;
             bottom: 5px;
             right: 5px;
@@ -652,5 +714,12 @@ export default {
       }
     }
   }
+}
+video {
+  background: -webkit-linear-gradient(left, #092040, #0a0009);
+  background: -o-linear-gradient(right, #092040, #0a0009);
+  background: -moz-linear-gradient(right, #092040, #0a0009);
+  background: linear-gradient(to right, #092040, #0a0009);
+  object-fit: fill;
 }
 </style>

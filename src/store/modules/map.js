@@ -4,7 +4,8 @@ const map = {
     showVehicleDetail: false,  //显示车辆详情
     isFresh: false,  //刷新
     vehicleInfo: {},  //车辆信息
-    dispatchInfo: {},   //
+    dispatchInfo: {},   //调度信息
+    isClose:false //展开收起面板
   },
   mutations: {
     set_dispatchVehicle: (state, leap) => {
@@ -21,6 +22,9 @@ const map = {
     },
     set_isFresh: (state, leap) => {
       state.isFresh = leap;
+    },
+    set_isClose: (state, data) => {
+      state.isClose = data;
     },
   },
   actions: {

@@ -303,7 +303,6 @@
       "
       :vehicleCode="orgOrVehicleCode"
     />
-
     <!-- 车辆监控 -->
     <WarnList
       v-if="headerTab === 1"
@@ -344,11 +343,7 @@
       @clearPathSimplifierIns="clearPathSimplifierIns"
       @handleSlideChange="handleSlideChange"
     />
-    <PlayBack
-      v-if="headerTab === 4"
-      ref="PlayBackRef"
-      class="play-back"
-    />
+    <PlayBack v-if="headerTab === 4" ref="PlayBackRef" class="play-back" />
   </div>
 </template>
 
@@ -610,6 +605,34 @@ export default {
     this.clearReadTime();
   },
   methods: {
+    initSocket() {
+      const websocketIP = "219.134.190.133:6003"; //媒体服务ip
+      const websocket = new WebSocket("ws://" + websocketIP); //获取文件列表websocket对象
+      websocket.onmessage = function (event) {
+        console.log("event", event);
+        var n = JSON.parse(event.data).HEAD.MSGID;
+        switch (n) {
+          case 5:
+            //设备文件列表
+            // document.forms["formId"].output += event.data + "\n";
+            break;
+          case 11:
+            //中心录像列表
+            // document.forms["formId"].output += event.data + "\n";
+            // document.forms["formId"].ServiceURL = JSON.parse(
+            //   event.data
+            // ).PARAM.ITEMLIST[0].FILEPATH; //赋值中心文件播放地址
+            break;
+          case 10:
+            //下载完成
+            //window.open(JSON.parse(event.data).PARAM.HTTPPATH);//下载h264文件
+            alert("下载完成");
+            break;
+        }
+        //console.log(event.data);
+        //setMessageInnerHTML(event.data);
+      };
+    },
     locationQueryDeal() {
       const url = location.search; //获取url中"?"符后的字串 ('?modFlag=business&role=1')
       const theRequest = new Object();
@@ -1337,7 +1360,7 @@ export default {
         if (data) {
           // 绘制全部车辆点位
           const { attribute } = data;
-          console.log("attribute", attribute);
+          // console.log("attribute", attribute);
           if (
             attribute &&
             attribute.coordinate &&
@@ -1481,7 +1504,7 @@ export default {
     },
     // 绘制告警点位
     darwRealWarnMarker(row) {
-      console.log("绘制告警点位：", row);
+      // console.log("绘制告警点位：", row);
       // 绘制前先清除
       this.clearRealWarnMarker();
 
@@ -1794,6 +1817,17 @@ export default {
     z-index: 1000;
     width: 380px;
   }
+  // test
+  > .map-info-video {
+    position: absolute;
+    top: 10%;
+    bottom: 254px;
+    right: 3%;
+    z-index: 1000;
+    width: 70%;
+    height: 48%;
+    background: #ffffff;
+  }
 
   // 报警列表
   > .warn-list-panel {
@@ -1801,7 +1835,7 @@ export default {
     bottom: $bottom;
     left: calc(#{$left-tree-width} + 10px);
     right: $right;
-    z-index: 1000;
+    z-index: 999;
     height: 226px;
   }
   // 调度指派

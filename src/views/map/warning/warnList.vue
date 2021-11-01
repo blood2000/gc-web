@@ -263,7 +263,7 @@ export default {
     /** 展开收起面板 */
     handlePull() {
       this.isClose = !this.isClose;
-      bus.$emit('isClose', this.isClose);
+      this.$store.commit('set_isClose',this.isClose)      
     },
     /** 查看告警详情 */
     handleDetail(row) {

@@ -18,23 +18,21 @@
               <el-date-picker
                 v-model="queryParams.dateRange"
                 unlink-panels
-                :picker-options="pickerOptions"
                 type="datetimerange"
                 size="small"
                 style="width: 348px"
-                value-format="yyyy-MM-dd HH:mm"
                 range-separator="-"
               />
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="是否停运" prop="type">
+            <el-form-item label="选择摄像头：" prop="CHANNEL">
               <el-select
-                v-model="queryParams.type"
+                v-model="queryParams.CHANNEL"
                 clearable
                 filterable
                 style="width: 348px"
-                placeholder="请选择是否启用"
+                placeholder="请选择摄像头"
               >
                 <el-option
                   v-for="(item, index) in typeList"
@@ -59,25 +57,58 @@
         </el-row>
       </el-form>
     </div>
-    <div class="play-back-search">
+    <div class="play-back-search" v-show="isResult">
       <div class="play-back-search-title">查询结果：</div>
-      <div class="play-back-search-result">
-        <div class="play-back-search-result-play" @click="handleVideo">
-          <img src="../../../assets/images/detail/play-back-play.png" alt="" />
+      <div :class="isbigger ? 'dialog-video' : ''" @click="colse">
+        <div
+          class="play-back-search-result"
+          :class="isbigger ? 'dialog-video-full' : ''"
+          @click.stop=""
+        >
+          <!--           src="@/assets/mp4/【2048】202104271143janv2_2021429115831.mp4"
+ -->
+          <div
+            v-show="isbigger"
+            :class="isbigger ? 'dialog-video-full-title' : ''"
+          >
+            {{ getTypes() }}
+            <i class="el-icon-close" @click.stop="colse"></i>
+          </div>
+          <video
+            id="video"
+            ref="video"
+            width="100%"
+            height="100%"
+            poster="../../../assets/images/RVC/video.png"
+            autoplay
+            @canplay="getDuration"
+            muted
+          ></video>
+          <div class="play-back-search-result-count">
+            {{ `${this.currTimes}/${this.totalTime}` }}
+          </div>
+          <div
+            class="toBigger"
+            @click.stop="isbigger = true"
+            v-show="!isbigger"
+          >
+            <!--  video-bottom-right -->
+            <img src="@/assets/images/detail/video-bottom-right.png" alt="" />
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="dialog-video" @click="isShow = false" v-if="isShow">
+    <!-- <div class="dialog-video" @click="isShow = false" v-if="isShow">
       <div class="dialog-video-full" @click.stop="">
         <div class="dialog-video-full-title">
           {{ getTypes() }}
         </div>
         <video-player
           class="video-player vjs-custom-skin"
-          ref="videoPlayer"
-          name="videoPlayer"
-          id="video"
+          ref="videoPlayer1"
+          name="videoPlayer1"
+          id="video1"
           :playsinline="true"
           :options="playerOptions"
           @play="onPlayerPlay($event)"
@@ -88,11 +119,11 @@
           @ready="playerReadied"
         ></video-player>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
-import { pickerOptions } from "@/utils/dateRange";
+import { getTimeRange } from "@/utils/timeRange";
 import { typeList } from "./config";
 import { videoPlayer } from "vue-video-player";
 import "video.js/dist/video-js.css";
@@ -109,12 +140,17 @@ export default {
   },
   data() {
     return {
-      pickerOptions,
+      getTimeRange,
       typeList,
       isShow: false,
       queryParams: {
         dateRange: [],
-        type: 0,
+        CHANNEL: 1, //通道号
+        VEHICLEID: "0", ////车辆ID
+        VEHICLELICENSE: "91750", //车牌号
+        DEVICENO: "015800091750", //设备编码
+        PLATECOLOR: "2", //车牌颜色
+        STREAMTYPE: "1", //主/子码流
       },
       playTime: "",
       current: "",
@@ -127,13 +163,13 @@ export default {
         language: "zh-CN",
         aspectRatio: "16:9", // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
         fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
-        sources: [
-          {
-            type: "video/mp4", // 类型
-            src: require("@/assets/mp4/【2048】202104271143janv2_2021429115831.mp4"), // url地址
-          },
-        ],
-        poster: "", // 封面地址
+        // sources: [
+        //   {
+        //     type: "video/mp4", // 类型
+        //     src: require("@/assets/mp4/【2048】202104271143janv2_2021429115831.mp4"), // url地址
+        //   },
+        // ],
+        poster: "../../../assets/images/RVC/video.png", // 封面地址
         notSupportedMessage: "此视频暂无法播放，请稍后再试", // 允许覆盖Video.js无法播放媒体源时显示的默认信息。
         controlBar: {
           timeDivider: true, // 当前时间和持续时间的分隔符
@@ -143,97 +179,202 @@ export default {
         },
       },
       videoUrl: {},
+      isResult: false,
+      wfs: null,
+      currTimes: 0,
+      totalTime: 0,
+      ttTime: 0,
+      isbigger: false,
     };
   },
+  mounted() {
+    // this.queryParams.dateRange = [1635580507000, 1635586507000];
+    this.timeUpdate();
+  },
   methods: {
+    // 时长转换
+    durationTrans(a) {
+      var b = "";
+      var h = parseInt(a / 3600),
+        m = parseInt((a % 3600) / 60),
+        s = parseInt((a % 3600) % 60);
+      if (h > 0) {
+        h = h < 10 ? "0" + h : h;
+        b += h + ":";
+      }
+      m = m < 10 ? "0" + m : m;
+      s = s < 10 ? "0" + s : s;
+      b += m + ":" + s;
+      return b;
+    },
+    //实时时间
+    timeUpdate() {
+      const refVideo = this.$refs.video;
+      const me = this;
+      refVideo.ontimeupdate = () => {
+        me.currTimes = this.durationTrans(parseInt(refVideo.currentTime));
+      };
+    },
+    // 标题头
     getTypes() {
       let result = "";
       for (const item of this.typeList) {
-        if (item.value == this.queryParams.type) {
+        if (item.value == this.queryParams.CHANNEL) {
           result = item.label;
         }
       }
       return result;
     },
-    handleVideo() {
-      this.isShow = true;
+    // 关闭视频
+    colse() {
+      this.isbigger = false;
     },
+    //获取视频的总时长
+    getDuration() {
+      const refVideo = this.$refs.video;
+      console.log("refVideo", refVideo);
+      this.totalTime = this.durationTrans(parseInt(refVideo.duration)); 
+      console.log("getDuration", this.totalTime);
+    },
+    // 查询结果
     searchResult() {
+      this.wfs = null;
       console.log("表单", this.queryParams);
+      const video = document.getElementById("video");
+      const queryParams = this.queryParams;
+      console.log("queryParams.dateRange", queryParams.dateRange);
+      if (!queryParams || queryParams.dateRange.length !== 2) return;
+      const startTime = parseInt(queryParams.dateRange[0].getTime() / 1000);
+      const endTime = parseInt(queryParams.dateRange[1].getTime() / 1000);
+      // const startTime = parseInt(queryParams.dateRange[0] / 1000);
+      // const endTime = parseInt(queryParams.dateRange[1] / 1000);
+      this.OpenRecordingVideo(
+        video,
+        queryParams.VEHICLEID,
+        queryParams.VEHICLELICENSE,
+        queryParams.PLATECOLOR,
+        queryParams.DEVICENO,
+        queryParams.CHANNEL,
+        startTime,
+        endTime
+      );
+      this.isResult = true;
     },
-    // 播放回调
-    onPlayerPlay(player) {
-      player.stopPropagation();
-      console.log("player play!", player);
+    //打开录像
+    OpenRecordingVideo( 
+      video,
+      vehicleId,
+      vehiclelicense,
+      platecolor,
+      deviceno,
+      channel,
+      startTime,
+      endTime
+    ) {
+      if (this.wfs != null) return;
+      this.wfs = new Wfs();
+      const MSGID = 0xf006;
+      var wfsObj = {
+          VEHICLEID: vehicleId,
+          VEHICLELICENSE: vehiclelicense,
+          PLATECOLOR: platecolor,
+          DEVICENO: deviceno,
+          DEVICETYPE: 0xd000,
+          DOWNLOAD: 0,
+          CHANNEL: channel,
+          STORAGE: 0,
+          VIDEOTYPE: 0,
+          STREAMTYPE: 2,
+          PLAYBACKTYPE: 0,
+          MULTIPLE: 0,
+          STARTTIME: startTime,
+          ENDTIME: endTime,
+        },
+        player = new PCMPlayer({
+          encoding: "16bitInt",
+          channels: 1,
+          sampleRate: 8000,
+          flushingTime: 1000,
+        }),
+        userInfo = {
+          MSGID,
+          userId: "1",
+        };
+      video.poster = "../../../assets/images/RVC/timg.gif";
+      this.wfs.attachMedia(video, [wfsObj, player, userInfo]);
     },
+    // // 播放回调
+    // onPlayerPlay(player) {
+    //   console.log("player play!", player);
+    // },
 
-    // 暂停回调
-    onPlayerPause(player) {
-      console.log("player pause!", player);
-    },
+    // // 暂停回调
+    // onPlayerPause(player) {
+    //   console.log("player pause!", player);
+    // },
 
-    // 视频播完回调
-    onPlayerEnded($event) {
-      console.log(player);
-    },
-    // DOM元素上的readyState更改导致播放停止
-    onPlayerWaiting(player) {
-      let time = localStorage.getItem("cacheTime");
-      if (player.cache_.currentTime - Number(time) > 0.1) {
-        this.current = Number(time);
-        this.playerReadied(player);
-      } else {
-        this.current = player.cache_.currentTime;
-      }
-    },
+    // // 视频播完回调
+    // onPlayerEnded($event) {
+    //   console.log(player);
+    // },
+    // // DOM元素上的readyState更改导致播放停止
+    // onPlayerWaiting(player) {
+    //   let time = localStorage.getItem("cacheTime");
+    //   if (player.cache_.currentTime - Number(time) > 0.1) {
+    //     this.current = Number(time);
+    //     this.playerReadied(player);
+    //   } else {
+    //     this.current = player.cache_.currentTime;
+    //   }
+    // },
 
-    // 已开始播放回调
-    onPlayerPlaying($event) {
-      // console.log(player)
-    },
+    // // 已开始播放回调
+    // onPlayerPlaying($event) {
+    //   // console.log(player)
+    // },
 
-    // 当播放器在当前播放位置下载数据时触发
-    onPlayerLoadeddata($event) {
-      // console.log(player)
-    },
+    // // 当播放器在当前播放位置下载数据时触发
+    // onPlayerLoadeddata($event) {
+    //   // console.log(player)
+    // },
 
-    // // 当前播放位置发生变化时触发。
-    onPlayerTimeupdate(player) {
-      this.playTime = player.cache_.currentTime;
-      let playTime = player.cache_.currentTime;
-      setTimeout(function () {
-        localStorage.setItem("cacheTime", playTime);
-      }, 500);
+    // // // 当前播放位置发生变化时触发。
+    // onPlayerTimeupdate(player) {
+    //   this.playTime = player.cache_.currentTime;
+    //   let playTime = player.cache_.currentTime;
+    //   setTimeout(function () {
+    //     localStorage.setItem("cacheTime", playTime);
+    //   }, 500);
 
-      let time = localStorage.getItem("cacheTime");
-      if (player.cache_.currentTime - Number(time) > 2) {
-        this.current = Number(time);
-        this.playerReadied(player);
-      } else {
-        this.current = player.cache_.currentTime;
-      }
-    },
+    //   let time = localStorage.getItem("cacheTime");
+    //   if (player.cache_.currentTime - Number(time) > 2) {
+    //     this.current = Number(time);
+    //     this.playerReadied(player);
+    //   } else {
+    //     this.current = player.cache_.currentTime;
+    //   }
+    // },
 
-    //媒体的readyState为HAVE_FUTURE_DATA或更高
-    onPlayerCanplay(player) {
-      // console.log('player Canplay!', player)
-    },
+    // //媒体的readyState为HAVE_FUTURE_DATA或更高
+    // onPlayerCanplay(player) {
+    //   // console.log('player Canplay!', player)
+    // },
 
-    //媒体的readyState为HAVE_ENOUGH_DATA或更高。这意味着可以在不缓冲的情况下播放整个媒体文件。
-    onPlayerCanplaythrough(player) {
-      // console.log('player Canplaythrough!', player)
-    },
+    // //媒体的readyState为HAVE_ENOUGH_DATA或更高。这意味着可以在不缓冲的情况下播放整个媒体文件。
+    // onPlayerCanplaythrough(player) {
+    //   // console.log('player Canplaythrough!', player)
+    // },
 
-    //播放状态改变回调
-    playerStateChanged(playerCurrentState) {
-      // console.log('player current update state', playerCurrentState)
-    },
+    // //播放状态改变回调
+    // playerStateChanged(playerCurrentState) {
+    //   // console.log('player current update state', playerCurrentState)
+    // },
 
-    //将侦听器绑定到组件的就绪状态。与事件监听器的不同之处在于，如果ready事件已经发生，它将立即触发该函数。。
-    playerReadied(player) {
-      // console.log('example player 1 readied', player);
-      player.currentTime(this.current);
-    },
+    // //将侦听器绑定到组件的就绪状态。与事件监听器的不同之处在于，如果ready事件已经发生，它将立即触发该函数。。
+    // playerReadied(player) {
+    //   // console.log('example player 1 readied', player);
+    //   player.currentTime(this.current);
+    // },
   },
 };
 </script>
@@ -267,12 +408,17 @@ export default {
   padding: 20px 16px 16px 16px;
   width: 100%;
   &-title {
+    position: absolute;
+    top: 0;
+    left: 0;
     font-size: 14px;
     font-family: PingFang SC;
     font-weight: 400;
     line-height: 24px;
     color: #3d4050;
     margin-bottom: 7px;
+    display: flex;
+    justify-content: space-between;
   }
   .play-back-search-result {
     width: 356px;
@@ -290,8 +436,15 @@ export default {
         height: 65px;
       }
     }
+    &-count {
+      position: absolute;
+      bottom: 2px;
+      right: 28px;
+      color: #fff;
+    }
   }
 }
+
 .dialog-video {
   position: fixed;
   top: 0;
@@ -301,20 +454,40 @@ export default {
   z-index: 3000;
   background: rgba(0, 0, 0, 0.26);
   &-full {
-    width: 54%;
-    // height: 60%;
-    position: absolute;
-    top: 20%;
-    left: 25%;
-    background: #3d4050;
-    border-radius: 2px;
+    opacity: 1 !important;
+    width: 54% !important;
+    height: 45% !important;
+    position: absolute !important;
+    top: 20% !important;
+    left: 25% !important;
+    background: #3d4050 !important;
+    border-radius: 2px !important;
     &-title {
-      position: absolute;
-      left: 28px;
-      top: 18px;
-      color: #fff;
+      position: absolute !important;
+      width: 100%;
+      height: 50px;
+      padding: 16px;
+      left: 0 !important;
+      top: 0 !important;
+      color: #fff !important;
+      display: flex;
+      justify-content: space-between;
+      & > i {
+        display: inline-block;
+        height: 15px;
+        width: 15px;
+        z-index: 4000;
+      }
     }
   }
+}
+
+.toBigger {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 17px;
+  height: 17px;
 }
 
 .vjs-custom-skin > .video-js .vjs-big-play-button {
