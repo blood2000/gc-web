@@ -4,6 +4,7 @@
     <div class="text">
       <slot />
     </div>
+    <img class="title_line" src="~@/assets/images/statistic/title_line.gif" />
   </div>
 </template>
 
@@ -56,6 +57,15 @@ export default {
       line-height: 22px;
       margin-left: 0.6rem;
     }
+  }
+
+  .title_line{
+    position: absolute;
+    bottom: -0.35rem;
+    left: -0.5rem;
+    width: 8.75rem;
+    height: 0.75rem;
+    opacity: 0.7;
   }
 }
 </style>

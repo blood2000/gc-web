@@ -37,13 +37,31 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 5
-      }
+      },
+      // 每5分钟刷新一次
+      time: 5 * 60 * 1000,
+      timer: null
     };
+  },
+  beforeDestroy() {
+    this.clearTimer();
   },
   mounted() {
     this.getData();
+    this.setTimer();
   },
   methods: {
+    setTimer() {
+      this.clearTimer();
+      this.timer = setInterval(() => {
+        this.getData();
+      }, this.time);
+    },
+    clearTimer() {
+      if (this.timer) {
+        clearInterval(this.timer);
+      }
+    },
     getData() {
       const obj = {
         moduleName: "http_statistic",

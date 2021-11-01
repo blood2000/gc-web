@@ -2,7 +2,10 @@
   <div class="g-statistic">
     <!-- title -->
     <div class="header-box">
-      <img src="~@/assets/images/statistic/title.png">
+      <img class="header-box__title" src="~@/assets/images/statistic/title.png">
+      <img class="header-box__left" src="~@/assets/images/statistic/bg_title_left.webp">
+      <img class="header-box__right" src="~@/assets/images/statistic/bg_title_right.webp">
+      <!-- <img class="header-box__block-left" src="~@/assets/images/statistic/block_top_left.webp"> -->
     </div>
 
     <!-- left -->
@@ -20,7 +23,7 @@
         </div>
       </div>
       <div class="ly-left-bottom ly-border">
-        <Title :show-after="true" after-text="TOP8">车辆类型<span>Vehicle type</span></Title>
+        <Title :show-after="true" after-text="TOP5">车辆类型<span>Vehicle type</span></Title>
         <div class="content-box ly-border">
           <VehicleType ref="VehicleTypeRef" />
         </div>
@@ -73,6 +76,14 @@
     <img class="bg-img bg-top-right" src="~@/assets/images/statistic/bg_top_right.png" />
     <img class="bg-img bg-map" src="~@/assets/images/statistic/bg.png" />
     <div class="bg-img bg-circle" />
+
+    <!-- gif -->
+    <img class="bg-img angle-bottom-left" src="~@/assets/images/statistic/angle_bottom_left.webp" />
+    <img class="bg-img angle-bottom-right" src="~@/assets/images/statistic/angle_bottom_right.webp" />
+    <img class="bg-img angle-top-left" src="~@/assets/images/statistic/angle_top_left.webp" />
+    <img class="bg-img angle-top-right" src="~@/assets/images/statistic/angle_top_right.webp" />
+    <img class="bg-img block-bottom-left" src="~@/assets/images/statistic/block_bottom_left.webp" />
+    <img class="bg-img block-bottom-right" src="~@/assets/images/statistic/block_bottom_right.webp" />
   </div>
 </template>
 
@@ -155,6 +166,7 @@ export default {
     // 创建websocket
     createWebSocket() {
       try {
+      console.log(process.env.VUE_APP_WS_PROTOCOL + process.env.VUE_APP_BASE_HOST + this.wsurl);
         this.websock = new WebSocket(process.env.VUE_APP_WS_PROTOCOL + process.env.VUE_APP_BASE_HOST + this.wsurl);
         // this.websock = new WebSocket('ws://192.168.1.18:8080/fmsweb/tempAlarm');
         this.initWebSocket();
@@ -221,6 +233,7 @@ export default {
       this.$refs.AlarmInfoRef.setData(dJson);
       this.$refs.ScrollCardRef.setData(dJson);
       this.$refs.TotalCount.setData(dJson);
+      this.$refs.MapRef.setData(dJson);
     }
   }
 }
@@ -362,6 +375,42 @@ export default {
       background: url('~@/assets/images/statistic/bg_circle.png') no-repeat center center;
       background-size: cover;
     }
+    &.angle-bottom-left{
+      width: 1.95rem;
+      height: 1.95rem;
+      right: 5rem;
+      bottom: 1.65rem;
+    }
+    &.angle-bottom-right{
+      width: 2.4rem;
+      height: 1.85rem;
+      left: 3.8rem;
+      bottom: 1.7rem;
+    }
+    &.angle-top-left{
+      width: 2rem;
+      height: 2rem;
+      left: 2rem;
+      top: 1.5rem;
+    }
+    &.angle-top-right{
+      width: 1.825rem;
+      height: 2rem;
+      right: 2.65rem;
+      top: 1.65rem;
+    }
+    &.block-bottom-left{
+      width: 2.275rem;
+      height: 0.8rem;
+      bottom: 0.6rem;
+      left: 15.6rem;
+    }
+    &.block-bottom-right{
+      width: 2.2rem;
+      height: 0.775rem;
+      bottom: 0.6rem;
+      right: 16.6rem;
+    }
   }
 
   // style
@@ -378,7 +427,7 @@ export default {
     height: 3.4rem;
     background: url('~@/assets/images/statistic/bg_title.png') no-repeat;
     background-size: 100% 100%;
-    >img{
+    >.header-box__title{
       width: 11.35rem;
       height: 1.625rem;
       position: absolute;
@@ -403,6 +452,27 @@ export default {
       right: -23.2rem;
       background: url('~@/assets/images/statistic/bg_title_right.png') no-repeat;
       background-size: 100% 100%;
+    }
+    >.header-box__left{
+      width: 12.9rem;
+      height: 1.6rem;
+      position: absolute;
+      top: 0;
+      left: -10.8rem;
+    }
+    >.header-box__right{
+      width: 14.525rem;
+      height: 1.6rem;
+      position: absolute;
+      top: 0;
+      right: -10rem;
+    }
+    >.header-box__block-left{
+      width: 2.4rem;
+      height: 0.875rem;
+      position: absolute;
+      top: 2.5rem;
+      left: 2.3rem;
     }
   }
 }

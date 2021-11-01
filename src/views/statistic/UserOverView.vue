@@ -21,8 +21,8 @@
           <div class="count-content ly-flex ly-flex-pack-justify ly-flex-align-center">
             <count-to class="count" :end-val="countData.fmsCount" :decimal-places="0" />
             <img :src="require(`@/assets/images/statistic/count_${countData.fmsYearType===0?'down':'up'}.png`)">
-            <span :class="countData.enterpriseYearType===0?'count-down':'count-up'">{{ countData.fmsYearValue ? countData.fmsYearValue : '0%' }}</span>
-            <img class="mouth" :src="require(`@/assets/images/statistic/mouth_${countData.enterpriseYearType===0?'down':'up'}.png`)">
+            <span :class="countData.fmsYearType===0?'count-down':'count-up'">{{ countData.fmsYearValue ? countData.fmsYearValue : '0%' }}</span>
+            <img class="mouth" :src="require(`@/assets/images/statistic/mouth_${countData.fmsYearType===0?'down':'up'}.png`)">
           </div>
         </div>
       </li>
@@ -33,8 +33,8 @@
           <div class="count-content ly-flex ly-flex-pack-justify ly-flex-align-center">
             <count-to class="count" :end-val="countData.vehicleCount" :decimal-places="0" />
             <img :src="require(`@/assets/images/statistic/count_${countData.vehicleYearType===0?'down':'up'}.png`)">
-            <span :class="countData.enterpriseYearType===0?'count-down':'count-up'">{{ countData.vehicleYearValue ? countData.vehicleYearValue : '0%' }}</span>
-            <img class="mouth" :src="require(`@/assets/images/statistic/mouth_${countData.enterpriseYearType===0?'down':'up'}.png`)">
+            <span :class="countData.vehicleYearType===0?'count-down':'count-up'">{{ countData.vehicleYearValue ? countData.vehicleYearValue : '0%' }}</span>
+            <img class="mouth" :src="require(`@/assets/images/statistic/mouth_${countData.vehicleYearType===0?'down':'up'}.png`)">
           </div>
         </div>
       </li>
@@ -45,8 +45,8 @@
           <div class="count-content ly-flex ly-flex-pack-justify ly-flex-align-center">
             <count-to class="count" :end-val="countData.driverCount" :decimal-places="0" />
             <img :src="require(`@/assets/images/statistic/count_${countData.driverYearType===0?'down':'up'}.png`)">
-            <span :class="countData.enterpriseYearType===0?'count-down':'count-up'">{{ countData.driverYearValue ? countData.driverYearValue : '0%' }}</span>
-            <img class="mouth" :src="require(`@/assets/images/statistic/mouth_${countData.enterpriseYearType===0?'down':'up'}.png`)">
+            <span :class="countData.driverYearType===0?'count-down':'count-up'">{{ countData.driverYearValue ? countData.driverYearValue : '0%' }}</span>
+            <img class="mouth" :src="require(`@/assets/images/statistic/mouth_${countData.driverYearType===0?'down':'up'}.png`)">
           </div>
         </div>
       </li>
@@ -241,7 +241,7 @@ export default {
           name: '接入企业',
           data: priseData,
           type: 'line',
-          symbol: 'circle',
+          symbol: 'image://'+ require('@/assets/images/statistic/pot_1.png'),
           color: '#F23AA1', // 拐点颜色
           // 折线样式
           itemStyle: {
@@ -255,7 +255,7 @@ export default {
           name: '接入车队',
           data: fmsData,
           type: 'line',
-          symbol: 'circle',
+          symbol: 'image://'+ require('@/assets/images/statistic/pot_2.png'),
           color: '#373AD8', // 拐点颜色
           // 折线样式
           itemStyle: {
@@ -269,7 +269,7 @@ export default {
           name: '接入车辆',
           data: vehicleData,
           type: 'line',
-          symbol: 'circle',
+          symbol: 'image://'+ require('@/assets/images/statistic/pot_3.png'),
           color: '#A943F9', // 拐点颜色
           // 折线样式
           itemStyle: {
@@ -283,7 +283,7 @@ export default {
           name: '接入司机',
           data: driverData,
           type: 'line',
-          symbol: 'circle',
+          symbol: 'image://'+ require('@/assets/images/statistic/pot_4.png'),
           color: '#8B9BF7', // 拐点颜色
           // 折线样式
           itemStyle: {
@@ -301,6 +301,7 @@ export default {
         legend: {
           itemWidth: setfontSize(6),
           itemHeight: setfontSize(6),
+          itemGap: setfontSize(16),
           textStyle: {
             fontSize: setfontSize(10)
           }
@@ -329,7 +330,7 @@ export default {
           }
         },
         series: [{
-          symbolSize: setfontSize(5),
+          symbolSize: setfontSize(13.5),
           itemStyle: {
             normal: {
               lineStyle: {
@@ -338,7 +339,7 @@ export default {
             }
           }
         },{
-          symbolSize: setfontSize(5),
+          symbolSize: setfontSize(13.5),
           itemStyle: {
             normal: {
               lineStyle: {
@@ -347,7 +348,7 @@ export default {
             }
           }
         },{
-          symbolSize: setfontSize(5),
+          symbolSize: setfontSize(13.5),
           itemStyle: {
             normal: {
               lineStyle: {
@@ -356,7 +357,7 @@ export default {
             }
           }
         },{
-          symbolSize: setfontSize(5),
+          symbolSize: setfontSize(13.5),
           itemStyle: {
             normal: {
               lineStyle: {
