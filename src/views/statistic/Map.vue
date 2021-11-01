@@ -336,41 +336,57 @@ export default {
           //   return val[2] / 200;
           // },
           itemStyle: {
-            color: 'rgba(168, 6, 138, 1)'
+            color: function (val) {
+              const { data } = val;
+              if (data[2] <= 100) {
+                return 'rgba(255, 0, 138, 0.4)'
+              }
+              if (data[2] > 100 && data[2] <= 500) {
+                return 'rgba(255, 0, 138, 0.6)'
+              }
+              if (data[2] > 500 && data[2] <= 1000) {
+                return 'rgba(255, 0, 138, 0.8)'
+              }
+              if (data[2] > 1000) {
+                return 'rgba(255, 0, 138, 1)'
+              }
+            }
           },
           encode: {
             value: 2
           },
           z: 10
-        },{
-          name: 'effectScatter',
-          type: 'effectScatter',
-          coordinateSystem: 'geo',
-          // data: _this.heatmapData
-          //   .sort(function (a, b) {
-          //     return b[2] - a[2];
-          //   })
-          //   .slice(0, 6),
-          data: _this.heatmapData
-            .filter(el => {
-              return el[2] > 5000;
-            }),
-          encode: {
-            value: 2
-          },
-          showEffectOn: 'render',
-          rippleEffect: {
-            brushType: 'stroke'
-          },
-          itemStyle: {
-            color: '#ffc001',
-            shadowColor: 'rgba(130, 7, 109, 0.5)'
-          },
-          emphasis: {
-            scale: true
-          },
-          zlevel: 1
-        }]
+        },
+        // {
+        //   name: 'effectScatter',
+        //   type: 'effectScatter',
+        //   coordinateSystem: 'geo',
+        //   // data: _this.heatmapData
+        //   //   .sort(function (a, b) {
+        //   //     return b[2] - a[2];
+        //   //   })
+        //   //   .slice(0, 6),
+        //   data: _this.heatmapData
+        //     .filter(el => {
+        //       return el[2] > 5000;
+        //     }),
+        //   encode: {
+        //     value: 2
+        //   },
+        //   showEffectOn: 'render',
+        //   rippleEffect: {
+        //     brushType: 'stroke'
+        //   },
+        //   itemStyle: {
+        //     color: '#ffc001',
+        //     shadowColor: 'rgba(130, 7, 109, 0.5)'
+        //   },
+        //   emphasis: {
+        //     scale: true
+        //   },
+        //   zlevel: 1
+        // }
+        ]
       });
     },
     setFontOption() {
@@ -384,7 +400,7 @@ export default {
         }],
         series: [{
           symbolSize: function (val) {
-            return setfontSize(10) + val[2]/1000;
+            return setfontSize(6);
           }
         },{
           symbolSize: function (val) {
@@ -508,6 +524,7 @@ export default {
       background: url('~@/assets/images/statistic/gs_l_2.png') no-repeat;
     }
     &.alarm3{
+      transform: translateX(-20%);
       background: url('~@/assets/images/statistic/gs_l_3.png') no-repeat;
     }
   }
