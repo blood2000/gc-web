@@ -50,7 +50,7 @@
       <div class="ly-right-bottom ly-border">
         <Title>最新上报消息</Title>
         <div class="content-box ly-border">
-          <ReportMessage />
+          <ReportMessage ref="ReportMessageRef" />
         </div>
       </div>
     </div>
@@ -93,7 +93,7 @@ export default {
   mounted() {
     this.setHtmlFontSize();
     window.addEventListener('resize', this.resizeFun);
-    // this.createWebSocket();
+    this.createWebSocket();
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.resizeFun);
@@ -191,6 +191,12 @@ export default {
     // 处理实时数据
     setData(dJson) {
       console.log('实时Json：', dJson);
+      // 假数据
+      dJson.time = this.parseTime(new Date());
+      dJson.name = '小黑盒A1便携款';
+      dJson.content = '福州市mq集群在2019-08-22 17:25:02时间 ，节点数...';
+      // 刷新
+      this.$refs.ReportMessageRef.setData(dJson);
     }
   }
 }

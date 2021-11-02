@@ -1,8 +1,8 @@
 <template>
   <div class="s-container">
     <div class="s-container__list">
-      <ul>
-        <li v-for="(item, index) in dataList" :key="index" class="ly-flex-v ly-flex-pack-center">
+      <ul :class="{isRoll: isRoll}">
+        <li v-for="(item, index) in dataList" :key="index" :class="{isOpacity: isOpacity}" class="ly-flex-v ly-flex-pack-center">
           <p class="row-text ly-flex ly-flex-pack-justify">
             <span class="time">{{ parseTime(item.time) }}</span>
             <span class="name">{{ item.name }}</span>
@@ -21,27 +21,85 @@ export default {
   },
   data() {
     return {
-      dataList: [{
-        time: '2019-08-22 17:25:02',
-        name: '小黑盒A1便携款',
-        content: '福州市mq集群在2019-08-22 17:25:02时间 ，节点数...'
-      },{
-        time: '2019-08-22 17:25:02',
-        name: '小黑盒A1便携款',
-        content: '福州市mq集群在2019-08-22 17:25:02时间 ，节点数...'
-      },{
-        time: '2019-08-22 17:25:02',
-        name: '小黑盒A1便携款',
-        content: '福州市mq集群在2019-08-22 17:25:02时间 ，节点数...'
-      }]
+      dataList: [],
+      storageList: [], // 缓存数据
+      storageTimer: null,
+      isRoll: false,
+      rollTimer: null,
+      isOpacity: false,
+      opacityTimer: false
     };
+  },
+  beforeDestroy() {
+    if (this.storageTimer) this.clearReadStorage();
   },
   mounted() {
     this.getData();
   },
   methods: {
     getData() {
-      
+      this.dataList = [{
+        time: '2019-08-22 17:25:02',
+        name: '小黑盒A1便携款',
+        content: '福州市mq集群在2019-08-22 17:25:02时间 ，节点数...'
+      },{
+        time: '2019-08-22 17:25:02',
+        name: '小黑盒A1便携款',
+        content: '福州市mq集群在2019-08-22 17:25:02时间 ，节点数...'
+      },{
+        time: '2019-08-22 17:25:02',
+        name: '小黑盒A1便携款',
+        content: '福州市mq集群在2019-08-22 17:25:02时间 ，节点数...'
+      }];
+    },
+    setData(data) {
+      // 缓存数据
+      this.storageList.push(data);
+      // 开启缓存查询
+      this.readStorage();
+      // 接收数据，最快0.6s刷一条数据
+      this.rollCard();
+    },
+    rollCard() {
+      if (this.rollTimer || this.opacityTimer) return;
+      this.isRoll = true;
+      this.rollTimer = setTimeout(() => {
+        this.isRoll = false;
+        this.startAnimation();
+        this.clearAnimation();
+        // 从缓存读取数据
+        this.dataList.unshift(this.storageList[0]);
+        this.dataList.splice(3);
+        this.storageList.splice(0, 1);
+        // 保证一个完整的动画
+        this.rollTimer = null;
+      }, 0.4 * 1000);
+    },
+    startAnimation() {
+      this.isOpacity = true;
+    },
+    clearAnimation() {
+      this.opacityTimer = setTimeout(() => {
+        this.isOpacity = false;
+        this.opacityTimer = null;
+      }, 0.2 * 1000);
+    },
+    // 定时访问缓存里面是否还有数据
+    readStorage() {
+      if (this.storageList.length === 0) {
+        this.clearReadStorage();
+        return;
+      }
+      // 保证当前有且只有一个定时器在工作
+      if (this.storageTimer) return;
+      this.storageTimer = setInterval(() => {
+        if (this.storageList.length > 0) {
+          this.rollCard();
+        }
+      }, 0.4 * 1000);
+    },
+    clearReadStorage() {
+      clearInterval(this.storageTimer);
     }
   }
 }
@@ -51,8 +109,10 @@ export default {
 .s-container{
   height: 100%;
   padding: 0.5rem 0;
+  overflow: hidden;
   &__list{
     height: 100%;
+    overflow: hidden;
     >ul{
       height: 100%;
       >li{
@@ -75,6 +135,22 @@ export default {
           font-weight: 400;
           color: #FFFFFF;
         }
+        // 动画
+        &.isOpacity:first-child{
+          animation: is-opacity 0.2s;
+        }
+        @keyframes is-opacity {
+          0% {
+            opacity: 0;
+          }
+          100% {
+            opacity: 1;
+          }
+        }
+      }
+      &.isRoll{
+        transform: translateY(33.3%);
+        transition: transform 0.4s;
       }
     }
   }

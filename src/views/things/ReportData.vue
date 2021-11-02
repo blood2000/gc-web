@@ -96,7 +96,7 @@ export default {
               color: '#F2E9FA',
               alignTo: 'edge',
               formatter: function(obj) {
-                return ` ${obj.data.name}\n {percentage|数量：${obj.data.value}  占比：${obj.data.percentage}}`;
+                return ` ${obj.data.name}：${obj.data.value}\n {percentage|占比：${obj.data.percentage}}`;
               },
               rich: {
                 percentage: {
@@ -105,10 +105,7 @@ export default {
               }
             },
             labelLine: {
-              show: true,
-              maxSurfaceAngle: 80,
-              length: 10,
-              length2: 0
+              show: true
             },
             labelLayout: function (params) {
               const isLeft = params.labelRect.x < _this.chart.getWidth() / 2;
@@ -189,6 +186,11 @@ export default {
                 fontSize: setfontSize(11)
               }
             }
+          },
+          labelLine: {
+            maxSurfaceAngle: setfontSize(80),
+            length: setfontSize(20),
+            length2: 0
           }
         }]
       });
