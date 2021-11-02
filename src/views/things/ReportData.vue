@@ -30,27 +30,41 @@ export default {
   },
   methods: {
     getData() {
+      // 总2040
       this.dataList = [{
-        value: 400,
+        value: 417,
         name: "告警数据",
-        percentage: "20%"
+        percentage: "20.4%"
       }, {
-        value: 400,
+        value: 386,
         name: "定位数据",
-        percentage: "20%"
+        percentage: "18.9%"
       }, {
-        value: 400,
+        value: 433,
         name: "状态数据",
-        percentage: "20%"
+        percentage: "21.2%"
       }, {
-        value: 400,
+        value: 397,
         name: "指令数据",
-        percentage: "20%"
+        percentage: "19.5%"
       }, {
-        value: 400,
+        value: 407,
         name: "轨迹数据",
         percentage: "20%"
       }];
+      this.$nextTick(() => {
+        this.initChart();
+      });
+    },
+    refreshData() {
+      let total = 0;
+      this.dataList.forEach(el => {
+        el.value += Math.round(Math.random()*10);
+        total += el.value;
+      })
+      this.dataList.forEach(el => {
+        el.percentage = ((el.value / total) * 100).toFixed(1) + '%';
+      })
       this.$nextTick(() => {
         this.initChart();
       });
@@ -87,8 +101,8 @@ export default {
           {
             name: '',
             type: 'pie',
-            radius: ['35%', '55%'],
-            center: ['50%', '50%'],
+            radius: ['30%', '50%'],
+            center: ['50%', '48%'],
             data: _this.dataList,
             // 标示线
             label: {
@@ -138,21 +152,21 @@ export default {
                       offset: 1,
                       color: 'rgba(232, 75, 75, 1)'
                     }]),
-                    new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
                       offset: 0,
                       color: 'rgba(232, 75, 75, 1)'
                     }, {
                       offset: 1,
                       color: 'rgba(203, 142, 46, 1)'
                     }]),
-                    new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
                       offset: 0,
                       color: 'rgba(203, 142, 46, 1)'
                     }, {
                       offset: 1,
                       color: 'rgba(71, 142, 241, 1)'
                     }]),
-                    new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    new echarts.graphic.LinearGradient(0, 0, 1, 0, [{
                       offset: 0,
                       color: 'rgba(71, 142, 241, 1)'
                     }, {

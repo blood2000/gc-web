@@ -55,22 +55,32 @@ export default {
       let lineColor = '';
       let lineColorCenter = '';
       let lineColorEnd = '';
+      let max;
+      let unit;
       if (this.type === 'cpu') {
         lineColor = 'rgba(255, 74, 74, 0.9)';
         lineColorCenter = 'rgba(255, 74, 74, 0.7)';
         lineColorEnd = 'rgba(255, 74, 74, 0.03)';
+        max = 40;
+        unit = 'U';
       } else if (this.type === 'ran') {
         lineColor = 'rgba(124, 65, 235, 0.9)';
         lineColorCenter = 'rgba(124, 65, 235, 0.7)';
         lineColorEnd = 'rgba(124, 65, 235, 0.03)';
+        max = 160;
+        unit = 'G';
       } else if (this.type === 'net') {
         lineColor = 'rgba(40, 178, 148, 0.9)';
         lineColorCenter = 'rgba(40, 178, 148, 0.7)';
         lineColorEnd = 'rgba(40, 178, 148, 0.03)';
+        max = 100;
+        unit = 'M';
       } else if (this.type === 'hard') {
         lineColor = 'rgba(71, 142, 241, 0.9)';
         lineColorCenter = 'rgba(71, 142, 241, 0.7)';
         lineColorEnd = 'rgba(71, 142, 241, 0.03)';
+        max = 1500;
+        unit = 'G';
       }
       this.chart.setOption({
         legend: {
@@ -108,6 +118,7 @@ export default {
         yAxis: {
           type: 'value',
           minInterval: 1, // 只显示整数
+          max: max,
           axisLine: {
             show: false
           },
@@ -130,14 +141,15 @@ export default {
           trigger: 'axis',
           axisPointer: {
             lineStyle: {
-              color: '#3F5C84'
+              color: '#fff'
             }
           },
           borderColor: 'rgba(0, 0, 0, 0)',
           backgroundColor: 'rgba(70, 70, 70, 0.5)',
           textStyle: {
             color: '#ffffff'
-          }
+          },
+          formatter: '{b}时：{c}' + unit
         },
         series: [{
           data: this.valueData,

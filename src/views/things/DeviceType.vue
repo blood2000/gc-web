@@ -30,18 +30,19 @@ export default {
   },
   methods: {
     getData() {
+      // 总数572
       this.dataList = [{
-        value: 481,
+        value: 162,
         name: "行车记录仪T1普货版",
-        percentage: "24%"
+        percentage: "28.3%"
       }, {
-        value: 1000,
+        value: 203,
         name: "超好运小黑盒A2固线款",
-        percentage: "50%"
+        percentage: "35.5%"
       }, {
-        value: 500,
+        value: 207,
         name: "超好运小黑盒A1便携款",
-        percentage: "25%"
+        percentage: "36.2%"
       }];
       this.$nextTick(() => {
         this.initChart();
@@ -132,10 +133,10 @@ export default {
                     }]),
                     new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                       offset: 0,
-                      color: 'rgba(137, 89, 227, 1)'
+                      color: 'rgba(40, 178, 148, 1)'
                     }, {
                       offset: 1,
-                      color: 'rgba(40, 178, 148, 1)'
+                      color: 'rgba(137, 89, 227, 1)'
                     }])
                   ];
                   return colorList[params.dataIndex];

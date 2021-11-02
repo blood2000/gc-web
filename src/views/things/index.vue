@@ -30,7 +30,7 @@
 
     <!-- center -->
     <div class="ly-center ly-border ly-flex-v ly-flex-pack-justify">
-      <CenterData />
+      <CenterData ref="CenterDataRef" />
     </div>
 
     <!-- right -->
@@ -38,7 +38,7 @@
       <div class="ly-right-top ly-border">
         <Title>接口性能分析</Title>
         <div class="content-box ly-border">
-          <PerformanceAnalysis />
+          <PerformanceAnalysis ref="PerformanceAnalysisRef" />
         </div>
       </div>
       <div class="ly-right-center ly-border">
@@ -68,6 +68,8 @@ import PerformanceAnalysis from './PerformanceAnalysis.vue'; // 接口性能分�
 import ReportData from './ReportData.vue'; // 上报数据占比
 import ReportMessage from './ReportMessage.vue'; // 最新上报消息
 import CenterData from './CenterData.vue';
+// 设备类型、告警类型数据
+import { deviceTypeList, warnTypeList } from './test.js';
 export default {
   name: 'Statistic',
   components: {
@@ -87,18 +89,52 @@ export default {
       lockReconnect: false,
       timerReconnect: null,
       heartTimeout: null,
-      serverTimeout: null
+      serverTimeout: null,
+      // 每分钟刷新一次数据
+      timer: null,
+      curHour: 0,
+      dataList: [],
+      isAdd: true
     };
   },
   mounted() {
+    this.getData();
+    this.curHour = new Date().getHours();
+    this.setTimer();
     this.setHtmlFontSize();
     window.addEventListener('resize', this.resizeFun);
     this.createWebSocket();
   },
   beforeDestroy() {
+    this.clearTimer();
     window.removeEventListener('resize', this.resizeFun);
   },
   methods: {
+    getData() {
+      this.dataList = [{
+        title: '轨迹查询',
+        count: 347812,
+        time: 2.14
+      },{
+        title: '位置查询',
+        count: 359112,
+        time: 7.51
+      },{
+        title: '视频调阅',
+        count: 321200,
+        time: 12.41
+      },{
+        title: '告警查询',
+        count: 371512,
+        time: 0.68
+      },{
+        title: '指令下发',
+        count: 251589,
+        time: 12.76
+      }];
+      this.$refs.PerformanceAnalysisRef.setData(this.dataList);
+      this.$refs.CenterDataRef.setData(this.dataList);
+    },
     resizeFun() {
       const throttle = ThrottleFun(this.refreshChart, 300);
       throttle();
@@ -193,10 +229,43 @@ export default {
       console.log('实时Json：', dJson);
       // 假数据
       dJson.time = this.parseTime(new Date());
-      dJson.name = '小黑盒A1便携款';
-      dJson.content = '福州市mq集群在2019-08-22 17:25:02时间 ，节点数...';
+      dJson.name = deviceTypeList[this.getRadom(0, deviceTypeList.length)];
+      dJson.type = warnTypeList[this.getRadom(0, warnTypeList.length)];
+      dJson.device = '868120274638466';
       // 刷新
       this.$refs.ReportMessageRef.setData(dJson);
+    },
+    // 每分钟更新跑一次定时器
+    setTimer() {
+      this.clearTimer();
+      this.timer = setInterval(() => {
+        // 实时调用量随机增加
+        this.dataList.forEach(el => {
+          el.count += Math.round(Math.random()*10);
+          if (this.isAdd) {
+            el.time += (Math.random()*0.1);
+          } else {
+            el.time -= (Math.random()*0.1);
+          }
+        });
+        this.isAdd = !this.isAdd;
+        this.$refs.PerformanceAnalysisRef.setData(this.dataList);
+        this.$refs.CenterDataRef.setData(this.dataList);
+        this.$refs.CenterDataRef.refreshData();
+        this.$refs.ReportDataRef.refreshData();
+        // 如果是新的小时，刷新接口
+        if (this.curHour !== new Date().getHours()) {
+          this.curHour = new Date().getHours();
+          this.$refs.ServerPerformanceRef.getData();
+        }
+      }, 60 * 1000)
+    },
+    clearTimer() {
+      if (this.timer) clearInterval(this.timer);
+    },
+    // 随机获取 x~y 之间的一个整数
+    getRadom(x, y) {
+      return Math.round(Math.random()*(y-x)+x);
     }
   }
 }

@@ -7,7 +7,8 @@
             <span class="time">{{ parseTime(item.time) }}</span>
             <span class="name">{{ item.name }}</span>
           </p>
-          <p class="row-content g-single-row">{{ item.content }}</p>
+          <!-- 【{类型}】产生于 {时间} ，来自设备 {设备号} -->
+          <p class="row-content g-single-row">{{ `【${item.type}】产生于${parseTime(item.time)} ，来自设备${item.device}` }}</p>
         </li>
       </ul>
     </div>
@@ -39,17 +40,20 @@ export default {
   methods: {
     getData() {
       this.dataList = [{
-        time: '2019-08-22 17:25:02',
+        time: this.parseTime(new Date()),
         name: '小黑盒A1便携款',
-        content: '福州市mq集群在2019-08-22 17:25:02时间 ，节点数...'
+        type: '超速预警',
+        device: '868120274638466'
       },{
-        time: '2019-08-22 17:25:02',
+        time: this.parseTime(new Date().getTime() - 8000),
         name: '小黑盒A1便携款',
-        content: '福州市mq集群在2019-08-22 17:25:02时间 ，节点数...'
+        type: '接打电话报警',
+        device: '868120274638466'
       },{
-        time: '2019-08-22 17:25:02',
-        name: '小黑盒A1便携款',
-        content: '福州市mq集群在2019-08-22 17:25:02时间 ，节点数...'
+        time: this.parseTime(new Date().getTime() - 11000),
+        name: '超好运小黑盒A2固线款',
+        type: '路线偏离报警 ',
+        device: '868120274638466'
       }];
     },
     setData(data) {

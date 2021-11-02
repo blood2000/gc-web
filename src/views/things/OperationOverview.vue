@@ -38,28 +38,28 @@ export default {
     return {
       dataList: [{
         title: '服务器集群',
-        count: 17,
-        percent: '10%',
-        errCount: 10,
-        errPercent: '10%'
+        count: 2,
+        percent: '0%',
+        errCount: 0,
+        errPercent: '0%'
       },{
         title: '服务节点',
-        count: 17,
-        percent: '10%',
-        errCount: 10,
-        errPercent: '10%'
+        count: 5,
+        percent: '0%',
+        errCount: 0,
+        errPercent: '0%'
       },{
         title: '服务容器',
-        count: 17,
-        percent: '10%',
-        errCount: 10,
-        errPercent: '10%'
+        count: 26,
+        percent: '0%',
+        errCount: 0,
+        errPercent: '0%'
       },{
         title: '接入设备',
-        count: 17,
-        percent: '10%',
-        errCount: 10,
-        errPercent: '10%'
+        count: 328,
+        percent: '12%',
+        errCount: 14,
+        errPercent: '2%'
       }]
     };
   },

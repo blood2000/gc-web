@@ -42,11 +42,25 @@ export default {
   },
   methods: {
     getData() {
-      this.timeData = [4, 8, 12, 16, 20, 24, 28, 31];
-      this.cpuData = [15, 20, 20, 40, 32, 35, 25, 30];
-      this.ranData = [15, 20, 20, 40, 32, 35, 25, 30];
-      this.netData = [15, 20, 20, 40, 32, 35, 25, 30];
-      this.hardData = [15, 20, 20, 40, 32, 35, 25, 30];
+      this.timeData = [];
+      this.cpuData = [];
+      this.ranData = [];
+      this.netData = [];
+      this.hardData = [];
+      // 当前小时往前推24个时间节点
+      let curHour = new Date().getHours();
+      for (let i = 0; i < 24; i++) {
+        this.timeData.unshift(curHour);
+        if (curHour === 0) {
+          curHour = 23;
+        } else {
+          curHour--;
+        }
+        this.cpuData.push(this.getRadom(29, 32));
+        this.ranData.push(this.getRadom(91, 97));
+        this.netData.push(this.getRadom(25, 37));
+        this.hardData.push(457+i);
+      }
       setTimeout(() => {
         this.$refs.cpuRef.initChart();
         this.$refs.ranRef.initChart();
@@ -59,6 +73,10 @@ export default {
       this.$refs.ranRef.refreshChart();
       this.$refs.netRef.refreshChart();
       this.$refs.hardRef.refreshChart();
+    },
+    // 随机获取 x~y 之间的一个整数
+    getRadom(x, y) {
+      return Math.round(Math.random()*(y-x)+x);
     }
   }
 }

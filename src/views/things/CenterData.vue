@@ -49,45 +49,9 @@ export default {
   },
   data() {
     return {
-      dataList1: [{
-        title: '轨迹查询',
-        count: 3265598
-      },{
-        title: '位置查询',
-        count: 3265598
-      },{
-        title: '视频调阅',
-        count: 3265598
-      },{
-        title: '告警查询',
-        count: 3265598
-      },{
-        title: '指令下发',
-        count: 3265598
-      }],
-      dataList2: [{
-        title: '数据库',
-        count: 3265598
-      },{
-        title: '全文索引',
-        count: 3265598
-      },{
-        title: '消息队列',
-        count: 3265598
-      },{
-        title: '内存库',
-        count: 3265598
-      }],
-      dataList3: [{
-        title: '小黑盒A1便携款',
-        count: 624323
-      },{
-        title: '小黑盒A2固线款',
-        count: 624323
-      },{
-        title: '行车记录仪T1基础款',
-        count: 624323
-      }]
+      dataList1: [],
+      dataList2: [],
+      dataList3: []
     };
   },
   mounted() {
@@ -95,7 +59,43 @@ export default {
   },
   methods: {
     getData() {
-      
+      // 实时数据存储量
+      this.dataList2 = [{
+        title: '数据库',
+        count: 326559
+      },{
+        title: '全文索引',
+        count: 302151
+      },{
+        title: '消息队列',
+        count: 312134
+      },{
+        title: '内存库',
+        count: 298276
+      }];
+      // 实时上报数据量
+      this.dataList3 = [{
+        title: '小黑盒A1便携款',
+        count: 62551
+      },{
+        title: '小黑盒A2固线款',
+        count: 59636
+      },{
+        title: '行车记录仪T1基础款',
+        count: 51202
+      }]
+    },
+    setData(data) {
+      // 实时接口调用量
+      this.dataList1 = data;
+    },
+    refreshData() {
+      this.dataList2.forEach(el => {
+        el.count += Math.round(Math.random()*10);
+      })
+      this.dataList3.forEach(el => {
+        el.count += Math.round(Math.random()*10);
+      })
     }
   }
 }
@@ -181,7 +181,7 @@ export default {
           background: linear-gradient(0deg, rgba(89, 100, 241, 0.5) 0%, rgba(21, 171, 253, 0.5) 100%);
           >.row-text{
             >.label{
-              width: 7rem;
+              width: 7.2rem;
             }
           }
         }

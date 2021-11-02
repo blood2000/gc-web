@@ -27,35 +27,12 @@ export default {
   },
   data() {
     return {
-      dataList: [{
-        title: '轨迹查询',
-        count: 3265598,
-        time: 2.14
-      },{
-        title: '位置查询',
-        count: 3265598,
-        time: 7.51
-      },{
-        title: '视频调阅',
-        count: 3265598,
-        time: 12.41
-      },{
-        title: '告警查询',
-        count: 3265598,
-        time: 0.68
-      },{
-        title: '指令下发',
-        count: 3265598,
-        time: 12.76
-      }]
+      dataList: []
     };
   },
-  mounted() {
-    this.getData();
-  },
   methods: {
-    getData() {
-      
+    setData(data) {
+      this.dataList = data;
     }
   }
 }
