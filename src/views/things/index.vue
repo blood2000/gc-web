@@ -30,7 +30,7 @@
 
     <!-- center -->
     <div class="ly-center ly-border ly-flex-v ly-flex-pack-justify">
-      
+      <CenterData />
     </div>
 
     <!-- right -->
@@ -67,6 +67,7 @@ import DeviceType from './DeviceType.vue'; // 设备类型占比
 import PerformanceAnalysis from './PerformanceAnalysis.vue'; // 接口性能分析
 import ReportData from './ReportData.vue'; // 上报数据占比
 import ReportMessage from './ReportMessage.vue'; // 最新上报消息
+import CenterData from './CenterData.vue';
 export default {
   name: 'Statistic',
   components: {
@@ -76,7 +77,8 @@ export default {
     DeviceType,
     PerformanceAnalysis,
     ReportData,
-    ReportMessage
+    ReportMessage,
+    CenterData
   },
   data() {
     return {

@@ -90,6 +90,13 @@ export default {
       >.info-box{
         width: calc(100% - 3.2rem);
         height: 100%;
+        >h5{
+          font-size: 0.7rem;
+          font-family: Microsoft YaHei;
+          font-weight: 400;
+          color: #FFFFFF;
+          line-height: 0.8rem;
+        }
         .row-text{
           width: 50%;
           font-size: 0.6rem;
