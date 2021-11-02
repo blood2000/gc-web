@@ -55,6 +55,10 @@
       </div>
     </div>
 
+    <!-- gif -->
+    <img class="center-img center-1" src="~@/assets/images/things/center_1.gif" />
+    <img class="center-img center-2" src="~@/assets/images/things/center_2.gif" />
+    <img class="center-img center-3" src="~@/assets/images/things/center_3.gif" />
   </div>
 </template>
 
@@ -345,6 +349,25 @@ export default {
     }
     .ly-right-bottom{
       height: 31.3%;
+    }
+  }
+
+
+  // gif
+  .center-img{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    &.center-1{
+      z-index: 8;
+    }
+    &.center-2{
+      z-index: 7;
+    }
+    &.center-3{
+      z-index: 6;
     }
   }
 

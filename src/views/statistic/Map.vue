@@ -123,10 +123,10 @@ export default {
           itemStyle: {
             normal: {
               borderColor: 'rgba(172, 90, 155, 0)',
-              areaColor: 'rgba(152, 77, 137, 1)'
+              areaColor: '#852f75'
             },
             emphasis: {
-              areaColor: 'rgba(152, 77, 137, 1)' // 鼠标移入高亮显颜色
+              areaColor: '#852f75' // 鼠标移入高亮显颜色
             }
           },
           label: {
@@ -158,10 +158,10 @@ export default {
           itemStyle: {
             normal: {
               borderColor: 'rgba(172, 90, 155, 0)',
-              areaColor: 'rgba(152, 77, 137, 1)'
+              areaColor: '#852f75'
             },
             emphasis: {
-              areaColor: 'rgba(152, 77, 137, 1)' // 鼠标移入高亮显颜色
+              areaColor: '#852f75' // 鼠标移入高亮显颜色
             }
           },
           label: {
@@ -193,10 +193,10 @@ export default {
           itemStyle: {
             normal: {
               borderColor: 'rgba(172, 90, 155, 0)',
-              areaColor: 'rgba(152, 77, 137, 1)'
+              areaColor: '#852f75'
             },
             emphasis: {
-              areaColor: 'rgba(152, 77, 137, 1)' // 鼠标移入高亮显颜色
+              areaColor: '#852f75' // 鼠标移入高亮显颜色
             }
           },
           label: {
@@ -228,10 +228,10 @@ export default {
           itemStyle: {
             normal: {
               borderColor: 'rgba(172, 90, 155, 0)',
-              areaColor: 'rgba(152, 77, 137, 1)'
+              areaColor: '#852f75'
             },
             emphasis: {
-              areaColor: 'rgba(152, 77, 137, 1)' // 鼠标移入高亮显颜色
+              areaColor: '#852f75' // 鼠标移入高亮显颜色
             }
           },
           label: {
@@ -263,13 +263,13 @@ export default {
           itemStyle: {
             normal: {
               borderColor: 'rgba(172, 90, 155, 0)',
-              areaColor: 'rgba(152, 77, 137, 1)',
+              areaColor: '#852f75',
               shadowColor: 'rgba(0, 0, 0, 0.3)',
               shadowBlur: 8,
               shadowOffsetY: 6
             },
             emphasis: {
-              areaColor: 'rgba(152, 77, 137, 1)' // 鼠标移入高亮显颜色
+              areaColor: '#852f75' // 鼠标移入高亮显颜色
             }
           },
           label: {
