@@ -80,12 +80,12 @@ export default {
           zoom: 1.05,
           z: 9,
           aspectScale: 0.8,
-          layoutCenter: ['48%', '48%'],
+          layoutCenter: ['48%', '44%'],
           layoutSize: '81%',
           itemStyle: {
             normal: {
-              borderColor: 'rgba(172, 90, 155, 0.65)',
-              areaColor: 'rgba(114, 35, 98, 0.65)'
+              borderColor: 'rgba(151, 56, 135, 1)',
+              areaColor: 'rgba(74, 15, 52, 1)'
             },
             emphasis: {
               areaColor: 'rgba(114, 35, 98, 1)' // 鼠标移入高亮显颜色
@@ -118,15 +118,15 @@ export default {
           zoom: 1.05,
           z: 8,
           aspectScale: 0.8,
-          layoutCenter: ['48%', '48.3%'],
+          layoutCenter: ['48%', '44.3%'],
           layoutSize: '81%',
           itemStyle: {
             normal: {
               borderColor: 'rgba(172, 90, 155, 0)',
-              areaColor: 'rgba(132, 45, 120, 1)'
+              areaColor: 'rgba(152, 77, 137, 1)'
             },
             emphasis: {
-              areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
+              areaColor: 'rgba(152, 77, 137, 1)' // 鼠标移入高亮显颜色
             }
           },
           label: {
@@ -153,15 +153,15 @@ export default {
           zoom: 1.05,
           z: 8,
           aspectScale: 0.8,
-          layoutCenter: ['48%', '48.6%'],
+          layoutCenter: ['48%', '44.6%'],
           layoutSize: '81%',
           itemStyle: {
             normal: {
               borderColor: 'rgba(172, 90, 155, 0)',
-              areaColor: 'rgba(132, 45, 120, 1)'
+              areaColor: 'rgba(152, 77, 137, 1)'
             },
             emphasis: {
-              areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
+              areaColor: 'rgba(152, 77, 137, 1)' // 鼠标移入高亮显颜色
             }
           },
           label: {
@@ -188,15 +188,15 @@ export default {
           zoom: 1.05,
           z: 8,
           aspectScale: 0.8,
-          layoutCenter: ['48%', '48.9%'],
+          layoutCenter: ['48%', '44.9%'],
           layoutSize: '81%',
           itemStyle: {
             normal: {
               borderColor: 'rgba(172, 90, 155, 0)',
-              areaColor: 'rgba(132, 45, 120, 1)'
+              areaColor: 'rgba(152, 77, 137, 1)'
             },
             emphasis: {
-              areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
+              areaColor: 'rgba(152, 77, 137, 1)' // 鼠标移入高亮显颜色
             }
           },
           label: {
@@ -223,15 +223,15 @@ export default {
           zoom: 1.05,
           z: 8,
           aspectScale: 0.8,
-          layoutCenter: ['48%', '49.2%'],
+          layoutCenter: ['48%', '45.2%'],
           layoutSize: '81%',
           itemStyle: {
             normal: {
               borderColor: 'rgba(172, 90, 155, 0)',
-              areaColor: 'rgba(132, 45, 120, 1)'
+              areaColor: 'rgba(152, 77, 137, 1)'
             },
             emphasis: {
-              areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
+              areaColor: 'rgba(152, 77, 137, 1)' // 鼠标移入高亮显颜色
             }
           },
           label: {
@@ -258,53 +258,18 @@ export default {
           zoom: 1.05,
           z: 8,
           aspectScale: 0.8,
-          layoutCenter: ['48%', '49.5%'],
+          layoutCenter: ['48%', '45.5%'],
           layoutSize: '81%',
           itemStyle: {
             normal: {
               borderColor: 'rgba(172, 90, 155, 0)',
-              areaColor: 'rgba(132, 45, 120, 1)'
-            },
-            emphasis: {
-              areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
-            }
-          },
-          label: {
-            emphasis: {
-              show: false
-            }
-          },
-          regions: [
-            {
-              name: "南海诸岛",
-              value: 0,
-              itemStyle: {
-                normal: {
-                  opacity: 0,
-                  label: {
-                    show: false
-                  }
-                }
-              }
-            }
-          ]
-        },{
-          map: 'china',
-          zoom: 1.05,
-          z: 8,
-          aspectScale: 0.8,
-          layoutCenter: ['48%', '49.8%'],
-          layoutSize: '81%',
-          itemStyle: {
-            normal: {
-              borderColor: 'rgba(172, 90, 155, 0)',
-              areaColor: 'rgba(132, 45, 120, 1)',
+              areaColor: 'rgba(152, 77, 137, 1)',
               shadowColor: 'rgba(0, 0, 0, 0.3)',
-              shadowBlur: 6,
+              shadowBlur: 8,
               shadowOffsetY: 6
             },
             emphasis: {
-              areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
+              areaColor: 'rgba(152, 77, 137, 1)' // 鼠标移入高亮显颜色
             }
           },
           label: {

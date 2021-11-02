@@ -79,9 +79,6 @@
     <div class="bg-img bg-circle" />
 
     <!-- gif -->
-    <!-- <video class="bg-img bg-circle" autoplay muted loop>
-      <source src="~@/assets/images/statistic/bg_circle.mp4" type="video/mp4">
-    </video> -->
     <img class="bg-img angle-bottom-left" src="~@/assets/images/statistic/angle_bottom_left.webp" />
     <img class="bg-img angle-bottom-right" src="~@/assets/images/statistic/angle_bottom_right.webp" />
     <img class="bg-img angle-top-left" src="~@/assets/images/statistic/angle_top_left.webp" />
@@ -255,7 +252,7 @@ export default {
 .g-statistic {
   $width: 96rem;
   $width_left: 27.4rem;
-  $width_right: 26.8rem;
+  $width_right: 26.4rem;
 
   //base
   position: relative;
@@ -371,14 +368,14 @@ export default {
       z-index: 0;
     }
     &.bg-circle{
-      width: 100%;
-      height: 100%;
-      left: 0;
-      top: 0;
+      width: 36.975rem;
+      height: 36.95rem;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
       z-index: 1;
       background: url('~@/assets/images/statistic/bg_circle.png') no-repeat center center;
-      background-size: cover;
-      // object-fit: cover;
+      background-size: 36.975rem 36.95rem;
     }
     &.angle-bottom-left{
       width: 1.95rem;
