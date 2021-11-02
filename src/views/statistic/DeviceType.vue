@@ -85,7 +85,7 @@ export default {
           {
             name: '',
             type: 'pie',
-            radius: ['38%', '62%'],
+            radius: ['38%', '60%'],
             center: ['50%', '48%'],
             right: '26%',
             data: _this.dataList,
@@ -104,10 +104,7 @@ export default {
               }
             },
             labelLine: {
-              show: true,
-              maxSurfaceAngle: 80,
-              length: 10,
-              length2: 0
+              show: true
             },
             labelLayout: function (params) {
               const isLeft = params.labelRect.x < _this.chart.getWidth() / 2;
@@ -183,6 +180,11 @@ export default {
                 fontSize: setfontSize(11)
               }
             }
+          },
+          labelLine: {
+            maxSurfaceAngle: setfontSize(80),
+            length: setfontSize(10),
+            length2: 0
           }
         }]
       });
