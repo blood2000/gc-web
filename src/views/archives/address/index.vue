@@ -30,8 +30,10 @@
           :border="false"
           :stripe="true"
         >
-          <template #source="{ row }">
-            <span>{{ sourceConfig[row.source] }}</span>
+          <template #formattedAddress="{ row }">
+            <span>{{
+              row.province + row.city + row.district
+            }}</span>
           </template>
           <template #edit="{ row }">
             <el-button size="mini" type="text" @click="handleUpdate(row)">
@@ -70,7 +72,7 @@ export default {
   name: "company",
   components: {
     QueryForm,
-       AddAddress
+    AddAddress,
   },
   data() {
     return {
@@ -183,4 +185,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 </style>

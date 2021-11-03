@@ -200,6 +200,7 @@
           </el-form-item>
         </el-col>
       </el-row>
+
       <el-row>
         <el-col :span="16" v-if="isDriverDateValid">
           <el-form-item label="驾驶证有效期:" prop="driverDateRange">
@@ -421,7 +422,7 @@ export default {
       if (res.code != "200") return;
       const msgData = res.data;
       console.log("msgData", msgData);
-      if(!msgData) return
+      if (!msgData) return;
       if (msgData.type != "2") {
         console.log("0000000");
         me.$confirm(`${msgData.value}`, "系统提示", {
@@ -434,8 +435,11 @@ export default {
           // } else {
           //   me.form.identificationNumber = null;
           // }
-          this.reset()
-        });
+          this.reset();
+        }).catch(()=>{
+          console.log('xxxxxxxxxxxx')
+          this.reset();
+        })
       } else {
         me.$confirm(`${msgData.value}`, "系统提示", {
           confirmButtonText: "确认",
@@ -454,7 +458,7 @@ export default {
             http_request(bindObj).then((rsp) => {
               console.log("111111", rsp);
               me.reset();
-                    this.isDetail = false;
+              this.isDetail = false;
 
               me.$emit("colseDialog", "ok");
               me.msgSuccess("添加成功");
@@ -519,7 +523,9 @@ export default {
               console.log("updateRes", updateRes);
               this.$emit("colseDialog", "ok");
               this.loading = false;
-            });
+            }).catch(()=>{
+              this.loading = false;
+            })
           } else {
             console.log("添加请求");
             const obj = {
@@ -532,7 +538,9 @@ export default {
               console.log("addRes", addRes);
               this.$emit("colseDialog", "ok");
               this.loading = false;
-            });
+            }).catch(()=>{
+              this.loading = false;
+            })
           }
         }
       });
@@ -546,8 +554,8 @@ export default {
     //关闭
     cancel() {
       this.reset();
-            this.isDetail = false;
-
+      this.isDetail = false;
+      this.isDriverDateValid = true;
       this.$emit("colseDialog", "no");
     },
     reset(orgCode = null) {
@@ -599,18 +607,18 @@ export default {
       }
       const res = await http_request(obj);
       console.log("ocr请求", res);
-      if(res.data&&res.data.error_msg){
-        this.msgError('该照片非身份证类型，请重新上传')
-        if(type === 0 ){
-            if(side ==="front" ){
-              this.identificationImage = null
-            }else{
-              this.identificationBackImage = null
-            }
-        }else{
-          this.driverLicenseImage = null
+      if (res.data && res.data.error_msg) {
+        this.msgError("该照片非身份证类型，请重新上传");
+        if (type === 0) {
+          if (side === "front") {
+            this.identificationImage = null;
+          } else {
+            this.identificationBackImage = null;
+          }
+        } else {
+          this.driverLicenseImage = null;
         }
-        return
+        return;
       }
       this.ocrDataToForm(res.data.result, type);
     },
@@ -658,13 +666,20 @@ export default {
         ], //身份证有效期
         driverLicenseImage: data.driverLicenseInf.driverLicenseImage, //驾驶证
         driverDateRange: [
-          data.driverLicenseInf.validPeriodTo || "",
           data.driverLicenseInf.validPeriodFrom || "",
+          data.driverLicenseInf.validPeriodTo || "",
         ], //驾驶证有效期
         driverLicense: data.driverLicenseInf.driverLicense,
         issuingOrganizations: data.driverLicenseInf.issuingOrganizations, //发证机关
         remark: data.remark, //备注
       };
+      console.log(
+        "data.driverLicenseInf.validPeriodTo",
+        data.driverLicenseInf.validPeriodTo
+      );
+      if (data.driverLicenseInf.validPeriodTo === "长期") {
+        this.isDriverDateValid = false;
+      }
     },
     FormToUpdate() {
       const form = this.form;

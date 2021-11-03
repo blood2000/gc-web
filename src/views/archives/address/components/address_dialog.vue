@@ -576,4 +576,14 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.option-item {
+  display: flex;
+}
+.option-item .option-item_name {
+  margin-right: 10px;
+}
+.option-item .option-item_address {
+  font-size: 12px;
+  color: #ccc;
+}
 </style>

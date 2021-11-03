@@ -132,7 +132,7 @@ export const tableColumnsConfig = [
     {
         isShow: true,
         label: "修改时间",
-        prop: "remark",
+        prop: "updateTime",
         sortNum: 9,
         tooltip: true,
         width:200

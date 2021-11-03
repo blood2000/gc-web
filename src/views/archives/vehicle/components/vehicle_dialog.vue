@@ -10,7 +10,7 @@
     <template slot="title">
       <span class="dialog-header-title">{{ title }}</span>
       <el-tag
-        v-if="open && options && options.editType == 'update'"
+        v-if="open && options && options.editType == 'update'&&this.authStatusValue"
         :type="selectTipColor()"
         >{{ selectTipText() }}</el-tag
       >
@@ -382,6 +382,9 @@ export default {
       loading: false,
       code: null,
       id: null,
+      authInf: null,
+      authStatusValue: null,
+      authStatus: null,
       form: {
         //行驶证信息
         vehicleLicenseImg: null, //行驶证照
@@ -507,22 +510,25 @@ export default {
   },
   methods: {
     selectTipColor() {
-      if (!this.options) return "";
-      return this.options && this.options.authStatusValue == "未认证"
-        ? "info"
-        : this.options.authStatusValue == "认证中"
-        ? ""
-        : this.options.authStatusValue == "认证失败"
-        ? "danger"
-        : "success";
+      // if (!this.options) return "";
+      // console.log('this.options',this.options)
+      // return this.options && this.options.authStatusValue == "未认证"
+      //   ? "info"
+      //   : this.options.authStatusValue == "认证中"
+      //   ? ""
+      //   : this.options.authStatusValue == "认证失败"
+      //   ? "danger"
+      //   : "success";
+      const objColor = {
+        0: "info",
+        1: "info",
+        2: "danger",
+        3: "success",
+      };
+      return objColor[this.authStatus];
     },
     selectTipText() {
-      if (!this.options) return "";
-      return this.options && this.options.authStatusValue == "未认证"
-        ? "未认证:该车辆证件信息认证中，相关证件信息不允许修改！"
-        : this.options.authStatusValue == "认证失败"
-        ? "认证失败:该车辆证件信息认证失败，请重新完善相关证件信息！"
-        : "已认证: 该车辆证件信息已认证，相关证件信息不允许修改！";
+      return `${this.authStatusValue}:${ this.authInf}`;
     },
     disabledDealLicenseNumber() {
       if (this.options && this.options.editType == "update") return true;
@@ -652,32 +658,30 @@ export default {
         this.$refs.form.validateField("orgCode");
       });
     },
-    treeselectchange(e){
-      console.log('树e',e)
-      if(this.options.editType == 'update'){
-        console.log('deptOptions',this.deptOptions)
+    treeselectchange(e) {
+      console.log("树e", e);
+      if (this.options.editType == "update") {
+        console.log("deptOptions", this.deptOptions);
         const result = {
-          result:null
-        }
-        this.recursionorgTree(this.deptOptions,e,result)
-        console.log('result',result)
-        if(!result.result){
-          this.form.orgCode = null
+          result: null,
+        };
+        this.recursionorgTree(this.deptOptions, e, result);
+        console.log("result", result);
+        if (!result.result) {
+          this.form.orgCode = null;
         }
       }
     },
-    recursionorgTree(data,e, result) {
+    recursionorgTree(data, e, result) {
       const me = this;
       for (const el of data) {
         console.log(el);
-        if (
-          el.code == e
-        ) {
-          result.result = el.orgName
-          break
+        if (el.code == e) {
+          result.result = el.orgName;
+          break;
         } else {
           if (el.childrenOrgList) {
-            me.recursionorgTree(el.childrenOrgList, e,result);
+            me.recursionorgTree(el.childrenOrgList, e, result);
           }
         }
       }
@@ -779,6 +783,9 @@ export default {
         defaultDriverCode: null,
       };
       this.resetForm("form");
+      this.authInf = null;
+      this.authStatusValue = null;
+      this.authStatus = null;
     },
     //选择照片
     chooseImgBack(e) {
@@ -873,6 +880,13 @@ export default {
       // this.form.deviceNumber = data.deviceNumber; //绑定设备的编号
       // this.form.remark = data.remark; //备注
       this.form.defaultDriverCode = data.defaultDriverCode;
+
+      // other
+      if (this.options.editType == "update" && this.open) {
+        this.authInf = data.authInf;
+        this.authStatusValue = data.authStatusValue;
+        this.authStatus = data.authStatus;
+      }
     },
     //表单给提交修改数据
     getFormToUpdateData() {

@@ -90,11 +90,18 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="详细地址:" prop="loadDetail">
-                <el-input
-                  v-model="pageData.loadDetail"
-                  clearable
-                  style="width: 220px"
-                />
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  :content="pageData.loadDetail"
+                  placement="top"
+                >
+                  <el-input
+                    v-model="pageData.loadDetail"
+                    clearable
+                    style="width: 220px"
+                  />
+                </el-tooltip>
               </el-form-item>
             </el-col>
           </el-row>
@@ -143,11 +150,18 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="详细地址:" prop="unloadDetail">
-                <el-input
-                  v-model="pageData.unloadDetail"
-                  clearable
-                  style="width: 220px"
-                />
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  :content="pageData.unloadDetail"
+                  placement="top"
+                >
+                  <el-input
+                    v-model="pageData.unloadDetail"
+                    clearable
+                    style="width: 220px"
+                  />
+                </el-tooltip>
               </el-form-item>
             </el-col>
           </el-row>
@@ -627,13 +641,14 @@ export default {
     },
     //详情绑定页面数据填写
     DetailToPageData(data) {
-      console.log('DetailToPageData data',data)
+      console.log("DetailToPageData data", data);
       this.pageData = {
         companyName: data.companyName,
         shipmentName: data.shipmentName,
         shipmentPhone: data.shipmentPhone,
         goodsTypeName: data.goodsTypeName,
-        freightStr: data.orderGoodses&&data.orderGoodses[0].freightStr ||null,
+        freightStr:
+          (data.orderGoodses && data.orderGoodses[0].freightStr) || null,
         loadAddress: `${data.orderAddress.loadProvince}${data.orderAddress.loadCity}${data.orderAddress.loadDistrict}`,
         loadDetail: data.orderAddress.loadDetail,
         loadAlias: data.orderAddress.loadAlias,

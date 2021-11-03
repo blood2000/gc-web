@@ -166,6 +166,7 @@ export default {
     //获取级联形式大类小类
     async getGoodsTypeList() {
       const resBig = await this.getDicts(null, this.goodsBigTypeConfig);
+      console.log('resBig',resBig)
       if (resBig.code != "200") return;
       const bigList = resBig.data;
       const result = [];
@@ -177,10 +178,11 @@ export default {
           bigObj.children = [];
           this.goodsTypeConfig.dictPid = item.dictCode;
           const res = await this.getDicts(null, this.goodsTypeConfig);
+          console.log('ressmall',res)
           if (res.code != "200") return;
           for (const el of res.data) {
             const obj = {};
-            obj.value = el.dictCode;
+            obj.value = el.dictValue;
             obj.label = el.dictLabel;
             bigObj.children.push(obj);
           }
@@ -238,7 +240,6 @@ export default {
     // 表单到分页请求参数
     formToPaging() {
       const tmp = { ...this.queryParams };
-      console.log("tmp", tmp);
       if (tmp.dispatchOrderStatus != null) {
         const statusList = [];
         console.log("tmp.dispatchOrderStatus", tmp.dispatchOrderStatus);

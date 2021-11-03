@@ -798,7 +798,7 @@ export default {
       });
       console.log("commodity ==>", commodity);
       if (commodity.length == 0) return;
-      this.queryParams.shipmentName = commodity[0].shipmentName;
+      this.queryParams.shipmentName = commodity[0].contactName;
       this.queryParams.shipmentPhone = commodity[0].contactPhone;
     },
     //货物大类选择

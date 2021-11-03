@@ -167,7 +167,7 @@
       </el-form>
       <div slot="footer">
         <el-button @click="colse"> 取消</el-button>
-        <el-button type="primary" @click="submitForm">确定</el-button>
+        <el-button type="primary" :loading="loading" @click="submitForm">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -180,6 +180,7 @@ export default {
   name: "DispathcVehicle",
   data() {
     return {
+      loading:false,
       vehicleList: [],
       oldkey: [],
       driverList: [],
@@ -392,6 +393,7 @@ export default {
     submitForm() {
       console.log("提交表单", this.carForm);
       const me = this;
+      me.loading = true
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
           const obj = {
@@ -403,11 +405,15 @@ export default {
           http_request(obj).then((res) => {
             if (res.code == 200) {
               this.$router.push("/dispatch/order");
+               me.loading = false
               this.$store.commit("set_isFresh", true);
               this.colse();
             }
-          });
+          }).catch(()=>{
+            me.loading = false
+          })
         } else {
+            me.loading = false
           return false;
         }
       });
