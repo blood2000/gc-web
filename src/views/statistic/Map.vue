@@ -80,12 +80,12 @@ export default {
           zoom: 1.05,
           z: 9,
           aspectScale: 0.8,
-          layoutCenter: ['48%', '48%'],
+          layoutCenter: ['48%', '44%'],
           layoutSize: '81%',
           itemStyle: {
             normal: {
-              borderColor: 'rgba(172, 90, 155, 0.65)',
-              areaColor: 'rgba(114, 35, 98, 0.65)'
+              borderColor: 'rgba(151, 56, 135, 1)',
+              areaColor: 'rgba(74, 15, 52, 1)'
             },
             emphasis: {
               areaColor: 'rgba(114, 35, 98, 1)' // 鼠标移入高亮显颜色
@@ -118,15 +118,15 @@ export default {
           zoom: 1.05,
           z: 8,
           aspectScale: 0.8,
-          layoutCenter: ['48%', '48.3%'],
+          layoutCenter: ['48%', '44.3%'],
           layoutSize: '81%',
           itemStyle: {
             normal: {
               borderColor: 'rgba(172, 90, 155, 0)',
-              areaColor: 'rgba(132, 45, 120, 1)'
+              areaColor: '#852f75'
             },
             emphasis: {
-              areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
+              areaColor: '#852f75' // 鼠标移入高亮显颜色
             }
           },
           label: {
@@ -153,15 +153,15 @@ export default {
           zoom: 1.05,
           z: 8,
           aspectScale: 0.8,
-          layoutCenter: ['48%', '48.6%'],
+          layoutCenter: ['48%', '44.6%'],
           layoutSize: '81%',
           itemStyle: {
             normal: {
               borderColor: 'rgba(172, 90, 155, 0)',
-              areaColor: 'rgba(132, 45, 120, 1)'
+              areaColor: '#852f75'
             },
             emphasis: {
-              areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
+              areaColor: '#852f75' // 鼠标移入高亮显颜色
             }
           },
           label: {
@@ -188,15 +188,15 @@ export default {
           zoom: 1.05,
           z: 8,
           aspectScale: 0.8,
-          layoutCenter: ['48%', '48.9%'],
+          layoutCenter: ['48%', '44.9%'],
           layoutSize: '81%',
           itemStyle: {
             normal: {
               borderColor: 'rgba(172, 90, 155, 0)',
-              areaColor: 'rgba(132, 45, 120, 1)'
+              areaColor: '#852f75'
             },
             emphasis: {
-              areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
+              areaColor: '#852f75' // 鼠标移入高亮显颜色
             }
           },
           label: {
@@ -223,15 +223,15 @@ export default {
           zoom: 1.05,
           z: 8,
           aspectScale: 0.8,
-          layoutCenter: ['48%', '49.2%'],
+          layoutCenter: ['48%', '45.2%'],
           layoutSize: '81%',
           itemStyle: {
             normal: {
               borderColor: 'rgba(172, 90, 155, 0)',
-              areaColor: 'rgba(132, 45, 120, 1)'
+              areaColor: '#852f75'
             },
             emphasis: {
-              areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
+              areaColor: '#852f75' // 鼠标移入高亮显颜色
             }
           },
           label: {
@@ -258,53 +258,18 @@ export default {
           zoom: 1.05,
           z: 8,
           aspectScale: 0.8,
-          layoutCenter: ['48%', '49.5%'],
+          layoutCenter: ['48%', '45.5%'],
           layoutSize: '81%',
           itemStyle: {
             normal: {
               borderColor: 'rgba(172, 90, 155, 0)',
-              areaColor: 'rgba(132, 45, 120, 1)'
-            },
-            emphasis: {
-              areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
-            }
-          },
-          label: {
-            emphasis: {
-              show: false
-            }
-          },
-          regions: [
-            {
-              name: "南海诸岛",
-              value: 0,
-              itemStyle: {
-                normal: {
-                  opacity: 0,
-                  label: {
-                    show: false
-                  }
-                }
-              }
-            }
-          ]
-        },{
-          map: 'china',
-          zoom: 1.05,
-          z: 8,
-          aspectScale: 0.8,
-          layoutCenter: ['48%', '49.8%'],
-          layoutSize: '81%',
-          itemStyle: {
-            normal: {
-              borderColor: 'rgba(172, 90, 155, 0)',
-              areaColor: 'rgba(132, 45, 120, 1)',
+              areaColor: '#852f75',
               shadowColor: 'rgba(0, 0, 0, 0.3)',
-              shadowBlur: 6,
+              shadowBlur: 8,
               shadowOffsetY: 6
             },
             emphasis: {
-              areaColor: 'rgba(132, 45, 120, 1)' // 鼠标移入高亮显颜色
+              areaColor: '#852f75' // 鼠标移入高亮显颜色
             }
           },
           label: {
@@ -336,41 +301,57 @@ export default {
           //   return val[2] / 200;
           // },
           itemStyle: {
-            color: 'rgba(168, 6, 138, 1)'
+            color: function (val) {
+              const { data } = val;
+              if (data[2] <= 100) {
+                return 'rgba(255, 0, 138, 0.4)'
+              }
+              if (data[2] > 100 && data[2] <= 500) {
+                return 'rgba(255, 0, 138, 0.6)'
+              }
+              if (data[2] > 500 && data[2] <= 1000) {
+                return 'rgba(255, 0, 138, 0.8)'
+              }
+              if (data[2] > 1000) {
+                return 'rgba(255, 0, 138, 1)'
+              }
+            }
           },
           encode: {
             value: 2
           },
           z: 10
-        },{
-          name: 'effectScatter',
-          type: 'effectScatter',
-          coordinateSystem: 'geo',
-          // data: _this.heatmapData
-          //   .sort(function (a, b) {
-          //     return b[2] - a[2];
-          //   })
-          //   .slice(0, 6),
-          data: _this.heatmapData
-            .filter(el => {
-              return el[2] > 5000;
-            }),
-          encode: {
-            value: 2
-          },
-          showEffectOn: 'render',
-          rippleEffect: {
-            brushType: 'stroke'
-          },
-          itemStyle: {
-            color: '#ffc001',
-            shadowColor: 'rgba(130, 7, 109, 0.5)'
-          },
-          emphasis: {
-            scale: true
-          },
-          zlevel: 1
-        }]
+        },
+        // {
+        //   name: 'effectScatter',
+        //   type: 'effectScatter',
+        //   coordinateSystem: 'geo',
+        //   // data: _this.heatmapData
+        //   //   .sort(function (a, b) {
+        //   //     return b[2] - a[2];
+        //   //   })
+        //   //   .slice(0, 6),
+        //   data: _this.heatmapData
+        //     .filter(el => {
+        //       return el[2] > 5000;
+        //     }),
+        //   encode: {
+        //     value: 2
+        //   },
+        //   showEffectOn: 'render',
+        //   rippleEffect: {
+        //     brushType: 'stroke'
+        //   },
+        //   itemStyle: {
+        //     color: '#ffc001',
+        //     shadowColor: 'rgba(130, 7, 109, 0.5)'
+        //   },
+        //   emphasis: {
+        //     scale: true
+        //   },
+        //   zlevel: 1
+        // }
+        ]
       });
     },
     setFontOption() {
@@ -384,7 +365,7 @@ export default {
         }],
         series: [{
           symbolSize: function (val) {
-            return setfontSize(10) + val[2]/1000;
+            return setfontSize(6);
           }
         },{
           symbolSize: function (val) {
@@ -508,6 +489,7 @@ export default {
       background: url('~@/assets/images/statistic/gs_l_2.png') no-repeat;
     }
     &.alarm3{
+      transform: translateX(-20%);
       background: url('~@/assets/images/statistic/gs_l_3.png') no-repeat;
     }
   }

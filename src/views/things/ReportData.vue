@@ -30,23 +30,43 @@ export default {
   },
   methods: {
     getData() {
-      const obj = {
-        moduleName: "http_statistic",
-        method: "get",
-        url_alias: "deviceTypeAccounted"
-      };
-      http_request(obj).then((res) => {
-        if (res.data && res.data.length > 0) {
-          this.dataList = res.data.map(el => {
-            el.value = el.count;
-            return el;
-          })
-        } else {
-          this.dataList = [];
-        }
-        this.$nextTick(() => {
-          this.initChart();
-        });
+      // 总2040
+      this.dataList = [{
+        value: 417,
+        name: "告警数据",
+        percentage: "20.4%"
+      }, {
+        value: 386,
+        name: "定位数据",
+        percentage: "18.9%"
+      }, {
+        value: 433,
+        name: "状态数据",
+        percentage: "21.2%"
+      }, {
+        value: 397,
+        name: "指令数据",
+        percentage: "19.5%"
+      }, {
+        value: 407,
+        name: "轨迹数据",
+        percentage: "20%"
+      }];
+      this.$nextTick(() => {
+        this.initChart();
+      });
+    },
+    refreshData() {
+      let total = 0;
+      this.dataList.forEach(el => {
+        el.value += Math.round(Math.random()*10);
+        total += el.value;
+      })
+      this.dataList.forEach(el => {
+        el.percentage = ((el.value / total) * 100).toFixed(1) + '%';
+      })
+      this.$nextTick(() => {
+        this.initChart();
       });
     },
     initChart() {
@@ -63,11 +83,7 @@ export default {
       const _this = this;
       this.chart.setOption({
         legend: {
-          show: true,
-          orient: 'vertical',
-          textStyle: {
-            color: '#FCF8FF'
-          }
+          show: false
         },
         tooltip: {
           trigger: 'item',
@@ -85,9 +101,8 @@ export default {
           {
             name: '',
             type: 'pie',
-            radius: ['38%', '60%'],
+            radius: ['30%', '50%'],
             center: ['50%', '48%'],
-            right: '26%',
             data: _this.dataList,
             // 标示线
             label: {
@@ -95,7 +110,7 @@ export default {
               color: '#F2E9FA',
               alignTo: 'edge',
               formatter: function(obj) {
-                return ` ${obj.data.name}\n {percentage|数量：${obj.data.value}  占比：${obj.data.percentage}}`;
+                return ` ${obj.data.name}：${obj.data.value}\n {percentage|占比：${obj.data.percentage}}`;
               },
               rich: {
                 percentage: {
@@ -125,24 +140,38 @@ export default {
                   const colorList = [
                     new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                       offset: 0,
-                      color: 'rgba(218, 35, 73, 1)'
+                      color: 'rgba(137, 89, 227, 1)'
                     }, {
                       offset: 1,
-                      color: 'rgba(171, 58, 182, 1)'
+                      color: 'rgba(40, 178, 148, 1)'
                     }]),
                     new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                       offset: 0,
-                      color: 'rgba(55, 58, 216, 1)'
+                      color: 'rgba(40, 178, 148, 1)'
                     }, {
                       offset: 1,
-                      color: 'rgba(242, 58, 161, 1)'
+                      color: 'rgba(232, 75, 75, 1)'
                     }]),
-                    new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
                       offset: 0,
-                      color: 'rgba(55, 58, 216, 1)'
+                      color: 'rgba(232, 75, 75, 1)'
                     }, {
                       offset: 1,
-                      color: 'rgba(86, 58, 207, 1)'
+                      color: 'rgba(203, 142, 46, 1)'
+                    }]),
+                    new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+                      offset: 0,
+                      color: 'rgba(203, 142, 46, 1)'
+                    }, {
+                      offset: 1,
+                      color: 'rgba(71, 142, 241, 1)'
+                    }]),
+                    new echarts.graphic.LinearGradient(0, 0, 1, 0, [{
+                      offset: 0,
+                      color: 'rgba(71, 142, 241, 1)'
+                    }, {
+                      offset: 1,
+                      color: 'rgba(137, 89, 227, 1)'
                     }])
                   ];
                   return colorList[params.dataIndex];
@@ -155,15 +184,6 @@ export default {
     },
     setFontOption() {
       this.chart.setOption({
-        legend: {
-          itemWidth: setfontSize(8),
-          itemHeight: setfontSize(2),
-          itemGap: setfontSize(16),
-          right: setfontSize(10),
-          textStyle: {
-            fontSize: setfontSize(10)
-          }
-        },
         tooltip: {
           textStyle: {
             fontSize: setfontSize(12)
@@ -183,7 +203,7 @@ export default {
           },
           labelLine: {
             maxSurfaceAngle: setfontSize(80),
-            length: setfontSize(10),
+            length: setfontSize(20),
             length2: 0
           }
         }]

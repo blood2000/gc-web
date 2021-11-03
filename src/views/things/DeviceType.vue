@@ -30,23 +30,22 @@ export default {
   },
   methods: {
     getData() {
-      const obj = {
-        moduleName: "http_statistic",
-        method: "get",
-        url_alias: "deviceTypeAccounted"
-      };
-      http_request(obj).then((res) => {
-        if (res.data && res.data.length > 0) {
-          this.dataList = res.data.map(el => {
-            el.value = el.count;
-            return el;
-          })
-        } else {
-          this.dataList = [];
-        }
-        this.$nextTick(() => {
-          this.initChart();
-        });
+      // 总数572
+      this.dataList = [{
+        value: 162,
+        name: "行车记录仪T1普货版",
+        percentage: "28.3%"
+      }, {
+        value: 203,
+        name: "超好运小黑盒A2固线款",
+        percentage: "35.5%"
+      }, {
+        value: 207,
+        name: "超好运小黑盒A1便携款",
+        percentage: "36.2%"
+      }];
+      this.$nextTick(() => {
+        this.initChart();
       });
     },
     initChart() {
@@ -63,11 +62,7 @@ export default {
       const _this = this;
       this.chart.setOption({
         legend: {
-          show: true,
-          orient: 'vertical',
-          textStyle: {
-            color: '#FCF8FF'
-          }
+          show: false
         },
         tooltip: {
           trigger: 'item',
@@ -85,9 +80,8 @@ export default {
           {
             name: '',
             type: 'pie',
-            radius: ['38%', '60%'],
-            center: ['50%', '48%'],
-            right: '26%',
+            radius: ['40%', '70%'],
+            center: ['50%', '60%'],
             data: _this.dataList,
             // 标示线
             label: {
@@ -125,24 +119,24 @@ export default {
                   const colorList = [
                     new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                       offset: 0,
-                      color: 'rgba(218, 35, 73, 1)'
+                      color: 'rgba(40, 178, 148, 1)'
                     }, {
                       offset: 1,
-                      color: 'rgba(171, 58, 182, 1)'
+                      color: 'rgba(71, 142, 241, 1)'
                     }]),
                     new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                       offset: 0,
-                      color: 'rgba(55, 58, 216, 1)'
+                      color: 'rgba(71, 142, 241, 1)'
                     }, {
                       offset: 1,
-                      color: 'rgba(242, 58, 161, 1)'
+                      color: 'rgba(137, 89, 227, 1)'
                     }]),
                     new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                       offset: 0,
-                      color: 'rgba(55, 58, 216, 1)'
+                      color: 'rgba(40, 178, 148, 1)'
                     }, {
                       offset: 1,
-                      color: 'rgba(86, 58, 207, 1)'
+                      color: 'rgba(137, 89, 227, 1)'
                     }])
                   ];
                   return colorList[params.dataIndex];
@@ -155,15 +149,6 @@ export default {
     },
     setFontOption() {
       this.chart.setOption({
-        legend: {
-          itemWidth: setfontSize(8),
-          itemHeight: setfontSize(2),
-          itemGap: setfontSize(16),
-          right: setfontSize(10),
-          textStyle: {
-            fontSize: setfontSize(10)
-          }
-        },
         tooltip: {
           textStyle: {
             fontSize: setfontSize(12)
@@ -183,11 +168,40 @@ export default {
           },
           labelLine: {
             maxSurfaceAngle: setfontSize(80),
-            length: setfontSize(10),
+            length: setfontSize(20),
             length2: 0
           }
         }]
       });
+    },
+    /** 
+     * 线性渐变起止方向的计算方法
+     * @param {*} startArc 开始角度
+     * @param {*} endArc 结束角度
+     * @returns 四个坐标 x,y,x2,y2 
+     */
+    getCoordinates(startArc, endArc) {
+      const posi = [Math.sin(startArc),-Math.cos(startArc),Math.sin(endArc),-Math.cos(endArc)];
+      const dx = posi[2] - posi[0];
+      const dy = posi[3] - posi[1];
+      return this.getLocation(dx, dy);
+    },
+    getLocation(dx, dy) {
+      const tanV = dx / dy;
+      const directSign = Math.abs(tanV) < 1;
+      const t = directSign ? tanV : 1 / tanV;
+      const sign1 = t > 0 ? 1 : -1;
+      const sign2 = dx > 0 ? 1 : -1;
+      const sign = directSign ? sign1 * sign2 : sign2;
+      const group1 = [ 0.5 - sign * t / 2, 0.5 + sign * t / 2];
+      const group2 = sign > 0 ? [0, 1] : [1, 0];
+      const group = [...group1, ...group2];
+      const keys = directSign ? ['x', 'x2', 'y', 'y2'] : ['y', 'y2', 'x', 'x2' ];
+      let res = {};
+      keys.forEach((k, idx) => {
+        res[k] = group[idx];
+      })
+      return res;
     }
   }
 }
