@@ -103,8 +103,8 @@ export default {
         city: null, //开户行城市
       },
       rules: {
-        name:[
-              { required: true, message: "姓名不能为空", trigger: "blur" },
+        name: [
+          { required: true, message: "姓名不能为空", trigger: "blur" },
           { validator: formValidate.name, trigger: "blur" },
         ],
         account: [
@@ -172,35 +172,43 @@ export default {
       });
     },
     cancel() {
-      this.reset()
+      this.reset();
       this.$emit("colseDialog", "no");
     },
-    reset(){
-      this.form.account = null
-      this.form.bankCode = null
-      this.form.bankName = null
-      this.form.mobile = null
-      this.form.name = null
-      this.form.province = null
-      this.form.city = null
-      this.uploadImage = null
-
+    reset() {
+      this.form.account = null;
+      this.form.bankCode = null;
+      this.form.bankName = null;
+      this.form.mobile = null;
+      this.form.name = null;
+      this.form.province = null;
+      this.form.city = null;
+      this.uploadImage = null;
     },
     async submitForm() {
-      this.dealBankData();
-      console.log("this.form", this.form);
-      this.loading = true;
-      const obj = {
-        moduleName: "http_purse",
-        method: "post",
-        url_alias: "rel_car",
-        data: this.form,
-      };
-      const res = await http_request(obj);
-      console.log("res", res);
-      this.loading = false;
-      this.reset()
-      this.$emit("colseDialog", "ok");
+      this.$refs["form"].validate((valid) => {
+        if (valid) {
+          this.dealBankData();
+          console.log("this.form", this.form);
+          this.loading = true;
+          const obj = {
+            moduleName: "http_purse",
+            method: "post",
+            url_alias: "rel_car",
+            data: this.form,
+          };
+          const res = http_request(obj)
+            .then((res) => {
+              console.log("res", res);
+              this.loading = false;
+              this.reset();
+              this.$emit("colseDialog", "ok");
+            })
+            .catch(() => {
+              this.loading = false;
+            });
+        }
+      });
     },
     dealBankData() {
       const me = this;

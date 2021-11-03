@@ -31,19 +31,19 @@
       <img src="@/assets/images/monitor-line.png" alt="" />
     </div>
     <div class="monitor-card-content">
-      <img src="@/assets/images/tmpImage/monitor-tmp.png" alt="" />
+      <img :src="dealBigImage" alt="" />
       <div class="monitor-card-content-right">
         <div class="monitor-card-content-right-title">
           <div class="monitor-card-content-right-title-warn">
             <img
-              src="../../../../assets/images/detail/warn_lelve_3.png"
+              :src="levelDeal('img')"
               alt=""
             />
-            <span>一级告警</span>
+            <span>{{ levelDeal("text") }}</span>
           </div>
           <div class="monitor-card-content-right-title-anomaly">
-            <img src="../../../../assets/images/detail/fms-yczd.png" alt="" />
-            <span>异常震动</span>
+            <img :src="dealAlarmImg()" alt="" />
+            <span>{{data.alarm_type}}</span>
           </div>
         </div>
         <div class="monitor-card-content-right-address">
@@ -69,7 +69,7 @@
   </div>
 </template>
 <script>
-import { tableColumnsConfig, vehicleStatusList } from "../config";
+import { tableColumnsConfig, vehicleStatusList ,warningLevelObj} from "../config";
 
 export default {
   name: "itemCard",
@@ -87,6 +87,11 @@ export default {
     },
   },
   computed:{
+    //返回大图
+    dealBigImage(){
+     return "http://static.zjz1.net/device/model/A1/A1-{tag}.png".replace(/\{tag\}/g, "icon");
+     //http://static.zjz1.net/device/model/A1/A1-icon.png
+    },
           //处理车辆状态
     dealVehicleStatus() {
       let result = "";
@@ -108,11 +113,40 @@ export default {
       console.log('result',result)
       return result;
     },
+    
   },
   mounted() {
     console.log("卡片数据", this.data);
   },
   methods: {
+    // 处理异常图片
+     dealAlarmImg(){
+      if(!this.data.key) return ''
+      console.log('this.detail.key',this.data)
+      return require(`@/assets/images/detail/${this.data.key}.png`)
+    },
+    // 处理危险等级显示
+     levelDeal(type) {
+      const obj = {
+        text: () => {
+          if (!this.data.alarm_level) return "-";
+          console.log(
+            "text",
+            warningConfig.warningLevelObj[this.data.alarm_level][type]
+          );
+          return warningConfig.warningLevelObj[this.data.alarm_level].text;
+        },
+        img: () => {
+          if (!this.data.alarm_level) return "";
+          console.log(
+            "warningConfig.warningLevelObj[this.data.alarm_level].img",
+            warningConfig.warningLevelObj[this.data.alarm_level]
+          );
+          return warningConfig.warningLevelObj[this.data.alarm_level].img;
+        },
+      };
+      return obj[type]();
+    },
     // 点开菜单
     handleMenuItem() {
       this.open = true;

@@ -504,7 +504,8 @@ export default {
           return http_request(checkTmp);
         })
         .then((el) => {
-          this.$confirm(el.data.msg, "警告", {
+          if(el.data.type === 0){
+   this.$confirm(el.data.msg, "警告", {
             confirmButtonText: "确定",
             cancelButtonText: "取消",
             type: "warning",
@@ -525,6 +526,23 @@ export default {
               this.searchQuery();
             });
           });
+          }else{
+               //删除
+            const tmp = {
+              moduleName: "http_vehicle",
+              method: "post",
+              url_alias: "vehicle_del",
+              data: { list: ids },
+            };
+               http_request(tmp).then((res) => {
+              console.log("看看数据", res);
+              if (res && res.code == "200") {
+                this.msgSuccess("删除成功");
+              }
+              this.searchQuery();
+            });
+          }
+       
         });
 
       // //删除

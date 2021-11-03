@@ -55,7 +55,7 @@
         <div>剩余{{ total }}台未绑定设备</div>
         <el-input
           style="margin-bottom: 10px"
-          placeholder="请输入内容"
+          placeholder="请输入设备的序列号"
           @input="flterDevice"
           v-model="searchValue"
         >
@@ -63,6 +63,7 @@
         </el-input>
         <div class="device-content-content-box">
           <el-row
+          v-show="unList.length > 0"
             class="device-content-header"
             v-for="item in unList"
             :key="item.sn + item.device_code"
@@ -92,6 +93,10 @@
               </div>
             </el-col>
           </el-row>
+          <div  v-show="unList.length === 0">
+            <el-empty description="暂无数据"></el-empty>
+
+          </div>
         </div>
       </div>
     </div>

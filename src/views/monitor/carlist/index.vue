@@ -108,7 +108,7 @@
 </template>
 <script>
 import { http_request } from "../../../api";
-import { tableColumnsConfig, vehicleStatusList } from "./config";
+import { tableColumnsConfig, vehicleStatusList , warningLevelObj } from "./config";
 import QueryForm from "./components/queryForm.vue";
 import Detail from "../../dispatch/manage/detail.vue";
 import ItemCard from './components/itemCard.vue'

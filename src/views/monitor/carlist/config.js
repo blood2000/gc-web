@@ -106,3 +106,10 @@ export const vehicleStatusList = [
         color:'#F4A460'
     }
 ]
+
+export const warningLevelObj =
+{
+  0: { text: "一级告警", img: require('@/assets/images/detail/warn_lelve_1.png') },
+  1: { text: "二级告警", img: require('@/assets/images/detail/warn_lelve_2.png') },
+  2: { text: "三级告警", img: require('@/assets/images/detail/warn_lelve_3.png') }
+};

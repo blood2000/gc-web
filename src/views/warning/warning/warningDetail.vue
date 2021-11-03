@@ -113,6 +113,7 @@ export default {
   methods: {
     dealAlarmImg(){
       if(!this.detail.key) return ''
+      console.log('this.detail.key',this.detail)
       return require(`@/assets/images/detail/${this.detail.key}.png`)
     },
     levelDeal(type) {

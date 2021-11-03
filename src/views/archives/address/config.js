@@ -2,9 +2,10 @@ export const tableColumnsConfig = [
     {
         isShow: true,
         label: "地址",
-        prop: "addressName",
+        prop: "formattedAddress",
         sortNum: 1,
         tooltip: true,
+        width:120
     },
     {
         isShow: true,
