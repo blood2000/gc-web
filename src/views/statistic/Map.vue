@@ -109,7 +109,7 @@ export default {
           layoutSize: '81%',
           itemStyle: {
             normal: {
-              borderColor: 'rgba(151, 56, 135, 1)',
+              borderColor: '#81206e',
               areaColor: 'rgba(74, 15, 52, 1)'
             },
             emphasis: {
