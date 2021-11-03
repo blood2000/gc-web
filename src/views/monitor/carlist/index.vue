@@ -49,44 +49,6 @@
         <div class="page-table-layout-set-item" :key="index"  v-for="(item,index) in list">
         <ItemCard :data='item'/>
         </div>
-        <!-- <RefactorTable
-          is-show-index
-          :loading="loading"
-          :data="list"
-          row-key="id"
-          :table-columns-config="tableColumnsConfig"
-          :border="false"
-          :stripe="true"
-        >
-          <template #edit="{ row }">
-            <el-button
-              v-show="row.vehicle_status == 1"
-              size="mini"
-              type="text"
-              @click="lookCarOrder(row)"
-              >查看派车单</el-button
-            >
-            <el-button size="mini" type="text" @click="mapSearch(row)"
-              >地图查看</el-button
-            >
-            <el-button size="mini" type="text" @click="travelSeach(row)"
-              >轨迹查看</el-button
-            >
-            <el-button size="mini" type="text" @click="seeVideo(row)"
-              >视频监控</el-button
-            >
-          </template>
-        
-          <template #vehicle_status="{ row }">
-            <span>{{ dealVehicleStatus(row.vehicle_status) }}</span>
-          </template>
-          <template #model_name="{ row }">
-            <span>{{
-              row.model_name ? `${row.model_name}(${row.series_name})` : null
-            }}</span>
-          </template>
-        </RefactorTable> -->
-        <!-- 分页 -->
       </div>
       <pagination
         v-show="total > 0"
@@ -108,7 +70,6 @@
 </template>
 <script>
 import { http_request } from "../../../api";
-import { tableColumnsConfig, vehicleStatusList , warningLevelObj } from "./config";
 import QueryForm from "./components/queryForm.vue";
 import Detail from "../../dispatch/manage/detail.vue";
 import ItemCard from './components/itemCard.vue'
@@ -132,7 +93,6 @@ export default {
       },
       total: 0,
       list: [],
-      tableColumnsConfig,
       orgName: "", //组织查询
       defaultTreeProps: {
         children: "childrenOrgList",
@@ -239,7 +199,7 @@ export default {
         ) {
           this.getAddressBylnglat(el.attribute.coordinate.value).then((val) => {
             el.attribute = val;
-            console.log(val);
+            console.log('获取详情地址',val);
             this.list.push(el);
           });
         } else {

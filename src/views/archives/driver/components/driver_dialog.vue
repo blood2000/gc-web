@@ -523,7 +523,9 @@ export default {
               console.log("updateRes", updateRes);
               this.$emit("colseDialog", "ok");
               this.loading = false;
-            });
+            }).catch(()=>{
+              this.loading = false;
+            })
           } else {
             console.log("添加请求");
             const obj = {
@@ -536,7 +538,9 @@ export default {
               console.log("addRes", addRes);
               this.$emit("colseDialog", "ok");
               this.loading = false;
-            });
+            }).catch(()=>{
+              this.loading = false;
+            })
           }
         }
       });
