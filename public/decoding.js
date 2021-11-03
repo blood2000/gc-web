@@ -1,6 +1,7 @@
 
 (
-    function (f) { if (typeof exports === "object" && typeof module !== "undefined") { module.exports = f() } else if (typeof define === "function" && define.amd) { define([], f) } else { var g; if (typeof window !== "undefined") { g = window } else if (typeof global !== "undefined") { g = global } else if (typeof self !== "undefined") { g = self } else { g = this } g.Wfs = f() } })(function () {
+    function (f) { 
+        if (typeof exports === "object" && typeof module !== "undefined") { module.exports = f() } else if (typeof define === "function" && define.amd) { define([], f) } else { var g; if (typeof window !== "undefined") { g = window } else if (typeof global !== "undefined") { g = global } else if (typeof self !== "undefined") { g = self } else { g = this } g.Wfs = f() } })(function () {
         var define, module, exports; return (function () { function r(e, n, t) { function o(i, f) { if (!n[i]) { if (!e[i]) { var c = "function" == typeof require && require; if (!f && c) return c(i, !0); if (u) return u(i, !0); var a = new Error("Cannot find module '" + i + "'"); throw a.code = "MODULE_NOT_FOUND", a } var p = n[i] = { exports: {} }; e[i][0].call(p.exports, function (r) { var n = e[i][1][r]; return o(n || r) }, p, p.exports, r, e, n, t) } return n[i].exports } for (var u = "function" == typeof require && require, i = 0; i < t.length; i++)o(t[i]); return o } return r })()({
             1: [function (require, module, exports) {
                 function EventEmitter() {
@@ -570,8 +571,8 @@
                     }, {
                         key: 'onMediaAttached',
                         value: function onMediaAttached(data) {
-                            //console.log(data);
-                            //console.log(data.websocketName);
+                            console.log(data);
+                            console.log(data.websocketName);
                             if (data.websocketName != undefined) {
                                 console.log('onMediaAttached', data);
                                 var uri = 'ws://' + data.websocketName;
@@ -3517,7 +3518,7 @@
                  * WFS interface, Jeff Yang 2016.10
                  */
                 'use strict';
-
+                console.log('decoding 18')
                 Object.defineProperty(exports, "__esModule", {
                     value: true
                 });
@@ -3556,6 +3557,7 @@
                     _createClass(Wfs, null, [{
                         key: 'isSupported',
                         value: function isSupported() {
+                            console.log('isSupported')
                             return window.MediaSource && typeof window.MediaSource.isTypeSupported === 'function' && window.MediaSource.isTypeSupported('video/mp4; codecs="avc1.42c01f,mp4a.40.2"');
                         }
                     }, {
@@ -3567,11 +3569,13 @@
                     }, {
                         key: 'Events',
                         get: function get() {
+                            console.log('Events')
                             return _events2.default;
                         }
                     }, {
                         key: 'DefaultConfig',
                         get: function get() {
+                            console.log('DefaultConfig get')
                             if (!Wfs.defaultConfig) {
                                 Wfs.defaultConfig = {
                                     autoStartLoad: true,
@@ -3593,11 +3597,14 @@
                             return Wfs.defaultConfig;
                         },
                         set: function set(defaultConfig) {
+                            console.log('DefaultConfig set')
+
                             Wfs.defaultConfig = defaultConfig;
                         }
                     }]);
 
                     function Wfs() {
+                        console.log('wfssssss new class')
                         var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
                         _classCallCheck(this, Wfs);
@@ -3642,6 +3649,7 @@
                     _createClass(Wfs, [{
                         key: 'destroy',
                         value: function destroy() {
+                            console.log('destroy')
                             this.flowController.destroy();
                             this.bufferController.destroy();
                             //   this.fileLoader.destroy();
@@ -3650,7 +3658,7 @@
                     }, {
                         key: 'attachMedia',
                         value: function attachMedia(media) {
-                            console.log('media', media, arguments);
+                            console.log('attachMedia', media, arguments);
                             var channelName = arguments[1][0];
                             var mediaType = 'H264Raw';
                             var switchStream = false;
@@ -3666,6 +3674,7 @@
                             this.switchStream = switchStream;
                             this.player = player;
                             this.media = media;
+                            console.log('media', UserInfoGlobal);
                             this.trigger(_events2.default.MEDIA_ATTACHING, { media: media, channelName: channelName, mediaType: mediaType, websocketName: websocketName });
                         }
                     }, {
@@ -3687,3 +3696,4 @@
 
 
     var UserInfoGlobal = null
+    console.log('我在运行')

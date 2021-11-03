@@ -91,14 +91,18 @@ export const onlineStatusList = [
 // 0 空闲 1 任务中 2 维修 3 保养
 export const vehicleStatusList = [
     {
-        label: '空闲', value: '0'
+        label: '空闲', value: '0',
+        color:'#4682FA'
     }, {
-        label: '任务中', value: '1'
+        label: '任务中', value: '1',
+        color:'#43B91E'
     },
     {
-        label: '维修', value: '2'
+        label: '维修', value: '2',
+        color:'#FF8C00'
     },
     {
-        label: '保养', value: '3'
+        label: '保养', value: '3',
+        color:'#F4A460'
     }
 ]

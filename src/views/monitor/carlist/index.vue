@@ -158,22 +158,7 @@ export default {
     });
   },
   methods: {
-    async lookCarOrder(obj) {
-      console.log("obj", obj);
-      const tmp = {
-        moduleName: "http_dispatch",
-        method: "get",
-        url_alias: "CarOrderIng_ByVehicleCode",
-        url_code: [obj.vehicle_code],
-      };
-      const res = await http_request(tmp);
-      console.log("res", res);
-      if (res.data == null) return this.msgError("没有派车单");
-      this.currCode = res.data.appointCarOrderCode;
-      this.detailDrawer = true;
-
-      // this.$router.push("/dispatch/manage/detail?code=" + code);
-    },
+  
     /**
      * 通过经纬度获取详细点位信息
      * @param {Array} position 经纬度必传
@@ -195,38 +180,10 @@ export default {
       });
     },
 
-    //处理车辆状态
-    dealVehicleStatus(status) {
-      let result = "";
-      vehicleStatusList.forEach((element) => {
-        if (element.value == status) {
-          result = element.label;
-        }
-      });
-      return result;
-    },
-    // 查看地图
-    mapSearch(obj) {
-      console.log("obj", obj);
-      const vehicleCode = obj.vehicle_code;
-      const trackType = 1;
-      this.$router.push(
-        `/map/mapInfo?vehicleCode=${vehicleCode}&trackType=${trackType}`
-      );
-    },
-    // 轨迹查看
-    travelSeach(obj) {
-      console.log("obj", obj);
-      const vehicleCode = obj.vehicle_code;
-      const trackType = 3;
-      this.$router.push(
-        `/map/mapInfo?vehicleCode=${vehicleCode}&trackType=${trackType}`
-      );
-    },
-    // 视频查看
-    seeVideo(obj) {
-      console.log("我是视频查看 obj", obj);
-    },
+  
+
+ 
+  
     //获取组织树
     async getOrgHttp() {
       const obj = {
