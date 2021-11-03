@@ -3,7 +3,7 @@
     <div ref="map" class="map-box" />
     <div class="s-container__legend">
       <h5 class="ly-flex ly-flex-align-center">
-        <span>告警量</span>
+        <span>设备分布</span>
         <img src="~@/assets/images/statistic/pot_right.png" />
       </h5>
       <ul>
