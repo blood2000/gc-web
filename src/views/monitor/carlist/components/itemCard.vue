@@ -8,23 +8,23 @@
       </div>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item>
-          <span class="menu-item">查看派车单</span>
+          <span class="menu-item" @click="lookCarOrder">查看派车单</span>
         </el-dropdown-item>
         <el-dropdown-item>
-          <span class="menu-item">地图查看</span>
+          <span class="menu-item" @click="mapSearch">地图查看</span>
         </el-dropdown-item>
         <el-dropdown-item>
-          <span class="menu-item">轨迹查看</span>
+          <span class="menu-item" @click="travelSeach">轨迹查看</span>
         </el-dropdown-item>
         <el-dropdown-item>
-          <span class="menu-item">视频监控</span>
+          <span class="menu-item" @click="seeVideo">视频监控</span>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
-    <div class="monitor-card-title"><span>闽A54772</span></div>
+    <div class="monitor-card-title"><span>{{data.plate_number}}</span></div>
     <div class="monitor-card-location">
       <span>当前位置 |</span>
-      <span>东滨路1号富邦总部大楼大楼</span>
+      <span>{{data.attribute}}</span>
     </div>
     <div class="monitor-card-driver">
       <span>最新告警</span>
@@ -47,28 +47,30 @@
           </div>
         </div>
         <div class="monitor-card-content-right-address">
-          东滨路1号富邦总部大楼大楼大楼大楼大大楼大大楼大大楼大大楼大大楼大大楼大大楼大大楼大
+         {{data.alarm_address }}
         </div>
-        <div class="monitor-card-content-right-date">2021-10-16 16:26:56</div>
+        <div class="monitor-card-content-right-date">{{data.alarm_time}}  </div>
       </div>
     </div>
     <div class="monitor-card-footer">
       <div class="monitor-card-footer-left">
         <img src="../../../../assets/images/detail/monitor-phone.png" alt="" />
-        <span>超好运小黑盒便携款</span>
+        <span>{{data.model_name}}</span>
       </div>
       <div class="monitor-card-footer-middle">
         <img src="../../../../assets/images/detail/monitor-people.png" alt="" />
-        <span>小阳洋</span>
+        <span>{{data.driver_name}}</span>
       </div>
       <div class="monitor-card-footer-right">
-        <span style="font-size: 16px">• </span>
-        <span>任务中</span>
+        <span :style="{color:dealVehicleStatusColor}" style="font-size: 16px" v-show="dealVehicleStatus">• </span>
+        <span :style="{color:dealVehicleStatusColor}">{{dealVehicleStatus}}</span>
       </div>
     </div>
   </div>
 </template>
 <script>
+import { tableColumnsConfig, vehicleStatusList } from "../config";
+
 export default {
   name: "itemCard",
   data() {
@@ -76,9 +78,89 @@ export default {
       open: false,
     };
   },
+  props: {
+    data: {
+      type: Object,
+      default: () => {
+        return {};
+      },
+    },
+  },
+  computed:{
+          //处理车辆状态
+    dealVehicleStatus() {
+      let result = "";
+      vehicleStatusList.forEach((element) => {
+        if (element.value == this.data.vehicle_status) {
+          result = element.label;
+        }
+      });
+      return result;
+    },
+             //处理车辆状态颜色
+    dealVehicleStatusColor() {
+      let result = "";
+      vehicleStatusList.forEach((element) => {
+        if (element.value == this.data.vehicle_status) {
+          result = element.color;
+        }
+      });
+      console.log('result',result)
+      return result;
+    },
+  },
+  mounted() {
+    console.log("卡片数据", this.data);
+  },
   methods: {
+    // 点开菜单
     handleMenuItem() {
       this.open = true;
+    },
+
+    // 查看地图
+    mapSearch() {
+      console.log("this.data", this.data);
+      const vehicleCode = this.data.vehicle_code;
+      const trackType = 1;
+      this.$router.push(
+        `/map/mapInfo?vehicleCode=${vehicleCode}&trackType=${trackType}`
+      );
+    },
+    // 视频查看
+    seeVideo() {
+      console.log("我是视频查看 this.data", this.data);
+      const vehicleCode = this.data.vehicle_code;
+      const trackType = 4;
+      this.$router.push(  
+        `/map/mapInfo?vehicleCode=${vehicleCode}&trackType=${trackType}`
+      );
+    },
+    // 轨迹查看
+    travelSeach() {
+      console.log("this.data", this.data);
+      const vehicleCode = this.data.vehicle_code;
+      const trackType = 3;
+      this.$router.push(
+        `/map/mapInfo?vehicleCode=${vehicleCode}&trackType=${trackType}`
+      );
+    },
+    // 查看派车单
+    async lookCarOrder() {
+      console.log("this.data", this.data);
+      const tmp = {
+        moduleName: "http_dispatch",
+        method: "get",
+        url_alias: "CarOrderIng_ByVehicleCode",
+        url_code: [this.data.vehicle_code],
+      };
+      const res = await http_request(tmp);
+      console.log("res", res);
+      if (res.data == null) return this.msgError("没有派车单");
+      this.currCode = res.data.appointCarOrderCode;
+      this.detailDrawer = true;
+
+      // this.$router.push("/dispatch/manage/detail?code=" + code);
     },
   },
 };
@@ -230,6 +312,9 @@ export default {
     border-top: 1px solid #f3f4f5;
     display: flex;
     &-left {
+       text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
       width: 180px;
       padding: 10px 38px 12px 19px;
       border-right: 1px solid #f3f4f5;

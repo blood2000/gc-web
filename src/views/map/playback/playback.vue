@@ -98,28 +98,6 @@
         </div>
       </div>
     </div>
-
-    <!-- <div class="dialog-video" @click="isShow = false" v-if="isShow">
-      <div class="dialog-video-full" @click.stop="">
-        <div class="dialog-video-full-title">
-          {{ getTypes() }}
-        </div>
-        <video-player
-          class="video-player vjs-custom-skin"
-          ref="videoPlayer1"
-          name="videoPlayer1"
-          id="video1"
-          :playsinline="true"
-          :options="playerOptions"
-          @play="onPlayerPlay($event)"
-          @pause="onPlayerPause($event)"
-          @ended="onPlayerEnded($event)"
-          @statechanged="playerStateChanged($event)"
-          @canplaythrough="onPlayerCanplaythrough($event)"
-          @ready="playerReadied"
-        ></video-player>
-      </div>
-    </div> -->
   </div>
 </template>
 <script>
@@ -154,30 +132,6 @@ export default {
       },
       playTime: "",
       current: "",
-      playerOptions: {
-        playbackRates: [0.5, 1.0, 1.5, 2.0], // 可选的播放速度
-        autoplay: false, // 如果为true,浏览器准备好时开始回放。
-        muted: false, // 默认情况下将会消除任何音频。
-        loop: false, // 是否视频一结束就重新开始。
-        preload: "auto", // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
-        language: "zh-CN",
-        aspectRatio: "16:9", // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
-        fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
-        // sources: [
-        //   {
-        //     type: "video/mp4", // 类型
-        //     src: require("@/assets/mp4/【2048】202104271143janv2_2021429115831.mp4"), // url地址
-        //   },
-        // ],
-        poster: "../../../assets/images/RVC/video.png", // 封面地址
-        notSupportedMessage: "此视频暂无法播放，请稍后再试", // 允许覆盖Video.js无法播放媒体源时显示的默认信息。
-        controlBar: {
-          timeDivider: true, // 当前时间和持续时间的分隔符
-          durationDisplay: true, // 显示持续时间
-          remainingTimeDisplay: false, // 是否显示剩余时间功能
-          fullscreenToggle: true, // 是否显示全屏按钮
-        },
-      },
       videoUrl: {},
       isResult: false,
       wfs: null,
@@ -188,7 +142,6 @@ export default {
     };
   },
   mounted() {
-    // this.queryParams.dateRange = [1635580507000, 1635586507000];
     this.timeUpdate();
   },
   methods: {
@@ -233,7 +186,7 @@ export default {
     getDuration() {
       const refVideo = this.$refs.video;
       console.log("refVideo", refVideo);
-      this.totalTime = this.durationTrans(parseInt(refVideo.duration)); 
+      this.totalTime = this.durationTrans(parseInt(refVideo.duration));
       console.log("getDuration", this.totalTime);
     },
     // 查询结果
@@ -246,8 +199,6 @@ export default {
       if (!queryParams || queryParams.dateRange.length !== 2) return;
       const startTime = parseInt(queryParams.dateRange[0].getTime() / 1000);
       const endTime = parseInt(queryParams.dateRange[1].getTime() / 1000);
-      // const startTime = parseInt(queryParams.dateRange[0] / 1000);
-      // const endTime = parseInt(queryParams.dateRange[1] / 1000);
       this.OpenRecordingVideo(
         video,
         queryParams.VEHICLEID,
@@ -261,7 +212,7 @@ export default {
       this.isResult = true;
     },
     //打开录像
-    OpenRecordingVideo( 
+    OpenRecordingVideo(
       video,
       vehicleId,
       vehiclelicense,
@@ -302,79 +253,7 @@ export default {
         };
       video.poster = "../../../assets/images/RVC/timg.gif";
       this.wfs.attachMedia(video, [wfsObj, player, userInfo]);
-    },
-    // // 播放回调
-    // onPlayerPlay(player) {
-    //   console.log("player play!", player);
-    // },
-
-    // // 暂停回调
-    // onPlayerPause(player) {
-    //   console.log("player pause!", player);
-    // },
-
-    // // 视频播完回调
-    // onPlayerEnded($event) {
-    //   console.log(player);
-    // },
-    // // DOM元素上的readyState更改导致播放停止
-    // onPlayerWaiting(player) {
-    //   let time = localStorage.getItem("cacheTime");
-    //   if (player.cache_.currentTime - Number(time) > 0.1) {
-    //     this.current = Number(time);
-    //     this.playerReadied(player);
-    //   } else {
-    //     this.current = player.cache_.currentTime;
-    //   }
-    // },
-
-    // // 已开始播放回调
-    // onPlayerPlaying($event) {
-    //   // console.log(player)
-    // },
-
-    // // 当播放器在当前播放位置下载数据时触发
-    // onPlayerLoadeddata($event) {
-    //   // console.log(player)
-    // },
-
-    // // // 当前播放位置发生变化时触发。
-    // onPlayerTimeupdate(player) {
-    //   this.playTime = player.cache_.currentTime;
-    //   let playTime = player.cache_.currentTime;
-    //   setTimeout(function () {
-    //     localStorage.setItem("cacheTime", playTime);
-    //   }, 500);
-
-    //   let time = localStorage.getItem("cacheTime");
-    //   if (player.cache_.currentTime - Number(time) > 2) {
-    //     this.current = Number(time);
-    //     this.playerReadied(player);
-    //   } else {
-    //     this.current = player.cache_.currentTime;
-    //   }
-    // },
-
-    // //媒体的readyState为HAVE_FUTURE_DATA或更高
-    // onPlayerCanplay(player) {
-    //   // console.log('player Canplay!', player)
-    // },
-
-    // //媒体的readyState为HAVE_ENOUGH_DATA或更高。这意味着可以在不缓冲的情况下播放整个媒体文件。
-    // onPlayerCanplaythrough(player) {
-    //   // console.log('player Canplaythrough!', player)
-    // },
-
-    // //播放状态改变回调
-    // playerStateChanged(playerCurrentState) {
-    //   // console.log('player current update state', playerCurrentState)
-    // },
-
-    // //将侦听器绑定到组件的就绪状态。与事件监听器的不同之处在于，如果ready事件已经发生，它将立即触发该函数。。
-    // playerReadied(player) {
-    //   // console.log('example player 1 readied', player);
-    //   player.currentTime(this.current);
-    // },
+    }
   },
 };
 </script>
@@ -490,16 +369,5 @@ export default {
   height: 17px;
 }
 
-.vjs-custom-skin > .video-js .vjs-big-play-button {
-  background-color: rgba(0, 0, 0, 0.45);
-  font-size: 3em;
-  /* border-radius: 50%; */
-  height: 1.5em !important;
-  line-height: 1.5em !important;
-  margin-top: -1em !important;
-}
-/*这里用了第三方vue-video-player插件，但这个插件有bug，设置globalSetting:{controls:true}隐藏进度条不生效，故可设置插件样式进行隐藏vjs-progress-contro*/
-.vjs-progress-control {
-  /*visibility:hidden;       // 隐藏进度条*/
-}
+
 </style>
