@@ -233,11 +233,12 @@ export default {
       console.log('实时Json：', dJson);
       // 假数据
       dJson.time = this.parseTime(new Date());
-      dJson.name = deviceTypeList[this.getRadom(0, deviceTypeList.length)];
-      dJson.type = warnTypeList[this.getRadom(0, warnTypeList.length)];
+      dJson.name = deviceTypeList[this.getRadom(0, deviceTypeList.length-1)];
+      dJson.type = warnTypeList[this.getRadom(0, warnTypeList.length-1)];
       dJson.device = '868120274638466';
       // 刷新
       this.$refs.ReportMessageRef.setData(dJson);
+      this.$refs.ReportDataRef.refreshData();
     },
     // 每分钟更新跑一次定时器
     setTimer() {
@@ -256,7 +257,6 @@ export default {
         this.$refs.PerformanceAnalysisRef.setData(this.dataList);
         this.$refs.CenterDataRef.setData(this.dataList);
         this.$refs.CenterDataRef.refreshData();
-        this.$refs.ReportDataRef.refreshData();
         // 如果是新的小时，刷新接口
         if (this.curHour !== new Date().getHours()) {
           this.curHour = new Date().getHours();
@@ -355,11 +355,11 @@ export default {
 
   // gif
   .center-img{
-    width: 100%;
-    height: 100%;
+    width: 95%;
+    height: 95%;
     position: absolute;
-    left: 0;
-    top: 0;
+    left: 2.5%;
+    top: 2.5%;
     &.center-1{
       z-index: 8;
     }
