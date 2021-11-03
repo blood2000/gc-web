@@ -192,7 +192,7 @@ export default {
           data: timeData
         },
         yAxis: {
-          name: '数量(万)',
+          name: '接入数量',
           nameTextStyle: {
             color: '#F9EBFF',
             paddingLeft: '2%',
