@@ -1,6 +1,18 @@
 <template>
   <div class="s-container s-map-container-relative">
     <div ref="map" class="map-box" />
+    <div class="s-container__legend">
+      <h5 class="ly-flex ly-flex-align-center">
+        <span>告警量</span>
+        <img src="~@/assets/images/statistic/pot_right.png" />
+      </h5>
+      <ul>
+        <li v-for="(item, index) in legendList" :key="index" class="ly-flex ly-flex-align-center">
+          <p class="color" :style="`background: ${item.color}`"></p>
+          <p class="text">{{ item.label }}</p>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -19,7 +31,20 @@ export default {
   data() {
     return {
       chart: null,
-      heatmapData: []
+      heatmapData: [],
+      legendList: [{
+        label: '大于5千次',
+        color: 'rgba(255, 0, 138, 1)'
+      },{
+        label: '1千-5千次',
+        color: 'rgba(255, 0, 138, 0.8)'
+      },{
+        label: '500-1千次',
+        color: 'rgba(255, 0, 138, 0.6)'
+      },{
+        label: '小于500次',
+        color: 'rgba(255, 0, 138, 0.4)'
+      }]
     };
   },
   mounted() {
@@ -84,7 +109,7 @@ export default {
           layoutSize: '81%',
           itemStyle: {
             normal: {
-              borderColor: 'rgba(151, 56, 135, 1)',
+              borderColor: '#81206e',
               areaColor: 'rgba(74, 15, 52, 1)'
             },
             emphasis: {
@@ -303,16 +328,16 @@ export default {
           itemStyle: {
             color: function (val) {
               const { data } = val;
-              if (data[2] <= 100) {
+              if (data[2] <= 500) {
                 return 'rgba(255, 0, 138, 0.4)'
               }
-              if (data[2] > 100 && data[2] <= 500) {
+              if (data[2] > 500 && data[2] <= 1000) {
                 return 'rgba(255, 0, 138, 0.6)'
               }
-              if (data[2] > 500 && data[2] <= 1000) {
+              if (data[2] > 1000 && data[2] <= 5000) {
                 return 'rgba(255, 0, 138, 0.8)'
               }
-              if (data[2] > 1000) {
+              if (data[2] > 5000) {
                 return 'rgba(255, 0, 138, 1)'
               }
             }
@@ -430,6 +455,45 @@ export default {
     width: 100%;
     height: 100%;
     // background: rgba(255, 255, 255, 0.1); // 辅助线
+  }
+  &__legend{
+    position: absolute;
+    bottom: 2rem;
+    right: 1rem;
+    >h5{
+      >span{
+        display: inline-block;
+        font-size: 0.6rem;
+        font-family: PingFang SC;
+        font-weight: 500;
+        color: #FFEDF7;
+        transform: scale(0.9);
+        transform-origin: 0 center;
+        margin-bottom: 0.2rem;
+        margin-right: 0.2rem;
+      }
+      >img{
+        width: 1.05rem;
+        height: 0.2rem;
+      }
+    }
+    >ul{
+      >li{
+        line-height: 1.1rem;
+        >.color{
+          width: 0.4rem;
+          height: 0.2rem;
+          margin-right: 0.2rem;
+        }
+        >.text{
+          font-size: 0.6rem;
+          font-family: PingFang SC;
+          font-weight: 500;
+          color: #FFFFFF;
+          transform: scale(0.9);
+        }
+      }
+    }
   }
 }
 </style>

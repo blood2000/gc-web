@@ -166,7 +166,7 @@ export default {
         grid: {
           left: '1%',
           right: '1%',
-          bottom: '8%',
+          bottom: '10%',
           top: '20%',
           containLabel: true
         },
@@ -192,7 +192,7 @@ export default {
           data: timeData
         },
         yAxis: {
-          name: '数量(万)',
+          name: '接入数量',
           nameTextStyle: {
             color: '#F9EBFF',
             paddingLeft: '2%',
@@ -376,8 +376,8 @@ export default {
 .s-container{
   height: 100%;
   &__list{
-    height: 5rem;
-    padding: 0.8rem 0 0.5rem;
+    height: 5.5rem;
+    padding: 1rem 0 0.5rem;
     >li{
       height: calc(50% - 0.4rem);
       width: calc(50% - 1.48rem);
@@ -460,7 +460,7 @@ export default {
     }
   }
   &__chart{
-    height: calc(100% - 5rem);
+    height: calc(100% - 5.5rem);
   }
 }
 </style>

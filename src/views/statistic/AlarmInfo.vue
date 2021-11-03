@@ -175,10 +175,11 @@ export default {
           transform: scale(0.95);
         }
         >div>p:first-child{
-          width: calc(100% - 6rem);
+          color: #ffe6f4;
+          width: calc(100% - 7rem);
         }
         >div>p:last-child{
-          width: 6rem;
+          width: 7rem;
           text-align: right;
           font-size: 0.6rem;
           font-family: PingFang SC;

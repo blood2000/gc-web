@@ -65,6 +65,7 @@ export default {
         legend: {
           show: true,
           orient: 'vertical',
+          top: '8%',
           textStyle: {
             color: '#FCF8FF'
           }
@@ -128,9 +129,9 @@ export default {
                       color: 'rgba(218, 35, 73, 1)'
                     }, {
                       offset: 1,
-                      color: 'rgba(171, 58, 182, 1)'
+                      color: 'rgba(242, 58, 161, 1)'
                     }]),
-                    new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    new echarts.graphic.LinearGradient(0, 0, 1, 0, [{
                       offset: 0,
                       color: 'rgba(55, 58, 216, 1)'
                     }, {
