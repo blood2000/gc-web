@@ -36,7 +36,7 @@ export default {
         label: '大于5千次',
         color: 'rgba(255, 0, 138, 1)'
       },{
-        label: '1千-千次',
+        label: '1千-5千次',
         color: 'rgba(255, 0, 138, 0.8)'
       },{
         label: '500-1千次',
