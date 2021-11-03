@@ -328,16 +328,16 @@ export default {
           itemStyle: {
             color: function (val) {
               const { data } = val;
-              if (data[2] <= 100) {
+              if (data[2] <= 500) {
                 return 'rgba(255, 0, 138, 0.4)'
               }
-              if (data[2] > 100 && data[2] <= 500) {
+              if (data[2] > 500 && data[2] <= 1000) {
                 return 'rgba(255, 0, 138, 0.6)'
               }
-              if (data[2] > 500 && data[2] <= 1000) {
+              if (data[2] > 1000 && data[2] <= 5000) {
                 return 'rgba(255, 0, 138, 0.8)'
               }
-              if (data[2] > 1000) {
+              if (data[2] > 5000) {
                 return 'rgba(255, 0, 138, 1)'
               }
             }
