@@ -17,27 +17,20 @@
     >
       <TitleSideBlueTip title="企业信息" />
       <el-row class="dispatch-contents-box">
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="用车企业：" prop="companyName">
-            <el-select
+            <el-input
               v-model="queryParams.companyName"
               clearable
-              filterable
-              style="width: 200px"
-              placeholder="请选择用车企业"
-              allow-create
-              @change="shipmentChange"
-            >
-              <el-option
-                v-for="(item, index) in companyList"
-                :key="index"
-                :label="item.companyName"
-                :value="item.companyName"
-              />
-            </el-select>
+              placeholder="请输入用车企业"
+              style="width: 185px"
+            />
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="4">
+          <div class="common_company" @click="hanleCompanyOpen()">常用企业</div>
+        </el-col>
+        <el-col :span="7">
           <el-form-item label="下单客户姓名：" prop="shipmentName">
             <el-input
               v-model="queryParams.shipmentName"
@@ -47,7 +40,7 @@
             />
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="下单客户电话：" prop="shipmentPhone">
             <el-input
               v-model="queryParams.shipmentPhone"
@@ -376,7 +369,9 @@
                 >
                   <div class="option-item">
                     <div class="option-item_name">{{ dict.dictLabel }}</div>
-                    <div class="option-item_address">111 {{dict.address }}</div>
+                    <div class="option-item_address">
+                      111 {{ dict.address }}
+                    </div>
                   </div>
                 </el-option>
               </el-select>
@@ -456,6 +451,24 @@
         />
       </div>
     </el-dialog>
+    <!-- 企业抽屉 -->
+    <el-drawer
+      :append-to-body="true"
+      title="选择常用企业"
+      :before-close="handleInnerClose"
+      size="35%"
+      :visible.sync="innerDrawer"
+    >
+      <!-- <div slot="title">
+       <span>选择常用企业</span>
+       <img src="" alt="">
+     </div> -->
+      <CompanyItem   
+      v-if="innerDrawer"
+      @companySelection="companySelection"
+      @handleInnerClose="handleInnerClose"
+      />
+    </el-drawer>
   </el-drawer>
 </template>
 
@@ -463,6 +476,7 @@
 import { http_request } from "../../../api";
 import AddressDialog from "./components/address_dialog.vue";
 import formValidate from "../../../utils/formValidate";
+import CompanyItem from "./components/companyItem.vue";
 
 const geocoder = new AMap.Geocoder({
   radius: 1000,
@@ -471,7 +485,7 @@ const geocoder = new AMap.Geocoder({
 import { settlementWayConfig } from "./order_config";
 export default {
   name: "detail",
-  components: { AddressDialog },
+  components: { AddressDialog, CompanyItem },
   props: {
     createDrawer: {
       type: Boolean,
@@ -485,6 +499,7 @@ export default {
   data() {
     return {
       pageData: {},
+      innerDrawer: false,
       searchOption: {
         city: "全国",
         citylimit: true,
@@ -567,8 +582,8 @@ export default {
         companyName: [
           {
             required: true,
-            message: "请选择用车企业",
-            trigger: "change",
+            message: "用车企业不能为空",
+            trigger: "blur",
           },
         ],
         shipmentName: [
@@ -628,29 +643,36 @@ export default {
     },
     "searchOption.city"(val, oldval) {
       console.log("searchOption.city oldval", oldval);
-      if (oldval !== "全国" &&this.loadAddressParams.detailAddress) {
+      if (oldval !== "全国" && this.loadAddressParams.detailAddress) {
         this.loadAddressParams.detailAddress = "";
       }
     },
     "searchOption1.city"(val, oldval) {
       console.log("searchOption1.city oldval", oldval);
-      if (oldval !== "全国"&&this.unloadAddressParams.detailAddress) {
+      if (oldval !== "全国" && this.unloadAddressParams.detailAddress) {
         this.unloadAddressParams.detailAddress = "";
       }
     },
   },
   methods: {
-    //强制限制
+    // 选择常用企业
+    hanleCompanyOpen() {
+      console.log("选择常用企业");
+      this.innerDrawer = true;
+    },
+    //金额输入强制限制小数点
     imposeInput(e) {
       console.log("强制限制", e);
       const tmp = e.match(/^[0-9]+(\.[0-9]{0,2})?/g) ?? [""];
       console.log("tmp", tmp[0]);
       this.queryParams.freight = tmp[0];
     },
+    // 常用企业
     hanleAddressOpen(type) {
       this.addressOpen = true;
       this.currAddressType = type;
     },
+
     // 结算更变
     settlementWayChange(value) {
       if (value != "2") {
@@ -763,7 +785,7 @@ export default {
     districtChange(e, type) {
       console.log("districtChange e", e);
       console.log("districtChange type", type);
-       if (e !== null && e !== undefined && e !== "") {
+      if (e !== null && e !== undefined && e !== "") {
         this.addressSearchLimitByCode(e, type);
       } else {
         this.addressReset(type);
@@ -779,7 +801,7 @@ export default {
     },
     // 重置搜索地址
     addressReset(type) {
-      console.log('重置搜索地址',type)
+      console.log("重置搜索地址", type);
       if (type == "1") {
         this.searchOption.city = "全国";
         this.loadAddressParams.detailAddress = null;
@@ -832,15 +854,7 @@ export default {
       this.getDicts(null, this.goodsBigTypeConfig).then((response) => {
         this.goodsBigTypeList = response.data;
       });
-      const obj = {
-        moduleName: "http_common",
-        method: "get",
-        url_alias: "shipment_all",
-      };
-      http_request(obj).then((res) => {
-        console.log("shipment_all res", res);
-        this.companyList = res.data;
-      });
+  
     },
     // 监听详情地址输入框 1
     remote1Method(que) {
@@ -861,7 +875,7 @@ export default {
       console.log("arr", arr);
       if (!arr) return;
       return arr.map((e) => {
-        console.log('e====>',e)
+        console.log("e====>", e);
         return {
           ...e,
           dictValue: e[dictValue],
@@ -1037,6 +1051,7 @@ export default {
         return e.dictValue === value;
       })[0];
     },
+    // 提交
     confrims() {
       const me = this;
       me.$refs.form.validate((valid) => {
@@ -1062,6 +1077,7 @@ export default {
         }
       });
     },
+    // 表单到分页
     formToPaging() {
       let obj = {};
       obj = Object.assign(obj, this.queryParams);
@@ -1071,6 +1087,7 @@ export default {
       obj.remark = this.remark;
       return obj;
     },
+    // 清除全部
     clearAll() {
       this.handleClose();
       this.$emit("colseCreateDrawer");
@@ -1085,7 +1102,7 @@ export default {
         this.currAddressType === 1
           ? "loadAddressParams"
           : "unloadAddressParams";
-          console.log('objName',objName)
+      console.log("objName", objName);
       this[objName] = {
         province: data.province, //省
         city: data.city, //市
@@ -1097,13 +1114,24 @@ export default {
         addressAlias: data.addressAlias, //地址别名
         linkManName: data.contact, //联系人
         linkManPhone: data.contactPhone, //联系人电话
-        type: data.addressType +'', //1 装货  2 卸货
-        locations: [data.latitude, data.longitude], //坐标
+        type: data.addressType + "", //1 装货  2 卸货
+        locations: [Number(data.longitude), Number(data.latitude)], //坐标
       };
 
       this.currAddressType = null;
       this.addressOpen = false;
       console.log("this[objName]", this[objName]);
+    },
+    companySelection(data){
+      if(!data)return
+      console.log('companySelection',data)
+      this.queryParams.companyName = data.companyName
+      this.queryParams.shipmentName = data.contactName
+      this.queryParams.shipmentPhone = data.contactPhone
+    },
+    // 常用企业抽屉关闭
+    handleInnerClose() {
+      this.innerDrawer = false;
     },
   },
 };
@@ -1120,6 +1148,22 @@ export default {
   padding-left: 26px;
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAABQpJREFUWEfFVnuIVFUY/33nzr2j66Pa6EGtFYUZIfaHpWGm+5oppQdSCpZSST7CHhqCpO69Z2bTDYtKDEtRM0yQ0siCxHt3bcwHPRB6ECoo9odkEC6Zq7Nz78z94j7GbrOzM7MaeP6695zv932/73kO4QovusL2MSACjZKHxkRhKrE7iQj3A7g2dOAMM74FeB+d074y36LztTpWE4GxkuvqRX45AS8CPLyScgbOwuU1DrSOjKTeakSqEmhJOw8KuFsJdGs1ZSXnJ8jFU3uk9n0lXEUCiXR2MqDsJmBwUQkD+4jxYV5RO7Nn0H11Hq5TjxtIcZoJeBpAa8Tg+QJoSpeu7u+PRL8Emtp7R6msHAK4PgT/xMgvtPS6g5U8apbOBIV4ExHu8uUY3Y5wJ3zdNuhYOVxZAndL1m4m+xciujMEddquOi0jqaeWNCSX/DGEh12zk4geCkkcPXOjOubwfHJK8WUJtKbtRQJ4J3CAj1zo0cYfXE3najFelEku4SEY5hwCYUxI4mXT0NZWJzCdleRo53cQrmeAXWB8l679UApsbuc7Yq4z0dvPC/XA3jY6USrTkrbvU+C1JwRAp0031gBJblSuTwQSqWwLkdIZCNHnpq5OiwIaJcdU4bxPwPPRfQa2OK46NyMpH91PpHJfENGj3l4BNKm0IPsQSKZzbwK0JAgbzzKN+Lb/KEzbnvEF5dLBwEZL1+ZGz1pT9nOCsDlQxx2WEV9WJQLOZ0Tse227+REZWXeqCGiU2ds0oZwMagM9IHo9JLqCgKEBxh2ZkYOOFzFNK3pHqZo4GmK2W7o2syKBZMr+DoRxgTJVjYY0IXOzSNDWIDu0wmxTV3qfiXZnKTG/4RtxebYl4x8XjXgd1SCcXEAU35iGNrlyBNL2AQIe8Aqw+5QaP7zh39aJEnCZZKehpjxlyXbHALMsR2CK5OEF4ZwNjXaaupaoQsDZReDHwgiMyEiKpOBCgypiJwmIMaOHmN/1jRItIsJQBvKOWxiZkYN/u5gCf6ANIAUJmVtJgvxCKTDP6upbhGuDS6nvYuA9S9deKinCuYKwIUgBLTMNtaNyDUhnEgTv8+WZ91hG/OEoIGxDb0gt8CIRFpfXeh84rrq4tA2TaXsvgKZQx72mrh2uSCA0cIyA2wPl+Ynl5n+jvNCgQfEHkY3CgWi3FA20yN5WRQgr+OdfTT0+ujRu5UextOcIgU1BFHA8xurY3ZL+Lhf2/vZal/JVVGf/TES3hNGcYRnxT2siMP0TVv464mSI4HvIYLP7lPZItCMqkRk7j9X6hvyXBPYvI2ayLENNlsP0ex0nJN9EwvkRwHUhiR1WmzYDRFwxEsyUaLe3E2hGIEens9nee/Z3DPtzQAQ84WZpj1MEuopTDsAGU9fmVyKQTNvrAcwLi7On4KJlb4VXUfUnWSrbpJCyG0A8UEqrLF1dXo5EIpVbRUSvhWc5uDTVlKrXBf2uqgQ8ZGsq/7ggdweKbcdYZBnamqjWZMpeDMLb4V7BZfFEpxHbVa1wayLgKUmk7NkgfESAVwQMxjOWofn3QiKdfxZwN188g5hj6bEt1Yz7FVKLUFEmkbJfIYI/fr13iMv8JKBAkLsT3keQo1dNQ/NfU7WsARHwvY2M6lID7PJqS8aX1mK4KDNgAh4wmbLXgfBC1BCzu94yBpV9qFx2EZZTkEjZCwHM9PIOwjZT19YNxPPLisClGOoPc0kp+D8J/ANN7wU/Z8/VEQAAAABJRU5ErkJggg==)
     no-repeat;
+  background-size: 16px 16px;
+  background-position-y: 4px;
+  background-position-x: 6px;
+  color: #4682fa;
+  cursor: pointer;
+}
+.common_company {
+  position: relative;
+  top: 35px;
+  height: 20px;
+  font-size: 14px;
+  font-family: PingFang SC;
+  font-weight: bold;
+  display: inline-block;
+  padding-left: 26px;
+  background: url("~@/assets/images/icon/common_company.png") no-repeat;
   background-size: 16px 16px;
   background-position-y: 4px;
   background-position-x: 6px;

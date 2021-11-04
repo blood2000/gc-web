@@ -134,6 +134,7 @@ const formValidate = {
   },
   // 证件验证: 起始时间必填; 长期有效的时候截止时间可以不填,否则必填; 截止时间大于起始时间;
   idCardValidate: function(rule, value, callback, beginTime, effective, text = '身份证') {
+    console.log('beginTime--->',beginTime, 'value-->', value)
     if (!beginTime) {
       return callback(new Error(`${text}有效期起始时间不能为空`));
     } else if (!effective && !value) {

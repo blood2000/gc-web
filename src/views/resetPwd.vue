@@ -237,8 +237,9 @@ export default {
     countdown() {
       this.sendCode = false;
       let that = this;
+      this.verCodeSecond = 60;
       this.countdownTimer = setInterval(() => {
-        this.verCodeSecond--;
+        (this.verCodeSecond > 0) && (this.verCodeSecond--);
         this.verCodeText = `再次发送(${this.verCodeSecond})`;
       }, 1000);
       setTimeout(() => {

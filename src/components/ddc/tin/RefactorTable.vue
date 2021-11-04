@@ -41,6 +41,9 @@
         :show-overflow-tooltip="th.tooltip || false"
         :sortable="th.sortable || false"
       >
+        <!-- <template slot="header" slot-scope="scope" v-if="th.headerSlot">
+          <slot>{{scope.row[th.prop]}}</slot>
+        </template> -->
         <!-- :formatter="th.formatter" -->
         <template slot-scope="scope">
           <slot :name="th.prop" :row="scope.row">{{

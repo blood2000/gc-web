@@ -246,9 +246,10 @@ export default {
     //验证码倒计时
     countdown() {
       this.sendCode = false;
+      this.verCodeSecond = 60;
       let that = this;
       this.countdownTimer = setInterval(() => {
-        this.verCodeSecond--;
+        (this.verCodeSecond > 0) && (this.verCodeSecond--);
         this.verCodeText = `再次发送(${this.verCodeSecond})`;
       }, 1000);
       setTimeout(() => {
