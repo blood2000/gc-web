@@ -50,7 +50,12 @@
             <el-button size="mini" type="text" @click="handleDetail(row)">
               详情
             </el-button>
-            <el-button size="mini" type="text" @click="handleDispatch(row)" v-show="row.dispatchOrderStatus !== 0">
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleDispatch(row)"
+              v-show="row.dispatchOrderStatus !== 0"
+            >
               派车
             </el-button>
             <el-button size="mini" type="text" @click="handleCarlog(row)">
@@ -86,6 +91,12 @@
       :options="{ title: '调度单派车' }"
       @colseCarDrawer="colseCarDrawer"
     />
+    <CreateCar
+      :code="currCode"
+      :carDrawer="createCarDrawer"
+      :options="{ title: '调度单派车' }"
+      @colseCreateCarDrawer="colseCreateCarDrawer"
+    />
     <CreateD
       :createDrawer="createDrawer"
       :options="{ title: '创建调度单' }"
@@ -105,10 +116,11 @@ import { http_request } from "../../../api";
 import Detail from "./detail.vue";
 import CreatedDetail from "./createdDetail.vue";
 import Car from "./car.vue";
+import CreateCar from "./createCar.vue";
 import CreateD from "./create.vue";
 export default {
   name: "order",
-  components: { QueryForm, Detail, CreatedDetail, Car, CreateD },
+  components: { QueryForm, Detail, CreatedDetail, Car, CreateD, CreateCar },
   data() {
     return {
       showSearch: true,
@@ -116,6 +128,7 @@ export default {
       detailDrawer: false, //详情抽屉
       createDetailDrawer: false, // 自建详情
       carDrawer: false, // 派车抽屉
+      createCarDrawer: false, // 自建派车抽屉
       currCode: null,
       queryParams: {
         pageNum: 1, //页码
@@ -152,11 +165,6 @@ export default {
     };
   },
   created() {
-    // this.getDicts(null, this.goodsTypeConfig).then((response) => {
-    //   console.log("goodsType   response====>", response);
-    //   me.$store.commit("set_goodsTypeList", response.data);
-    //   me.goodsTypeList = me.$store.state.dict.goodsTypeList;
-    // });
     this.getGoodsTypeList();
   },
   mounted() {
@@ -166,7 +174,7 @@ export default {
     //获取级联形式大类小类
     async getGoodsTypeList() {
       const resBig = await this.getDicts(null, this.goodsBigTypeConfig);
-      console.log('resBig',resBig)
+      console.log("resBig", resBig);
       if (resBig.code != "200") return;
       const bigList = resBig.data;
       const result = [];
@@ -178,7 +186,7 @@ export default {
           bigObj.children = [];
           this.goodsTypeConfig.dictPid = item.dictCode;
           const res = await this.getDicts(null, this.goodsTypeConfig);
-          console.log('ressmall',res)
+          console.log("ressmall", res);
           if (res.code != "200") return;
           for (const el of res.data) {
             const obj = {};
@@ -223,17 +231,21 @@ export default {
       } else {
         this.detailDrawer = true;
       }
-
       // this.$router.push("order/detail?code=" + code);
     },
     //派车
     handleDispatch(data) {
       //dispatch/order/car
-      if(data.dispatchOrderStatus === 0){
-        return this.msgWarning('该调度状态已经关闭，无法进行派车')
+      if (data.dispatchOrderStatus === 0) {
+        return this.msgWarning("该调度状态已经关闭，无法进行派车");
       }
       console.log("data", data);
-      this.carDrawer = true;
+      if (data.source === "zj") {
+        this.createCarDrawer = true;
+      } else {
+        this.carDrawer = true;
+      }
+
       this.currCode = data.dispatchOrderCode;
       // this.$router.push("order/car?code=" + code);
     },
@@ -298,9 +310,14 @@ export default {
     colsecreateDetailDrawer() {
       this.createDetailDrawer = false;
     },
-    // 关闭车辆弹窗
+    // 关闭派车弹窗
     colseCarDrawer() {
       this.carDrawer = false;
+    },
+    // 关闭自建派车弹窗
+    colseCreateCarDrawer() {
+      console.log('关闭自建派车弹窗')
+      this.createCarDrawer = false;
     },
     colseCreateDrawer(e) {
       if (e == "ok") {
