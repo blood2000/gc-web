@@ -1098,7 +1098,7 @@ export default {
         linkManName: data.contact, //联系人
         linkManPhone: data.contactPhone, //联系人电话
         type: data.addressType +'', //1 装货  2 卸货
-        locations: [data.latitude, data.longitude], //坐标
+        locations: [Number(data.longitude) ,Number(data.latitude)], //坐标
       };
 
       this.currAddressType = null;
