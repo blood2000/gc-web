@@ -2,7 +2,12 @@
 <template>
   <div class="warn-card" @click="openList(0)">
     <div class="warn-card-more">
-      <el-dropdown>
+      <div class="warn-card-more-box">
+        <div class="point"></div>
+        <div class="point"></div>
+        <div class="point"></div>
+      </div>
+      <!-- <el-dropdown>
         <div class="warn-card-more-box">
           <div class="point"></div>
           <div class="point"></div>
@@ -12,29 +17,42 @@
           <el-dropdown-item>黄金糕</el-dropdown-item>
           <el-dropdown-item>狮子头</el-dropdown-item>
         </el-dropdown-menu>
-      </el-dropdown>
+      </el-dropdown> -->
     </div>
 
-    <div class="warn-card-title">杨洋</div>
+    <div class="warn-card-title" v-if="tabIndex === '1'">
+      {{ cardInfo.licenseNumber }}
+    </div>
+    <div class="warn-card-title" v-else>{{ cardInfo.nickName }}</div>
     <div class="warn-card-subtitle">
       <div>最新告警</div>
       <img src="../../../../assets/images/monitor-line.png" alt="" />
     </div>
-    <div class="warn-card-main" :class="'warn-level-' + level">
+    <div
+      class="warn-card-main"
+      :class="'warn-level-' + (cardInfo.alarmLevel || 1)"
+    >
       <div class="card-main-left">
         <img src="../../../../assets/images/detail/fms-yczd.png" alt="" />
-        <div class="warn-card-type">异常震动</div>
+        <div class="warn-card-type">{{ cardInfo.alarmTypeName || "无" }}</div>
       </div>
       <div class="card-main-right">
-        <div>
-          东滨路1号富邦总部大楼大楼大楼大楼大
-          东滨路1号富邦总部大楼大楼大楼大楼大
-        </div>
-        <div>2021-10-16 16:26:56</div>
+        <div>{{ cardInfo.alarmAddress || "-" }}</div>
+        <div>{{ cardInfo.alarmTime || "-" }}</div>
       </div>
     </div>
     <div class="warn-card-bottom">
-      <div class="warn-card-bottom-item" @click.stop="openList(1)">
+      <div
+        class="warn-card-bottom-item"
+        v-for="(wItem, wIndex) in cardInfo.vehicleAlarmStatistics"
+        :key="wIndex"
+        @click.stop="openList(wItem.alarmObject)"
+      >
+        <div class="warn-card-bottom-item-value">{{ wItem.number || 0 }}</div>
+        <div class="warn-card-bottom-item-name">{{ wItem.describe }}</div>
+      </div>
+
+      <!-- <div class="warn-card-bottom-item" @click.stop="openList(1)">
         <div class="warn-card-bottom-item-value">54</div>
         <div class="warn-card-bottom-item-name">行车事件</div>
       </div>
@@ -49,7 +67,7 @@
       <div class="warn-card-bottom-item" @click.stop="openList(4)">
         <div class="warn-card-bottom-item-value">54</div>
         <div class="warn-card-bottom-item-name">司机行为</div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -69,8 +87,12 @@ export default {
     cardInfo: {
       type: Object,
       default() {
-        return {any};
+        return {};
       },
+    },
+    tabIndex: {
+      type: String,
+      default: "1",
     },
   },
 
@@ -82,8 +104,8 @@ export default {
 
   methods: {
     openList(type) {
-      this.$emit('openList', {type: type, item: this.cardInfo});
-    }
+      this.$emit("openList", { type: type, item: this.cardInfo });
+    },
   },
 };
 </script>
@@ -160,8 +182,9 @@ export default {
     height: 57px;
     display: flex;
     &-item {
+      flex: 1;
       box-sizing: border-box;
-      width: 25%;
+      // width: 25%;
       height: 56px;
       padding: 5px 20px;
       text-align: left;

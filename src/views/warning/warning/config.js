@@ -134,9 +134,9 @@ const warningLevelList = [
 ];
 const warningLevelObj =
 {
-  0: { text: "一级告警", img: require('@/assets/images/detail/warn_lelve_1.png') },
-  1: { text: "二级告警", img: require('@/assets/images/detail/warn_lelve_2.png') },
-  2: { text: "三级告警", img: require('@/assets/images/detail/warn_lelve_3.png') }
+  0: { text: "一级告警", img: require('@/assets/images/detail/warn_level_1.png') },
+  1: { text: "二级告警", img: require('@/assets/images/detail/warn_level_2.png') },
+  2: { text: "三级告警", img: require('@/assets/images/detail/warn_level_3.png') }
 };
 const deviceTypeList = [
   {
@@ -189,24 +189,26 @@ const tableColumnsConfig = [
     prop: "alarmTypeName",
     sortNum: 3,
     tooltip: true,
+    headerSlot: true,
     width: 100
   },
-  // {
-  //   isShow: true,
-  //   label: "告警级别",
-  //   prop: "alarmLevel",
-  //   sortNum: 4,
-  //   tooltip: true,
-  //   width: 80
-  // },
-  // {
-  //   isShow: true,
-  //   label: "告警描述",
-  //   prop: "alarmContent",
-  //   sortNum: 5,
-  //   tooltip: true,
-  //   width: 120
-  // },
+  
+  {
+    isShow: true,
+    label: "告警级别",
+    prop: "alarmLevel",
+    sortNum: 4,
+    tooltip: true,
+    width: 80
+  },
+  {
+    isShow: true,
+    label: "告警描述",
+    prop: "alarmContent",
+    sortNum: 5,
+    tooltip: true,
+    width: 120
+  },
  
   // {
   //   isShow: true,
@@ -216,14 +218,14 @@ const tableColumnsConfig = [
   //   tooltip: true,
   //   width: 110
   // },
-  // {
-  //   isShow: true,
-  //   label: "上报时间",
-  //   prop: "alarmTime",
-  //   sortNum: 8,
-  //   tooltip: true,
-  //   width: 120
-  // },
+  {
+    isShow: true,
+    label: "告警时间",
+    prop: "alarmTime",
+    sortNum: 8,
+    tooltip: true,
+    width: 120
+  },
   // {
   //   isShow: true,
   //   label: "上报位置",

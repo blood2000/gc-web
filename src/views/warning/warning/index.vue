@@ -24,9 +24,10 @@
             <div class="warn-card-box">
               <!-- 告警卡片组件 -->
               <warn-card
-                v-for="(item, index) in testData"
+                v-for="(item, index) in warningData"
                 :key="index"
                 :cardInfo="item"
+                :tabIndex="tabIndex"
                 :level="(index % 3) + 1"
                 @openList="openList"
               ></warn-card>
@@ -51,8 +52,8 @@
             </RefactorTable> -->
             <!-- 分页 -->
             <pagination
-              v-show="total1 > 12"
-              :total="total1"
+              v-show="total > queryParams.pageSize"
+              :total="total"
               layout="prev, pager, next,jumper, total,sizes"
               :page.sync="queryParams.pageNum"
               :limit.sync="queryParams.pageSize"
@@ -65,9 +66,9 @@
     <warning-list
       :id="currId"
       :listDrawer="listDrawer"
-      :tabIndex="tabIndex"
-      :keyWord="keyWord"
-      :options="{ title: '告警明细', warningTypeList }"
+      :options="{ title: '告警明细'}"
+      :drawerQuerys="drawerQuerys"
+      :warningTypeList="subWarningTypeList"
       @colseListDrawer="colseListDrawer"
     />
   </div>
@@ -96,7 +97,6 @@ export default {
       loading: false, //表格load
       warningData: [],
       testData: [],
-      keyWord: '',
       queryParams: {
         pageNum: 1,
         pageSize: 12,
@@ -108,6 +108,7 @@ export default {
       },
       deviceTypeList: [],
       warningTypeList: [],
+      subWarningTypeList: [],  //传到告警明细抽屉页面所需的告警类型列表
       warningLevelList: [],
       tabIndex: "1",
       warningTabs: [],
@@ -116,6 +117,7 @@ export default {
       total1: 10,
       listDrawer: false,
       currId: null,
+      drawerQuerys: {}
     };
   },
 
@@ -124,6 +126,9 @@ export default {
     orgName(val) {
       this.$refs.tree.filter(val);
     },
+    drawerQuerys(val) {
+      console.log('drawerQuerys-->', val)
+    }
   },
 
   created() {
@@ -143,7 +148,7 @@ export default {
   mounted() {
     // this.getOrgHttp();
     this.searchQuery();
-    this.testData = warningConfig.mockData;
+    // this.testData = warningConfig.mockData;
   },
 
   methods: {
@@ -251,8 +256,8 @@ export default {
     async warningDataReq() {
       this.loading = true;
       const tmp = {
-        start: this.queryParams.pageNum,
-        limit: this.queryParams.pageSize,
+        pageNum: this.queryParams.pageNum,
+        pageSize: this.queryParams.pageSize,
         bigAlarmTime:
           (this.queryParams.dateRange && this.queryParams.dateRange[0]) || null,
         endAlarmTime:
@@ -260,17 +265,22 @@ export default {
         alarmTypeInfoId: this.queryParams.warningTypes.join(","),
         deviceSeriesModelInfoCode: this.queryParams.deviceType,
       };
+      this.drawerQuerys.dateRange = this.queryParams.dateRange;
+      // this.drawerQuerys.alarmTypeInfoId = this.queryParams.dateRange;
       if (this.tabIndex === "1") {
         tmp.dimensionType = "vehicle";
         tmp.licenseNumber = this.queryParams.vehicleCode || null; //车牌号
+        this.drawerQuerys.dimensionType = "vehicle";
       } else {
         tmp.dimensionType = "driver";
         tmp.nickName = this.queryParams.driver; //司机姓名
+        this.drawerQuerys.dimensionType = "driver";
       }
+      
       const obj = {
         moduleName: "http_warning",
         method: "get",
-        url_alias: "warning_list",
+        url_alias: "warning_notice_list",
         data: tmp,
       };
       console.log("告警参数", obj);
@@ -341,11 +351,20 @@ export default {
     openList(params) {
       console.log(params);
       this.listDrawer = true;
-      if (this.tabIndex === '1') {
-        this.keyWord = params.item.licenseNumber;
+      this.drawerQuerys = {...this.drawerQuerys,...params.item};
+      this.subWarningTypeList = [];
+      
+      if (params.type === 'vehicle' || params.type === 'device') {
+        console.log('========>>', params.type)
+        this.warningTypeList.map(item => {
+          if (item.alarmObject === params.type) {
+            this.subWarningTypeList[0] = item;
+          }
+        })
       } else {
-        this.keyWord = params.item.nickName;
+        this.subWarningTypeList = this.warningTypeList;
       }
+     
     },
     colseListDrawer() {
       this.listDrawer = false;

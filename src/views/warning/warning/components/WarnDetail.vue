@@ -6,7 +6,7 @@
     direction="rtl"
     style="z-index: 2000"
     :before-close="handleClose"
-    size="30%"
+    size="50%"
     :append-to-body="true"
   >
     <div class="dispatch-base-contents-box" style="padding-top: 25px">
@@ -113,7 +113,7 @@ export default {
   methods: {
     dealAlarmImg() {
       if (!this.detail.key) return "";
-      return require(`@/assets/images/detail/${this.detail.key}.png`);
+      // return require(`@/assets/images/detail/${this.detail.key}.png`);
     },
     levelDeal(type) {
       const obj = {

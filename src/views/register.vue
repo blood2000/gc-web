@@ -144,12 +144,27 @@
       </el-form-item>
       <div class="input-title">身份证有效期</div>
       <div class="input-box">
+        <!-- <el-form-item prop="dateRange">
+          <el-date-picker
+            v-model="idCardForm.dateRange"
+            :editable="false"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="截止日期"
+            value-format="yyyy-MM-dd"
+            :format="dateFormat"
+          >
+          </el-date-picker>
+        </el-form-item> -->
         <el-form-item prop="validFrom">
           <el-date-picker
             popper-class="idcard-date"
             v-model="idCardForm.validFrom"
+            :editable="false"
             type="date"
             placeholder="有效起始日期"
+            value-format="yyyy-MM-dd"
           >
             <svg-icon
               slot="prefix"
@@ -160,12 +175,15 @@
         </el-form-item>
 
         <div>至</div>
-        <el-form-item prop="validTo">
+        <el-form-item prop="validTo" v-if="showValidTo">
           <el-date-picker
             popper-class="idcard-date"
             v-model="idCardForm.validTo"
             type="date"
-            placeholder="有效截至日期"
+            :editable="false"
+            placeholder="有效截止日期"
+            value-format="yyyy-MM-dd"
+            :picker-options="validToOption"
           >
             <svg-icon
               slot="prefix"
@@ -174,7 +192,25 @@
             />
           </el-date-picker>
         </el-form-item>
+        <!-- 显示长期 -->
+        <el-form-item prop="isExpired" v-if="!showValidTo">
+          <el-input
+            v-model="idCardForm.isExpired"
+            @focus="showValidTo = true;"
+            type="text"
+            auto-complete="off"
+            readonly="readonly"
+            clearable
+          >
+            <svg-icon
+              slot="prefix"
+              icon-class="date"
+              class="el-input__icon input-icon"
+            />
+          </el-input>
+        </el-form-item>
       </div>
+      <el-form-item style="margin-bottom: 0"> </el-form-item>
       <el-form-item prop="orgName">
         <el-input
           v-model="idCardForm.orgName"
@@ -190,6 +226,7 @@
           />
         </el-input>
       </el-form-item>
+
       <el-form-item style="width: 100%" v-if="registerStatus === 1">
         <el-button
           size="medium"
@@ -231,7 +268,9 @@
 <script>
 import { getCodeImg, register } from "@/api/login";
 import { http_request } from "../api";
+import vm from "vue";
 import formValidate from "../utils/formValidate";
+import { compareBeginEndTime } from "@/utils/index";
 import {
   getOnceToken,
   setOnceToken,
@@ -242,13 +281,38 @@ import { Notification, MessageBox, Message } from "element-ui";
 export default {
   name: "Register",
   data() {
-    const equalToPassword = (rule, value, callback) => {
-      if (this.registerForm.password !== value) {
-        callback(new Error("两次输入的密码不一致"));
+    const idCardValidTimeEffect = (rule, value, callback) => {
+      let endTime = this.idCardForm.validTo;
+      console.log(endTime);
+      if (!value) {
+        callback(new Error(`请选择身份证有效期`));
+      } else if (!compareBeginEndTime(value, "2021-12-05")) {
+        callback(new Error(`起始日期不能大于截止日期`));
       } else {
         callback();
       }
     };
+
+    const validBeginTime = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error(`请选择身份证有效起始日期`));
+      } else if (this.idCardForm.validTo && !compareBeginEndTime(value, this.idCardForm.validTo)) {
+        callback(new Error(`起始日期不能大于截止日期`));
+      } else {
+        callback();
+      }
+    };
+
+    const validEndTime = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error(`请选择身份证有效截止日期`));
+      } else if (this.idCardForm.validFrom && !compareBeginEndTime(this.idCardForm.validFrom, value)) {
+        callback(new Error(`截止日期不能小于起始日期`));
+      } else {
+        callback();
+      }
+    };
+
     return {
       codeUrl: "",
       registerStatus: 0,
@@ -266,11 +330,27 @@ export default {
       idCardForm: {
         name: "",
         number: "",
+        orgName: "",
         validFrom: "",
         validTo: "",
+        isExpired: "长期",  //长期有效的字段名
+        // dateRange: "",
         idCardFaceImageUrl: "",
         idCardNationalEmblemImageUrl: "",
-        orgName: "",
+        issue: "",
+      },
+      showValidTo: true,
+      validToOption: {
+        shortcuts: [
+          {
+            text: "长期",
+            onClick(picker) {
+              // this.showValidTo = false;
+              // console.log(Vue)
+              picker.$emit("pick", "2500-01-01");
+            },
+          },
+        ],
       },
       registerRules: {
         telephone: [
@@ -288,15 +368,6 @@ export default {
         name: [
           { required: true, trigger: "change", validator: formValidate.name },
         ],
-        number: [
-          { required: true, trigger: "change", validator: formValidate.idCard },
-        ],
-        validFrom: [
-          { required: true, trigger: "change", message: "请输入身份证有效期" },
-        ],
-        validTo: [
-          { required: true, trigger: "change", message: "请输入身份证有效期" },
-        ],
         orgName: [
           {
             required: true,
@@ -304,6 +375,24 @@ export default {
             message: "请输入企业或车队全称",
           },
         ],
+        number: [
+          { required: true, trigger: "change", validator: formValidate.idCard },
+        ],
+
+        validFrom: [
+          { required: true, trigger: "change", validator: validBeginTime },
+        ],
+        validTo: [
+          { required: true, trigger: "change", validator: validEndTime },
+        ],
+
+        // dateRange: [
+        //   {
+        //     required: true,
+        //     trigger: "change",
+        //     validator: idCardValidTimeEffect,
+        //   },
+        // ],
       },
       loading: false,
       captchaOnOff: true,
@@ -312,6 +401,18 @@ export default {
   },
   created() {
     // this.getCode();
+  },
+  watch: {
+    idCardForm: {
+      
+      handler(newVal,oldVal) {
+        if (newVal.validTo === '2500-01-01') {
+          this.showValidTo = false;
+          newVal.validTo = '';
+        }
+      },
+      deep: true
+    }
   },
   mounted() {
     // setTimeout(() => {
@@ -347,9 +448,11 @@ export default {
         this.idCardForm.idCardNationalEmblemImageUrl =
           idCardInfo.identificationBackImage;
         this.idCardForm.name = idCardInfo.name;
-        this.idCardForm.number = idCardInfo.identificationNumber;
-        this.idCardForm.validFrom = idCardInfo.identificationBeginTime;
-        this.idCardForm.validTo = idCardInfo.identificationEndTime;
+        this.idCardForm.validFrom = this.handleDate(idCardInfo.identificationBeginTime);
+        this.idCardForm.validTo = this.handleDate(idCardInfo.identificationEndTime);
+        // this.idCardForm.dateRange = [];
+        // this.idCardForm.dateRange[0] = idCardInfo.identificationBeginTime;
+        // this.idCardForm.dateRange[1] = idCardInfo.identificationEndTime;
       });
     },
     //验证手机号是否已注册
@@ -431,9 +534,10 @@ export default {
     //验证码倒计时
     countdown() {
       this.sendCode = false;
+      this.verCodeSecond = 60;
       let that = this;
       this.countdownTimer = setInterval(() => {
-        this.verCodeSecond--;
+        this.verCodeSecond > 0 && this.verCodeSecond--;
         this.verCodeText = `再次发送(${this.verCodeSecond})`;
       }, 1000);
       setTimeout(() => {
@@ -448,6 +552,7 @@ export default {
 
     checkCode() {
       // this.registerStatus = 1; //wyptest
+      // return;
       this.$refs.registerForm.validate((valid) => {
         if (valid) {
           this.loading = true;
@@ -517,6 +622,7 @@ export default {
       this.loading = true;
       http_request(obj)
         .then((res) => {
+          console.log("上传图片ocr返回", res);
           this.loading = false;
           if (res.code === 200) {
             if (this.idcardType === 0) {
@@ -524,19 +630,31 @@ export default {
               this.idCardForm.name = res.data.result.name;
               this.idCardForm.number = res.data.result.number;
               let { sex, birth, address, ethnicity } = res.data.result;
-              this.idCardForm = Object.assign(this.idCardForm, {
-                sex,
-                birth,
-                address,
-                ethnicity,
-              });
+              this.idCardForm = {
+                ...this.idCardForm,
+                ...{
+                  sex,
+                  birth,
+                  address,
+                  ethnicity,
+                },
+              };
             } else {
+            
               this.idCardForm.idCardNationalEmblemImageUrl = res.data.imageUrl;
-              this.idCardForm.validFrom = res.data.result.valid_from;
-              this.idCardForm.validTo = res.data.result.valid_to;
+              // this.idCardForm.dateRange = [];
+              // this.handleDate(res.data.result.valid_from) &&
+              //   (this.idCardForm.dateRange[0] = res.data.result.valid_from);
+              // this.handleDate(res.data.result.valid_to) &&
+              //   (this.idCardForm.dateRange[1] = res.data.result.valid_to);
+              this.idCardForm.validFrom = this.handleDate(res.data.result.valid_from);
+              this.idCardForm.validTo = this.handleDate(res.data.result.valid_to, 1);
               this.idCardForm.issue = res.data.result.issue;
+              // console.log(this.idCardForm);
             }
           }
+
+          console.log(112233);
           console.log(this.idCardForm);
         })
         .catch(() => {
@@ -555,7 +673,23 @@ export default {
       // }
     },
 
+    handleDate(date, type = 0) {
+      if (date === '长期') {
+        this.showValidTo = false;
+        return '';
+      } 
+      if (type === 1) {
+        this.showValidTo = true;
+      }
+      let arr = date.split("-");
+      if (arr.length === 3) {
+        return date;
+      }
+      return '';
+    },
+
     handleRegister() {
+      console.log(this.idCardForm);
       this.$refs.idCardForm.validate((valid) => {
         if (valid) {
           this.loading = true;
@@ -572,7 +706,7 @@ export default {
             // telephone: '15586869898',
             // captcha: '000000',
             validFrom: this.idCardForm.validFrom,
-            validTo: this.idCardForm.validTo,
+            // validTo: this.idCardForm.validTo,
             address: this.idCardForm.address,
             issue: this.idCardForm.issue,
             brith: this.idCardForm.birth,
@@ -580,6 +714,11 @@ export default {
             sex: this.idCardForm.sex,
             orgName: this.idCardForm.orgName,
           };
+          if (this.showValidTo) {
+            data.validTo = this.idCardForm.validTo
+          } else {
+            data.validTo = '长期'
+          }
           console.log(data);
           const obj = {
             moduleName: "http_login",
@@ -591,14 +730,6 @@ export default {
           http_request(obj)
             .then((res) => {
               this.loading = false;
-              // const username = this.idCardForm.name;
-              // this.$alert(" 注册成功！</font>", "系统提示", {
-              //   dangerouslyUseHTMLString: true,
-              // })
-              //   .then(() => {
-              //     this.$router.push("/login");
-              //   })
-              //   .catch(() => {});
               this.$confirm(
                 "注册信息提交成功，请耐心等待。如有其他问题可联系客服咨询。",
                 "信息",
@@ -630,7 +761,7 @@ export default {
             orgName: this.idCardForm.orgName,
             identificationInf: {
               identificationBeginTime: this.idCardForm.validFrom,
-              identificationEndTime: this.idCardForm.validTo,
+              identificationEndTime: '',
               name: this.idCardForm.name,
               identificationImage: this.idCardForm.idCardFaceImageUrl,
               identificationBackImage:
@@ -638,6 +769,11 @@ export default {
               identificationNumber: this.idCardForm.number,
             },
           };
+          if (this.showValidTo) {
+            data.identificationInf.identificationEndTime = this.idCardForm.validTo;
+          } else {
+            data.identificationInf.identificationEndTime = '长期';
+          }
           let header = {
             Authorization: this.$store.state.user.onceToken,
           };
@@ -842,6 +978,7 @@ export default {
   margin-bottom: 20px;
   .el-form-item {
     width: 180px;
+    // width: 100%;
     margin-bottom: 0;
   }
   .el-date-editor.el-input,

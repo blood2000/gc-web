@@ -6,89 +6,99 @@
       :inline="true"
       label-width="80px"
       size="small"
-          class="ddc-queryParams"
-    label-position="top"
+      class="ddc-queryParams"
+      label-position="top"
     >
-        <div class="ddc-queryParams-left">
-      <div class="up">
-      <el-form-item label="车牌号" prop="vehicleCode" v-if="warningTab === '1'">
-        <el-input
-          v-model="queryParams.vehicleCode"
-          placeholder="请输入车牌号"
-          clearable
-          style="width: 160px"
-          @keyup.enter.native="$emit('handleQuery')"
-        />
-      </el-form-item>
-      <el-form-item label="司机" prop="driver" v-if="warningTab === '2'">
-        <el-input
-          v-model="queryParams.driver"
-          placeholder="请输入司机姓名"
-          clearable
-          style="width: 160px"
-          @keyup.enter.native="$emit('handleQuery')"
-        />
-      </el-form-item>
-      <el-form-item label="上报时间">
-        <el-date-picker
-          v-model="queryParams.dateRange"
-          unlink-panels
-          :picker-options="pickerOptions"
-          size="small"
-          style="width: 240px"
-          value-format="yyyy-MM-dd"
-          type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        />
-      </el-form-item>
-      <el-form-item label="告警类型" prop="warningTypes">
-        <el-input
-          v-model="warningNames"
-          clearable
-          :readonly="true"
-          placeholder="请选择告警类型"
-          style="width: 160px"
-          @focus="chooseWarningTypes"
-        />
-      </el-form-item>
-      <el-form-item label="设备类型" prop="deviceType">
-        <el-select
-          v-model="queryParams.deviceType"
-          clearable
-          filterable
-          style="width: 185px"
-          placeholder="请选择设备类型"
-          @change="$emit('handleQuery')"
-        >
-          <el-option
-            v-for="(item, index) in deviceTypeList"
-            :key="index"
-            :label="item.name"
-            :value="item.code"
-          />
-        </el-select>
-      </el-form-item>
-  </div>
-    </div>
-     <div class="ddc-queryParams-right">
-      <!-- <div @click="hanleIsShow">
+      <div class="ddc-queryParams-left">
+        <div class="up">
+          <el-form-item
+            label="车牌号"
+            prop="vehicleCode"
+            v-if="warningTab === '1'"
+          >
+            <el-input
+              v-model="queryParams.vehicleCode"
+              placeholder="请输入车牌号"
+              clearable
+              style="width: 160px"
+              @keyup.enter.native="$emit('handleQuery')"
+            />
+          </el-form-item>
+          <el-form-item label="司机" prop="driver" v-if="warningTab === '2'">
+            <el-input
+              v-model="queryParams.driver"
+              placeholder="请输入司机姓名"
+              clearable
+              style="width: 160px"
+              @keyup.enter.native="$emit('handleQuery')"
+            />
+          </el-form-item>
+          <el-form-item label="上报时间">
+            <el-date-picker
+              v-model="queryParams.dateRange"
+              unlink-panels
+              :picker-options="pickerOptions"
+              size="small"
+              style="width: 240px"
+              value-format="yyyy-MM-dd"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+            />
+          </el-form-item>
+          <el-form-item label="告警类型" prop="warningTypes">
+            <el-input
+              v-model="warningNames"
+              clearable
+              :readonly="true"
+              placeholder="请选择告警类型"
+              style="width: 160px"
+              @focus="chooseWarningTypes"
+            />
+          </el-form-item>
+          <el-form-item label="设备类型" prop="deviceType">
+            <el-select
+              v-model="queryParams.deviceType"
+              clearable
+              filterable
+              style="width: 185px"
+              placeholder="请选择设备类型"
+              @change="$emit('handleQuery')"
+            >
+              <el-option
+                v-for="(item, index) in deviceTypeList"
+                :key="index"
+                :label="item.name"
+                :value="item.code"
+              />
+            </el-select>
+          </el-form-item>
+        </div>
+      </div>
+      <div class="ddc-queryParams-right">
+        <!-- <div @click="hanleIsShow">
         <i :class="isShow ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i>
         <span>{{ isShow ? "收起" : "展开" }}</span>
       </div> -->
-      <el-form-item>
-        <el-button
-          type="primary"
-          icon="el-icon-search"
-          @click="$emit('handleQuery')"
-        >
-          搜索
-        </el-button>
-        <el-button type="primary" class="ddc-queryParams-right-reset" plain icon="el-icon-refresh" @click="reset">
-          重置
-        </el-button>
-      </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            @click="$emit('handleQuery')"
+          >
+            搜索
+          </el-button>
+          <el-button
+            type="primary"
+            class="ddc-queryParams-right-reset"
+            plain
+            icon="el-icon-refresh"
+            @click="reset"
+          >
+            重置
+          </el-button>
+        </el-form-item>
       </div>
     </el-form>
     <el-dialog
@@ -186,7 +196,7 @@ export default {
       loading: false,
       warningTypes: [],
       warningNames: "",
-            isShow: false,
+      isShow: false,
 
       // 'projectList': []
     };
@@ -219,7 +229,7 @@ export default {
       console.log(this.queryParams);
       this.$emit("handleQuery");
     },
-      hanleIsShow() {
+    hanleIsShow() {
       this.isShow = !this.isShow;
     },
 
