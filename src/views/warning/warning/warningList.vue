@@ -179,10 +179,10 @@ export default {
       type: Object,
       required: true,
     },
-    warningTypeList: {
-      type: Array,
-      default: () => [],
-    },
+    // warningTypeList: {
+    //   type: Array,
+    //   default: () => [],
+    // },
   },
   watch: {
     listDrawer() {
@@ -213,11 +213,15 @@ export default {
         this.keyWord = val.nickName;
         this.queryParams.nickName = val.nickName;
       }
+
+      this.warningTypes = JSON.parse(JSON.stringify(val.subWarningTypeList));
+      this.getWarnTypeId();
       this.searchQuery();
     },
-    warningTypeList(list) {
-      this.warningTypes = JSON.parse(JSON.stringify(list));
-    },
+    // warningTypeList(list) {
+    //   this.warningTypes = JSON.parse(JSON.stringify(list));
+    //   this.getWarnTypeId();
+    // },
   },
   mounted() {
     // this.warningData = warningConfig.mockData;
@@ -299,6 +303,15 @@ export default {
     },
     //确认选中的告警类型名称及ID
     confirm() {
+      this.getWarnTypeId();
+      this.searchQuery();
+      this.open = false;
+    },
+    cancel() {
+      this.open = false;
+    },
+    //告警类型ID
+    getWarnTypeId() {
       this.warningNames = "";
       let alarmTypeInfoId = [];
       this.warningTypes.map((item) => {
@@ -309,13 +322,10 @@ export default {
           }
         });
       });
+      console.log('告警类型id', alarmTypeInfoId)
+      console.log('传送的告警类型列表', this.warningTypes)
       // this.$emit("updateWarningTypeList", this.warningTypes);
       this.queryParams.alarmTypeInfoId = alarmTypeInfoId.join(",");
-      this.searchQuery();
-      this.open = false;
-    },
-    cancel() {
-      this.open = false;
     },
 
     //设备类型
