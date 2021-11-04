@@ -6,10 +6,10 @@
       <div class="information g-single-row">
         <div class="top g-single-row">HI, {{ user.nickName }}</div>
         <div class="role g-single-row g-flex">
-          <div class="g-single-row" style="max-width: 90px; margin-right: 5px">
+          <!-- <div class="g-single-row" style="max-width: 90px; margin-right: 5px">
             {{ dept || "-" }}
-          </div>
-          | {{ roles || "-" }}
+          </div> -->
+          {{companyName}}
         </div>
       </div>
       <div class="avatar">
@@ -127,6 +127,7 @@ export default {
     return {
       user: {},
       dept: "",
+      companyName: '',
       value: new Date(),
       dispatchDateList: [],
       // warnDateList: ['2021-10-12', '2021-10-13'],
@@ -170,6 +171,7 @@ export default {
         console.log("用户信息==>", res);
         this.user = res.user;
         this.dept = res.dept;
+        this.companyName = res.company.name;
       });
       // getUserProfile().then(response => {
       //   this.user = response.data;

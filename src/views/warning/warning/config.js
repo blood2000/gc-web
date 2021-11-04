@@ -134,9 +134,9 @@ const warningLevelList = [
 ];
 const warningLevelObj =
 {
-  0: { text: "一级告警", img: require('@/assets/images/detail/warn_lelve_1.png') },
-  1: { text: "二级告警", img: require('@/assets/images/detail/warn_lelve_2.png') },
-  2: { text: "三级告警", img: require('@/assets/images/detail/warn_lelve_3.png') }
+  0: { text: "一级告警", img: require('@/assets/images/detail/warn_level_1.png') },
+  1: { text: "二级告警", img: require('@/assets/images/detail/warn_level_2.png') },
+  2: { text: "三级告警", img: require('@/assets/images/detail/warn_level_3.png') }
 };
 const deviceTypeList = [
   {
@@ -189,8 +189,10 @@ const tableColumnsConfig = [
     prop: "alarmTypeName",
     sortNum: 3,
     tooltip: true,
+    headerSlot: true,
     width: 100
   },
+  
   {
     isShow: true,
     label: "告警级别",
@@ -207,38 +209,31 @@ const tableColumnsConfig = [
     tooltip: true,
     width: 120
   },
+ 
   // {
   //   isShow: true,
-  //   label: "上报时速(km/h)",
-  //   prop: "alarmValue",
-  //   sortNum: 6,
+  //   label: "设备类型",
+  //   prop: "name",
+  //   sortNum: 7,
   //   tooltip: true,
-  //   width: 100
+  //   width: 110
   // },
   {
     isShow: true,
-    label: "设备类型",
-    prop: "name",
-    sortNum: 7,
-    tooltip: true,
-    width: 110
-  },
-  {
-    isShow: true,
-    label: "上报时间",
+    label: "告警时间",
     prop: "alarmTime",
     sortNum: 8,
     tooltip: true,
     width: 120
   },
-  {
-    isShow: true,
-    label: "上报位置",
-    prop: "alarmAddress",
-    sortNum: 9,
-    tooltip: true,
-    width: 200
-  },
+  // {
+  //   isShow: true,
+  //   label: "上报位置",
+  //   prop: "alarmAddress",
+  //   sortNum: 9,
+  //   tooltip: true,
+  //   width: 200
+  // },
   {
     isShow: true,
     label: "操作",
@@ -263,9 +258,9 @@ const warningTabs = [
 
 const mockData = [
   {
-    vehicle: "闽A123123",
-    driver: "王重阳",
-    warinigType: 11,
+    licenseNumber: "闽A123123",
+    nickName: "王重阳",
+    alarmTypeName: '告警类型',
     warningLevel: 0,
     speed: "110",
     deviceType: 1,
@@ -273,9 +268,9 @@ const mockData = [
     upAddr: "福州仓山区"
   },
   {
-    vehicle: "闽A223322",
-    driver: "王安石",
-    warinigType: 4,
+    licenseNumber: "闽A223322",
+    nickName: "王安石",
+    alarmTypeName: '告警类型',
     warningLevel: 0,
     speed: "92",
     deviceType: 0,
@@ -283,9 +278,9 @@ const mockData = [
     upAddr: "福州仓山区"
   },
   {
-    vehicle: "闽A44445",
-    driver: "司马光",
-    warinigType: 10,
+    licenseNumber: "闽A44445",
+    nickName: "司马光",
+    alarmTypeName: '告警类型',
     warningLevel: 2,
     speed: "80",
     deviceType: 1,
@@ -293,9 +288,9 @@ const mockData = [
     upAddr: "福州仓山区"
   },
   {
-    vehicle: "闽A123123",
-    driver: "辛弃疾",
-    warinigType: 11,
+    licenseNumber: "闽A123123",
+    nickName: "辛弃疾",
+    alarmTypeName: '告警类型',
     warningLevel: 1,
     speed: "110",
     deviceType: 1,
@@ -303,9 +298,9 @@ const mockData = [
     upAddr: "福州仓山区"
   },
   {
-    vehicle: "闽A223322",
-    driver: "苏轼",
-    warinigType: 4,
+    licenseNumber: "闽A223322",
+    nickName: "苏轼",
+    alarmTypeName: '告警类型',
     warningLevel: 0,
     speed: "92",
     deviceType: 0,
@@ -313,9 +308,9 @@ const mockData = [
     upAddr: "福州仓山区"
   },
   {
-    vehicle: "闽A44445",
-    driver: "李白",
-    warinigType: 10,
+    licenseNumber: "闽A44445",
+    nickName: "李白",
+    alarmTypeName: '告警类型',
     warningLevel: 1,
     speed: "80",
     deviceType: 1,
@@ -323,65 +318,65 @@ const mockData = [
     upAddr: "福州仓山区"
   },
   {
-    vehicle: "闽A123123",
-    driver: "杜甫",
-    warinigType: 11,
+    licenseNumber: "闽A123123",
+    nickName: "杜甫",
+    alarmTypeName: '告警类型',
     warningLevel: 0,
     speed: "110",
     deviceType: 1,
     upTime: "2021-08-06",
     upAddr: "福州仓山区"
   },
-  {
-    vehicle: "闽A223322",
-    driver: "王阳明",
-    warinigType: 4,
-    warningLevel: 1,
-    speed: "92",
-    deviceType: 0,
-    upTime: "2021-09-06",
-    upAddr: "福州仓山区"
-  },
-  {
-    vehicle: "闽A44445",
-    driver: "孟轲",
-    warinigType: 10,
-    warningLevel: 0,
-    speed: "80",
-    deviceType: 1,
-    upTime: "2021-09-08",
-    upAddr: "福州仓山区"
-  },
-  {
-    vehicle: "闽A123123",
-    driver: "王献之",
-    warinigType: 11,
-    warningLevel: 2,
-    speed: "110",
-    deviceType: 1,
-    upTime: "2021-08-06",
-    upAddr: "福州仓山区"
-  },
-  {
-    vehicle: "闽A44445",
-    driver: "张旭",
-    warinigType: 10,
-    warningLevel: 0,
-    speed: "80",
-    deviceType: 1,
-    upTime: "2021-09-08",
-    upAddr: "福州仓山区"
-  },
-  {
-    vehicle: "闽A123123",
-    driver: "杜康",
-    warinigType: 11,
-    warningLevel: 1,
-    speed: "110",
-    deviceType: 1,
-    upTime: "2021-08-06",
-    upAddr: "福州仓山区"
-  }
+  // {
+  //   licenseNumber: "闽A223322",
+  //   nickName: "王阳明",
+  //   warinigType: 4,
+  //   warningLevel: 1,
+  //   speed: "92",
+  //   deviceType: 0,
+  //   upTime: "2021-09-06",
+  //   upAddr: "福州仓山区"
+  // },
+  // {
+  //   licenseNumber: "闽A44445",
+  //   nickName: "孟轲",
+  //   warinigType: 10,
+  //   warningLevel: 0,
+  //   speed: "80",
+  //   deviceType: 1,
+  //   upTime: "2021-09-08",
+  //   upAddr: "福州仓山区"
+  // },
+  // {
+  //   licenseNumber: "闽A123123",
+  //   nickName: "王献之",
+  //   warinigType: 11,
+  //   warningLevel: 2,
+  //   speed: "110",
+  //   deviceType: 1,
+  //   upTime: "2021-08-06",
+  //   upAddr: "福州仓山区"
+  // },
+  // {
+  //   licenseNumber: "闽A44445",
+  //   nickName: "张旭",
+  //   warinigType: 10,
+  //   warningLevel: 0,
+  //   speed: "80",
+  //   deviceType: 1,
+  //   upTime: "2021-09-08",
+  //   upAddr: "福州仓山区"
+  // },
+  // {
+  //   licenseNumber: "闽A123123",
+  //   nickName: "杜康",
+  //   warinigType: 11,
+  //   warningLevel: 1,
+  //   speed: "110",
+  //   deviceType: 1,
+  //   upTime: "2021-08-06",
+  //   upAddr: "福州仓山区"
+  // }
 ];
 
 const videoList = [

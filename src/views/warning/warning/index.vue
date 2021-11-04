@@ -21,8 +21,19 @@
             :name="item.value"
             :label="item.label"
           >
+            <div class="warn-card-box">
+              <!-- 告警卡片组件 -->
+              <warn-card
+                v-for="(item, index) in warningData"
+                :key="index"
+                :cardInfo="item"
+                :tabIndex="tabIndex"
+                :level="(index % 3) + 1"
+                @openList="openList"
+              ></warn-card>
+            </div>
             <!-- 表格 -->
-            <RefactorTable
+            <!-- <RefactorTable
               :loading="loading"
               :data="warningData"
               row-key="id"
@@ -30,27 +41,18 @@
               :border="false"
               :stripe="true"
             >
-              <!-- <template #warinigType="{ row }">
-                    {{ getWarinigTypeName(row.warinigType) }}
-                  </template>
-                  <template #warningLevel="{ row }">
-                    {{ getWarningLevelName(row.warningLevel) }}
-                  </template> -->
               <template #deviceType="{ row }">
                 {{ getDeviceTypeName(row.deviceType) }}
               </template>
-              <!-- <template #alarmValue="{ row }">
-                    {{ row.alarmValue || '-' }}
-                  </template> -->
               <template #handle="{ row }">
                 <el-button size="mini" type="text" @click="toDetail(row)"
                   >详情
                 </el-button>
               </template>
-            </RefactorTable>
+            </RefactorTable> -->
             <!-- 分页 -->
             <pagination
-              v-show="total > 0"
+              v-show="total > queryParams.pageSize"
               :total="total"
               layout="prev, pager, next,jumper, total,sizes"
               :page.sync="queryParams.pageNum"
@@ -61,11 +63,13 @@
         </el-tabs>
       </div>
     </div>
-    <Detail
+    <warning-list
       :id="currId"
-      :detailDrawer="detailDrawer"
-      :options="{ title: '告警详情' ,warningTypeList}"
-      @colseDetailDrawer="colseDetailDrawer"
+      :listDrawer="listDrawer"
+      :options="{ title: '告警明细'}"
+      :drawerQuerys="drawerQuerys"
+      :warningTypeList="subWarningTypeList"
+      @colseListDrawer="colseListDrawer"
     />
   </div>
 </template>
@@ -73,12 +77,13 @@
 <script>
 import { http_request } from "@/api";
 import QueryForm from "./components/queryForm.vue";
+import WarnCard from "./components/WarnCard.vue";
 import warningConfig from "./config";
-import Detail from "./warningDetail.vue";
+import WarningList from "./warningList.vue";
 // import store from "@/store";
 export default {
   name: "warning", // 告警管理
-  components: { QueryForm, Detail },
+  components: { QueryForm, WarningList, WarnCard },
   data() {
     return {
       orgName: "", //组织查询
@@ -91,9 +96,10 @@ export default {
       showSearch: true, //搜索显隐
       loading: false, //表格load
       warningData: [],
+      testData: [],
       queryParams: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 12,
         vehicleCode: "",
         driver: "",
         deviceType: null,
@@ -102,13 +108,16 @@ export default {
       },
       deviceTypeList: [],
       warningTypeList: [],
+      subWarningTypeList: [],  //传到告警明细抽屉页面所需的告警类型列表
       warningLevelList: [],
       tabIndex: "1",
       warningTabs: [],
       tableColumnsConfig: [], //配置表头数据
       total: 0,
-      detailDrawer: false,
+      total1: 10,
+      listDrawer: false,
       currId: null,
+      drawerQuerys: {}
     };
   },
 
@@ -117,6 +126,9 @@ export default {
     orgName(val) {
       this.$refs.tree.filter(val);
     },
+    drawerQuerys(val) {
+      console.log('drawerQuerys-->', val)
+    }
   },
 
   created() {
@@ -136,6 +148,7 @@ export default {
   mounted() {
     // this.getOrgHttp();
     this.searchQuery();
+    // this.testData = warningConfig.mockData;
   },
 
   methods: {
@@ -243,8 +256,8 @@ export default {
     async warningDataReq() {
       this.loading = true;
       const tmp = {
-        start: this.queryParams.pageNum,
-        limit: this.queryParams.pageSize,
+        pageNum: this.queryParams.pageNum,
+        pageSize: this.queryParams.pageSize,
         bigAlarmTime:
           (this.queryParams.dateRange && this.queryParams.dateRange[0]) || null,
         endAlarmTime:
@@ -252,17 +265,22 @@ export default {
         alarmTypeInfoId: this.queryParams.warningTypes.join(","),
         deviceSeriesModelInfoCode: this.queryParams.deviceType,
       };
+      this.drawerQuerys.dateRange = this.queryParams.dateRange;
+      // this.drawerQuerys.alarmTypeInfoId = this.queryParams.dateRange;
       if (this.tabIndex === "1") {
         tmp.dimensionType = "vehicle";
         tmp.licenseNumber = this.queryParams.vehicleCode || null; //车牌号
+        this.drawerQuerys.dimensionType = "vehicle";
       } else {
         tmp.dimensionType = "driver";
         tmp.nickName = this.queryParams.driver; //司机姓名
+        this.drawerQuerys.dimensionType = "driver";
       }
+      
       const obj = {
         moduleName: "http_warning",
         method: "get",
-        url_alias: "warning_list",
+        url_alias: "warning_notice_list",
         data: tmp,
       };
       console.log("告警参数", obj);
@@ -309,7 +327,7 @@ export default {
     toDetail(obj) {
       console.log("详情", obj);
       this.currId = obj.id;
-      this.detailDrawer = true;
+      this.listDrawer = true;
       // this.$router.push("warningDetail?id=" + obj.id);
       // this.$router.push("/warning/warning/warningDetail/" + obj.driver);
     },
@@ -329,8 +347,27 @@ export default {
       this.searchQuery();
       console.log(this.tableColumnsConfig);
     },
-    colseDetailDrawer() {
-      this.detailDrawer = false;
+    //打开详情明细
+    openList(params) {
+      console.log(params);
+      this.listDrawer = true;
+      this.drawerQuerys = {...this.drawerQuerys,...params.item};
+      this.subWarningTypeList = [];
+      
+      if (params.type === 'vehicle' || params.type === 'device') {
+        console.log('========>>', params.type)
+        this.warningTypeList.map(item => {
+          if (item.alarmObject === params.type) {
+            this.subWarningTypeList[0] = item;
+          }
+        })
+      } else {
+        this.subWarningTypeList = this.warningTypeList;
+      }
+     
+    },
+    colseListDrawer() {
+      this.listDrawer = false;
     },
   },
 };
@@ -378,5 +415,13 @@ export default {
   padding-top: 3px !important;
   color: #409eff;
   font-size: 14px;
+}
+
+.warn-card-box {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 10px 4px 0 0;
 }
 </style>

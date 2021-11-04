@@ -6,7 +6,7 @@
     direction="rtl"
     style="z-index: 2000"
     :before-close="handleClose"
-    size="40%"
+    size="50%"
     :append-to-body="true"
   >
     <div class="dispatch-base-contents-box" style="padding-top: 25px">
@@ -74,7 +74,7 @@
 
 <script>
 import { http_request } from "@/api";
-import warningConfig from "./config";
+import warningConfig from "../config";
 import { number } from "echarts";
 // import store from "@/store";
 export default {
@@ -111,10 +111,9 @@ export default {
     },
   },
   methods: {
-    dealAlarmImg(){
-      if(!this.detail.key) return ''
-      console.log('this.detail.key',this.detail)
-      return require(`@/assets/images/detail/${this.detail.key}.png`)
+    dealAlarmImg() {
+      if (!this.detail.key) return "";
+      // return require(`@/assets/images/detail/${this.detail.key}.png`);
     },
     levelDeal(type) {
       const obj = {
