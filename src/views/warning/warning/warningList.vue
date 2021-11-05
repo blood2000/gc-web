@@ -193,6 +193,7 @@ export default {
         this.videoList = warningConfig.videoList;
       }
     },
+    
 
     drawerQuerys(val) {
       console.log(val);
