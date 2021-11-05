@@ -463,10 +463,10 @@
        <span>选择常用企业</span>
        <img src="" alt="">
      </div> -->
-      <CompanyItem   
-      v-if="innerDrawer"
-      @companySelection="companySelection"
-      @handleInnerClose="handleInnerClose"
+      <CompanyItem
+        v-if="innerDrawer"
+        @companySelection="companySelection"
+        @handleInnerClose="handleInnerClose"
       />
     </el-drawer>
   </el-drawer>
@@ -585,6 +585,11 @@ export default {
             message: "用车企业不能为空",
             trigger: "blur",
           },
+          {
+            required: true,
+            message: "用车企业不能为空",
+            trigger: "change",
+          },
         ],
         shipmentName: [
           { required: true, message: "姓名不能为空", trigger: "blur" },
@@ -622,6 +627,7 @@ export default {
         ],
         linkManName: [
           { required: true, message: "请输入联系人", trigger: "blur" },
+          { required: true, message: "请输入联系人", trigger: "change" },
         ],
         linkManPhone: [
           { required: true, message: "请输入联系人电话", trigger: "blur" },
@@ -695,7 +701,7 @@ export default {
       });
     },
     // 获取市
-    getCityListFun(code, type) {
+    getCityListFun(code, type, callBack) {
       if (code == null || code === "") {
         return;
       }
@@ -716,10 +722,11 @@ export default {
           console.log("你还能进来？", type);
           me.unLoadList.cityList = res.data;
         }
+        callBack();
       });
     },
     //获取区
-    getDistrictFun(code, type) {
+    getDistrictFun(code, type, callBack) {
       if (code == null || code === "") {
         return;
       }
@@ -738,6 +745,7 @@ export default {
         } else if (type == "2") {
           me.unLoadList.districtList = res.data;
         }
+        callBack();
       });
     },
     //省更变
@@ -761,7 +769,7 @@ export default {
       } else {
         this.addressReset(type);
       }
-      this.getCityListFun(e, type);
+      this.getCityListFun(e, type, () => {});
     },
     // 市更新
     cityChange(e, type) {
@@ -779,7 +787,7 @@ export default {
       } else {
         this.addressReset(type);
       }
-      this.getDistrictFun(e, type);
+      this.getDistrictFun(e, type,()=>{});
     },
     // 区更变
     districtChange(e, type) {
@@ -854,7 +862,6 @@ export default {
       this.getDicts(null, this.goodsBigTypeConfig).then((response) => {
         this.goodsBigTypeList = response.data;
       });
-  
     },
     // 监听详情地址输入框 1
     remote1Method(que) {
@@ -978,25 +985,30 @@ export default {
       const cityCode = code.slice(0, 4);
       const districtCode = code.slice(0, 6);
       if (type == "1") {
-        this.getCityListFun(provinceCode, "1");
-        this.getDistrictFun(cityCode, "1");
-        this.loadAddressParams.provinceCode = provinceCode;
-        this.loadAddressParams.cityCode = cityCode;
-        this.loadAddressParams.districtCode = districtCode;
-        this.loadAddressParams.province = province;
-        this.loadAddressParams.city = city;
-        this.loadAddressParams.district = district;
-        console.log("this.loadAddressParams", this.loadAddressParams);
+        this.getCityListFun(provinceCode, "1", () => {
+          this.getDistrictFun(cityCode, "1", () => {
+                      console.log("loadAddressParams 出发地", this.loadList.cityList);
+            this.loadAddressParams.provinceCode = provinceCode;
+            this.loadAddressParams.cityCode = cityCode;
+            this.loadAddressParams.districtCode = districtCode;
+            this.loadAddressParams.province = province;
+            this.loadAddressParams.city = city;
+            this.loadAddressParams.district = district;
+            console.log("this.loadAddressParams", this.loadAddressParams);
+          });
+        });
       } else if (type == "2") {
-        this.getCityListFun(provinceCode, "2");
-        this.getDistrictFun(cityCode, "2");
-        this.unloadAddressParams.provinceCode = provinceCode;
-        this.unloadAddressParams.cityCode = cityCode;
-        this.unloadAddressParams.districtCode = districtCode;
-        this.unloadAddressParams.province = province;
-        this.unloadAddressParams.city = city;
-        this.unloadAddressParams.district = district;
-        console.log("this.unloadAddressParams", this.unloadAddressParams);
+        this.getCityListFun(provinceCode, "2", () => {
+          this.getDistrictFun(cityCode, "2", () => {
+            this.unloadAddressParams.provinceCode = provinceCode;
+            this.unloadAddressParams.cityCode = cityCode;
+            this.unloadAddressParams.districtCode = districtCode;
+            this.unloadAddressParams.province = province;
+            this.unloadAddressParams.city = city;
+            this.unloadAddressParams.district = district;
+            console.log("this.unloadAddressParams", this.unloadAddressParams);
+          });
+        });
       }
     },
     //关闭抽屉
@@ -1096,38 +1108,40 @@ export default {
     radioSelection(data) {
       if (!data || !this.currAddressType) return;
       console.log("选择返回的数据", data, this.currAddressType);
-      this.getCityListFun(data.provinceCode, this.currAddressType + "");
-      this.getDistrictFun(data.cityCode, this.currAddressType + "");
-      const objName =
-        this.currAddressType === 1
-          ? "loadAddressParams"
-          : "unloadAddressParams";
-      console.log("objName", objName);
-      this[objName] = {
-        province: data.province, //省
-        city: data.city, //市
-        district: data.district, //区
-        provinceCode: data.provinceCode, //省Code
-        cityCode: data.cityCode, //市Code
-        districtCode: data.districtCode, //区Code
-        detailAddress: data.detail, //详细地址
-        addressAlias: data.addressAlias, //地址别名
-        linkManName: data.contact, //联系人
-        linkManPhone: data.contactPhone, //联系人电话
-        type: data.addressType + "", //1 装货  2 卸货
-        locations: [Number(data.longitude), Number(data.latitude)], //坐标
-      };
+      this.getCityListFun(data.provinceCode, this.currAddressType + "", () => {
+        this.getDistrictFun(data.cityCode, this.currAddressType + "", () => {
+          const objName =
+            this.currAddressType === 1
+              ? "loadAddressParams"
+              : "unloadAddressParams";
+          console.log("objName", objName);
+          this[objName] = {
+            province: data.province, //省
+            city: data.city, //市
+            district: data.district, //区
+            provinceCode: data.provinceCode, //省Code
+            cityCode: data.cityCode, //市Code
+            districtCode: data.districtCode, //区Code
+            detailAddress: data.detail, //详细地址
+            addressAlias: data.addressAlias, //地址别名
+            linkManName: data.contact, //联系人
+            linkManPhone: data.contactPhone, //联系人电话
+            type: this[objName].type, //1 装货  2 卸货
+            locations: [Number(data.longitude), Number(data.latitude)], //坐标
+          };
 
-      this.currAddressType = null;
-      this.addressOpen = false;
-      console.log("this[objName]", this[objName]);
+          this.currAddressType = null;
+          this.addressOpen = false;
+          console.log("this[objName]", this[objName]);
+        });
+      });
     },
-    companySelection(data){
-      if(!data)return
-      console.log('companySelection',data)
-      this.queryParams.companyName = data.companyName
-      this.queryParams.shipmentName = data.contactName
-      this.queryParams.shipmentPhone = data.contactPhone
+    companySelection(data) {
+      if (!data) return;
+      console.log("companySelection", data);
+      this.queryParams.companyName = data.companyName;
+      this.queryParams.shipmentName = data.contactName;
+      this.queryParams.shipmentPhone = data.contactPhone;
     },
     // 常用企业抽屉关闭
     handleInnerClose() {
