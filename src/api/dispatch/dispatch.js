@@ -12,4 +12,5 @@ export default {
     detail_manage: (appointCarOrderCode) => `/fmsweb/basic/appointCarOrder/v1/detailAppointCarOrderByCode/${appointCarOrderCode}`,//派车单详情
     CarOrderIng_ByVehicleCode: (code) => `/fmsweb/basic/appointCarOrder/v1/detailAppointCarOrderIngByVehicleCode/${code}`,//根据车辆Code获取当前正在运行中的派车单
     addDispatchOrder: '/fmsweb/basic/dispatchOrder/v1/addDispatchOrder',//自建调度单
+    editUpOrDownShelfDispatchOrder:(status,code)=> `/fmsweb/basic/dispatchOrder/v1/editUpOrDownShelfDispatchOrder/${status}/${code}`
 }

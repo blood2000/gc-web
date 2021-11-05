@@ -47,6 +47,15 @@
             <span>{{ sourceConfig[row.source] }}</span>
           </template>
           <template #edit="{ row }">
+            <el-button
+              size="mini"
+              type="text"
+              style="color: red"
+              v-show="row.source == 'zj'&&row.dispatchOrderStatus !== 0"
+              @click="handleStatusClose(row)"
+            >
+              关闭
+            </el-button>
             <el-button size="mini" type="text" @click="handleDetail(row)">
               详情
             </el-button>
@@ -233,6 +242,27 @@ export default {
       }
       // this.$router.push("order/detail?code=" + code);
     },
+    // 关闭
+    handleStatusClose(data) {
+      console.log("data 关闭", data);
+      this.$confirm("关闭操作不可恢复，确认要关闭该调度吗？", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        //editUpOrDownShelfDispatchOrder status,code
+        const obj = {
+          moduleName: "http_dispatch",
+          method: "put",
+          url_alias: "editUpOrDownShelfDispatchOrder",
+          url_code: [40, data.dispatchOrderCode],
+        };
+        http_request(obj).then(() => {
+          this.searchQuery();
+          this.msgSuccess("关闭成功");
+        });
+      });
+    },
     //派车
     handleDispatch(data) {
       //dispatch/order/car
@@ -316,7 +346,7 @@ export default {
     },
     // 关闭自建派车弹窗
     colseCreateCarDrawer() {
-      console.log('关闭自建派车弹窗')
+      console.log("关闭自建派车弹窗");
       this.createCarDrawer = false;
     },
     colseCreateDrawer(e) {
