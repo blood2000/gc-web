@@ -199,7 +199,7 @@
           <el-col :span="24" style="padding-bottom: 16px">
             <span class="dispatch-base-label">重量/体积:</span>
             <span class="dispatch-base-text">
-              {{ isOrderGoodses("goodsWeight") }}</span
+             {{isOrderGoodses("goodsWeight") === '不限'?'':'共'}} {{ isOrderGoodses("goodsWeight") }}</span
             >
           </el-col>
           <el-col :span="24" style="padding-bottom: 16px">

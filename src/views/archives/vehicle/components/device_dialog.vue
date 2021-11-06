@@ -250,7 +250,7 @@ export default {
           header: { "Content-Type": "multipart/form-data" },
         };
         const res = await http_request(obj);
-        console.log("res", res);
+        console.log("绑定图片上传 res", res);
         if (!res.data) return this.msgError("无效二维码");
         const addObj = {
           moduleName: "http_vehicle",
