@@ -395,6 +395,10 @@ export default {
     this.getTree();
   },
   methods: {
+    //日期校验
+    dateChange(e) {
+      console.log("日期哦", e);
+    },
     isDisabled() {
       let result = false;
       if (this.isDetail) result = true;
@@ -429,17 +433,19 @@ export default {
           confirmButtonText: "确认",
           showCancelButton: false,
           type: "warning",
-        }).then(() => {
-          // if (type == "0") {
-          //   me.form.telphone = null;
-          // } else {
-          //   me.form.identificationNumber = null;
-          // }
-          this.reset();
-        }).catch(()=>{
-          console.log('xxxxxxxxxxxx')
-          this.reset();
         })
+          .then(() => {
+            // if (type == "0") {
+            //   me.form.telphone = null;
+            // } else {
+            //   me.form.identificationNumber = null;
+            // }
+            this.reset();
+          })
+          .catch(() => {
+            console.log("xxxxxxxxxxxx");
+            this.reset();
+          });
       } else {
         me.$confirm(`${msgData.value}`, "系统提示", {
           confirmButtonText: "确认",
@@ -519,13 +525,15 @@ export default {
               data: me.FormToUpdate(),
             };
             console.log("obj", obj);
-            http_request(obj).then((updateRes) => {
-              console.log("updateRes", updateRes);
-              this.$emit("colseDialog", "ok");
-              this.loading = false;
-            }).catch(()=>{
-              this.loading = false;
-            })
+            http_request(obj)
+              .then((updateRes) => {
+                console.log("updateRes", updateRes);
+                this.$emit("colseDialog", "ok");
+                this.loading = false;
+              })
+              .catch(() => {
+                this.loading = false;
+              });
           } else {
             console.log("添加请求");
             const obj = {
@@ -534,13 +542,15 @@ export default {
               url_alias: "driver_add",
               data: me.FormToAdd(),
             };
-            http_request(obj).then((addRes) => {
-              console.log("addRes", addRes);
-              this.$emit("colseDialog", "ok");
-              this.loading = false;
-            }).catch(()=>{
-              this.loading = false;
-            })
+            http_request(obj)
+              .then((addRes) => {
+                console.log("addRes", addRes);
+                this.$emit("colseDialog", "ok");
+                this.loading = false;
+              })
+              .catch(() => {
+                this.loading = false;
+              });
           }
         }
       });
@@ -622,6 +632,15 @@ export default {
       }
       this.ocrDataToForm(res.data.result, type);
     },
+    // 身份证日期判定
+    checkOcrForm(dates) {
+      const reg = /^(\d{1,4})(-)(\d{1,2})\2(\d{1,2})$/;
+      var r = dates.match(reg);
+      if (r == null) {
+        return false;
+      }
+      return true;
+    },
     //ocr数据渲染页面
     ocrDataToForm(data, type) {
       const me = this;
@@ -633,12 +652,35 @@ export default {
             me.checkIdOrphone("1", data.number);
           }
           if (data.name) me.form.name = data.name;
-          if (data.valid_from && data.valid_to) {
+          let formTime = data.valid_from;
+          let toTime = data.valid_to;
+          if (formTime && toTime) {
             console.log("ocrDataToForm data", data);
-            if (data.valid_to == "长期") {
+            if (toTime == "长期") {
               this.isIdDateValid = false;
+            } else {
+              this.isIdDateValid = true;
+              const checkToValue = me.checkOcrForm(toTime);
+              if (!checkToValue) {
+                toTime = null;
+              }
             }
-            me.form.idDateRange = [data.valid_from, data.valid_to];
+            if (formTime) {
+              const checkValue = me.checkOcrForm(formTime);
+              if (!checkValue) {
+                formTime = null;
+              }
+              // var reg = /^(\d{1,4})(-)(\d{1,2})\2(\d{1,2})$/;
+              // var r = data.valid_from.match(reg);
+              // console.log('对不对',r)
+              // if (r == null) {
+              //   formTime = null
+              // }
+            } else {
+              formTime = null;
+            }
+
+            me.form.idDateRange = [formTime, toTime];
           }
         },
         2: () => {

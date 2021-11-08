@@ -23,7 +23,7 @@
             <span class="dispatch-base-label">用车企业:</span>
             <span class="dispatch-base-text"> {{ pageData.companyName }}</span>
           </el-col>
-          <el-col :span="24">
+          <el-col :span="24"  style="padding-bottom: 16px">
             <span class="dispatch-base-label">下单客户电话:</span>
             <span class="dispatch-base-text">
               {{ pageData.shipmentPhone }}</span
