@@ -407,6 +407,9 @@ export default {
   },
   created() {
     // this.getCode();
+    let myEndTime = localStorage.getItem("myEndTime");
+    this.registerForm.telephone = localStorage.getItem('registerTel');
+    myEndTime && this.countdown(myEndTime);
   },
   watch: {
     idCardForm: {
@@ -516,7 +519,8 @@ export default {
               type: "success",
             });
             let endMsRes = new Date().getTime() + this.countdownSeconds * 1000;
-            localStorage.setItem('myEndTime', endMsRes);
+            localStorage.setItem("myEndTime", endMsRes);
+            localStorage.setItem("registerTel", this.registerForm.telephone);
             this.countdown(endMsRes);
           }
         })
@@ -546,20 +550,34 @@ export default {
     //验证码倒计时
     countdown(endMsRes) {
       this.sendCode = false;
-      this.verCodeSecond = Math.ceil((endMsRes - (new Date()).getTime()) / 1000);
+      this.verCodeSecond = Math.ceil((endMsRes - new Date().getTime()) / 1000);
       let that = this;
-      this.countdownTimer = setInterval(() => {
-        this.verCodeSecond > 0 && this.verCodeSecond--;
+      // this.countdownTimer = setInterval(() => {
+      //   this.verCodeSecond > 0 && this.verCodeSecond--;
+      //   this.verCodeText = `再次发送(${this.verCodeSecond})`;
+      // }, 1000);
+      // setTimeout(() => {
+      //   this.sendCode = true;
+      //   this.verCodeSecond = this.countdownSeconds;
+      //   //this.countdownTimer = null;
+      //   this.verCodeText = "获取验证码";
+      //   clearInterval(that.countdownTimer);
+      //   console.log(this.countdownTimer);
+      // }, that.countdownSeconds * 1000);
+      this.countdownTimer = setTimeout(() => {
+        this.verCodeSecond--;
         this.verCodeText = `再次发送(${this.verCodeSecond})`;
+        if (this.verCodeSecond < 1) {
+          this.sendCode = true;
+          this.verCodeSecond = this.countdownSeconds;
+          localStorage.removeItem("myEndTime");
+          localStorage.removeItem("registerTel");
+          this.verCodeText = "获取验证码";
+          clearTimeout(that.countdownTimer);
+        } else {
+          that.countdown(endMsRes);
+        }
       }, 1000);
-      setTimeout(() => {
-        this.sendCode = true;
-        this.verCodeSecond = this.countdownSeconds;
-        //this.countdownTimer = null;
-        this.verCodeText = "获取验证码";
-        clearInterval(that.countdownTimer);
-        console.log(this.countdownTimer);
-      }, that.countdownSeconds * 1000);
     },
 
     checkCode() {

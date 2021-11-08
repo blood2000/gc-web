@@ -91,11 +91,7 @@ import { getCodeImg, register } from "@/api/login";
 import { http_request } from "../api";
 import formValidate from "../utils/formValidate";
 import { getToken, setToken } from "@/utils/auth";
-import {
-  Notification,
-  MessageBox,
-  Message
-} from 'element-ui'
+import { Notification, MessageBox, Message } from "element-ui";
 export default {
   name: "Register",
   data() {
@@ -145,6 +141,9 @@ export default {
   },
   created() {
     // this.getCode();
+    let myEndTime = localStorage.getItem("resetEndTime");
+    // this.registerForm.telephone = localStorage.getItem('registerTel');
+    myEndTime && this.countdown(myEndTime);
   },
   mounted() {
     // setTimeout(() => {
@@ -175,7 +174,7 @@ export default {
         http_request(obj)
           .then((res) => {
             Message({
-              message: '手机号未注册',
+              message: "手机号未注册",
               type: "error",
               duration: 3 * 1000,
               showClose: true,
@@ -216,7 +215,11 @@ export default {
                 message: res.msg,
                 type: "success",
               });
-              this.countdown();
+              let endMsRes =
+                new Date().getTime() + this.countdownSeconds * 1000;
+              localStorage.setItem("resetEndTime", endMsRes);
+              // localStorage.setItem("registerTel", this.registerForm.telephone);
+              this.countdown(endMsRes);
             }
           })
           .catch((error) => {
@@ -234,22 +237,23 @@ export default {
       // });
     },
     //验证码倒计时
-    countdown() {
+    countdown(endMsRes) {
       this.sendCode = false;
       let that = this;
-      this.verCodeSecond = 60;
-      this.countdownTimer = setInterval(() => {
-        (this.verCodeSecond > 0) && (this.verCodeSecond--);
+      this.verCodeSecond = Math.ceil((endMsRes - new Date().getTime()) / 1000);
+      this.countdownTimer = setTimeout(() => {
+        this.verCodeSecond--;
         this.verCodeText = `再次发送(${this.verCodeSecond})`;
+        if (this.verCodeSecond < 1) {
+          this.sendCode = true;
+          this.verCodeSecond = this.countdownSeconds;
+          localStorage.removeItem("resetEndTime");
+          this.verCodeText = "获取验证码";
+          clearTimeout(that.countdownTimer);
+        } else {
+          that.countdown(endMsRes);
+        }
       }, 1000);
-      setTimeout(() => {
-        this.sendCode = true;
-        this.verCodeSecond = this.countdownSeconds;
-        //this.countdownTimer = null;
-        this.verCodeText = "获取验证码";
-        clearInterval(that.countdownTimer);
-        console.log(this.countdownTimer);
-      }, that.countdownSeconds * 1000);
     },
 
     handleReset() {
