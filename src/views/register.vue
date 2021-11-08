@@ -196,7 +196,7 @@
         <el-form-item prop="isExpired" v-if="!showValidTo">
           <el-input
             v-model="idCardForm.isExpired"
-            @focus="showValidTo = true;"
+            @focus="showValidTo = true"
             type="text"
             auto-complete="off"
             readonly="readonly"
@@ -296,7 +296,10 @@ export default {
     const validBeginTime = (rule, value, callback) => {
       if (!value) {
         callback(new Error(`请选择身份证有效起始日期`));
-      } else if (this.idCardForm.validTo && !compareBeginEndTime(value, this.idCardForm.validTo)) {
+      } else if (
+        this.idCardForm.validTo &&
+        !compareBeginEndTime(value, this.idCardForm.validTo)
+      ) {
         callback(new Error(`起始日期不能大于截止日期`));
       } else {
         callback();
@@ -306,7 +309,10 @@ export default {
     const validEndTime = (rule, value, callback) => {
       if (!value) {
         callback(new Error(`请选择身份证有效截止日期`));
-      } else if (this.idCardForm.validFrom && !compareBeginEndTime(this.idCardForm.validFrom, value)) {
+      } else if (
+        this.idCardForm.validFrom &&
+        !compareBeginEndTime(this.idCardForm.validFrom, value)
+      ) {
         callback(new Error(`截止日期不能小于起始日期`));
       } else {
         callback();
@@ -333,7 +339,7 @@ export default {
         orgName: "",
         validFrom: "",
         validTo: "",
-        isExpired: "长期",  //长期有效的字段名
+        isExpired: "长期", //长期有效的字段名
         // dateRange: "",
         idCardFaceImageUrl: "",
         idCardNationalEmblemImageUrl: "",
@@ -404,15 +410,14 @@ export default {
   },
   watch: {
     idCardForm: {
-      
-      handler(newVal,oldVal) {
-        if (newVal.validTo === '2500-01-01') {
+      handler(newVal, oldVal) {
+        if (newVal.validTo === "2500-01-01") {
           this.showValidTo = false;
-          newVal.validTo = '';
+          newVal.validTo = "";
         }
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   mounted() {
     // setTimeout(() => {
@@ -448,8 +453,12 @@ export default {
         this.idCardForm.idCardNationalEmblemImageUrl =
           idCardInfo.identificationBackImage;
         this.idCardForm.name = idCardInfo.name;
-        this.idCardForm.validFrom = this.handleDate(idCardInfo.identificationBeginTime);
-        this.idCardForm.validTo = this.handleDate(idCardInfo.identificationEndTime);
+        this.idCardForm.validFrom = this.handleDate(
+          idCardInfo.identificationBeginTime
+        );
+        this.idCardForm.validTo = this.handleDate(
+          idCardInfo.identificationEndTime
+        );
         this.idCardForm.number = idCardInfo.identificationNumber;
         // this.idCardForm.dateRange = [];
         // this.idCardForm.dateRange[0] = idCardInfo.identificationBeginTime;
@@ -506,7 +515,9 @@ export default {
               message: res.msg,
               type: "success",
             });
-            this.countdown();
+            let endMsRes = new Date().getTime() + this.countdownSeconds * 1000;
+            localStorage.setItem('myEndTime', endMsRes);
+            this.countdown(endMsRes);
           }
         })
         .catch((error) => {
@@ -533,9 +544,9 @@ export default {
       // });
     },
     //验证码倒计时
-    countdown() {
+    countdown(endMsRes) {
       this.sendCode = false;
-      this.verCodeSecond = 60;
+      this.verCodeSecond = Math.ceil((endMsRes - (new Date()).getTime()) / 1000);
       let that = this;
       this.countdownTimer = setInterval(() => {
         this.verCodeSecond > 0 && this.verCodeSecond--;
@@ -641,15 +652,19 @@ export default {
                 },
               };
             } else {
-            
               this.idCardForm.idCardNationalEmblemImageUrl = res.data.imageUrl;
               // this.idCardForm.dateRange = [];
               // this.handleDate(res.data.result.valid_from) &&
               //   (this.idCardForm.dateRange[0] = res.data.result.valid_from);
               // this.handleDate(res.data.result.valid_to) &&
               //   (this.idCardForm.dateRange[1] = res.data.result.valid_to);
-              this.idCardForm.validFrom = this.handleDate(res.data.result.valid_from);
-              this.idCardForm.validTo = this.handleDate(res.data.result.valid_to, 1);
+              this.idCardForm.validFrom = this.handleDate(
+                res.data.result.valid_from
+              );
+              this.idCardForm.validTo = this.handleDate(
+                res.data.result.valid_to,
+                1
+              );
               this.idCardForm.issue = res.data.result.issue;
               // console.log(this.idCardForm);
             }
@@ -675,10 +690,10 @@ export default {
     },
 
     handleDate(date, type = 0) {
-      if (date === '长期') {
+      if (date === "长期") {
         this.showValidTo = false;
-        return '';
-      } 
+        return "";
+      }
       if (type === 1) {
         this.showValidTo = true;
       }
@@ -686,7 +701,7 @@ export default {
       if (arr.length === 3) {
         return date;
       }
-      return '';
+      return "";
     },
 
     handleRegister() {
@@ -716,9 +731,9 @@ export default {
             orgName: this.idCardForm.orgName,
           };
           if (this.showValidTo) {
-            data.validTo = this.idCardForm.validTo
+            data.validTo = this.idCardForm.validTo;
           } else {
-            data.validTo = '长期'
+            data.validTo = "长期";
           }
           console.log(data);
           const obj = {
@@ -762,7 +777,7 @@ export default {
             orgName: this.idCardForm.orgName,
             identificationInf: {
               identificationBeginTime: this.idCardForm.validFrom,
-              identificationEndTime: '',
+              identificationEndTime: "",
               name: this.idCardForm.name,
               identificationImage: this.idCardForm.idCardFaceImageUrl,
               identificationBackImage:
@@ -771,9 +786,10 @@ export default {
             },
           };
           if (this.showValidTo) {
-            data.identificationInf.identificationEndTime = this.idCardForm.validTo;
+            data.identificationInf.identificationEndTime =
+              this.idCardForm.validTo;
           } else {
-            data.identificationInf.identificationEndTime = '长期';
+            data.identificationInf.identificationEndTime = "长期";
           }
           let header = {
             Authorization: this.$store.state.user.onceToken,
