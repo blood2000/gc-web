@@ -68,7 +68,7 @@
       :listDrawer="listDrawer"
       :options="{ title: '告警明细'}"
       :drawerQuerys="drawerQuerys"
-      :warningTypeList="subWarningTypeList"
+      
       @colseListDrawer="colseListDrawer"
     />
   </div>
@@ -352,17 +352,17 @@ export default {
       console.log(params);
       this.listDrawer = true;
       this.drawerQuerys = {...this.drawerQuerys,...params.item};
-      this.subWarningTypeList = [];
+      this.drawerQuerys.subWarningTypeList = [];
       
       if (params.type === 'vehicle' || params.type === 'device') {
         console.log('========>>', params.type)
         this.warningTypeList.map(item => {
           if (item.alarmObject === params.type) {
-            this.subWarningTypeList[0] = item;
+            this.drawerQuerys.subWarningTypeList[0] = item;
           }
         })
       } else {
-        this.subWarningTypeList = this.warningTypeList;
+        this.drawerQuerys.subWarningTypeList = this.warningTypeList;
       }
      
     },

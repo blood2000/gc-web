@@ -450,6 +450,7 @@ export default {
         this.idCardForm.name = idCardInfo.name;
         this.idCardForm.validFrom = this.handleDate(idCardInfo.identificationBeginTime);
         this.idCardForm.validTo = this.handleDate(idCardInfo.identificationEndTime);
+        this.idCardForm.number = idCardInfo.identificationNumber;
         // this.idCardForm.dateRange = [];
         // this.idCardForm.dateRange[0] = idCardInfo.identificationBeginTime;
         // this.idCardForm.dateRange[1] = idCardInfo.identificationEndTime;
