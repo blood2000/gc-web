@@ -319,6 +319,25 @@
             </el-select>
           </el-form-item>
         </el-col>
+        <!-- vehicleOwnership -->
+        <el-col :span="12">
+          <el-form-item label="车辆归属" prop="vehicleOwnership">
+            <el-select
+              v-model="form.vehicleOwnership"
+              clearable
+              filterable
+              placeholder="请选择车辆归属"
+              :disabled="disabledDeal()"
+            >
+              <el-option
+                v-for="(item, index) in vehicleOwnershipList"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
         <!-- <el-col :span="12">
           <el-form-item label="绑定设备编号" prop="deviceNumber	">
             <el-input
@@ -360,6 +379,8 @@ import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import formValidate from "../../../../utils/formValidate";
 import { number } from "echarts";
+import vehicleConfig from "../vehicle_config";
+
 export default {
   name: "vehicleDialog",
   components: { ImageUploadSimple, Treeselect },
@@ -405,6 +426,7 @@ export default {
         // deviceNumber: null, //绑定设备的编号
         // remark: null, //备注
         defaultDriverCode: null, //默认司机
+        vehicleOwnership:null,// 车辆归属 自有0 1外部
       },
       rules: {
         vehicleLicenseImg: [
@@ -434,6 +456,14 @@ export default {
           {
             required: true,
             message: "车辆承运类型不能为空",
+            trigger: "change",
+          },
+        ],
+        
+        vehicleOwnership: [
+          {
+            required: true,
+            message: "请选择车辆归属",
             trigger: "change",
           },
         ],
@@ -482,6 +512,7 @@ export default {
       },
       vehicleLicenseColorCodeList: [], //车牌类型
       carrierTypeList: [], //车辆承运类型list
+      vehicleOwnershipList:[],
       vehicleEnergyTypeList: [], //车辆能源类型list
       defaultDriverList: [], //
     };
@@ -497,6 +528,7 @@ export default {
         this.$store.getters.vehicleLicenseColorCodeList;
       //请求
       this.defaultDriverList = this.options.defaultDriverList;
+      this.vehicleOwnershipList = vehicleConfig.vehicleOwnershipList
       console.log(" this.defaultDriverList", this.defaultDriverList);
       if (this.options.editType == "update" && this.open) {
         console.log("this.options", this.options, this.open);
@@ -778,6 +810,7 @@ export default {
         roadTransportCertificateImg: null, //道路运输证
         orgCode: orgCode, //组织
         carrierType: null, //车辆承运类型
+        vehicleOwnership:null,
         // deviceNumber: null, //绑定设备的编号
         // remark: null, //备注
         defaultDriverCode: null,
@@ -877,6 +910,7 @@ export default {
       this.form.roadTransportCertificateImg = data.roadTransportCertificateImg; //道路运输证
       this.form.orgCode = data.orgCode; //组织
       this.form.carrierType = data.carrierType; //车辆承运类型*
+      this.form.vehicleOwnership = data.vehicleOwnership
       // this.form.deviceNumber = data.deviceNumber; //绑定设备的编号
       // this.form.remark = data.remark; //备注
       this.form.defaultDriverCode = data.defaultDriverCode;
@@ -896,6 +930,7 @@ export default {
         vehicleEnergyType: me.form.vehicleEnergyType,
         roadTransportCertificateImg: me.form.roadTransportCertificateImg,
         carrierType: me.form.carrierType,
+        vehicleOwnership:me.form.vehicleOwnership,
         vehicleLicenseInf: {
           engineNumber: me.form.engineNumber,
           vehicleLicenseSecondImg: me.form.vehicleLicenseSecondImg,
@@ -937,6 +972,7 @@ export default {
           licenseNumber: me.form.licenseNumber,
         },
         carrierType: me.form.carrierType,
+        vehicleOwnership:me.form.vehicleOwnership,
         roadTransportCertificateImg: me.form.roadTransportCertificateImg,
         vehicleEnergyType: me.form.vehicleEnergyType,
         // driverCode: me.form.driverCode,

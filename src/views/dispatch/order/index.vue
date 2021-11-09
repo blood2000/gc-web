@@ -51,7 +51,7 @@
               size="mini"
               type="text"
               style="color: red"
-              v-show="row.source == 'zj'&&row.dispatchOrderStatus !== 0"
+              v-show="row.source == 'zj' && row.dispatchOrderStatus !== 0"
               @click="handleStatusClose(row)"
             >
               关闭
@@ -62,10 +62,18 @@
             <el-button
               size="mini"
               type="text"
-              @click="handleDispatch(row)"
+              @click="handleDispatch(row, true)"
               v-show="row.dispatchOrderStatus !== 0"
             >
               派车
+            </el-button>
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleDispatch(row, false)"
+              v-show="row.dispatchOrderStatus !== 0"
+            >
+              单次派车
             </el-button>
             <el-button size="mini" type="text" @click="handleCarlog(row)">
               派车记录
@@ -98,14 +106,16 @@
       :code="currCode"
       :carDrawer="carDrawer"
       :options="{ title: '调度单派车' }"
+      :source="currSource"
+      :isMany="currIsMany"
       @colseCarDrawer="colseCarDrawer"
     />
-    <CreateCar
+    <!-- <CreateCar
       :code="currCode"
       :carDrawer="createCarDrawer"
       :options="{ title: '调度单派车' }"
       @colseCreateCarDrawer="colseCreateCarDrawer"
-    />
+    /> -->
     <CreateD
       :createDrawer="createDrawer"
       :options="{ title: '创建调度单' }"
@@ -139,6 +149,8 @@ export default {
       carDrawer: false, // 派车抽屉
       createCarDrawer: false, // 自建派车抽屉
       currCode: null,
+      currSource: null,
+      currIsMany: null,
       queryParams: {
         pageNum: 1, //页码
         pageSize: 10, //每页显示条数
@@ -183,7 +195,7 @@ export default {
     //获取级联形式大类小类
     async getGoodsTypeList() {
       const resBig = await this.getDicts(null, this.goodsBigTypeConfig);
-      console.log("resBig", resBig);
+      // console.log("resBig", resBig);
       if (resBig.code != "200") return;
       const bigList = resBig.data;
       const result = [];
@@ -195,7 +207,7 @@ export default {
           bigObj.children = [];
           this.goodsTypeConfig.dictPid = item.dictCode;
           const res = await this.getDicts(null, this.goodsTypeConfig);
-          console.log("ressmall", res);
+          // console.log("ressmall", res);
           if (res.code != "200") return;
           for (const el of res.data) {
             const obj = {};
@@ -264,20 +276,15 @@ export default {
       });
     },
     //派车
-    handleDispatch(data) {
-      //dispatch/order/car
+    handleDispatch(data, types) {
       if (data.dispatchOrderStatus === 0) {
         return this.msgWarning("该调度状态已经关闭，无法进行派车");
       }
-      console.log("data", data);
-      if (data.source === "zj") {
-        this.createCarDrawer = true;
-      } else {
-        this.carDrawer = true;
-      }
-
+      this.currIsMany = types
+      this.carDrawer = true;
+      this.currSource = data.source;
       this.currCode = data.dispatchOrderCode;
-      // this.$router.push("order/car?code=" + code);
+      console.log('this.currIsMany,this.currSource',this.currIsMany,this.currSource)
     },
     // 表单到分页请求参数
     formToPaging() {
@@ -323,7 +330,7 @@ export default {
         data: this.formToPaging(),
       };
       const res = await http_request(obj);
-      console.log("geatlist ===>", res);
+      // console.log("geatlist ===>", res);
       this.tableData = res.data.rows;
       this.total = res.data.total;
       this.loading = false;

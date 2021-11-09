@@ -12,5 +12,8 @@ export default {
     detail_manage: (appointCarOrderCode) => `/fmsweb/basic/appointCarOrder/v1/detailAppointCarOrderByCode/${appointCarOrderCode}`,//派车单详情
     CarOrderIng_ByVehicleCode: (code) => `/fmsweb/basic/appointCarOrder/v1/detailAppointCarOrderIngByVehicleCode/${code}`,//根据车辆Code获取当前正在运行中的派车单
     addDispatchOrder: '/fmsweb/basic/dispatchOrder/v1/addDispatchOrder',//自建调度单
-    editUpOrDownShelfDispatchOrder:(status,code)=> `/fmsweb/basic/dispatchOrder/v1/editUpOrDownShelfDispatchOrder/${status}/${code}`
+    editUpOrDownShelfDispatchOrder:(status,code)=> `/fmsweb/basic/dispatchOrder/v1/editUpOrDownShelfDispatchOrder/${status}/${code}`,//开启或关闭调度单
+    listVehicleSelect:'/fmsweb/basic/vehicle/v2/listVehicleSelect', //获取车辆下拉框数据
+    listTeamDrivers:'/fmsweb/basic/driver/v2/listTeamDrivers',//获取司机下拉框数据
+    haveAppointCarRecord:'/fmsweb/basic/appointCarRecord/v1/haveAppointCarRecord'//检查车辆司机某天是否派过单
 }

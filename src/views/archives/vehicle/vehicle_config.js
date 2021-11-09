@@ -36,6 +36,16 @@ const enabledList = [
     value: "0"
   }
 ]
+const vehicleOwnershipList = [
+  {
+    label: "自有",
+    value: 1
+  },
+  {
+    label: "外援",
+    value: 0
+  }
+]
 
 const tableColumnsConfig = [
   {
@@ -167,5 +177,6 @@ export default {
   vehicleStatusList,
   tableColumnsConfig,
   warningInfoTableColumnsConfig,
-  offsetList
+  offsetList,
+  vehicleOwnershipList
 }

@@ -19,6 +19,12 @@ export const dispatchOrderStatusList = [
     },
 ]
 
+export const vehicleOwnershipObj = {
+    0: "自有",
+    1: "外援",
+}
+
+
 //调度单来源
 export const sourceConfig = {
     'chy': "超好运",
@@ -32,7 +38,7 @@ export const tableColumnsConfig = [
         prop: "dispatchOrderNo",
         sortNum: 1,
         tooltip: true,
-        width:200
+        width: 200
     },
     {
         isShow: true,
@@ -40,15 +46,15 @@ export const tableColumnsConfig = [
         prop: "source",
         sortNum: 2,
         tooltip: true,
-        width:200
+        width: 200
     },
-    {   
+    {
         isShow: true,
         label: "下单客户姓名",
         prop: "shipmentName",
         sortNum: 3,
         tooltip: true,
-        width:200
+        width: 200
     },
     {
         isShow: true,
@@ -56,14 +62,14 @@ export const tableColumnsConfig = [
         prop: "companyName",
         sortNum: 4,
         tooltip: true,
-        width:200
+        width: 200
     }, {
         isShow: true,
         label: "项目名称",
         prop: "projectName",
         sortNum: 5,
         tooltip: true,
-        width:200
+        width: 200
     },
     // {
     //     isShow: true,
@@ -78,7 +84,7 @@ export const tableColumnsConfig = [
         prop: "goodsTypeName",
         sortNum: 7,
         tooltip: true,
-        width:200
+        width: 200
     },
     {
         isShow: true,
@@ -86,7 +92,7 @@ export const tableColumnsConfig = [
         prop: "dispatchOrderStatus",
         sortNum: 7,
         tooltip: true,
-        width:200
+        width: 200
     },
     {
         isShow: true,
@@ -94,7 +100,7 @@ export const tableColumnsConfig = [
         prop: "remark",
         sortNum: 9,
         tooltip: true,
-        width:200
+        width: 200
     },
 
     {
@@ -119,7 +125,7 @@ export const tableColumnsConfig = [
         prop: "freightStr",
         sortNum: 9,
         tooltip: true,
-        width:200
+        width: 200
     },
     {
         isShow: true,
@@ -127,7 +133,7 @@ export const tableColumnsConfig = [
         prop: "createTime",
         sortNum: 9,
         tooltip: true,
-        width:200
+        width: 200
     },
     {
         isShow: true,
@@ -135,7 +141,7 @@ export const tableColumnsConfig = [
         prop: "updateTime",
         sortNum: 9,
         tooltip: true,
-        width:200
+        width: 200
     },
     {
         isShow: true,
@@ -143,7 +149,7 @@ export const tableColumnsConfig = [
         prop: "edit",
         sortNum: 8,
         tooltip: true,
-        width: 200,
+        width: 250,
         fixed: 'right'
     },
 ]
@@ -170,7 +176,7 @@ export const sourceListConfig = [
     }
 ]
 
-export const sourceObjConfig ={
+export const sourceObjConfig = {
     'chy': "超好运",
     'zj': "自建",
 }

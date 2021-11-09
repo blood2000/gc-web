@@ -227,7 +227,7 @@ export default {
         data: this.formToPaging(),
       };
       const res = await http_request(obj);
-      console.log("geatlist ===>", res);
+      // console.log("geatlist ===>", res);
       this.tableData = res.data.rows;
       this.total = res.data.total;
       this.loading = false;

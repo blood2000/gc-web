@@ -66,7 +66,7 @@
               </el-tooltip>
             </el-form-item>
           </el-col>
-              <el-col :span="8">
+          <el-col :span="8">
             <el-form-item label="结算方式:" prop="settlementWayStr">
               <el-tooltip
                 class="item"
@@ -82,8 +82,11 @@
               </el-tooltip>
             </el-form-item>
           </el-col>
-                    <el-col :span="8">
-            <el-form-item :label="pageData.settlementWay ==1?'运费总额':'货物单价'" prop="freight">
+          <el-col :span="8">
+            <el-form-item
+              :label="pageData.settlementWay == 1 ? '运费总额' : '货物单价'"
+              prop="freight"
+            >
               <el-tooltip
                 class="item"
                 effect="dark"
@@ -417,9 +420,9 @@ export default {
         unloadAlias: null, //卸货别名
         unloadLinkManName: null, //卸货联系人
         unloadLinkManPhone: null, //卸货联系人电话
-        settlementWayStr:null,//结算方式中文
-        freight:null,//单价、总价
-        settlementWay:null,//结算方式
+        settlementWayStr: null, //结算方式中文
+        freight: null, //单价、总价
+        settlementWay: null, //结算方式
       },
       form: {
         //填写的表单
@@ -494,7 +497,7 @@ export default {
     },
   },
   methods: {
-          isPageShow(info, val) {
+    isPageShow(info, val) {
       return this.pageData && this.pageData[info] && this.pageData[info][val];
     },
     initTimeDate() {
@@ -704,9 +707,9 @@ export default {
         unloadAlias: data.orderAddress.unloadAlias,
         unloadLinkManName: data.orderAddress.unloadLinkManName,
         unloadLinkManPhone: data.orderAddress.unloadLinkManPhone,
-        settlementWayStr:data.expenseInfoVO.settlementWayStr,
-        freight:data.expenseInfoVO.freight,
-        settlementWay:data.expenseInfoVO.settlementWay
+        settlementWayStr: data.expenseInfoVO.settlementWayStr,
+        freight: data.expenseInfoVO.freight,
+        settlementWay: data.expenseInfoVO.settlementWay,
       };
     },
   },

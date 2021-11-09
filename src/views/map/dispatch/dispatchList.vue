@@ -141,7 +141,7 @@ export default {
         data: tmp,
       };
       const res = await http_request(obj);
-      console.log("geatlist ===>", res);
+      // console.log("geatlist ===>", res);
       this.total = res.data.total;
       let dispatchList = res.data.rows;
       dispatchList.map((item) => {
