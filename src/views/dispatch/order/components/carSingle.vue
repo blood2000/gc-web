@@ -81,14 +81,14 @@
           <el-form-item
             label="承运司机:"
             prop="driverCode"
-            style="padding-left: 20px; position: relative"
+            style=" position: relative"
           >
             <el-select
               v-model="form.driverCode"
               clearable
               filterable
               @change="driverChange"
-              style="width: 240px"
+              style="width: 220px"
               placeholder="请选择承运司机"
             >
               <el-option
@@ -122,16 +122,15 @@
         <el-col :span="8">
           <el-form-item
             :label="pageData.settlementWay == 1 ? '应收金额' : '运费单价'"
-            prop="realFreight"
+            prop="freight"
           >
             <el-input
-              v-model="pageData.realFreight"
+              v-model="pageData.freight"
               clearable
               disabled
-                type="number"
-              @input="imposeInput($event, 'realFreight')"
               style="width: 220px"
-            />
+            >
+            </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -146,7 +145,8 @@
               @input="imposeInput($event, 'realFreight')"
               :disabled="isCarRecord"
               style="width: 220px"
-            />
+            ><template slot="append">元</template>
+            </el-input>
           </el-form-item>
         </el-col>
       </el-row>

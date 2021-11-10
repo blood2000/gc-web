@@ -1,181 +1,184 @@
 <template>
   <!-- 派车填写表单 -->
-  <div class="carMany">
-    <el-form
-      ref="ruleForm"
-      :rules="rules"
-      :model="form"
-      label-width="90px"
-      label-position="left"
-    >
-      <el-row class="dispatch-base-contents-big">
-        <el-col :span="8">
-          <el-form-item label="开始日期:" prop="startDate">
-            <el-date-picker
-              v-model="form.startDate"
-              type="date"
-              :picker-options="startPickerOptions"
-              value-format="yyyy-MM-dd"
-              placeholder="选择开始日期"
-            >
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="出车时间:" prop="outCarTime">
-            <el-time-picker
-              :picker-options="{
-                selectableRange: outCarMinTime,
-              }"
-              v-model="form.outCarTime"
-              value-format="HH:mm"
-              placeholder="选择出车时间"
-            >
-            </el-time-picker>
-          </el-form-item>
-        </el-col>
-      </el-row>
-
-      <div class="carMany-list">
+  <el-form
+    ref="ruleForm"
+    class="carMany"
+    :rules="rules"
+    :model="form"
+    label-width="90px"
+    label-position="top"
+  >
+    <div class="carMany-list">
+      <div class="header">
+        <el-row style="width: 350px">
+          <el-col :span="11">
+            <el-form-item label="开始日期:" prop="startDate">
+              <el-date-picker
+                v-model="form.startDate"
+                type="date"
+                :picker-options="startPickerOptions"
+                style="width: 100%"
+                value-format="yyyy-MM-dd"
+                placeholder="选择开始日期"
+              >
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11" :offset="2">
+            <el-form-item label="出车时间:" prop="outCarTime">
+              <el-time-picker
+                :picker-options="{
+                  selectableRange: outCarMinTime,
+                }"
+                style="width: 100%"
+                v-model="form.outCarTime"
+                value-format="HH:mm"
+                placeholder="选择出车时间"
+              >
+              </el-time-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <div class="title">
-          <div class="title-left">
+          <div class="title-left" style="margin-right: 20px">
             <span>已选择车辆：</span>
-            <span class="title-left-number">{{ checkedVehicle }} 辆</span>
+            <span class="title-left-number">{{ checkedVehicle }} </span>
+            <span>辆</span>
           </div>
           <div class="title-right">
             <span>已分配司机：</span>
-            <span class="title-left-number">{{ allocationDriver }} 人</span>
+            <span class="title-left-number">{{ allocationDriver }} </span>
+            <span>人</span>
           </div>
         </div>
-        <div class="carMany-list-search">
-          <el-input
-            placeholder="请输入车牌号"
-            v-model="listSearch"
-            class="input-with-select"
+      </div>
+      <div class="carMany-list-search">
+        <el-input
+          placeholder="请输入车牌号"
+          v-model="listSearch"
+          class="input-with-select"
+        >
+          <el-button
+            slot="append"
+            @click="listVehicleSelect"
+            icon="el-icon-search"
+          ></el-button>
+        </el-input>
+      </div>
+
+      <ul class="carMany-list-bottom">
+        <li
+          class="carMany-list-bottom-item"
+          :key="index"
+          v-for="(item, index) in vehicleList"
+          @click.stop="checkChanges(item, index)"
+        >
+          <!-- 提示框 -->
+          <div
+            class="carMany-list-bottom-item-tip"
+            v-show="item.haveAppointCarRecord"
           >
-            <el-button
-              slot="append"
-              @click="listVehicleSelect"
-              icon="el-icon-search"
-            ></el-button>
+            <span>{{ item.haveAppointCarRecordText }}</span>
+            <span>应付金额 {{ item.realFreight }}</span>
+          </div>
+          <div style="position: relative">
+            <div class="carMany-list-bottom-item-checked-modal"></div>
+            <el-checkbox
+              class="carMany-list-bottom-item-checked"
+              v-model="item.checked"
+            />
+          </div>
+
+          <div class="carMany-list-bottom-item-vehicleNumber">
+            {{ item.vehicleNumber }}
+          </div>
+          <div>
+            <span class="self" v-if="isZj || item.authStatus === '3'">{{
+              vehicleOwnershipObj[item.vehicleOwnership]
+            }}</span>
+            <span
+              class="self"
+              v-else
+              :style="{
+                background: dealvehicleListSubText(item, 'color', 'v'),
+                color: item.authStatus === '3' ? '#212121' : '#fff',
+              }"
+              >{{ dealvehicleListSubText(item, "text", "v") }}</span
+            >
+          </div>
+          <div class="carMany-list-bottom-item-userinfo" @click.stop>
+            <el-dropdown
+              trigger="click"
+              placement="bottom"
+              @command="handleCommand"
+            >
+              <div>
+                <span v-show="item.driverName" class="name">{{
+                  item.driverName
+                }}</span>
+                <span v-show="item.driverName" class="name">{{
+                  item.driverPhone
+                }}</span>
+                <span v-show="!item.driverName" class="name">请选择司机</span>
+              </div>
+              <el-dropdown-menu style="width: 220px" slot="dropdown">
+                <el-dropdown-item
+                  class="driver-list"
+                  v-for="(sub, i) in driverList"
+                  :key="i"
+                  :disabled="!isZj && sub.authStatus != '3'"
+                  :command="`${sub.driverCode}-${i}-${index}`"
+                >
+                  <!-- sub.driverCode+'-'+i+ -->
+                  <span>{{ sub.driverName }}</span>
+                  <span v-if="isZj">{{ sub.driverPhone }}</span>
+                  <span
+                    v-else
+                    :style="{
+                      color: dealvehicleListSubText(sub, 'color', 'd'),
+                    }"
+                    >{{ dealvehicleListSubText(sub, "text", "d") }}</span
+                  >
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
+        </li>
+      </ul>
+      <el-form-item prop="realFreight">
+        <div v-if="isZj && pageData.settlementWay == 1">
+          <el-input
+            type="number"
+            @input="imposeInput($event, 'realFreight')"
+            placeholder="请输入内容"
+            v-model="form.realFreight"
+          >
+            <template slot="prepend">应付金额</template>
+            <template slot="append">元</template>
           </el-input>
         </div>
-        <ul class="carMany-list-bottom">
-          <!--             @click.stop="selectVehicle(item)" -->
-          <li
-            class="carMany-list-bottom-item"
-            :key="index"
-            v-for="(item, index) in vehicleList"
-            @click.stop="checkChanges(item, index)"
+        <div v-if="isZj && pageData.settlementWay != 1">
+          <el-input
+            type="number"
+            @input="imposeInput($event, 'realFreight')"
+            placeholder="请输入内容"
+            v-model="form.realFreight"
           >
-            <!-- 提示框 -->
-            <div
-              class="carMany-list-bottom-item-tip"
-              v-show="item.haveAppointCarRecord"
-            >
-              <span>{{ item.haveAppointCarRecordText }}</span>
-              <span>应付金额 {{ item.realFreight }}</span>
-            </div>
-            <!--  @change="checkChange" -->
-            <div style="position: relative">
-              <div class="carMany-list-bottom-item-checked-modal"></div>
-              <el-checkbox
-                class="carMany-list-bottom-item-checked"
-                v-model="item.checked"
-              />
-            </div>
-
-            <div class="carMany-list-bottom-item-vehicleNumber">
-              {{ item.vehicleNumber }}
-            </div>
-            <div>
-              <span class="self" v-if="isZj || item.authStatus === '3'">{{
-                vehicleOwnershipObj[item.vehicleOwnership]
-              }}</span>
-              <span
-                class="self"
-                v-else
-                :style="{
-                  background: dealvehicleListSubText(item, 'color', 'v'),
-                  color: item.authStatus === '3' ? '#212121' : '#fff',
-                }"
-                >{{ dealvehicleListSubText(item, "text", "v") }}</span
-              >
-            </div>
-            <div class="carMany-list-bottom-item-userinfo" @click.stop>
-              <el-dropdown
-                trigger="click"
-                placement="bottom"
-                @command="handleCommand"
-              >
-                <div>
-                  <span v-show="item.driverName" class="name">{{
-                    item.driverName
-                  }}</span>
-                  <span v-show="item.driverName" class="name">{{
-                    item.driverPhone
-                  }}</span>
-                  <span v-show="!item.driverName" class="name">请选择司机</span>
-                </div>
-                <el-dropdown-menu style="width: 220px" slot="dropdown">
-                  <el-dropdown-item
-                    class="driver-list"
-                    v-for="(sub, i) in driverList"
-                    :key="i"
-                    :disabled="!isZj && sub.authStatus != '3'"
-                    :command="`${sub.driverCode}-${i}-${index}`"
-                  >
-                    <!-- sub.driverCode+'-'+i+ -->
-                    <span>{{ sub.driverName }}</span>
-                    <span v-if="isZj">{{ sub.driverPhone }}</span>
-                    <span
-                      v-else
-                      :style="{
-                        color: dealvehicleListSubText(sub, 'color', 'd'),
-                      }"
-                      >{{ dealvehicleListSubText(sub, "text", "d") }}</span
-                    >
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </div>
-          </li>
-        </ul>
-        <el-form-item prop="realFreight">
-          <div v-if="isZj && pageData.settlementWay == 1">
-            <el-input
-              type="number"
-              @input="imposeInput($event, 'realFreight')"
-              placeholder="请输入内容"
-              v-model="form.realFreight"
-            >
-              <template slot="prepend">应付金额</template>
-              <template slot="append">元</template>
-            </el-input>
-          </div>
-          <div v-if="isZj && pageData.settlementWay != 1">
-            <el-input
-              type="number"
-              @input="imposeInput($event, 'realFreight')"
-              placeholder="请输入内容"
-              v-model="form.realFreight"
-            >
-              <template slot="prepend">应付单价</template>
-              <template slot="append">元 / 吨</template>
-            </el-input>
-          </div>
-        </el-form-item>
-        <el-form-item>
-          <div class="dispatch-base-confrim">
-            <el-button @click="resetForm('ruleForm')">重置</el-button>
-            <el-button type="primary" @click="submitForm('ruleForm')"
-              >确定</el-button
-            >
-          </div>
-        </el-form-item>
-      </div>
-    </el-form>
-  </div>
+            <template slot="prepend">应付单价</template>
+            <template slot="append">元 / 吨</template>
+          </el-input>
+        </div>
+      </el-form-item>
+      <el-form-item>
+        <div class="dispatch-base-confrim">
+          <el-button @click="resetForm('ruleForm')">重置</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')"
+            >确定</el-button
+          >
+        </div>
+      </el-form-item>
+    </div>
+  </el-form>
 </template>
 
 <script>
@@ -497,6 +500,13 @@ export default {
         }
       });
     },
+    // 重置
+    resetForm(formName){
+      this.$refs[formName].resetFields();
+      this.listSearch = null
+      this.initTimeDate()
+      this.listVehicleSelect()
+    }
   },
 };
 </script>
@@ -508,26 +518,33 @@ export default {
 }
 .carMany-list {
   width: 700px;
-  padding: 16px;
+  .header {
+    display: flex;
+    justify-content: space-between;
+  }
   .title {
     display: flex;
-    justify-content: space-around;
-
+    // justify-content: space-around;
+    align-items: flex-end;
     font-size: 14px;
     font-family: PingFang SC;
     padding-bottom: 20px;
     &-left {
       &-number {
         font-weight: 700;
-        font-size: 16px;
+        font-size: 18px;
       }
     }
+  }
+  &-search {
+    margin-bottom: 20px;
   }
   &-bottom {
     height: 500px;
     overflow: auto;
-    padding: 16px;
+    // padding: 16px;
     position: relative;
+    margin-bottom: 20px;
     .carMany-list-bottom-item:hover {
       background: #ebeef5;
     }
