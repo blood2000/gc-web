@@ -386,7 +386,8 @@ export default {
     },
     // 选择车辆
     checkChanges(val, index) {
-      if (val.authStatus != "3") {
+      console.log('val',val)
+      if (!this.isZj&&val.authStatus != "3") {
         return;
       }
       console.log("checked", val, index);
