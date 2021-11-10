@@ -122,12 +122,14 @@
         <el-col :span="8">
           <el-form-item
             :label="pageData.settlementWay == 1 ? '应收金额' : '运费单价'"
-            prop="freight"
+            prop="realFreight"
           >
             <el-input
-              v-model="pageData.freight"
+              v-model="pageData.realFreight"
               clearable
               disabled
+                type="number"
+              @input="imposeInput($event, 'realFreight')"
               style="width: 220px"
             />
           </el-form-item>
@@ -140,6 +142,8 @@
             <el-input
               v-model="form.realFreight"
               clearable
+                type="number"
+              @input="imposeInput($event, 'realFreight')"
               :disabled="isCarRecord"
               style="width: 220px"
             />
@@ -261,6 +265,13 @@ export default {
         },
       };
       return obj[type]();
+    },
+      //强制限制
+    imposeInput(e, value) {
+      console.log("强制限制", e);
+      const tmp = e.match(/^[0-9]+(\.[0-9]{0,2})?/g) ?? [""];
+      console.log("tmp", tmp[0]);
+      this.form[value] = tmp[0];
     },
     //   司机改变
     driverChange(e) {

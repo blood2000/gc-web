@@ -143,13 +143,23 @@
         </ul>
         <el-form-item prop="realFreight">
           <div v-if="isZj && pageData.settlementWay == 1">
-            <el-input placeholder="请输入内容" v-model="form.realFreight">
+            <el-input
+              type="number"
+              @input="imposeInput($event, 'realFreight')"
+              placeholder="请输入内容"
+              v-model="form.realFreight"
+            >
               <template slot="prepend">应付金额</template>
               <template slot="append">元</template>
             </el-input>
           </div>
           <div v-if="isZj && pageData.settlementWay != 1">
-            <el-input placeholder="请输入内容" v-model="form.realFreight">
+            <el-input
+              type="number"
+              @input="imposeInput($event, 'realFreight')"
+              placeholder="请输入内容"
+              v-model="form.realFreight"
+            >
               <template slot="prepend">应付单价</template>
               <template slot="append">元 / 吨</template>
             </el-input>
@@ -257,6 +267,13 @@ export default {
     this.getDriverList();
   },
   methods: {
+    //强制限制
+    imposeInput(e, value) {
+      console.log("强制限制", e);
+      const tmp = e.match(/^[0-9]+(\.[0-9]{0,2})?/g) ?? [""];
+      console.log("tmp", tmp[0]);
+      this.form[value] = tmp[0];
+    },
     // 运单校验
     plateNo(rule, value, callback) {
       console.log("打法");
