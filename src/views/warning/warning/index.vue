@@ -354,7 +354,7 @@ export default {
       this.drawerQuerys = {...this.drawerQuerys,...params.item};
       this.drawerQuerys.subWarningTypeList = [];
       
-      if (params.type === 'vehicle' || params.type === 'device') {
+      if (params.type === 'vehicle' || params.type === 'device' || params.type === 'driver') {
         console.log('========>>', params.type)
         this.warningTypeList.map(item => {
           if (item.alarmObject === params.type) {

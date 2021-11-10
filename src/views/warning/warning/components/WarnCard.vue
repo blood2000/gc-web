@@ -25,8 +25,10 @@
     </div>
     <div class="warn-card-title" v-else>{{ cardInfo.nickName }}</div>
     <div class="warn-card-subtitle">
-      <div>最新告警</div>
-      <img src="../../../../assets/images/monitor-line.png" alt="" />
+      <div class="warn-card-subtitle-text">最新告警</div>
+      <div class="warn-card-subtitle-img">
+        <img src="../../../../assets/images/monitor-line.png" alt="" />
+      </div>
     </div>
     <div
       class="warn-card-main"
@@ -49,7 +51,9 @@
         @click.stop="openList(wItem.alarmObject)"
       >
         <div class="warn-card-bottom-item-value">{{ wItem.number || 0 }}</div>
-        <div class="warn-card-bottom-item-name">{{ wItem.describe }}</div>
+        <div class="warn-card-bottom-item-name me-text-beyond">
+          {{ wItem.describe }}
+        </div>
       </div>
 
       <!-- <div class="warn-card-bottom-item" @click.stop="openList(1)">
@@ -157,8 +161,16 @@ export default {
     font-family: PingFang SC;
     font-weight: bold;
     color: #adb5bd;
-    div {
+    &-text {
+      min-width: 50px;
       margin-right: 2px;
+    }
+    &-img {
+      flex: 1;
+      > img {
+        max-width: 100%;
+        height: 9px;
+      }
     }
   }
   &-main {
@@ -182,9 +194,9 @@ export default {
     height: 57px;
     display: flex;
     &-item {
-      flex: 1;
+      // flex: 1;
       box-sizing: border-box;
-      // width: 25%;
+      width: 33%;
       height: 56px;
       padding: 5px 20px;
       text-align: left;
@@ -198,6 +210,11 @@ export default {
       &-value {
         font-weight: bold;
         font-size: 16px;
+      }
+      &-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
     .warn-card-bottom-item:last-child {
