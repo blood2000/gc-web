@@ -65,9 +65,6 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <!-- <el-col :span="1.5">
-        <el-button type="primary" size="mini" @click="handlerClick">确定</el-button>
-      </el-col> -->
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
@@ -223,16 +220,6 @@ export default {
   },
 
   computed: {},
-
-  // watch: {
-  //   shipmentCode: {
-  //     handler(shipmentCode) {
-  //       this.queryParams.shipmentCode = this.shipmentCode;
-  //     },
-  //     immediate: true
-  //   }
-  // },
-
   created() {
     this.queryParams.addressType = this.opaddresstype;
     this.getList();

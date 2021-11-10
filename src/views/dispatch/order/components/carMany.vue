@@ -211,7 +211,6 @@ export default {
       driverList: null, //司机列表
       vehicleOwnershipObj, //静态配置 自有 外援
       haveAppointCarRecordText: "", //已派车文字
-      submitData: [],
       form: {
         startDate: null,
         outCarTime: null,
@@ -283,11 +282,6 @@ export default {
       if (value === undefined || value === null || value === "") {
         callback();
       }
-      console.log(
-        "Number(value) >= Number(this.pageData.freight)",
-        Number(value),
-        parseInt(this.pageData.freight)
-      );
       if (Number(value) >= parseInt(this.pageData.freight)) {
         let str = "";
         if (this.pageData.settlementWay == 1) {
@@ -322,13 +316,6 @@ export default {
     },
     // 判断是否派车过
     async haveAppointCarRecordHttp(driverCode, vehicleCode, index) {
-      // if (!driverCode) {
-      //   this.msgWarning("请选择司机");
-      //   this.vehicleList[index].checked = this.$set(vehicleList, index, {
-      //   ...this.vehicleList[index],checked: false
-      // });
-      //   return;
-      // }
       if (!this.form.startDate) {
         this.msgWarning("请先选择出车日期");
         return;
