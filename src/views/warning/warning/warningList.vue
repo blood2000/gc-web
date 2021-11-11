@@ -193,7 +193,6 @@ export default {
         this.videoList = warningConfig.videoList;
       }
     },
-    
 
     drawerQuerys(val) {
       console.log(val);
@@ -216,6 +215,14 @@ export default {
       }
 
       this.warningTypes = JSON.parse(JSON.stringify(val.subWarningTypeList));
+      console.log("000----", this.warningTypes);
+      if (this.warningTypes.length === 1) {
+        this.warningTypes.map((item) => {
+          item.alarmTypeInfoList.map((cItem) => {
+            cItem.isChoose = true;
+          });
+        });
+      }
       this.getWarnTypeId();
       this.searchQuery();
     },
@@ -323,8 +330,8 @@ export default {
           }
         });
       });
-      console.log('告警类型id', alarmTypeInfoId)
-      console.log('传送的告警类型列表', this.warningTypes)
+      console.log("告警类型id", alarmTypeInfoId);
+      console.log("传送的告警类型列表", this.warningTypes);
       // this.$emit("updateWarningTypeList", this.warningTypes);
       this.queryParams.alarmTypeInfoId = alarmTypeInfoId.join(",");
     },
