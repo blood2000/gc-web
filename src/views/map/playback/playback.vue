@@ -59,7 +59,11 @@
     </div>
     <div class="play-back-search" v-show="isResult">
       <div class="play-back-search-title">查询结果：</div>
-      <div :class="isbigger ? 'dialog-video' : ''" @click="colse">
+      <div
+        :class="isbigger ? 'dialog-video' : ''"
+        style="margin-top: 40px"
+        @click="colse"
+      >
         <div
           class="play-back-search-result"
           :class="isbigger ? 'dialog-video-full' : ''"
@@ -72,7 +76,7 @@
             :class="isbigger ? 'dialog-video-full-title' : ''"
           >
             {{ getTypes() }}
-            <i class="el-icon-close" @click.stop="colse"></i>
+            <i class="el-icon-close" @click.stop="hanleScale"></i>
           </div>
           <video
             id="video"
@@ -164,9 +168,8 @@ export default {
         url_code: [this.vehicleCode, type],
       };
       http_request(obj).then((res) => {
-        
-        const fields  = res.data.fields
-          this.channelNumList = []
+        const fields = res.data.fields;
+        this.channelNumList = [];
         for (let i = 0; i < Number(fields.channelNum); i++) {
           this.channelNumList.push(i);
         }
@@ -206,7 +209,7 @@ export default {
       return `通道${this.queryParams.CHANNEL}`;
     },
     // 关闭视频
-    colse() {
+    hanleScale() {
       this.isbigger = false;
     },
     //获取视频的总时长
@@ -218,26 +221,29 @@ export default {
     },
     // 查询结果
     searchResult() {
-      this.wfs = null;
-      console.log("表单", this.queryParams);
-      const video = document.getElementById("video");
-      const queryParams = this.queryParams;
-      console.log("queryParams.dateRange", queryParams.dateRange);
-      if (!queryParams || queryParams.dateRange.length !== 2) return;
-      const startTime =
-        parseInt(queryParams.dateRange[0].getTime() / 1000) + "";
-      const endTime = parseInt(queryParams.dateRange[1].getTime() / 1000) + "";
-      this.OpenRecordingVideo(
-        video,
-        queryParams.VEHICLEID,
-        queryParams.VEHICLELICENSE,
-        queryParams.PLATECOLOR,
-        queryParams.DEVICENO,
-        queryParams.CHANNEL,
-        startTime,
-        endTime
-      );
-      this.isResult = true;
+      this.colse(() => {
+        this.wfs = null;
+        console.log("表单", this.queryParams);
+        const video = document.getElementById("video");
+        const queryParams = this.queryParams;
+        console.log("queryParams.dateRange", queryParams.dateRange);
+        if (!queryParams || queryParams.dateRange.length !== 2) return;
+        const startTime =
+          parseInt(queryParams.dateRange[0].getTime() / 1000) + "";
+        const endTime =
+          parseInt(queryParams.dateRange[1].getTime() / 1000) + "";
+        this.OpenRecordingVideo(
+          video,
+          queryParams.VEHICLEID,
+          queryParams.VEHICLELICENSE,
+          queryParams.PLATECOLOR,
+          queryParams.DEVICENO,
+          queryParams.CHANNEL,
+          startTime,
+          endTime
+        );
+        this.isResult = true;
+      });
     },
     //打开录像
     OpenRecordingVideo(
@@ -282,6 +288,66 @@ export default {
       video.poster = "../../../utils/RVC/timg.gif";
       this.wfs.attachMedia(video, [wfsObj, player, userInfo]);
     },
+    //退出播放
+    colse(callback) {
+      const me = this;
+      if (this.wfs) {
+        const options = me.queryParams;
+        console.log("1111");
+        me.CloseVideo(
+          me.wfs,
+          options.VEHICLEID,
+          options.CHANNEL,
+          options.VEHICLELICENSE,
+          options.DEVICENO,
+          options.PLATECOLOR
+        );
+        setTimeout(() => {
+          me.wfs = null;
+          console.log("录像了执行了");
+          callback();
+        }, 100);
+      } else {
+        callback();
+      }
+    },
+    // 关闭视频
+    CloseVideo(
+      wfsObj,
+      vehicleId,
+      channel,
+      vehiclelicense,
+      deviceno,
+      platecolor
+    ) {
+      console.log("wfsObj", wfsObj);
+      if (wfsObj === null) {
+        return;
+      }
+      var MSGID = 0xf004;
+      var closeObj = {
+        VEHICLEID: vehicleId,
+        VEHICLELICENSE: vehiclelicense,
+        PLATECOLOR: platecolor,
+        DEVICENO: deviceno,
+        DEVICETYPE: 0xd000,
+        CHANNEL: channel,
+        CTRLFLAG: 0,
+        STOP: 0,
+        SWICH: 1,
+      };
+      console.log("wfsObj", wfsObj);
+      wfsObj.websocketLoader.client.send(
+        JSON.stringify({
+          HEAD: { MSGID: MSGID, USERID: this.userId, TRANSNO: 0 },
+          PARAM: closeObj,
+        })
+      );
+      wfsObj.media.poster = "../../../assets/images/RVC/video.png";
+      wfsObj.media.src = "";
+      console.log("CloseVideo end", wfsObj.websocketLoader.client);
+      wfsObj.websocketLoader.client.close();
+    },
   },
 };
 </script>
@@ -317,8 +383,8 @@ export default {
   position: relative;
   &-title {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 10px;
+    left: 20px;
     font-size: 14px;
     font-family: PingFang SC;
     font-weight: 400;
