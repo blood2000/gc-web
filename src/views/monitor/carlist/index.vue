@@ -278,13 +278,13 @@ export default {
       display: flex;
       flex-wrap: wrap;
       &-item {
-        margin-right:15px;
+        margin-right:10px;
         margin-bottom: 20px;
       }
-       &-item:nth-child(4n) {
-        margin-right:0px;
-        margin-bottom: 20px;
-      }
+      //  &-item:nth-child(4n) {
+      //   margin-right:0px;
+      //   margin-bottom: 20px;
+      // }
     }
     .toolsbar {
       display: flex;

@@ -180,6 +180,7 @@
         defaultDriverList: defaultDriverList,
         orgCode: queryParams.orgCode,
         authStatusValue: authStatusValue,
+        currAuthStatus:currAuthStatus
       }"
       :open="open"
       :title="title"
@@ -253,6 +254,7 @@ export default {
         title: "",
       },
       authStatusValue: null,
+      currAuthStatus:null,
       currCode: null,
       detailDrawer: false,
     };
@@ -569,6 +571,7 @@ export default {
       this.open = true;
       this.vehicleCode = obj.code;
       this.authStatusValue = obj.authStatusValue;
+      this.currAuthStatus = obj.authStatus
     },
     handlePosition(obj) {
       console.log("obj", obj);

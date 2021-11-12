@@ -49,7 +49,7 @@
         <div class="monitor-card-content-right-address">
          {{data.alarm_address }}
         </div>
-        <div class="monitor-card-content-right-date">{{data.alarm_time}}  </div>
+        <div class="monitor-card-content-right-date">{{dealAlarmTime}}  </div>
       </div>
     </div>
     <div class="monitor-card-footer">
@@ -59,7 +59,7 @@
       </div>
       <div class="monitor-card-footer-middle">
         <img src="../../../../assets/images/detail/monitor-people.png" alt="" />
-        <span>{{data.driver_name}}</span>
+        <span>{{data.nick_name}}</span>
       </div>
       <div class="monitor-card-footer-right">
         <span :style="{color:dealVehicleStatusColor}" style="font-size: 16px" v-show="dealVehicleStatus">• </span>
@@ -70,7 +70,7 @@
 </template>
 <script>
 import { tableColumnsConfig, vehicleStatusList ,warningLevelObj} from "../config";
-
+import { parseTime} from '../../../../utils/ddc'
 export default {
   name: "itemCard",
   data() {
@@ -87,6 +87,9 @@ export default {
     },
   },
   computed:{
+    dealAlarmTime(){
+     return parseTime( Number(this.data.alarm_time) )
+    },
     //返回大图
     dealBigImage(){
      return "http://static.zjz1.net/device/model/A1/A1-{tag}.png".replace(/\{tag\}/g, "icon");
@@ -127,22 +130,23 @@ export default {
     },
     // 处理危险等级显示
      levelDeal(type) {
+       console.log('levelDeal',type,this.data)
       const obj = {
         text: () => {
-          if (!this.data.alarm_level) return "-";
+          if (!this.data.alarmLevel) return "-";
           console.log(
             "text",
-            warningConfig.warningLevelObj[this.data.alarm_level][type]
+             warningLevelObj[this.data.alarmLevel][type]
           );
-          return warningConfig.warningLevelObj[this.data.alarm_level].text;
+          return  warningLevelObj[this.data.alarmLevel].text;
         },
         img: () => {
-          if (!this.data.alarm_level) return "";
+          if (!this.data.alarmLevel) return "";
           console.log(
-            "warningConfig.warningLevelObj[this.data.alarm_level].img",
-            warningConfig.warningLevelObj[this.data.alarm_level]
+            " warningLevelObj[this.data.alarmLevel].img",
+             warningLevelObj[this.data.alarmLevel]
           );
-          return warningConfig.warningLevelObj[this.data.alarm_level].img;
+          return  warningLevelObj[this.data.alarmLevel].img;
         },
       };
       return obj[type]();
@@ -294,6 +298,8 @@ export default {
           height: 24px;
           padding-right: 28px;
           & > img {
+            display: inline-block;
+            margin-right: 5px;
             width: 24px;
             height: 24px;
           }
@@ -309,7 +315,6 @@ export default {
           display: flex;
           height: 24px;
           & > img {
-            width: 48px;
             height: 24px;
           }
           & > span {

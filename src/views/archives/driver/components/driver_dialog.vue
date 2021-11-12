@@ -1,6 +1,5 @@
 <template>
   <el-dialog
-    :title="title"
     :visible.sync="open"
     width="800px"
     append-to-body
@@ -8,6 +7,16 @@
     :before-close="cancel"
     :destroy-on-close="true"
   >
+    <template slot="title">
+      <span class="dialog-header-title">{{ title }}</span>
+      <el-tag
+        v-if="
+          open && options && options.editType != 'add' && form.authStatusValue
+        "
+        :type="selectTipColor()"
+        >{{ selectTipText() }}</el-tag
+      >
+    </template>
     <el-form
       ref="form"
       :model="form"
@@ -113,6 +122,7 @@
               v-model="form.telphone"
               placeholder=" 请输入手机号码"
               clearable
+              :disabled="telDisabled()"
               @blur="changeBlurTel"
             />
           </el-form-item>
@@ -316,6 +326,9 @@ export default {
         issuingOrganizations: null, //发证机关
         driverLicense: null, //驾驶证号
         remark: null, //备注
+        authInf: null,
+        authStatus: null,
+        authStatusValue: null,
       },
       rules: {
         org: [
@@ -395,14 +408,34 @@ export default {
     this.getTree();
   },
   methods: {
+  
+    selectTipColor() {
+      const objColor = {
+        0: "info",
+        1: "info",
+        2: "danger",
+        3: "success",
+      };
+      return objColor[this.form.authStatus];
+    },
+    selectTipText() {
+      return `${this.form.authStatusValue}:${this.form.authInf}`;
+    },
     //日期校验
     dateChange(e) {
       console.log("日期哦", e);
     },
+      telDisabled(){
+      if (this.isDetail) return true;
+      if (this.options && this.options.editType == "update") return true;
+      return false
+    },
     isDisabled() {
       let result = false;
       if (this.isDetail) result = true;
-      if (this.options && this.options.editType == "update") result = true;
+      if (this.options && this.options.editType == "update"){
+      if(this.form.authStatus == 3) result = true;
+      } 
       return result;
     },
     changeBlurTel(e) {
@@ -582,6 +615,9 @@ export default {
         driverDateRange: [], //驾驶证有效期
         issuingOrganizations: null, //发证机关
         remark: null, //备注
+        authInf: null,
+        authStatus: null,
+        authStatusValue: null,
       };
       this.resetForm("form");
       this.isIdDateValid = true;
@@ -714,6 +750,9 @@ export default {
         driverLicense: data.driverLicenseInf.driverLicense,
         issuingOrganizations: data.driverLicenseInf.issuingOrganizations, //发证机关
         remark: data.remark, //备注
+        authInf: data.authInf,
+        authStatus: data.authStatus,
+        authStatusValue: data.authStatusValue,
       };
       console.log(
         "data.driverLicenseInf.validPeriodTo",
@@ -733,6 +772,9 @@ export default {
         orgCode: form.orgCode, //归属组织
         // name: form.name, //司机姓名
         remark: form.remark, //备注
+        authInf: form.authInf,
+        authStatus: form.authStatus,
+        authStatusValue: form.authStatusValue,
         driverLicenseInf: {
           validPeriodFrom: form.driverDateRange[0], //驾驶证有效期自
           driverLicense: form.driverLicense, //?????  驾驶证号
@@ -770,6 +812,9 @@ export default {
           identificationImage: form.identificationImage,
           identificationNumber: form.identificationNumber,
         },
+        authInf: form.authInf,
+        authStatus: form.authStatus,
+        authStatusValue: form.authStatusValue,
         telphone: form.telphone,
         // password: form.password, //用户密码
         orgCode: form.orgCode, //归属组织
@@ -795,5 +840,14 @@ export default {
 .upload-image-label {
   margin: 0;
   line-height: 24px;
+}
+.dialog-header-title {
+  font-size: 20px;
+  font-family: PingFang SC;
+  font-weight: bold;
+  line-height: 24px;
+  color: #3d4050;
+  opacity: 1;
+  margin-right: 20px;
 }
 </style>

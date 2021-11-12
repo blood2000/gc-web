@@ -106,7 +106,7 @@
               v-model="form.licenseNumber"
               placeholder="请输入车牌号"
               clearable
-              :disabled="disabledDealLicenseNumber()"
+              :disabled="disabledDeal()"
             />
           </el-form-item>
         </el-col>
@@ -308,7 +308,7 @@
               clearable
               filterable
               placeholder="请选择车辆能源类型"
-              :disabled="disabledDeal()"
+             
             >
               <el-option
                 v-for="(item, index) in vehicleEnergyTypeList"
@@ -327,7 +327,7 @@
               clearable
               filterable
               placeholder="请选择车辆归属"
-              :disabled="disabledDeal()"
+              
             >
               <el-option
                 v-for="(item, index) in vehicleOwnershipList"
@@ -566,10 +566,11 @@ export default {
       if (this.options && this.options.editType == "update") return true;
     },
     disabledDeal() {
+      console.log('this.options',this.options)
       if (this.options && this.options.editType != "update") return false;
-      if (this.options && this.options.authStatusValue == "未认证")
+      if (this.options && this.options.currAuthStatus === 0)
         return false;
-      if (this.options && this.options.authStatusValue == "认证失败")
+      if (this.options && this.options.currAuthStatus == 1)
         return false;
       return true;
     },
