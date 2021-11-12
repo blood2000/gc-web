@@ -166,12 +166,12 @@ export default {
   },
   data() {
     return {
-      vehicleList: [],
-      driverList: [],
-      vehicleMutual: null,
-      oldkey: [],
-      driverMutual: null,
-      indexMutual: -1,
+      vehicleList: [],//车辆列表
+      driverList: [],//司机
+      vehicleMutual: null,//
+      oldkey: [],//
+      driverMutual: null,//
+      indexMutual: -1,//
       form: {
         //填写的表单
         startDate: null,

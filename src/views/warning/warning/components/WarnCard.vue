@@ -35,7 +35,7 @@
       :class="'warn-level-' + (cardInfo.alarmLevel || 1)"
     >
       <div class="card-main-left">
-        <img src="../../../../assets/images/detail/fms-yczd.png" alt="" />
+        <img src="../../../../assets/images/detail/aiot-yczd.png" alt="" />
         <div class="warn-card-type">{{ cardInfo.alarmTypeName || "无" }}</div>
       </div>
       <div class="card-main-right">

@@ -59,7 +59,7 @@
                 :key="i"
                 :label="sub.vehicleNumber"
                 :value="sub.vehicleCode"
-                :disabled="!isZj&&sub.authStatus != '3'"
+                :disabled="!isZj && sub.authStatus != '3'"
               >
                 <span style="float: left">{{ sub.vehicleNumber }}</span>
                 <span
@@ -70,8 +70,8 @@
                 <span
                   v-else
                   class="vehicle-item-sub-unright"
-                  :style="{ color: dealvehicleListSubText(sub,'color','v') }"
-                  >{{ dealvehicleListSubText(sub, "text",'v') }}</span
+                  :style="{ color: dealvehicleListSubText(sub, 'color', 'v') }"
+                  >{{ dealvehicleListSubText(sub, "text", "v") }}</span
                 >
               </el-option>
             </el-select>
@@ -81,7 +81,7 @@
           <el-form-item
             label="承运司机:"
             prop="driverCode"
-            style=" position: relative"
+            style="position: relative"
           >
             <el-select
               v-model="form.driverCode"
@@ -96,19 +96,19 @@
                 :key="i"
                 :label="sub.driverName"
                 :value="sub.driverCode"
-                :disabled="!isZj&&sub.authStatus != '3'"
+                :disabled="!isZj && sub.authStatus != '3'"
               >
                 <span style="float: left">{{ sub.driverName }}</span>
                 <span
-                  v-if="isZj "
+                  v-if="isZj"
                   style="float: right; color: #8492a6; font-size: 13px"
                   >{{ sub.driverPhone }}</span
                 >
                 <span
                   v-else
-                  style="float: right;  font-size: 13px"
-                  :style="{ color: dealvehicleListSubText(sub, 'color','d') }"
-                  >{{ dealvehicleListSubText(sub, "text",'d') }}</span
+                  style="float: right; font-size: 13px"
+                  :style="{ color: dealvehicleListSubText(sub, 'color', 'd') }"
+                  >{{ dealvehicleListSubText(sub, "text", "d") }}</span
                 >
               </el-option>
             </el-select>
@@ -141,11 +141,11 @@
             <el-input
               v-model="form.realFreight"
               clearable
-                type="number"
+              type="number"
               @input="imposeInput($event, 'realFreight')"
               :disabled="isCarRecord"
               style="width: 220px"
-            ><template slot="append">元</template>
+              ><template slot="append">元</template>
             </el-input>
           </el-form-item>
         </el-col>
@@ -175,7 +175,7 @@ export default {
       haveAppointCarRecord: false, //是否是已派车
       haveAppointCarRecordText: "", //已派车文字
       currVehicleInfo: {}, //当前选择的车辆信息
-      isCarRecord: false,//是否不可修改应收价格
+      isCarRecord: false, //是否不可修改应收价格
       form: {
         startDate: null,
         outCarTime: null,
@@ -239,23 +239,22 @@ export default {
     },
   },
   methods: {
-    dealvehicleListSubText(sub, type,w) {
+    dealvehicleListSubText(sub, type, w) {
       const obj = {
-        'text': () => {
+        text: () => {
           if (sub.authStatus == "0" || sub.authStatus == "1") {
             return "认证中";
           } else if (sub.authStatus == "2") {
             return "认证失败";
           } else {
-            if(w === 'd'){
-              return sub.driverPhone
-            }else{
-              return this.vehicleOwnershipObj[sub.vehicleOwnership]
+            if (w === "d") {
+              return sub.driverPhone;
+            } else {
+              return this.vehicleOwnershipObj[sub.vehicleOwnership];
             }
-            
           }
         },
-        'color': () => {
+        color: () => {
           if (sub.authStatus == "0" || sub.authStatus == "1") {
             return "#FAAD14";
           } else if (sub.authStatus == "2") {
@@ -266,7 +265,7 @@ export default {
       };
       return obj[type]();
     },
-      //强制限制
+    //强制限制
     imposeInput(e, value) {
       console.log("强制限制", e);
       const tmp = e.match(/^[0-9]+(\.[0-9]{0,2})?/g) ?? [""];
@@ -360,23 +359,6 @@ export default {
         }
       }
     },
-    // getDriverList(driverCode) {
-    //   const me = this;
-    //   const obj1 = {
-    //     moduleName: "http_dispatch",
-    //     method: "get",
-    //     url_alias: "by_vehicle_code",
-    //     url_code: [driverCode],
-    //   };
-    //   http_request(obj1).then((res) => {
-    //     me.driverList = res.data;
-    //     for (const item of me.vehicleList) {
-    //       if (item.vehicleCode === me.form.vehicleCode) {
-    //         me.form.driverCode = item.driverCode;
-    //       }
-    //     }
-    //   });
-    // },
     getDriverList() {
       const me = this;
       const obj1 = {
@@ -396,22 +378,23 @@ export default {
     },
     // 提交
     submitForm(formName) {
-   
       console.log("提交表单", this.form);
       const me = this;
       this.$refs[formName].validate((valid) => {
         if (valid) {
           const bodyData = {
-            startDate:me.form.startDate,
-            endDate:me.form.startDate,
-            outCarTime:me.form.outCarTime,
-            realFreight:me.form.realFreight,
-            dispatchOrderCode:me.dispatchOrderCode,
-            vehicleDrivers:[{
-              vehicleCode:me.form.vehicleCode,
-              driverCode:me.form.driverCode
-            }]
-          }
+            startDate: me.form.startDate,
+            endDate: me.form.startDate,
+            outCarTime: me.form.outCarTime,
+            realFreight: me.form.realFreight,
+            dispatchOrderCode: me.dispatchOrderCode,
+            vehicleDrivers: [
+              {
+                vehicleCode: me.form.vehicleCode,
+                driverCode: me.form.driverCode,
+              },
+            ],
+          };
           const obj = {
             moduleName: "http_dispatch",
             method: "post",
@@ -424,8 +407,8 @@ export default {
                 confirmButtonText: "确定",
                 type: "success",
               }).then(() => {
-                console.log('1111。跳不跳')
-                me.$emit('handleClose')
+                console.log("1111。跳不跳");
+                me.$emit("handleClose");
               });
             }
           });
