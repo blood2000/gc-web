@@ -27,7 +27,8 @@
           <div class="addr end-addr">{{ item.unloadFormattedAddress }}</div>
         </div>
         <div class="btn-box">
-          <div class="btn dispatch" @click="toDispatchVehicle(item)">派车</div>
+          <div class="btn dispatch" @click="toDispatchVehicle(item,false)">单次派车</div>
+          <div class="btn dispatch" @click="toDispatchVehicle(item,true)">批量派车</div>
           <div class="btn detail" @click="toDispatchDetail(item)">详情</div>
         </div>
       </div>
@@ -102,8 +103,10 @@ export default {
   },
 
   methods: {
-    toDispatchVehicle(item) {
+    toDispatchVehicle(item,isMany) {
+      console.log('派车 字段',item,isMany)
       this.showDispatchVehicle = true;
+      this.$store.commit('set_isMany',isMany)
       this.$store.commit("set_dispatchVehicle", true);
       this.$store.commit("set_dispatchInfo", item);
     },

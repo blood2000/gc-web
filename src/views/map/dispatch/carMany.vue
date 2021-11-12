@@ -206,8 +206,8 @@
 </template>
 
 <script>
-import { http_request } from "../../../../api";
-import { vehicleOwnershipObj } from "../order_config";
+import { http_request } from "@/api";
+import { vehicleOwnershipObj } from "./config";
 export default {
   name: "carMany",
   props: {
@@ -544,7 +544,7 @@ export default {
   padding: 0px 40px;
 }
 .carMany-list {
-  width: 700px;
+  width: 650px;
   .header {
     display: flex;
     justify-content: space-between;

@@ -5,9 +5,18 @@ const map = {
     isFresh: false,  //刷新
     vehicleInfo: {},  //车辆信息
     dispatchInfo: {},   //调度信息
-    isClose:false //展开收起面板
+    isClose:false, //展开收起面板
+    isMany:false,
+    channelNumList:[]
+
   },
   mutations: {
+    set_channelNumList:(state ,channelNumList)=>{
+        state.channelNumList = channelNumList
+    },
+    set_isMany: (state, booleans) => {
+      state.isMany = booleans
+    },
     set_dispatchVehicle: (state, leap) => {
       state.showDispatchVehicle = leap
     },

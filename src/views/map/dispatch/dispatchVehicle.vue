@@ -27,7 +27,7 @@
 
           <el-col :span="8">
             <div class="content-info-label">调度单来源：</div>
-            <div class="content-info-value">{{ pageObj.source }}</div>
+            <div class="content-info-value">{{ sourceConfig[pageObj.source] }}</div>
           </el-col>
 
           <el-col :span="8">
@@ -49,188 +49,40 @@
       <div class="content-title">
         <titleSideBlueTip title="承运车辆" />
       </div>
-      <el-form
-        ref="ruleForm"
-        :rules="rules"
-        :model="carForm"
-        label-position="top"
-      >
-        <el-row class="vehicleDrivers-content">
-          <el-col :span="8">
-            <el-form-item label="开始日期:" prop="startDate">
-              <el-date-picker
-                v-model="carForm.startDate"
-                type="date"
-                :picker-options="startPickerOptions"
-                value-format="yyyy-MM-dd"
-                placeholder="选择开始日期"
-              >
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="结束日期:" prop="endDate">
-              <el-date-picker
-                v-model="carForm.endDate"
-                type="date"
-                :picker-options="endPickerOptions"
-                value-format="yyyy-MM-dd"
-                placeholder="选择结束日期"
-              >
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="8">
-            <el-form-item label="出车时间:" prop="outCarTime">
-              <el-time-picker
-                v-model="carForm.outCarTime"
-                value-format="HH:mm"
-                placeholder="选择出车时间"
-              >
-              </el-time-picker>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <div
-          class="vehicleDrivers-content"
-          v-for="(item, index) in carForm.vehicleDrivers"
-          :key="item.key"
-        >
-          <el-form-item
-            label="承运车辆:"
-            :prop="'vehicleDrivers.' + index + '.vehicleCode'"
-            :rules="{
-              required: true,
-              message: '承运车辆为空',
-              trigger: 'change',
-            }"
-          >
-            <el-select
-              v-model="item.vehicleCode"
-              clearable
-              filterable
-              @change="vehicleChange($event, index)"
-              placeholder="请选择承运车辆"
-            >
-              <el-option
-                v-for="(sub, i) in vehicleList"
-                :key="i"
-                :label="sub.vehicleNumber"
-                :value="sub.vehicleCode"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item
-            label="承运司机:"
-            :prop="`vehicleDrivers[${index}].driverCode`"
-            style="padding-left: 20px"
-            :rules="{
-              required: true,
-              message: '承运司机为空',
-              trigger: 'change',
-            }"
-          >
-            <el-select
-              v-model="item.driverCode"
-              clearable
-              filterable
-              @change="driverChange($event, index)"
-              placeholder="请选择承运司机"
-            >
-              <el-option
-                v-for="(sub, i) in driverList[index]"
-                :key="i"
-                :label="sub.value"
-                :value="sub.key"
-              />
-            </el-select>
-          </el-form-item>
-          <div class="edit-icon">
-            <el-button
-              class="edicon"
-              type="primary"
-              icon="el-icon-plus"
-              circle
-              @click="addItem(item, index)"
-            ></el-button>
-            <el-button
-              class="edicon"
-              v-show="index !== 0"
-              type="danger"
-              icon="el-icon-minus"
-              circle
-              @click="delItem(item, index)"
-            ></el-button>
-          </div>
-        </div>
-      </el-form>
-      <div slot="footer">
+      <!-- <div slot="footer">
         <el-button @click="colse"> 取消</el-button>
         <el-button type="primary" :loading="loading" @click="submitForm">确定</el-button>
-      </div>
+      </div> -->
+       <CarMany
+      v-if="isMany"
+      :pageData="detailData"
+      :dispatchOrderCode="pageObj.dispatchOrderCode"
+      :carDrawer="showDispatchVehicle"
+      :isZj="isZj"
+      @handleClose="colse"
+    />
+    <CarSingle
+      v-if="!isMany"
+      :pageData="detailData"
+      :dispatchOrderCode="pageObj.dispatchOrderCode"
+      :carDrawer="showDispatchVehicle"
+      :isZj="isZj"
+      @handleClose="colse"
+    />
     </el-dialog>
   </div>
 </template>
 
 <script>
 import { http_request } from "@/api";
-
+import config from './config'
+import CarMany from "./carMany.vue";
+import CarSingle from "./carSingle.vue"; 
 export default {
   name: "DispathcVehicle",
   data() {
     return {
-      loading:false,
-      vehicleList: [],
-      oldkey: [],
-      driverList: [],
-      carForm: {
-        //填写的表单
-        startDate: null,
-        endDate: null,
-        outCarTime: null,
-        dispatchOrderCode: null,
-        vehicleDrivers: [
-          {
-            vehicleCode: null,
-            driverCode: null,
-          },
-        ],
-      },
-      rules: {
-        startDate: [
-          { required: true, message: "请选择开始日期", trigger: "change" },
-        ],
-        endDate: [
-          { required: true, message: "请选择结束日期", trigger: "change" },
-        ],
-        outCarTime: [
-          { required: true, message: "请选择出车日期", trigger: "change" },
-        ],
-      },
-      startPickerOptions: {
-        //开始时间过滤
-        disabledDate: (time) => {
-          if (this.carForm.endDate) {
-            return (
-              time.getTime() > new Date(this.carForm.endDate).getTime() ||
-              time.getTime() <= Date.now() - 24 * 60 * 60 * 1000
-            );
-          }
-          return time.getTime() <= Date.now() - 24 * 60 * 60 * 1000;
-        },
-      },
-      endPickerOptions: {
-        //结束时间过滤
-        disabledDate: (time) => {
-          if (this.carForm.startDate) {
-            return (
-              time.getTime() <
-              new Date(this.carForm.startDate).getTime() - 24 * 60 * 60 * 1000
-            );
-          }
-        },
-      },
+      sourceConfig:{},
       pageObj: {
         companyName: "",
         source: "",
@@ -239,11 +91,13 @@ export default {
         unloadFormattedAddress: "",
         vehicleCode: null,
         driverCode: null,
+        dispatchOrderCode:null
       },
+      detailData:{}
     };
   },
 
-  components: {},
+  components: { CarMany, CarSingle },
 
   computed: {
     showDispatchVehicle() {
@@ -253,24 +107,39 @@ export default {
       );
       if (this.$store.getters.showDispatchVehicle) {
         this.renderPageObj();
-         this.initTimeDate();
+         
       }
       return this.$store.getters.showDispatchVehicle;
     },
+    isZj(){
+      console.log('this.pageObj.source',this.pageObj.source)
+      return this.pageObj.source === 'chy'?false:true
+    },
+    isMany(){
+      console.log('this.$store.getters.isMany',this.$store.getters.isMany)
+      return this.$store.getters.isMany
+    }
   },
 
   mounted() {
     console.log("派车");
-    this.listVehicleSelect();
+    this.sourceConfig =  config.sourceConfig
   },
 
   methods: {
-     initTimeDate() {
-      this.carForm.startDate = this.carForm.endDate = this.parseTime(
-        new Date(),
-        "{y}-{m}-{d}"
-      );
-      this.carForm.outCarTime = this.parseTime(new Date(), "{h}:{i}");
+    async getDetail(code){
+      console.log('1111',code)
+            const obj = {
+        moduleName: "http_dispatch",
+        method: "get",
+        url_alias: "detail_dispatch",
+        url_code: [code],
+      };
+      this.detailData = await http_request(obj);
+    },
+    colse() {
+      //重置
+      this.$store.commit("set_dispatchVehicle", false);
     },
     renderPageObj() {
       this.pageObj = this.$store.getters.dispatchInfo;
@@ -278,151 +147,14 @@ export default {
         this.$store.getters.dispatchInfo.dispatchOrderCode;
       const pageObj = this.pageObj;
       console.log("pageObj", pageObj, this.$store.getters.dispatchInfo);
-       this.carForm.dispatchOrderCode = pageObj.dispatchOrderCode;
+       this.getDetail(pageObj.dispatchOrderCode)
     },
-    //获取派车的车辆Select
-    async listVehicleSelect() {
-      const me = this;
-      me.driverList = [];
-      const obj = {
-        moduleName: "http_dispatch",
-        method: "get",
-        url_alias: "list_vehicle_select",
-      };
-      const res = await http_request(obj);
-      console.log("获取派车的车辆Select", res);
-      me.vehicleList = res.data;
-    },
-    //查找车辆默认司机
-    searchDefaultDriverCode(vkey, index) {
-      const me = this;
-      let Dcode = null;
-      //找到
-      for (const item of me.vehicleList) {
-        if (item.vehicleCode == vkey) {
-          Dcode = item.driverCode;
-        }
-      }
-      //排重
-      this.driverChange(Dcode, index);
-      console.log("Dcode", Dcode);
-      return Dcode;
-    },
-    // 车辆变化
-    vehicleChange(e, index) {
-      const me = this;
-      console.log("e=%s,index=%d", e, index);
-      if (me.oldkey[index] !== e || !e) {
-        console.log("车辆选择发生变化", me.vehicleList[index]);
-        me.driverList[index] = [];
-        me.carForm.vehicleDrivers[index].driverCode = null;
-      }
-      //获取司机列表
-      if (e && me.oldkey[index] !== e) {
-        console.log("车辆选择发生变化,而后开始获取数据");
-        const obj1 = {
-          moduleName: "http_dispatch",
-          method: "get",
-          url_alias: "by_vehicle_code",
-          url_code: [e],
-        };
-        http_request(obj1).then((res) => {
-          console.log("获取司机列表 res", res.data);
-          me.$set(me.driverList, index, res.data);
-          me.carForm.vehicleDrivers[index].driverCode =
-            me.searchDefaultDriverCode(e, index);
-          console.log(
-            me.driverList,
-            me.carForm.vehicleDrivers[index].driverCode
-          );
-          me.oldkey[index] = e;
-        });
-      }
-      //检查是否重复
-      const checkList = me.carForm.vehicleDrivers;
-      let resultIndex = -1;
-      for (let i = 0; i < me.carForm.vehicleDrivers.length; i++) {
-        const item = checkList[i];
-        if (item.vehicleCode === e && index !== i) resultIndex = i;
-      }
-      if (resultIndex > -1) {
-        //互拆清空
-        me.carForm.vehicleDrivers[resultIndex].vehicleCode = null;
-        me.carForm.vehicleDrivers[resultIndex].driverCode = null;
-        me.$set(me.driverList, resultIndex, []);
-        me.oldkey[resultIndex] = "";
-        console.log(
-          "检查是否重复  me.driverList=",
-          me.driverList,
-          "me.oldkey=",
-          me.oldkey,
-          "resultIndex=",
-          resultIndex
-        );
-      }
-    },
-    //司机排重
-    driverChange(e, index) {
-      const me = this;
-      let resultIndex = -1;
-      const checkList = me.carForm.vehicleDrivers;
-      for (let i = 0; i < me.carForm.vehicleDrivers.length; i++) {
-        const item = checkList[i];
-        if (item.driverCode === e && index !== i) resultIndex = i;
-      }
-      if (resultIndex > -1) {
-        me.carForm.vehicleDrivers[resultIndex].driverCode = null;
-      }
-    },
-    //添加
-    addItem(item, index) {
-      this.carForm.vehicleDrivers.splice(index + 1, 0, {
-        vehicleCode: null,
-        driverCode: null,
-      });
-    },
-    //删除
-    delItem(item, index) {
-      this.$set(this.driverList, index, []);
-      var index = this.carForm.vehicleDrivers.indexOf(item);
-      if (index !== -1) {
-        this.carForm.vehicleDrivers.splice(index, 1);
-      }
-    },
-    //提交表单
-    submitForm() {
-      console.log("提交表单", this.carForm);
-      const me = this;
-      me.loading = true
-      this.$refs["ruleForm"].validate((valid) => {
-        if (valid) {
-          const obj = {
-            moduleName: "http_dispatch",
-            method: "post",
-            url_alias: "appoint_car",
-            data: me.carForm,
-          };
-          http_request(obj).then((res) => {
-            if (res.code == 200) {
-              this.$router.push("/dispatch/order");
-               me.loading = false
-              this.$store.commit("set_isFresh", true);
-              this.colse();
-            }
-          }).catch(()=>{
-            me.loading = false
-          })
-        } else {
-            me.loading = false
-          return false;
-        }
-      });
-    },
-    colse() {
-      //重置
-      this.$refs["ruleForm"].resetFields();
-      this.$store.commit("set_dispatchVehicle", false);
-    },
+   
+  
+ 
+ 
+ 
+ 
   },
 };
 </script>

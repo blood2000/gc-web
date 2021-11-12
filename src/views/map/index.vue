@@ -227,7 +227,7 @@
                 <template v-if="!data.driverFlag">
                   <span class="node-label">
                     <i class="tree-node-icon" :class="data.icon" />
-                    {{ data.orgOrDriverName }}
+                    {{ ` ${data.orgOrDriverName}（${data.driverCount}）` }}
                   </span>
                 </template>
                 <template v-if="data.driverFlag">
@@ -302,6 +302,7 @@
         headerTab === 2 && showVehicleDetail ? 'vehicle-detail-panel' : ''
       "
       :vehicleCode="orgOrVehicleCode"
+      :licenseNumber="CurrorgOrlicenseNumber"
     />
     <!-- 车辆监控 -->
     <WarnList
@@ -343,7 +344,11 @@
       @clearPathSimplifierIns="clearPathSimplifierIns"
       @handleSlideChange="handleSlideChange"
     />
-    <PlayBack v-if="headerTab === 4" ref="PlayBackRef" class="play-back" />
+    <PlayBack
+     v-if="headerTab === 4&&orgOrVehicleCode" 
+     ref="PlayBackRef" 
+     :vehicleCode="orgOrVehicleCode"
+     class="play-back" />
   </div>
 </template>
 
@@ -504,6 +509,7 @@ export default {
       realWarnMarker: null,
       // 记录上一页面路由
       routerFrom: "/",
+      CurrorgOrlicenseNumber: null,
     };
   },
 
@@ -1141,6 +1147,7 @@ export default {
         url_alias: "countVehicle",
       };
       http_request(obj).then((res) => {
+        console.log("getCountVehicle res.data", res.data);
         this.countVehicle = res.data;
       });
     },
@@ -1225,6 +1232,7 @@ export default {
       // if (this.orgOrVehicleCode === data.orgOrVehicleCode) return;
       console.log("tree-node: ", data);
       this.orgOrVehicleCode = data.orgOrVehicleCode;
+      this.CurrorgOrlicenseNumber = data.orgOrlicenseNumber;
       this.orgOrVehicleInfo = data;
       if (data.vehicleFlag) {
         // 选中车
@@ -1263,6 +1271,7 @@ export default {
         url_alias: "countDriver",
       };
       http_request(obj).then((res) => {
+        console.log("countDriver res.data", res.data);
         this.countDriver = res.data;
       });
     },
@@ -1815,7 +1824,7 @@ export default {
     bottom: 254px;
     right: $right;
     z-index: 1000;
-    width: 380px;
+    width: 375px;
   }
   // test
   > .map-info-video {

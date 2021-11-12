@@ -26,6 +26,8 @@ const getters = {
   vehicleInfo:state => state.map.vehicleInfo,
   isFresh:state => state.map.isFresh,
   dispatchInfo:state => state.map.dispatchInfo,
-  isClose:state => state.map.isClose
+  isClose:state => state.map.isClose,
+  isMany:state => state.map.isMany,
+  channelNumList:state =>state.map.channelNumList
 }
 export default getters

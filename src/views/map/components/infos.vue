@@ -87,7 +87,7 @@
     <!-- 设备信息 -->
     <div
       class="info-box info-device"
-      :style="warnIsClose ? '' : 'height: calc(100% - 304px)'"
+      :style="warnIsClose ? '' : 'height: calc(100% - 360px)'"
     >
       <h5 class="info-box-title">设备信息</h5>
       <!-- content -->
@@ -143,12 +143,12 @@
         </li>
       </ul>
       <!-- 视频 -->
-      <ul class="video-content" v-show="warnIsClose">
+      <ul class="video-content" v-if="warnIsClose">
         <li
           class="video-content-item"
           :key="index"
-          v-for="(item, index) in videoList"
-          @click="handlePlay(item)"
+          v-for="(item, index) in channelNumList"
+          @click="handlePlay(`${index + 1}`)"
         >
           <img
             width="100%"
@@ -157,7 +157,7 @@
             alt=""
           />
           <div class="video-content-item-top">
-            <span>{{ item.typeName }}</span>
+            <span> 通道 {{ index+1 }}</span>
           </div>
           <div class="video-content-item-middle" v-show="videoShow">
             <img src="../../../assets/images/detail/play-back-play.png" />
@@ -192,58 +192,38 @@ export default {
       type: String,
       default: null,
     },
+    licenseNumber: {
+      type: String,
+      default: null,
+    },
   },
   components: { videoDialog },
   data() {
     return {
       videoShow: true,
+      channelNumList: [],
       // 车辆信息
       vehicleInfo: {},
       locationInfo: {},
       deviceInfo: {},
       functionsInfo: [],
       attributesInfo: [],
+      fieldsInfo: {},
       dispatchInfo: {},
       warnCount: 0,
       showVideoDialog: false,
-      // form: {
-      //   VEHICLEID: "0",
-      //   CHANNEL: "1",
-      //   VEHICLELICENSE: "91750",
-      //   DEVICENO: "015800091750",
-      //   PLATECOLOR: "2",
-      //   STREAMTYPE: "1",
-      // },
       videoUserId: "1",
-      videoList: [
-        {
-          typeName: "车前摄像头",
-          VEHICLEID: "0", ////车辆ID
-          CHANNEL: "1", //通道号
-          VEHICLELICENSE: "91750", //车牌号
-          DEVICENO: "015800091750", //设备编码
-          PLATECOLOR: "2", //车牌颜色
-          STREAMTYPE: "1", //主/子码流
-        },
-        {
-          typeName: "车内摄像头",
-          VEHICLEID: "0",
-          CHANNEL: "2",
-          VEHICLELICENSE: "91750",
-          DEVICENO: "015800091750",
-          PLATECOLOR: "2",
-          STREAMTYPE: "1",
-        },
-        {
-          typeName: "车后摄像头",
-          VEHICLEID: "0",
-          CHANNEL: "3",
-          VEHICLELICENSE: "91750",
-          DEVICENO: "015800091750",
-          PLATECOLOR: "2",
-          STREAMTYPE: "1",
-        },
-      ],
+      // videoList: [
+      //   {
+      //     typeName: "车前摄像头",
+      //     VEHICLEID: "0", ////车辆ID
+      //     CHANNEL: "1", //通道号
+      //     VEHICLELICENSE: "91750", //车牌号
+      //     DEVICENO: "015800091750", //设备编码
+      //     PLATECOLOR: "2", //车牌颜色
+      //     STREAMTYPE: "1", //主/子码流
+      //   },
+      // ],
       videoOptions: {},
       // 车辆状态字典
       vehicleStatusOptions: [
@@ -266,11 +246,11 @@ export default {
       immediate: true,
     },
   },
-  computed:{
-    warnIsClose(){
-      console.log('this.$sotre.getters.isClose',this.$store.getters.isClose)
-      return  this.$store.getters.isClose
-    }
+  computed: {
+    warnIsClose() {
+      console.log("this.$sotre.getters.isClose", this.$store.getters.isClose);
+      return this.$store.getters.isClose;
+    },
   },
   mounted() {
     // bus
@@ -281,14 +261,22 @@ export default {
   },
   methods: {
     // 播放
-    handlePlay(item) {
-      console.log("item", item);
-      this.videoOptions = JSON.parse(JSON.stringify(item));
+    handlePlay(indexStr) {
+      console.log("indexStr");
+      this.videoOptions = {
+        typeName: `通道 ${indexStr}`,
+        VEHICLEID: "0",
+        CHANNEL: indexStr,
+        VEHICLELICENSE: this.licenseNumber,
+        DEVICENO: this.deviceInfo.deviceSN,
+        PLATECOLOR: "2",
+        STREAMTYPE: "1",
+      };
       this.showVideoDialog = true;
     },
     // 获取车辆信息
     getVehicleInfo() {
-      const type = "vehicle,location,device,function,attribute"; // 获取信息类型, 可指定多个
+      const type = "vehicle,location,device,function,attribute,field"; // 获取信息类型, 可指定多个
       const obj = {
         moduleName: "http_map",
         method: "get",
@@ -296,12 +284,19 @@ export default {
         url_code: [this.vehicleCode, type],
       };
       http_request(obj).then((res) => {
-        const { vehicle, location, device, functions, attributes } = res.data;
+        console.log("res,,,,", res.data);
+        const { vehicle, location, device, functions, attributes, fields } =
+          res.data;
         this.vehicleInfo = vehicle || {};
         this.locationInfo = location || {};
         this.deviceInfo = device || {};
         this.functionsInfo = functions || [];
         this.attributesInfo = attributes || [];
+        this.fieldsInfo = fields || {};
+        this.channelNumList = [];
+        for (let i = 0; i < Number(fields.channelNum); i++) {
+          this.channelNumList.push(i);
+        }
         // 根据经纬度获取点位
         if (
           this.locationInfo &&
@@ -358,10 +353,10 @@ export default {
       });
       return actions.join("");
     },
-    colseVideoDialog(){
+    colseVideoDialog() {
       this.showVideoDialog = false;
-      this.videoShow = true
-    }
+      this.videoShow = true;
+    },
   },
 };
 </script>
@@ -418,7 +413,6 @@ export default {
 
     // 车辆信息
     &.info-car {
-      height: 172px;
       .car-content {
         margin: 8px 0 10px 0;
         > .img-box {
@@ -520,7 +514,7 @@ export default {
     // 设备信息
     &.info-device {
       padding-right: 0;
-      min-height: 300px;
+      min-height: 280px;
       max-height: 484px;
       .device-content {
         padding: 8px 12px 0 0;
@@ -589,7 +583,7 @@ export default {
       }
       .info-list {
         margin-top: 12px;
-        overflow-y: scroll;
+        overflow: scroll;
         flex-wrap: wrap;
         > li {
           width: 50%;
@@ -647,6 +641,7 @@ export default {
       .video-content {
         height: 172px;
         display: flex;
+        overflow: auto;
         flex-wrap: wrap;
         &-item {
           margin-right: 25px;

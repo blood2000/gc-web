@@ -183,6 +183,7 @@ export default {
     border-radius: 2px;
     &-title {
       position: absolute;
+      font-family: PingFang SC;
       height: 40px;
       width: 100%;
       left: 0;

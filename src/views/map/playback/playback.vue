@@ -35,10 +35,10 @@
                 placeholder="请选择摄像头"
               >
                 <el-option
-                  v-for="(item, index) in typeList"
+                  v-for="(item, index) in channelNumList"
                   :key="index"
-                  :label="item.label"
-                  :value="item.value"
+                  :label="`通道${index + 1}`"
+                  :value="`${index + 1}`"
                 />
               </el-select>
             </el-form-item>
@@ -79,7 +79,7 @@
             ref="video"
             width="100%"
             height="100%"
-            poster="../../../assets/images/RVC/video.png"
+            :poster="require('../../../utils/RVC/img/video.png')"
             autoplay
             @canplay="getDuration"
             muted
@@ -106,6 +106,7 @@ import { typeList } from "./config";
 import { videoPlayer } from "vue-video-player";
 import "video.js/dist/video-js.css";
 import "vue-video-player/src/custom-theme.css";
+import { http_request } from "../../../api";
 
 export default {
   components: { videoPlayer },
@@ -123,10 +124,10 @@ export default {
       isShow: false,
       queryParams: {
         dateRange: [],
-        CHANNEL: 1, //通道号
+        CHANNEL: "1", //通道号
         VEHICLEID: "0", ////车辆ID
-        VEHICLELICENSE: "91750", //车牌号
-        DEVICENO: "015800091750", //设备编码
+        VEHICLELICENSE: "闽A80808", //车牌号
+        DEVICENO: "015800117661", //设备编码
         PLATECOLOR: "2", //车牌颜色
         STREAMTYPE: "1", //主/子码流
       },
@@ -139,12 +140,38 @@ export default {
       totalTime: 0,
       ttTime: 0,
       isbigger: false,
+      channelNumList: [],
     };
+  },
+  props: {
+    vehicleCode: {
+      type: String,
+      default: null,
+    },
   },
   mounted() {
     this.timeUpdate();
+    this.getChannelNumListList();
   },
+  computed: {},
   methods: {
+    getChannelNumListList() {
+      const type = "vehicle,location,device,function,attribute,field"; // 获取信息类型, 可指定多个
+      const obj = {
+        moduleName: "http_map",
+        method: "get",
+        url_alias: "getVehicleInfo",
+        url_code: [this.vehicleCode, type],
+      };
+      http_request(obj).then((res) => {
+        
+        const fields  = res.data.fields
+          this.channelNumList = []
+        for (let i = 0; i < Number(fields.channelNum); i++) {
+          this.channelNumList.push(i);
+        }
+      });
+    },
     // 时长转换
     durationTrans(a) {
       var b = "";
@@ -170,13 +197,13 @@ export default {
     },
     // 标题头
     getTypes() {
-      let result = "";
-      for (const item of this.typeList) {
-        if (item.value == this.queryParams.CHANNEL) {
-          result = item.label;
-        }
-      }
-      return result;
+      // let result = "";
+      // for (const item of this.channelNumList) {
+      //   if (item.value == this.queryParams.CHANNEL) {
+      //     result = item.label;
+      //   }
+      // }
+      return `通道${this.queryParams.CHANNEL}`;
     },
     // 关闭视频
     colse() {
@@ -197,8 +224,9 @@ export default {
       const queryParams = this.queryParams;
       console.log("queryParams.dateRange", queryParams.dateRange);
       if (!queryParams || queryParams.dateRange.length !== 2) return;
-      const startTime = parseInt(queryParams.dateRange[0].getTime() / 1000);
-      const endTime = parseInt(queryParams.dateRange[1].getTime() / 1000);
+      const startTime =
+        parseInt(queryParams.dateRange[0].getTime() / 1000) + "";
+      const endTime = parseInt(queryParams.dateRange[1].getTime() / 1000) + "";
       this.OpenRecordingVideo(
         video,
         queryParams.VEHICLEID,
@@ -251,9 +279,9 @@ export default {
           MSGID,
           userId: "1",
         };
-      video.poster = "../../../assets/images/RVC/timg.gif";
+      video.poster = "../../../utils/RVC/timg.gif";
       this.wfs.attachMedia(video, [wfsObj, player, userInfo]);
-    }
+    },
   },
 };
 </script>
@@ -286,6 +314,7 @@ export default {
   border-top: 1px solid #dce3e9;
   padding: 20px 16px 16px 16px;
   width: 100%;
+  position: relative;
   &-title {
     position: absolute;
     top: 0;
@@ -332,35 +361,36 @@ export default {
   height: 100%;
   z-index: 3000;
   background: rgba(0, 0, 0, 0.26);
-  &-full {
-    opacity: 1 !important;
-    width: 54% !important;
-    height: 45% !important;
-    position: absolute !important;
-    top: 20% !important;
-    left: 25% !important;
-    background: #3d4050 !important;
-    border-radius: 2px !important;
-    &-title {
-      position: absolute !important;
-      width: 100%;
-      height: 50px;
-      padding: 16px;
-      left: 0 !important;
-      top: 0 !important;
-      color: #fff !important;
-      display: flex;
-      justify-content: space-between;
-      & > i {
-        display: inline-block;
-        height: 15px;
-        width: 15px;
-        z-index: 4000;
-      }
-    }
-  }
+}
+.dialog-video-full {
+  opacity: 1 !important;
+  width: 54% !important;
+  height: 45% !important;
+  position: absolute !important;
+  top: 20% !important;
+  left: 25% !important;
+  background: #3d4050 !important;
+  border-radius: 2px !important;
 }
 
+.dialog-video-full-title {
+  position: absolute !important;
+  width: 100%;
+  height: 50px;
+  padding: 16px;
+  left: 0 !important;
+  top: 0 !important;
+  color: #fff !important;
+  display: flex;
+  justify-content: space-between;
+}
+
+.dialog-video-full-title > i {
+  display: inline-block;
+  height: 15px;
+  width: 15px;
+  z-index: 4000;
+}
 .toBigger {
   position: absolute;
   bottom: 2px;
@@ -368,6 +398,4 @@ export default {
   width: 17px;
   height: 17px;
 }
-
-
 </style>

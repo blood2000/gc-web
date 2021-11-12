@@ -39,11 +39,11 @@ const enabledList = [
 const vehicleOwnershipList = [
   {
     label: "自有",
-    value: 1
+    value: 0
   },
   {
     label: "外援",
-    value: 0
+    value: 1
   }
 ]
 

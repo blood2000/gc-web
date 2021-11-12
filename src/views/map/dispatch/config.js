@@ -65,7 +65,16 @@ const vehicleInfo = {
   status: 2
 };
 
+//调度单来源
+ const sourceConfig = {
+  'chy': "超好运",
+  'zj': '自建'
+}
 
+export const vehicleOwnershipObj = {
+  0: "自有",
+  1: "外援",
+}
 
 const travelStatus = [
   {id: 0, status: '空闲中'},
@@ -77,5 +86,6 @@ const travelStatus = [
 export default {
   dispatchList,
   vehicleInfo,
-  travelStatus
+  travelStatus,
+  sourceConfig
 };
