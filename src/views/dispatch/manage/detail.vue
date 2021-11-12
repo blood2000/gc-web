@@ -40,9 +40,7 @@
           >
         </el-col>
         <el-col :span="12">
-          <span class="dispatch-base-label" 
-            >备注:</span
-          >
+          <span class="dispatch-base-label">备注:</span>
           <span class="dispatch-dispatch-base-text">
             {{ baseData.shipmentName }}</span
           >
@@ -62,31 +60,52 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="省 / 市 / 区:" prop="loadFormattedAddress">
-                  <el-input
-                    v-model="addressInfo.loadFormattedAddress"
-                    clearable
-                    style="width: 220px"
-                  />
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="addressInfo.loadFormattedAddress"
+                    placement="top"
+                  >
+                    <el-input
+                      v-model="addressInfo.loadFormattedAddress"
+                      clearable
+                      style="width: 220px"
+                    />
+                  </el-tooltip>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="详细地址:" prop="loadAddressDetail">
-                  <el-input
-                    v-model="addressInfo.loadAddressDetail"
-                    clearable
-                    style="width: 220px"
-                  />
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="addressInfo.loadAddressDetail"
+                    placement="top"
+                  >
+                    <el-input
+                      v-model="addressInfo.loadAddressDetail"
+                      clearable
+                      style="width: 220px"
+                    />
+                  </el-tooltip>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="8">
                 <el-form-item label="地址别名:" prop="loadAddressAlias">
-                  <el-input
-                    v-model="addressInfo.loadAddressAlias"
-                    clearable
-                    style="width: 90%"
-                  />
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="addressInfo.loadAddressAlias"
+                    placement="top"
+                  >
+                    <el-input
+                      v-model="addressInfo.loadAddressAlias"
+                      clearable
+                      style="width: 90%"
+                    />
+                  </el-tooltip>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -112,65 +131,83 @@
         </div>
         <div class="dispatch-title-item end_address">目的地信息</div>
         <div class="dispatch-info-content">
-            <el-row>
-              <el-col :span="12">
-                <el-form-item
-                  label="省 / 市 / 区:"
-                  prop="unloadFormattedAddress"
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="省 / 市 / 区:" prop="unloadFormattedAddress">
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  :content="addressInfo.unloadFormattedAddress"
+                  placement="top"
                 >
                   <el-input
                     v-model="addressInfo.unloadFormattedAddress"
                     clearable
                     style="width: 220px"
                   />
-                </el-form-item>
-              </el-col>
+                </el-tooltip>
+              </el-form-item>
+            </el-col>
 
-              <el-col :span="12">
-                <el-form-item label="详细地址:" prop="unloadAddressDetail">
+            <el-col :span="12">
+              <el-form-item label="详细地址:" prop="unloadAddressDetail">
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  :content="addressInfo.unloadAddressDetail"
+                  placement="top"
+                >
                   <el-input
                     v-model="addressInfo.unloadAddressDetail"
                     clearable
                     style="width: 220px"
                   />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="地址别名:" prop="unloadAddressAlias">
+                </el-tooltip>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="地址别名:" prop="unloadAddressAlias">
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  :content="addressInfo.unloadAddressAlias"
+                  placement="top"
+                >
                   <el-input
                     v-model="addressInfo.unloadAddressAlias"
                     clearable
                     style="width: 90%"
                   />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="联系人电话:" prop="unloadLinkManPhone">
-                  <el-input
-                    v-model="addressInfo.unloadLinkManPhone"
-                    clearable
-                    style="width: 156px"
-                  />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="联系人:" prop="unloadLinkManName">
-                  <el-input
-                    v-model="addressInfo.unloadLinkManName"
-                    clearable
-                    style="width: 112px"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
+                </el-tooltip>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="联系人电话:" prop="unloadLinkManPhone">
+                <el-input
+                  v-model="addressInfo.unloadLinkManPhone"
+                  clearable
+                  style="width: 156px"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="联系人:" prop="unloadLinkManName">
+                <el-input
+                  v-model="addressInfo.unloadLinkManName"
+                  clearable
+                  style="width: 112px"
+                />
+              </el-form-item>
+            </el-col>
+          </el-row>
         </div>
       </el-form>
     </div>
     <TitleSideBlueTip title="承运信息" />
     <div class="dispatch-base-contents-box">
-      <el-row >
+      <el-row>
         <el-col :span="12" style="padding-bottom: 16px">
           <span class="dispatch-base-label">承运车辆:</span>
           <span class="dispatch-base-text">
@@ -235,7 +272,7 @@
           >
         </el-col>
 
-        <el-col :span="12" >
+        <el-col :span="12">
           <span class="dispatch-base-label">调度者电话:</span>
           <span class="dispatch-base-text">
             {{ waybillInfo.teamLeaderPhone }}</span
@@ -244,7 +281,7 @@
       </el-row>
     </div>
     <TitleSideBlueTip title="费用信息" />
-    <div class="dispatch-base-contents-box" style="padding-bottom:114px">
+    <div class="dispatch-base-contents-box" style="padding-bottom: 114px">
       <template v-if="waybillInfo.status === 10">
         <div style="padding-bottom: 16px">
           <span class="dispatch-base-label">运费单价:</span>
@@ -252,11 +289,11 @@
             {{ settlementInfo.unitPrice }}</span
           >
         </div>
-        <div  style="padding-bottom: 16px">
+        <div style="padding-bottom: 16px">
           <span class="dispatch-base-label">计费重量:</span>
           <span class="dispatch-base-text"> {{ settlementInfo.weight }}</span>
         </div>
-        <div  style="padding-bottom: 16px">
+        <div style="padding-bottom: 16px">
           <span class="dispatch-base-label">货物单价:</span>
           <span class="dispatch-base-text">
             {{ settlementInfo.goodsPrice }}</span
@@ -264,13 +301,13 @@
         </div>
       </template>
       <template v-else>
-        <div style="padding-bottom: 16px" >
+        <div style="padding-bottom: 16px">
           <span class="dispatch-base-label">司机应收:</span>
           <span class="dispatch-base-text">
             {{ settlementInfo.driverFreight }}</span
           >
         </div>
-        <el-row style="padding-bottom: 16px" >
+        <el-row style="padding-bottom: 16px">
           <el-col :span="8">
             <span class="dispatch-base-label">路耗扣费:</span>
             <span class="dispatch-base-text">
@@ -290,7 +327,7 @@
             >
           </el-col>
         </el-row>
-        <div  style="padding-bottom: 16px">
+        <div style="padding-bottom: 16px">
           <span class="dispatch-base-label">司机实收:</span>
           <span class="dispatch-base-text">
             {{ settlementInfo.driverRealFreight }}</span
@@ -302,7 +339,7 @@
             {{ settlementInfo.servicePrice }}</span
           >
         </div>
-        <div  style="padding-bottom: 16px">
+        <div style="padding-bottom: 16px">
           <span class="dispatch-base-label">货主实付:</span>
           <span class="dispatch-base-text">
             {{ settlementInfo.shipmentPrice }}</span

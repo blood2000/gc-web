@@ -6,13 +6,18 @@
     label-width="90px"
     label-position="top"
   >
-    <el-tag class="warning-text" type="danger" v-show="!isZj"
-      >超好运货源，仅认证通过的车辆与司机可以进行运输</el-tag
-    >
+    <el-row>
+      <el-col :span="13" v-show="!isZj">
+        <el-tag class="warning-text" type="danger"
+          >超好运货源，仅认证通过的车辆与司机可以进行运输</el-tag
+        >
+      </el-col>
+    </el-row>
+
     <div style="margin-bottom: 40px">
       <el-row class="dispatch-base-contents-big">
         <el-col :span="8">
-          <el-form-item label="开始日期:" prop="startDate">
+          <el-form-item label="出车日期:" prop="startDate">
             <el-date-picker
               v-model="form.startDate"
               type="date"
@@ -192,10 +197,10 @@ export default {
       },
       rules: {
         startDate: [
-          { required: true, message: "请选择开始日期", trigger: "change" },
+          { required: true, message: "请选择出车日期", trigger: "change" },
         ],
         outCarTime: [
-          { required: true, message: "请选择出车日期", trigger: "change" },
+          { required: true, message: "请选择出车时间", trigger: "change" },
         ],
         vehicleCode: [
           { required: true, message: "请选择车辆", trigger: "change" },
@@ -386,10 +391,10 @@ export default {
             startDate: me.form.startDate,
             endDate: me.form.startDate,
             outCarTime: me.form.outCarTime,
-            realFreight: me.form.realFreight,
             dispatchOrderCode: me.dispatchOrderCode,
             vehicleDrivers: [
               {
+                realFreight: me.form.realFreight,
                 vehicleCode: me.form.vehicleCode,
                 driverCode: me.form.driverCode,
               },
@@ -445,6 +450,7 @@ export default {
   font-size: 13px;
 }
 .warning-text {
+  width: 100%;
   display: inline-block;
   margin: 5px 40px;
 }

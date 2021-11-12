@@ -46,43 +46,55 @@
               <el-row :gutter="15">
                 <el-col :span="12">
                   <el-form-item label="省 / 市 / 区:" prop="loadAddress">
-                    <el-input
-                      v-model="form.loadAddress"
-                      clearable
-                      style="width: 220px"
-                    />
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      :content="form.loadAddress"
+                      placement="top"
+                    >
+                      <el-input
+                        v-model="form.loadAddress"
+                        clearable
+                        style="width: 220px"
+                      />
+                    </el-tooltip>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-               
                   <el-form-item label="详细地址:" prop="loadDetail">
-                          <el-tooltip
-                class="item"
-                effect="dark"
-                :content="form.loadDetail"
-                placement="top"
-              >
-                    <el-input
-                      v-model="form.loadDetail"
-                      clearable
-                      style="width: 220px"
-                    />
-                          </el-tooltip> 
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      :content="form.loadDetail"
+                      placement="top"
+                    >
+                      <el-input
+                        v-model="form.loadDetail"
+                        clearable
+                        style="width: 220px"
+                      />
+                    </el-tooltip>
                   </el-form-item>
-                  
                 </el-col>
               </el-row>
               <el-row :gutter="15">
                 <el-col :span="8">
                   <el-form-item label="地址别名:" prop="loadAlias">
+                     <el-tooltip
+                      class="item"
+                      effect="dark"
+                      :content="form.loadAlias"
+                      placement="top"
+                    >
                     <el-input
                       v-model="form.loadAlias"
                       clearable
                       style="width: 90%"
                     />
+                     </el-tooltip>
                   </el-form-item>
                 </el-col>
-             
+
                 <el-col :span="8">
                   <el-form-item label="联系人电话:" prop="loadLinkManPhone">
                     <el-input
@@ -92,7 +104,7 @@
                     />
                   </el-form-item>
                 </el-col>
-                   <el-col :span="8">
+                <el-col :span="8">
                   <el-form-item label="联系人:" prop="loadLinkManName">
                     <el-input
                       v-model="form.loadLinkManName"
@@ -111,41 +123,55 @@
               <el-row :gutter="15">
                 <el-col :span="12">
                   <el-form-item label="省 / 市 / 区:" prop="unloadAddress">
-                    <el-input
-                      v-model="form.unloadAddress"
-                      clearable
-                      style="width: 220px"
-                    />
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      :content="form.unloadAddress"
+                      placement="top"
+                    >
+                      <el-input
+                        v-model="form.unloadAddress"
+                        clearable
+                        style="width: 220px"
+                      />
+                    </el-tooltip>
                   </el-form-item>
                 </el-col>
-                 <el-col :span="12">
+                <el-col :span="12">
                   <el-form-item label="详细地址:" prop="unloadDetail">
-                     <el-tooltip
-                class="item"
-                effect="dark"
-                :content="form.unloadDetail"
-                placement="top"
-              >
-                    <el-input
-                      v-model="form.unloadDetail"
-                      clearable
-                      style="width: 220px"
-                    />
-                     </el-tooltip>
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      :content="form.unloadDetail"
+                      placement="top"
+                    >
+                      <el-input
+                        v-model="form.unloadDetail"
+                        clearable
+                        style="width: 220px"
+                      />
+                    </el-tooltip>
                   </el-form-item>
                 </el-col>
               </el-row>
               <el-row :gutter="15">
                 <el-col :span="8">
                   <el-form-item label="地址别名:" prop="unloadAlias">
-                    <el-input
-                      v-model="form.unloadAlias"
-                      clearable
-                      style="width: 90%"
-                    />
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      :content="form.unloadAlias"
+                      placement="top"
+                    >
+                      <el-input
+                        v-model="form.unloadAlias"
+                        clearable
+                        style="width: 90%"
+                      />
+                    </el-tooltip>
                   </el-form-item>
                 </el-col>
-                  <el-col :span="8">
+                <el-col :span="8">
                   <el-form-item label="联系人电话:" prop="unloadLinkManPhone">
                     <el-input
                       v-model="form.unloadLinkManPhone"
@@ -163,7 +189,6 @@
                     />
                   </el-form-item>
                 </el-col>
-              
               </el-row>
             </div>
           </div>
@@ -173,7 +198,7 @@
     <div>
       <div>
         <TitleSideBlueTip title="派车信息" />
-        <el-row class="dispatch-contents-box" style="padding-bottom:114px">
+        <el-row class="dispatch-contents-box" style="padding-bottom: 114px">
           <el-col :span="12" style="padding-bottom: 16px">
             <span class="dispatch-base-label">派车时间:</span>
             <span class="dispatch-base-text">

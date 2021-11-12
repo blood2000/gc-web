@@ -149,7 +149,7 @@ export const tableColumnsConfig = [
         prop: "edit",
         sortNum: 8,
         tooltip: true,
-        width: 250,
+        width: 300,
         fixed: 'right'
     },
 ]

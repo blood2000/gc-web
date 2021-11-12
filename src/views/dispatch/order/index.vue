@@ -65,7 +65,7 @@
               @click="handleDispatch(row, true)"
               v-show="row.dispatchOrderStatus !== 0"
             >
-              派车
+              批量派车
             </el-button>
             <el-button
               size="mini"

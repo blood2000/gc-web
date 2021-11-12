@@ -9,6 +9,9 @@
     label-position="top"
   >
     <div class="carMany-list">
+      <el-tag class="warning-text" type="danger" v-show="!isZj"
+        >超好运货源，仅认证通过的车辆与司机可以进行运输</el-tag
+      >
       <div class="header">
         <el-row style="width: 350px">
           <el-col :span="11">
@@ -60,6 +63,7 @@
         >
           <el-button
             slot="append"
+            :loading="loadSearching"
             @click="listVehicleSelect"
             icon="el-icon-search"
           ></el-button>
@@ -73,102 +77,121 @@
           v-for="(item, index) in vehicleList"
           @click.stop="checkChanges(item, index)"
         >
-          <!-- 提示框 -->
+          <!--   -->
           <div
             class="carMany-list-bottom-item-tip"
             v-show="item.haveAppointCarRecord"
           >
             <span>{{ item.haveAppointCarRecordText }}</span>
-            <span>应付金额 {{ item.realFreight }}</span>
+            <span v-if="isZj && item.vehicleOwnership == 1 && item.realFreight"
+              >应付金额 {{ item.realFreight }} 元</span
+            >
           </div>
-          <div style="position: relative">
-            <div class="carMany-list-bottom-item-checked-modal"></div>
-            <el-checkbox
-              class="carMany-list-bottom-item-checked"
-              v-model="item.checked"
-            />
-          </div>
+          <!-- 主题 -->
+          <div class="carMany-list-bottom-item-body">
+            <!-- 已派车提示框 -->
 
-          <div class="carMany-list-bottom-item-vehicleNumber">
-            {{ item.vehicleNumber }}
-          </div>
-          <div>
-            <span class="self" v-if="isZj || item.authStatus === '3'">{{
-              vehicleOwnershipObj[item.vehicleOwnership]
-            }}</span>
-            <span
-              class="self"
-              v-else
-              :style="{
-                background: dealvehicleListSubText(item, 'color', 'v'),
-                color: item.authStatus === '3' ? '#212121' : '#fff',
-              }"
-              >{{ dealvehicleListSubText(item, "text", "v") }}</span
-            >
-          </div>
-          <div class="carMany-list-bottom-item-userinfo" @click.stop>
-            <el-dropdown
-              trigger="click"
-              placement="bottom"
-              @command="handleCommand"
-            >
-              <div>
-                <span v-show="item.driverName" class="name">{{
-                  item.driverName
-                }}</span>
-                <span v-show="item.driverName" class="name">{{
-                  item.driverPhone
-                }}</span>
-                <span v-show="!item.driverName" class="name">请选择司机</span>
-              </div>
-              <el-dropdown-menu style="width: 220px" slot="dropdown">
-                <el-dropdown-item
-                  class="driver-list"
-                  v-for="(sub, i) in driverList"
-                  :key="i"
-                  :disabled="!isZj && sub.authStatus != '3'"
-                  :command="`${sub.driverCode}-${i}-${index}`"
-                >
-                  <!-- sub.driverCode+'-'+i+ -->
-                  <span>{{ sub.driverName }}</span>
-                  <span v-if="isZj">{{ sub.driverPhone }}</span>
-                  <span
-                    v-else
-                    :style="{
-                      color: dealvehicleListSubText(sub, 'color', 'd'),
-                    }"
-                    >{{ dealvehicleListSubText(sub, "text", "d") }}</span
+            <!-- 勾选 -->
+            <div style="position: relative">
+              <div class="carMany-list-bottom-item-checked-modal"></div>
+              <el-checkbox
+                class="carMany-list-bottom-item-body-checked"
+                v-model="item.checked"
+              />
+            </div>
+            <!-- 车牌 -->
+            <div class="carMany-list-bottom-item-body-vehicleNumber">
+              {{ item.vehicleNumber }}
+            </div>
+            <!-- 是否外援 -->
+            <div>
+              <span class="self" v-if="isZj || item.authStatus === '3'">{{
+                vehicleOwnershipObj[item.vehicleOwnership]
+              }}</span>
+              <span
+                class="self"
+                v-else
+                :style="{
+                  background: dealvehicleListSubText(item, 'color', 'v'),
+                  color: item.authStatus === '3' ? '#212121' : '#fff',
+                }"
+                >{{ dealvehicleListSubText(item, "text", "v") }}</span
+              >
+            </div>
+            <!-- 选择司机 -->
+            <div class="carMany-list-bottom-item-body-userinfo" @click.stop>
+              <el-dropdown
+                trigger="click"
+                placement="bottom"
+                @command="handleCommand"
+              >
+                <div>
+                  <span v-show="item.driverName" class="name">{{
+                    item.driverName
+                  }}</span>
+                  <span v-show="item.driverName" class="name">{{
+                    item.driverPhone
+                  }}</span>
+                  <span v-show="!item.driverName" class="name">请选择司机</span>
+                </div>
+                <el-dropdown-menu style="width: 220px" slot="dropdown">
+                  <el-dropdown-item
+                    class="driver-list"
+                    v-for="(sub, i) in driverList"
+                    :key="i"
+                    :disabled="!isZj && sub.authStatus != '3'"
+                    :command="`${sub.driverCode}-${i}-${index}`"
                   >
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
+                    <!-- sub.driverCode+'-'+i+ -->
+                    <span>{{ sub.driverName }}</span>
+                    <span v-if="isZj">{{ sub.driverPhone }}</span>
+                    <span
+                      v-else
+                      :style="{
+                        color: dealvehicleListSubText(sub, 'color', 'd'),
+                      }"
+                      >{{ dealvehicleListSubText(sub, "text", "d") }}</span
+                    >
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </div>
+          </div>
+          <!-- 应付 -->
+          <div
+            class="carMany-list-bottom-item-footer"
+            v-if="
+              isZj &&
+              item.vehicleOwnership == 1 &&
+              item.haveAppointCarRecord === false
+            "
+            @click.stop=""
+          >
+            <div v-if="pageData.settlementWay == 1">
+              <el-input
+                type="number"
+                @input="imposeInput($event, 'realFreight', index)"
+                placeholder="请输入内容"
+                v-model="item.realFreight"
+              >
+                <template slot="prepend">应付金额</template>
+                <template slot="append">元</template>
+              </el-input>
+            </div>
+            <div v-if="pageData.settlementWay != 1">
+              <el-input
+                type="number"
+                @input="imposeInput($event, 'realFreight', index)"
+                placeholder="请输入内容"
+                v-model="item.realFreight"
+              >
+                <template slot="prepend">应付单价</template>
+                <template slot="append">元 / 吨</template>
+              </el-input>
+            </div>
           </div>
         </li>
       </ul>
-      <el-form-item prop="realFreight">
-        <div v-if="isZj && pageData.settlementWay == 1">
-          <el-input
-            type="number"
-            @input="imposeInput($event, 'realFreight')"
-            placeholder="请输入内容"
-            v-model="form.realFreight"
-          >
-            <template slot="prepend">应付金额</template>
-            <template slot="append">元</template>
-          </el-input>
-        </div>
-        <div v-if="isZj && pageData.settlementWay != 1">
-          <el-input
-            type="number"
-            @input="imposeInput($event, 'realFreight')"
-            placeholder="请输入内容"
-            v-model="form.realFreight"
-          >
-            <template slot="prepend">应付单价</template>
-            <template slot="append">元 / 吨</template>
-          </el-input>
-        </div>
-      </el-form-item>
       <el-form-item>
         <div class="dispatch-base-confrim">
           <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -211,10 +234,10 @@ export default {
       driverList: null, //司机列表
       vehicleOwnershipObj, //静态配置 自有 外援
       haveAppointCarRecordText: "", //已派车文字
+      loadSearching: false,
       form: {
         startDate: null,
         outCarTime: null,
-        realFreight: null,
       },
       rules: {
         startDate: [
@@ -222,10 +245,6 @@ export default {
         ],
         outCarTime: [
           { required: true, message: "请选择出车日期", trigger: "change" },
-        ],
-        realFreight: [
-          { required: true, message: "应付金额不能为空", trigger: "blur" },
-          { validator: this.plateNo, trigger: "blur" },
         ],
       },
       startPickerOptions: {
@@ -255,7 +274,7 @@ export default {
     allocationDriver() {
       let result = 0;
       for (const item of this.vehicleList) {
-        if (item.driverName) {
+        if (item.driverName && item.checked) {
           result++;
         }
       }
@@ -270,11 +289,11 @@ export default {
   },
   methods: {
     //强制限制
-    imposeInput(e, value) {
+    imposeInput(e, value, index) {
       console.log("强制限制", e);
       const tmp = e.match(/^[0-9]+(\.[0-9]{0,2})?/g) ?? [""];
       console.log("tmp", tmp[0]);
-      this.form[value] = tmp[0];
+      this.vehicleList[index][value] = tmp[0];
     },
     // 运单校验
     plateNo(rule, value, callback) {
@@ -300,14 +319,15 @@ export default {
       const key = code.split("-")[0];
       const dirverIndex = Number(code.split("-")[1]);
       const index = Number(code.split("-")[2]);
-      console.log("this.driverList[dirverIndex]", this.driverList[dirverIndex]);
-      console.log(" this.vehicleList[index]", this.vehicleList[index]);
+
       this.vehicleList[index].driverName =
         this.driverList[dirverIndex].driverName;
       this.vehicleList[index].driverPhone =
         this.driverList[dirverIndex].driverPhone;
       this.vehicleList[index].driverCode =
         this.driverList[dirverIndex].driverCode;
+      console.log("this.driverList[dirverIndex]", this.driverList[dirverIndex]);
+      console.log(" this.vehicleList[index]", this.vehicleList[index]);
       this.haveAppointCarRecordHttp(
         this.vehicleList[index].driverCode,
         this.vehicleList[index].vehicleCode,
@@ -373,8 +393,9 @@ export default {
     },
     // 选择车辆
     checkChanges(val, index) {
-      console.log('val',val)
-      if (!this.isZj&&val.authStatus != "3") {
+      console.log("val", val);
+      if (!this.isZj && val.authStatus != "3") {
+        this.msgWarning("未认证不可选择");
         return;
       }
       console.log("checked", val, index);
@@ -413,6 +434,7 @@ export default {
     },
     //获取派车的车辆Select
     async listVehicleSelect() {
+      this.loadSearching = true;
       const me = this;
       me.vehicleList = [];
       const obj = {
@@ -421,15 +443,21 @@ export default {
         url_alias: "listVehicleSelect",
         data: { vehicleNumber: this.listSearch },
       };
-      const res = await http_request(obj);
-      res.data.forEach((el) => {
-        const obj = {
-          ...el,
-          checked: false,
-        };
-        me.vehicleList.push(obj);
-      });
-      console.log("车辆列表", me.vehicleList);
+      await http_request(obj)
+        .then((res) => {
+          res.data.forEach((el) => {
+            const obj = {
+              ...el,
+              checked: false,
+            };
+            me.vehicleList.push(obj);
+          });
+          this.loadSearching = false;
+          console.log("车辆列表", me.vehicleList);
+        })
+        .catch(() => {
+          this.loadSearching = false;
+        });
     },
     // 司机列表
     getDriverList() {
@@ -458,6 +486,14 @@ export default {
               console.log("result item", item);
               obj.vehicleCode = item.vehicleCode;
               obj.driverCode = item.driverCode;
+              obj.realFreight = item.realFreight;
+              if(this.isZj &&
+              item.vehicleOwnership == 1 &&
+              item.haveAppointCarRecord === false&&!obj.realFreight){
+                  return   this.msgWarning(`请填写车辆【${item.vehicleNumber}】的${
+                    this.pageData.settlementWay == 1?"应付金额":"应付单价"
+                  }`);
+              }
               vehicleDrivers.push(obj);
             }
           }
@@ -476,6 +512,8 @@ export default {
             if (res.code == 200) {
               this.$confirm(res.msg, "提示", {
                 confirmButtonText: "确定",
+                showCancelButton: false,
+                showClose: false,
                 type: "success",
               }).then(() => {
                 console.log("1111。跳不跳");
@@ -489,12 +527,12 @@ export default {
       });
     },
     // 重置
-    resetForm(formName){
+    resetForm(formName) {
       this.$refs[formName].resetFields();
-      this.listSearch = null
-      this.initTimeDate()
-      this.listVehicleSelect()
-    }
+      this.listSearch = null;
+      this.initTimeDate();
+      this.listVehicleSelect();
+    },
   },
 };
 </script>
@@ -538,78 +576,78 @@ export default {
     }
     &-item {
       position: relative;
-      &-tip {
-        width: 100%;
-        height: 25px;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        z-index: 150;
-        background: #fff1e5;
-      }
       background: #ffffff;
-      padding: 16px;
-      display: flex;
-      align-items: center;
+
       width: 100%;
-      height: 90px;
       border: 1px solid #e4e7ed;
       border-radius: 5px;
       margin-bottom: 30px;
       // line-height: 50px;
-      &-checked {
-        display: inline-block;
-        padding-right: 20px !important;
+      &-tip {
+        background: #fff1e5;
       }
-      &-vehicleNumber {
-        width: 130px;
-        font-size: 24px;
-        font-family: PingFang SC;
-        font-weight: bold;
-        color: #333333;
-      }
-      .self {
-        display: inline-block;
-        margin-left: 10px;
-        padding: 5px 18px;
-        height: 35px;
-        min-width: 70px;
-        line-height: 25px;
-        font-size: 16px;
-        color: #212121;
-        // line-height: 25px;
-        background: #e4e7ed;
-        border-radius: 5px;
-        font-weight: 700;
-      }
-      &-userinfo {
-        position: absolute;
-        right: 40px;
-        line-height: 45px;
-        height: 45px;
-        width: 220px;
-        border-radius: 5px;
-        background: #f3f6ff;
-        text-align: center;
-        cursor: pointer;
-        -webkit-touch-callout: none;
-
-        -webkit-user-select: none;
-
-        -khtml-user-select: none;
-
-        -moz-user-select: none;
-
-        -ms-user-select: none;
-
-        user-select: none;
-        .name {
-          font-size: 18px;
-          font-family: PingFang SC;
-          font-weight: 500;
-          color: #3a65ff;
-          margin-right: 10px;
+      &-body {
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        &-checked {
+          display: inline-block;
+          padding-right: 20px !important;
         }
+        &-vehicleNumber {
+          width: 130px;
+          font-size: 24px;
+          font-family: PingFang SC;
+          font-weight: bold;
+          color: #333333;
+        }
+        .self {
+          display: inline-block;
+          margin-left: 10px;
+          padding: 5px 18px;
+          height: 35px;
+          min-width: 70px;
+          line-height: 25px;
+          font-size: 16px;
+          color: #212121;
+          // line-height: 25px;
+          background: #e4e7ed;
+          border-radius: 5px;
+          font-weight: 700;
+        }
+        &-userinfo {
+          position: absolute;
+          right: 40px;
+          line-height: 45px;
+          height: 45px;
+          padding: 0 16px;
+          border-radius: 5px;
+          background: #f3f6ff;
+          text-align: center;
+          cursor: pointer;
+          -webkit-touch-callout: none;
+
+          -webkit-user-select: none;
+
+          -khtml-user-select: none;
+
+          -moz-user-select: none;
+
+          -ms-user-select: none;
+
+          user-select: none;
+          .name {
+            font-size: 18px;
+            font-family: PingFang SC;
+            font-weight: 500;
+            color: #3a65ff;
+            margin-right: 10px;
+          }
+        }
+      }
+      &-footer {
+        padding: 5px 16px;
+        width: 50%;
       }
     }
     ::v-deep .el-checkbox__inner {
@@ -652,5 +690,14 @@ export default {
   color: #ff8422;
   font-family: PingFang SC;
   font-size: 14px;
+}
+.warning-text {
+  display: inline-block;
+  // margin: 5px 40px;
+  width: 100%;
+  height: 50px;
+  font-size: 16px;
+  line-height: 50px;
+  padding-left: 20px;
 }
 </style>

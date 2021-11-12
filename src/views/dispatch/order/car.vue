@@ -4,7 +4,8 @@
     :visible.sync="carDrawer"
     direction="rtl"
     :before-close="handleClose"
-    size="45%"
+    :wrapperClosable="true"
+    size="80%"
   >
     <TitleSideBlueTip title="订单信息" />
     <div class="dispatch-contents-box">
