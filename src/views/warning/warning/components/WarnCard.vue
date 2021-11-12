@@ -286,7 +286,7 @@ export default {
   );
 }
 .card-main-left {
-  width: 50px;
+  min-width: 50px;
   margin-right: 17px;
   display: flex;
   flex-direction: column;

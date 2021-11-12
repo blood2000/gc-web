@@ -153,17 +153,17 @@ export default {
 .public-img {
   position: absolute;
   bottom: 30px;
-  left: 0;
-  width: 100%;
+  left: 3%;
+  width: 94%;
   height: 160px;
-  display: flex;
-  justify-content: center;
+  // display: flex;
+  // justify-content: center;
   cursor: pointer;
 }
 
 .public-img > img {
-  width: 396px;
-  height: 160px;
+  width: 100%;
+  height: 100%;
 
 }
 

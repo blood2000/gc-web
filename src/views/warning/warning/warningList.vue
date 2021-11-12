@@ -47,7 +47,7 @@
           <div class="as-btn btn2" @click="reset">重置</div>
         </div>
       </div>
-      <div class="warn-drawer-count">共 99 次</div>
+      <div class="warn-drawer-count">共 {{total}} 次</div>
       <div class="warn-drawer-table">
         <RefactorTable
           is-show-index
@@ -152,6 +152,7 @@ export default {
         licenseNumber: "",
         dimensionType: "vehicle",
         alarmTypeInfoId: "",
+        // idAndAlarmObject: "",
       },
       open: false,
       warningTypes: [],
@@ -326,7 +327,7 @@ export default {
         item.alarmTypeInfoList.map((cItem) => {
           if (cItem.isChoose) {
             this.warningNames += cItem.alarmTypeName + ",";
-            alarmTypeInfoId.push(cItem.id);
+            alarmTypeInfoId.push(cItem.idAndAlarmObject);
           }
         });
       });
@@ -334,6 +335,7 @@ export default {
       console.log("传送的告警类型列表", this.warningTypes);
       // this.$emit("updateWarningTypeList", this.warningTypes);
       this.queryParams.alarmTypeInfoId = alarmTypeInfoId.join(",");
+      // this.queryParams.idAndAlarmObject = alarmTypeInfoId.join(",");
     },
 
     //设备类型
