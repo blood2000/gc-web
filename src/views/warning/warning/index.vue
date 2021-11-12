@@ -189,7 +189,7 @@ export default {
       this.warningTypeList.map((item) => {
         item.alarmTypeInfoList.map((cItem) => {
           if (cItem.isChoose) {
-            warningTypes.push(cItem.id);
+            warningTypes.push(cItem.idAndAlarmObject);
           }
         });
       });
@@ -263,6 +263,7 @@ export default {
         endAlarmTime:
           (this.queryParams.dateRange && this.queryParams.dateRange[1]) || null,
         alarmTypeInfoId: this.queryParams.warningTypes.join(","),
+        // idAndAlarmObject: this.queryParams.warningTypes.join(","),
         deviceSeriesModelInfoCode: this.queryParams.deviceType,
       };
       this.drawerQuerys.dateRange = this.queryParams.dateRange;

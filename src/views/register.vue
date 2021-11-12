@@ -226,6 +226,62 @@
           />
         </el-input>
       </el-form-item>
+      <div class="input-title">企业或车队所在地区</div>
+      <div class="input-box">
+        <el-form-item  prop="provinceCode">
+          <el-select
+            v-model="idCardForm.provinceCode"
+            clearable
+            filterable
+            style="width: 96%"
+            placeholder="请选择省份"
+            @change="provinceChange($event)"
+          >
+            <el-option
+              v-for="(name, code) in companyAddr.provinceList"
+              :key="code"
+              :label="name"
+              :value="code"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item prop="cityCode">
+          <el-select
+            v-model="idCardForm.cityCode"
+            clearable
+            filterable
+            style="width: 96%"
+            placeholder="请选择市"
+            @change="cityChange($event)"
+          >
+            <el-option
+              v-for="(name, code) in companyAddr.cityList"
+              :key="code"
+              :label="name"
+              :value="code"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item prop="areaCode">
+          <el-select
+            v-model="idCardForm.areaCode"
+            clearable
+            filterable
+            style="width: 96%"
+            placeholder="请选择区县"
+            @change="areaChange($event)"
+          >
+            <el-option
+              v-for="(name, code) in companyAddr.areaList"
+              :key="code"
+              :label="name"
+              :value="code"
+            />
+          </el-select>
+        </el-form-item>
+      </div>
 
       <el-form-item style="width: 100%" v-if="registerStatus === 1">
         <el-button
@@ -267,6 +323,7 @@
 
 <script>
 import { getCodeImg, register } from "@/api/login";
+import regionData from '@/assets/json/city.json';
 import { http_request } from "../api";
 import vm from "vue";
 import formValidate from "../utils/formValidate";
@@ -319,6 +376,7 @@ export default {
       }
     };
 
+
     return {
       codeUrl: "",
       registerStatus: 0,
@@ -344,6 +402,18 @@ export default {
         idCardFaceImageUrl: "",
         idCardNationalEmblemImageUrl: "",
         issue: "",
+        provinceCode: null,
+        province: '',
+        cityCode: null,
+        city: '',
+        areaCode: null,
+        area: ''
+      },
+      
+      companyAddr: {
+        provinceList: {},
+        cityList: {},
+        areaList: {},
       },
       showValidTo: true,
       validToOption: {
@@ -391,7 +461,15 @@ export default {
         validTo: [
           { required: true, trigger: "change", validator: validEndTime },
         ],
-
+        provinceCode: [
+          {required: true, trigger: "change", message: "请选择省份"}
+        ],
+        cityCode: [
+          {required: true, trigger: "change", message: "请选择市"}
+        ],
+        areaCode: [
+          {required: true, trigger: "change", message: "请选择区县"}
+        ]
         // dateRange: [
         //   {
         //     required: true,
@@ -408,7 +486,7 @@ export default {
   created() {
     // this.getCode();
     let myEndTime = localStorage.getItem("myEndTime");
-    this.registerForm.telephone = localStorage.getItem('registerTel');
+    this.registerForm.telephone = localStorage.getItem("registerTel");
     myEndTime && this.countdown(myEndTime);
   },
   watch: {
@@ -434,6 +512,7 @@ export default {
       //获取用户身份认证信息
       this.getIdentityAuth();
     }
+    
   },
 
   methods: {
@@ -463,10 +542,39 @@ export default {
           idCardInfo.identificationEndTime
         );
         this.idCardForm.number = idCardInfo.identificationNumber;
+        this.idCardForm.province = res.data.province || "";
+        this.idCardForm.city = res.data.city || "";
+        this.idCardForm.area = res.data.area || "";
+        this.getCityOptions();
         // this.idCardForm.dateRange = [];
         // this.idCardForm.dateRange[0] = idCardInfo.identificationBeginTime;
         // this.idCardForm.dateRange[1] = idCardInfo.identificationEndTime;
       });
+    },
+    //匹配省市区
+    getCityOptions() {
+      this.companyAddr.provinceList = regionData['0'];
+      for (let key in regionData['0']) {
+        if (regionData['0'][key] === this.idCardForm.province) {
+          console.log(key)
+          this.idCardForm.provinceCode = key;
+          let provinceKey = `0,${key}`;
+          this.companyAddr.cityList = regionData[provinceKey];
+          // this.idCardForm.province = regionData['0'][e];
+          for (let cityKey in this.companyAddr.cityList) {
+            if (this.companyAddr.cityList[cityKey] === this.idCardForm.city) {
+              this.idCardForm.cityCode = cityKey;
+              let cKey = `0,${this.idCardForm.provinceCode},${cityKey}`;
+              this.companyAddr.areaList = regionData[cKey]
+            }
+            for (let areaKey in this.companyAddr.areaList) {
+              if (this.companyAddr.areaList[areaKey] === this.idCardForm.area) {
+                this.idCardForm.areaCode = areaKey;
+              }
+            }
+          }
+        }
+      }
     },
     //验证手机号是否已注册
     checkPhone() {
@@ -580,8 +688,38 @@ export default {
       }, 1000);
     },
 
+   
+    provinceChange(e) {
+      let cityKey = `0,${e}`;
+      this.companyAddr.cityList = null;
+      this.idCardForm.cityCode = '';
+      this.companyAddr.areaList = null;
+      this.idCardForm.areaCode = '';
+      this.companyAddr.cityList = regionData[cityKey];
+      this.idCardForm.province = regionData['0'][e];
+     
+    },
+
+    cityChange(e) {
+      let provinceCode = this.idCardForm.provinceCode;
+      let areaKey = `0,${provinceCode},${e}`
+      console.log(areaKey);
+      this.companyAddr.areaList = null;
+      this.idCardForm.areaCode = '';
+      this.companyAddr.areaList = regionData[areaKey];
+      this.idCardForm.city = this.companyAddr.cityList[e];
+    },
+
+    areaChange(e) {
+      this.idCardForm.areaCode = e;
+      this.idCardForm.area = this.companyAddr.areaList[e];
+      
+    },
+
     checkCode() {
       // this.registerStatus = 1; //wyptest
+      // //获取省
+      // this.companyAddr.provinceList = regionData['0'];
       // return;
       this.$refs.registerForm.validate((valid) => {
         if (valid) {
@@ -602,6 +740,7 @@ export default {
               this.loading = false;
               if (res.code === 200) {
                 // this.$refs.registerForm.clearValidate();
+                this.companyAddr.provinceList = regionData['0'];
                 this.registerStatus = 1;
               }
             })
@@ -721,6 +860,18 @@ export default {
       }
       return "";
     },
+    //获取省
+    getProvinceList() {
+      const obj = {
+        moduleName: "http_purse",
+        method: "post",
+        url_alias: "provinceList",
+      };
+      http_request(obj).then((res) => {
+        console.log("获取省", res);
+        this.companyAddr.provinceList = res.data;
+      });
+    },
 
     handleRegister() {
       console.log(this.idCardForm);
@@ -747,6 +898,9 @@ export default {
             ethnicity: this.idCardForm.ethnicity,
             sex: this.idCardForm.sex,
             orgName: this.idCardForm.orgName,
+            province: this.idCardForm.province,
+            city: this.idCardForm.city,
+            area: this.idCardForm.area,
           };
           if (this.showValidTo) {
             data.validTo = this.idCardForm.validTo;
