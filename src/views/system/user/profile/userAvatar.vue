@@ -151,7 +151,7 @@ export default {
 .user-info-head {
   position: relative;
   display: inline-block;
-  height: 120px;
+  height: 80px;
 }
 
 .user-info-head:hover:after {

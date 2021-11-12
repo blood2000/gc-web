@@ -47,7 +47,7 @@
           <div class="as-btn btn2" @click="reset">重置</div>
         </div>
       </div>
-      <div class="warn-drawer-count">共 99 次</div>
+      <div class="warn-drawer-count">共 {{total}} 次</div>
       <div class="warn-drawer-table">
         <RefactorTable
           is-show-index
@@ -152,6 +152,7 @@ export default {
         licenseNumber: "",
         dimensionType: "vehicle",
         alarmTypeInfoId: "",
+        // idAndAlarmObject: "",
       },
       open: false,
       warningTypes: [],
@@ -193,7 +194,6 @@ export default {
         this.videoList = warningConfig.videoList;
       }
     },
-    
 
     drawerQuerys(val) {
       console.log(val);
@@ -216,6 +216,14 @@ export default {
       }
 
       this.warningTypes = JSON.parse(JSON.stringify(val.subWarningTypeList));
+      console.log("000----", this.warningTypes);
+      if (this.warningTypes.length === 1) {
+        this.warningTypes.map((item) => {
+          item.alarmTypeInfoList.map((cItem) => {
+            cItem.isChoose = true;
+          });
+        });
+      }
       this.getWarnTypeId();
       this.searchQuery();
     },
@@ -319,14 +327,15 @@ export default {
         item.alarmTypeInfoList.map((cItem) => {
           if (cItem.isChoose) {
             this.warningNames += cItem.alarmTypeName + ",";
-            alarmTypeInfoId.push(cItem.id);
+            alarmTypeInfoId.push(cItem.idAndAlarmObject);
           }
         });
       });
-      console.log('告警类型id', alarmTypeInfoId)
-      console.log('传送的告警类型列表', this.warningTypes)
+      console.log("告警类型id", alarmTypeInfoId);
+      console.log("传送的告警类型列表", this.warningTypes);
       // this.$emit("updateWarningTypeList", this.warningTypes);
       this.queryParams.alarmTypeInfoId = alarmTypeInfoId.join(",");
+      // this.queryParams.idAndAlarmObject = alarmTypeInfoId.join(",");
     },
 
     //设备类型

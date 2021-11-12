@@ -300,6 +300,8 @@ export default {
       http_request(obj).then((res) => {
         this.loading = true;
         this.smsLogin();
+      }).catch(() => {
+        this.loading = false;
       });
     },
     pwdLogin() {
@@ -362,6 +364,8 @@ export default {
           return;
         }
         this.$router.push({ path: this.redirect || "/" }).catch(() => {});
+      }).catch(() => {
+        this.loading = false;
       });
     },
   },
