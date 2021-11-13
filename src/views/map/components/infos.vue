@@ -153,7 +153,7 @@
           <img
             width="100%"
             height="100%"
-            src="../../../utils/RVC/img/video.png"
+            src="../../../utils/RVC/img/video-img.png"
             alt=""
           />
           <div class="video-content-item-top">
