@@ -258,7 +258,7 @@
         </el-col>
         <el-col :span="12">
           <span class="dispatch-base-label">{{
-            settlementInfo.settlementWay == 1 ? "运费总额" : "货物单价:"
+            settlementInfo.settlementWay == 1 ? "运费总额" : "运费单价:"
           }}</span>
           <span class="dispatch-base-text">
             {{ settlementInfo.driverRealFreight }}</span

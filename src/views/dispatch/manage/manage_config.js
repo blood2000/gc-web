@@ -97,7 +97,7 @@ export const tableColumnsConfig = [
     },
     // {
     //     isShow: true,
-    //     label: "货物单价",
+    //     label: "运费单价",
     //     prop: "freight",
     //     sortNum: 1,
     //     tooltip: true,
