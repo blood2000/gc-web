@@ -59,7 +59,7 @@
           </el-tabs>
         </el-card> -->
         <!-- 基本资料 -->
-        <div class="profile-card" v-if="menuIndex === 0">
+        <div class="profile-card" v-if="menuIndex === 0" v-loading="loading">
           <div class="as-tab">
             <div class="tab-title">
               <div class="img-left">
@@ -137,6 +137,21 @@
             <changePwd v-if="activeTab === 1" :phoneNumber="user.phoneNumber" />
           </div>
         </div>
+
+        <!-- 身份信息 -->
+        <div class="profile-card" v-if="menuIndex === 3">
+          <div class="as-tab">
+            <div class="tab-title">
+              <div class="img-left">
+                <img src="../../../../assets/images/tab-left.png" alt="" />
+              </div>
+              <span>身份信息</span>
+            </div>
+          </div>
+          <div class="as-tab-pannel">
+            <idCardInfo/>
+          </div>
+        </div>
       </el-col>
     </el-row>
   </div>
@@ -148,11 +163,12 @@ import userInfo from "./userInfo";
 import resetPwd from "./resetPwd";
 import changePwd from "./changePwd";
 import vehicleTeam from "./vehicleTeam";
+import idCardInfo from "./idCardInfo";
 import { getUserProfile } from "@/api/system/user";
 import { http_request } from "@/api";
 export default {
   name: "Profile",
-  components: { userAvatar, userInfo, resetPwd, changePwd,vehicleTeam },
+  components: { userAvatar, userInfo, resetPwd, changePwd,vehicleTeam,idCardInfo },
   data() {
     return {
       user: {
@@ -177,7 +193,9 @@ export default {
       this.activeTab = tab;
     },
     getUser() {
+      this.loading = true;
       this.$store.dispatch("GetInfo").then((res) => {
+        this.loading = false;
         console.log("用户信息==>", res);
         this.user = res.user;
         this.teamInfo = {

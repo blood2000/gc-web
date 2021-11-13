@@ -141,7 +141,7 @@ export default {
       videoList: [],
       currId: 0,
       loading: false,
-      warningData: [], //测试数据
+      warningData: [], //表格数据
       detailDrawer: false,
       pickerOptions,
       queryParams: {

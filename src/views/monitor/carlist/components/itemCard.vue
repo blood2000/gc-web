@@ -21,10 +21,12 @@
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
-    <div class="monitor-card-title"><span>{{data.plate_number}}</span></div>
+    <div class="monitor-card-title">
+      <span>{{ data.plate_number }}</span>
+    </div>
     <div class="monitor-card-location">
-      <span>当前位置 |</span>
-      <span>{{data.attribute}}</span>
+      <span class="monitor-card-location-text1">当前位置 |</span>
+      <span class="monitor-card-location-text2">{{ data.attribute }}</span>
     </div>
     <div class="monitor-card-driver">
       <span>最新告警</span>
@@ -35,19 +37,16 @@
       <div class="monitor-card-content-right">
         <div class="monitor-card-content-right-title">
           <div class="monitor-card-content-right-title-warn">
-            <img
-              :src="levelDeal('img')"
-              alt=""
-            />
+            <img :src="levelDeal('img')" alt="" />
             <span>{{ levelDeal("text") }}</span>
           </div>
           <div class="monitor-card-content-right-title-anomaly">
             <img :src="dealAlarmImg()" alt="" />
-            <span>{{data.alarm_type}}</span>
+            <span>{{ data.alarm_type }}</span>
           </div>
         </div>
         <div class="monitor-card-content-right-address">
-         {{data.alarm_address }}
+          {{ data.alarm_address }}
         </div>
         <div class="monitor-card-content-right-date">{{dealAlarmTime}}  </div>
       </div>
@@ -55,15 +54,22 @@
     <div class="monitor-card-footer">
       <div class="monitor-card-footer-left">
         <img src="../../../../assets/images/detail/monitor-phone.png" alt="" />
-        <span>{{data.model_name}}</span>
+        <span>{{ data.model_name }}</span>
       </div>
       <div class="monitor-card-footer-middle">
         <img src="../../../../assets/images/detail/monitor-people.png" alt="" />
         <span>{{data.nick_name}}</span>
       </div>
       <div class="monitor-card-footer-right">
-        <span :style="{color:dealVehicleStatusColor}" style="font-size: 16px" v-show="dealVehicleStatus">• </span>
-        <span :style="{color:dealVehicleStatusColor}">{{dealVehicleStatus}}</span>
+        <span
+          :style="{ color: dealVehicleStatusColor }"
+          style="font-size: 16px"
+          v-show="dealVehicleStatus"
+          >•
+        </span>
+        <span :style="{ color: dealVehicleStatusColor }">{{
+          dealVehicleStatus
+        }}</span>
       </div>
     </div>
   </div>
@@ -91,11 +97,14 @@ export default {
      return parseTime( Number(this.data.alarm_time) )
     },
     //返回大图
-    dealBigImage(){
-     return "http://static.zjz1.net/device/model/A1/A1-{tag}.png".replace(/\{tag\}/g, "icon");
-     //http://static.zjz1.net/device/model/A1/A1-icon.png
+    dealBigImage() {
+      return "http://static.zjz1.net/device/model/A1/A1-{tag}.png".replace(
+        /\{tag\}/g,
+        "icon"
+      );
+      //http://static.zjz1.net/device/model/A1/A1-icon.png
     },
-          //处理车辆状态
+    //处理车辆状态
     dealVehicleStatus() {
       let result = "";
       vehicleStatusList.forEach((element) => {
@@ -105,7 +114,7 @@ export default {
       });
       return result;
     },
-             //处理车辆状态颜色
+    //处理车辆状态颜色
     dealVehicleStatusColor() {
       let result = "";
       vehicleStatusList.forEach((element) => {
@@ -113,27 +122,26 @@ export default {
           result = element.color;
         }
       });
-      console.log('result',result)
+      console.log("result", result);
       return result;
     },
-    
   },
   mounted() {
     console.log("卡片数据", this.data);
   },
   methods: {
     // 处理异常图片
-     dealAlarmImg(){
-      if(!this.data.key) return ''
-      console.log('this.detail.key',this.data)
-      return require(`@/assets/images/detail/${this.data.key}.png`)
+    dealAlarmImg() {
+      if (!this.data.key) return "";
+      console.log("this.detail.key", this.data);
+      return require(`@/assets/images/detail/${this.data.key}.png`);
     },
     // 处理危险等级显示
      levelDeal(type) {
        console.log('levelDeal',type,this.data)
       const obj = {
         text: () => {
-          if (!this.data.alarmLevel) return "-";
+          if (!this.data.alarmLevel) return "-";s
           console.log(
             "text",
              warningLevelObj[this.data.alarmLevel][type]
@@ -170,7 +178,7 @@ export default {
       console.log("我是视频查看 this.data", this.data);
       const vehicleCode = this.data.vehicle_code;
       const trackType = 4;
-      this.$router.push(  
+      this.$router.push(
         `/map/mapInfo?vehicleCode=${vehicleCode}&trackType=${trackType}`
       );
     },
@@ -251,6 +259,17 @@ export default {
     color: #3d4050;
     padding-left: 16px;
     padding-right: 16px;
+    display: flex;
+    &-text1 {
+      width: 64px;
+    }
+    &-text2 {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding-left: 5px;
+    }
   }
   &-driver {
     height: 17px;
@@ -351,9 +370,9 @@ export default {
     border-top: 1px solid #f3f4f5;
     display: flex;
     &-left {
-       text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
       width: 180px;
       padding: 10px 38px 12px 19px;
       border-right: 1px solid #f3f4f5;

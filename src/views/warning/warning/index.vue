@@ -1,7 +1,7 @@
 <!-- 告警 -->
 <template>
-  <div class="pages-info">
-    <div class="pages-info-right">
+  <div class="pages-info" >
+    <div class="pages-info-right" >
       <!-- 上：搜索 -->
       <QueryForm
         v-model="queryParams"
@@ -13,7 +13,7 @@
       />
       <!-- 分割线 -->
       <div class="divier"></div>
-      <div class="page-table-layout-set">
+      <div class="page-table-layout-set" >
         <el-tabs v-model="tabIndex" @tab-click="tabClick">
           <el-tab-pane
             v-for="item in warningTabs"
@@ -21,7 +21,7 @@
             :name="item.value"
             :label="item.label"
           >
-            <div class="warn-card-box">
+            <div class="warn-card-box" v-loading="loading">
               <!-- 告警卡片组件 -->
               <warn-card
                 v-for="(item, index) in warningData"
@@ -424,5 +424,6 @@ export default {
   align-items: center;
   flex-wrap: wrap;
   padding: 10px 4px 0 0;
+  min-height: 200px;
 }
 </style>

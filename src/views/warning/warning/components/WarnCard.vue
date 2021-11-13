@@ -31,16 +31,21 @@
       </div>
     </div>
     <div
+      
       class="warn-card-main"
-      :class="'warn-level-' + (cardInfo.alarmLevel || 1)"
+      :class="'warn-level-' + (cardInfo.alarmLevel)"
     >
-      <div class="card-main-left">
-        <img src="../../../../assets/images/detail/aiot-yczd.png" alt="" />
-        <div class="warn-card-type">{{ cardInfo.alarmTypeName || "无" }}</div>
+      <div class="card-main-left" v-if="cardInfo.vendorAlarmTypeName">
+        <img src="../../../../assets/images/detail/fms-yczd.png" alt="" />
+        <div class="warn-card-type">{{ cardInfo.vendorAlarmTypeName || "无" }}</div>
       </div>
-      <div class="card-main-right">
+      <div class="card-main-right" v-if="cardInfo.vendorAlarmTypeName">
         <div>{{ cardInfo.alarmAddress || "-" }}</div>
         <div>{{ cardInfo.alarmTime || "-" }}</div>
+      </div>
+      <div class="card-main-none" v-if="!cardInfo.vendorAlarmTypeName">
+        <img src="../../../../assets/images/detail/warn_none.png" alt="">
+        <div>暂无数据</div>
       </div>
     </div>
     <div class="warn-card-bottom">
@@ -312,6 +317,20 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 100%;
+  }
+}
+
+.card-main-none {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  color: #909398;
+  img {
+    width: 40px;
+    height: 40px;
   }
 }
 </style>
