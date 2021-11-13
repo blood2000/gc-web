@@ -5,7 +5,7 @@
     :model="teamInfo"
     :rules="rules"
     label-width="0"
-    :loading="loading"
+    v-loading="loading"
   >
     <div class="area-title">公司名称</div>
     <el-form-item prop="companyName">
@@ -18,7 +18,6 @@
     </el-form-item>
     <div class="area-title">所在地区</div>
     <div class="area-box">
-      
       <el-form-item prop="provinceCode">
         <el-select
           v-model="teamInfo.provinceCode"
@@ -99,11 +98,11 @@ export default {
       teamInfo: {
         companyName: "",
         provinceCode: null,
-        province: "河北省",
+        province: "",
         cityCode: null,
-        city: "唐山市",
+        city: "",
         areaCode: null,
-        area: "路北区",
+        area: "",
       },
       canEdit: false,
       companyAddr: {
@@ -129,7 +128,7 @@ export default {
     },
   },
   mounted() {
-    this.teamInfo.companyName = this.team.companyName;
+    // this.teamInfo.companyName = this.team.companyName;
     this.canEdit = this.team.teamLeader === this.team.code;
     this.getIdentityAuth();
   },
@@ -137,34 +136,36 @@ export default {
   methods: {
     //获取车队长信息
     getIdentityAuth() {
+      this.loading = true;
       const obj = {
         moduleName: "http_login",
         method: "get",
         url_alias: "getTeamInfo",
       };
-      http_request(obj).then((res) => {
-        console.log("车队长信息", res);
-        // this.teamInfo.companyName = res.data.orgName || "";
-        // let idCardInfo = res.data.identificationInf;
-        // this.teamInfo.idCardFaceImageUrl = idCardInfo.identificationImage;
-        // this.teamInfo.idCardNationalEmblemImageUrl =
-        //   idCardInfo.identificationBackImage;
-        // this.teamInfo.name = idCardInfo.name;
-        // this.teamInfo.validFrom = this.handleDate(
-        //   idCardInfo.identificationBeginTime
-        // );
-        // this.teamInfo.validTo = this.handleDate(
-        //   idCardInfo.identificationEndTime
-        // );
-        // this.teamInfo.number = idCardInfo.identificationNumber;
-        this.teamInfo.province = res.data.province || "";
-        this.teamInfo.city = res.data.city || "";
-        this.teamInfo.area = res.data.area || "";
-        this.getCityOptions();
-        // this.teamInfo.dateRange = [];
-        // this.teamInfo.dateRange[0] = idCardInfo.identificationBeginTime;
-        // this.teamInfo.dateRange[1] = idCardInfo.identificationEndTime;
-      });
+      http_request(obj)
+        .then((res) => {
+          console.log("车队长信息", res);
+          this.loading = false;
+          this.teamInfo.companyName = res.data.orgName || this.team.companyName;
+          let idCardInfo = res.data.identificationInf;
+          this.teamInfo.idCardFaceImageUrl = idCardInfo.identificationImage;
+          this.teamInfo.idCardNationalEmblemImageUrl =
+            idCardInfo.identificationBackImage;
+          this.teamInfo.name = idCardInfo.name;
+          this.teamInfo.validFrom = idCardInfo.identificationBeginTime;
+          this.teamInfo.validTo = idCardInfo.identificationEndTime;
+          this.teamInfo.number = idCardInfo.identificationNumber;
+          this.teamInfo.province = res.data.province || "";
+          this.teamInfo.city = res.data.city || "";
+          this.teamInfo.area = res.data.area || "";
+          this.getCityOptions();
+          // this.teamInfo.dateRange = [];
+          // this.teamInfo.dateRange[0] = idCardInfo.identificationBeginTime;
+          // this.teamInfo.dateRange[1] = idCardInfo.identificationEndTime;
+        })
+        .catch(() => {
+          this.loading = false;
+        });
     },
 
     //匹配省市区
@@ -193,23 +194,22 @@ export default {
       }
     },
 
-     provinceChange(e) {
+    provinceChange(e) {
       let cityKey = `0,${e}`;
       this.companyAddr.cityList = null;
-      this.teamInfo.cityCode = '';
+      this.teamInfo.cityCode = "";
       this.companyAddr.areaList = null;
-      this.teamInfo.areaCode = '';
+      this.teamInfo.areaCode = "";
       this.companyAddr.cityList = regionData[cityKey];
-      this.teamInfo.province = regionData['0'][e];
-     
+      this.teamInfo.province = regionData["0"][e];
     },
 
     cityChange(e) {
       let provinceCode = this.teamInfo.provinceCode;
-      let areaKey = `0,${provinceCode},${e}`
+      let areaKey = `0,${provinceCode},${e}`;
       console.log(areaKey);
       this.companyAddr.areaList = null;
-      this.teamInfo.areaCode = '';
+      this.teamInfo.areaCode = "";
       this.companyAddr.areaList = regionData[areaKey];
       this.teamInfo.city = this.companyAddr.cityList[e];
     },
@@ -217,48 +217,57 @@ export default {
     areaChange(e) {
       this.teamInfo.areaCode = e;
       this.teamInfo.area = this.companyAddr.areaList[e];
-      
     },
 
     submit() {
-      this.$refs["form"].validate((valid) => {
-        if (valid) {
-          // updateUserPwd(this.user.oldPassword, this.user.newPassword).then(
-          //   response => {
-          //     this.msgSuccess("修改成功");
-          //   }
-          // );
-          this.loading = true;
-          // register(this.registerForm)
-          let data = {
-            oldPassword: this.user.oldPassword,
-            newPassword: this.user.newPassword,
-          };
-          const obj = {
-            moduleName: "http_login",
-            method: "post",
-            url_alias: "changePwd",
-            data: data,
-          };
-          http_request(obj)
-            .then((res) => {
-              this.loading = false;
-              console.log("修改密码-->", res);
-              if (res.code === 200) {
-                this.$alert(res.msg, "提示", {
-                  confirmButtonText: "确定",
-                  callback: () => {
-                    this.$store.dispatch("LogOut").then(() => {
-                      location.href = "/index";
-                    });
-                  },
-                });
-              }
-            })
-            .catch(() => {
-              this.loading = false;
-            });
-        }
+      if (!this.teamInfo.companyName) {
+        this.$message.error("请输入企业或车队全称");
+        return;
+      }
+      if (!this.teamInfo.province) {
+        this.$message.error("请选择省份");
+        return;
+      }
+      if (!this.teamInfo.city) {
+        this.$message.error("请选择市");
+        return;
+      }
+      if (!this.teamInfo.area) {
+        this.$message.error("请选择区县");
+        return;
+      }
+      let data = {
+        orgName: this.teamInfo.companyName,
+        identificationInf: {
+          identificationBeginTime: this.teamInfo.validFrom,
+          identificationEndTime: this.teamInfo.validTo,
+          name: this.teamInfo.name,
+          identificationImage: this.teamInfo.idCardFaceImageUrl,
+          identificationBackImage: this.teamInfo.idCardNationalEmblemImageUrl,
+          identificationNumber: this.teamInfo.number,
+        },
+        province: this.teamInfo.province,
+        city: this.teamInfo.city,
+        area: this.teamInfo.area,
+      };
+      // console.log(data, this.teamInfo);
+      this.loading = true;
+      const obj = {
+        moduleName: "http_login",
+        method: "put",
+        url_alias: "updateTeamInfo",
+        data: data,
+        // Headers: { isToken: false },
+      };
+      http_request(obj).then((res) => {
+        console.log("更新车队信息", res);
+        this.loading = false;
+        this.$alert("更新成功", "提示", {
+          confirmButtonText: "确定",
+          callback: (action) => {
+            //TODO...
+          },
+        });
       });
     },
     close() {

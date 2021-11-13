@@ -2,7 +2,7 @@
   <div class="capital-dispatch">
     <div class="home-title">资产</div>
     <div class="home-box">
-      <div class="home-item">
+      <div class="home-item" @click="toVehicle">
         <div class="home-item-info">
           <div class="home-item-title">
             <div class="home-item-icon vehicle-icon"></div>
@@ -15,7 +15,7 @@
         </div>
         <div class="home-item-bg vehicle-bg"></div>
       </div>
-      <div class="home-item">
+      <div class="home-item" @click="toDriver">
         <div class="home-item-info">
           <div class="home-item-title">
             <div class="home-item-icon driver-icon"></div>
@@ -44,7 +44,7 @@
     </div>
     <div class="home-title">调度</div>
     <div class="home-box">
-      <div class="home-item">
+      <div class="home-item" @click="toDispatch">
         <div class="home-item-info">
           <div class="home-item-title">
             <div class="home-item-icon dispatch-icon"></div>
@@ -57,7 +57,7 @@
         </div>
         <div class="home-item-bg dispatch-bg"></div>
       </div>
-      <div class="home-item">
+      <div class="home-item" @click="toVehicleRecord">
         <div class="home-item-info">
           <div class="home-item-title">
             <div class="home-item-icon vehicle-report-icon"></div>
@@ -70,7 +70,7 @@
         </div>
         <div class="home-item-bg vehicle-report-bg"></div>
       </div>
-      <div class="home-item">
+      <div class="home-item" @click="toVehicleManage">
         <div class="home-item-info">
           <div class="home-item-title">
             <div class="home-item-icon vehicle-list-icon"></div>
@@ -184,6 +184,24 @@ export default {
         this.carOrderCount = res.data;
       });
     },
+
+    toVehicle() {
+      this.$router.push('../../../archives/vehicle');
+    },
+    toDriver() {
+      this.$router.push('../../../archives/driver');
+    },
+
+    toDispatch() {
+      this.$router.push('../../../dispatch/order');
+    },
+
+    toVehicleRecord() {
+      this.$router.push('../../../dispatch/recode');
+    },
+    toVehicleManage() {
+      this.$router.push('../../../dispatch/manage');
+    },
   },
 };
 </script>
@@ -214,6 +232,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-content: center;
+  cursor: pointer;
 }
 
 .home-item-title {

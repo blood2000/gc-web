@@ -57,7 +57,7 @@
               @focus="chooseWarningTypes"
             />
           </el-form-item>
-          <el-form-item label="设备类型" prop="deviceType">
+          <!-- <el-form-item label="设备类型" prop="deviceType">
             <el-select
               v-model="queryParams.deviceType"
               clearable
@@ -73,7 +73,7 @@
                 :value="item.code"
               />
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
         </div>
       </div>
       <div class="ddc-queryParams-right">

@@ -6,7 +6,7 @@
     direction="rtl"
     style="z-index: 2000"
     :before-close="handleClose"
-    size="50%"
+    size="40%"
     :append-to-body="true"
   >
     <div class="dispatch-base-contents-box" style="padding-top: 25px">
@@ -18,7 +18,7 @@
               style="width: 50px; height: 30px"
               alt=""
             />
-            <span>{{ detail.alarmTypeName || "-" }}</span>
+            <span>{{ detail.vendorAlarmTypeName || "-" }}</span>
           </div>
         </div>
         <div class="warn-icon-box">
@@ -53,19 +53,48 @@
           <span class="dispatch-base-label">驾驶车辆:</span>
           <span class="dispatch-base-text">{{ detail.licenseNumber }}</span>
         </el-col>
-        <el-col :span="8" style="padding-bottom: 16px">
+        <!-- <el-col :span="8" style="padding-bottom: 16px">
           <span class="dispatch-base-label">时速:</span>
           <span class="dispatch-base-text">{{ detail.speed || "-" }}km/h</span>
-        </el-col>
+        </el-col> -->
         <el-col :span="24" style="padding-bottom: 16px">
           <span class="dispatch-base-label">告警地址:</span>
           <span class="dispatch-base-text">{{
             detail.alarmAddress || "-"
           }}</span>
         </el-col>
+        <el-col :span="24" style="padding-bottom: 16px">
+          <span class="dispatch-base-label">告警地址:</span>
+          <span class="dispatch-base-text">
+            {{ detail.alarmContent || "-" }}
+          </span>
+        </el-col>
         <el-col :span="24">
           <span class="dispatch-base-label">告警时间:</span>
           <span class="dispatch-base-text">{{ detail.alarmTime }}</span>
+        </el-col>
+        <el-col :span="24">
+          <div class="media-box">
+            <div
+              v-for="(item, index) in mediaList"
+              :key="index"
+              class="media-item"
+              :class="item.isFull ? 'full-modal' : ''"
+            >
+              <div class="media-icon" v-if="item.type === 'image'"></div>
+              <img :src="item.src" alt="" v-if="item.type === 'image'" />
+
+              <video-player
+                v-if="item.type === 'video'"
+                class="video-player vjs-custom-skin"
+                ref="videoPlayer"
+                :playsinline="true"
+                :options="getPlayerOptions(item.src)"
+                :events="events"
+                @fullscreenchange="onPlayerFullScreenchange($event, item)"
+              ></video-player>
+            </div>
+          </div>
         </el-col>
       </el-row>
     </div>
@@ -82,8 +111,35 @@ export default {
   data() {
     return {
       detail: {},
-      videoList: [],
+      mediaList: [],
       loading: false,
+      events: ["fullscreenchange"],
+      isFull: false,
+      playerOptions: {
+        playbackRates: [0.7, 1.0, 1.5, 2.0], //播放速度
+        autoplay: false, //如果true,浏览器准备好时开始回放。
+        muted: false, // 默认情况下将会消除任何音频。
+        loop: false, // 导致视频一结束就重新开始。
+        preload: "auto", // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
+        language: "zh-CN",
+        aspectRatio: "16:9", // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+        fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
+        sources: [
+          {
+            type: "", //这里的种类支持很多种：基本视频格式、直播、流媒体等，具体可以参看git网址项目
+            src: "", //url地址
+          },
+        ],
+        poster: "", //你的封面地址
+        // width: document.documentElement.clientWidth, //播放器宽度
+        notSupportedMessage: "此视频暂无法播放，请稍后再试", //允许覆盖Video.js无法播放媒体源时显示的默认信息。
+        controlBar: {
+          timeDivider: true,
+          durationDisplay: true,
+          remainingTimeDisplay: false,
+          fullscreenToggle: true, //全屏按钮
+        },
+      },
     };
   },
   props: {
@@ -107,12 +163,14 @@ export default {
         console.log("他变成true");
         this.getWarningDetail();
         this.videoList = warningConfig.videoList;
+        this.mediaList = [];
       }
     },
   },
   methods: {
     dealAlarmImg() {
       if (!this.detail.key) return "";
+      return require("@/assets/images/detail/fms-yczd.png");
       // return require(`@/assets/images/detail/${this.detail.key}.png`);
     },
     levelDeal(type) {
@@ -153,9 +211,11 @@ export default {
       console.log("告警详情-->", res);
       if (res.code === 200) {
         this.detail = res.data;
+        this.handleMedia();
       }
       console.log(this.detail);
     },
+
     //告警类型
     getWarinigTypeName(warningType) {
       let warningName = "";
@@ -188,6 +248,56 @@ export default {
     },
     handleClose() {
       this.$emit("colseDetailDrawer");
+    },
+
+    //处理媒体数据，区分图片和视频
+    handleMedia() {
+      let mediaArr = this.detail.pictureAndVideo || [];
+      // let mediaArr = [
+      //   "../../../../assets/mp4/test.mp4",
+      //   "@/assets/images/login-background1.png",
+      // ];
+
+      mediaArr.map((item) => {
+        let obj = {};
+        let arr = item.split(".");
+        let mediaType = arr[arr.length - 1];
+        mediaType = mediaType.toLowerCase();
+        if (
+          mediaType === "jpg" ||
+          mediaType === "png" ||
+          mediaType === "jpeg"
+        ) {
+          obj.type = "image";
+          obj.src = item;
+        } else if (
+          mediaType === "mp4" ||
+          mediaType === "rmvb" ||
+          mediaType === "avi"
+        ) {
+          obj.type = "video";
+          obj.src = item;
+          obj.isFull = false;
+        }
+
+        this.mediaList.push(obj);
+      });
+    },
+    // mediaImgDeal(index) {
+    //   let str = require("@/assets/images/login-background1.png");
+
+    //   return str;
+    // },
+
+    getPlayerOptions(src) {
+      let options = JSON.parse(JSON.stringify(this.playerOptions));
+      options.sources[0].src = src;
+      // options.sources[0].src = require("../../../../assets/mp4/test.mp4");
+      return options;
+    },
+    onPlayerFullScreenchange(player, item) {
+      player.exitFullscreen(); //强制退出全屏，恢复正常大小
+      item.isFull = !item.isFull;
     },
   },
 };
@@ -319,5 +429,54 @@ export default {
       }
     }
   }
+}
+
+.media-box {
+  padding: 20px 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.media-item {
+  position: relative;
+  width: 48%;
+  height: 210px;
+  background: #ddd;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #000;
+  img {
+    width: 100%;
+    height: 100%;
+  }
+  .video-player {
+    width: 100%;
+  }
+  .video-js .vjs-control-bar {
+    width: 100%;
+  }
+}
+
+.full-modal {
+  position: fixed;
+  width: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 102;
+}
+
+.media-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 66px;
+  height: 66px;
+  background: url("../../../../assets/images/detail/warn_img_corner.png")
+    no-repeat center;
+  background-size: contain;
 }
 </style>

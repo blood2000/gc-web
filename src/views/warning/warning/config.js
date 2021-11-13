@@ -128,15 +128,15 @@ const warningTypeList = [
 ];
 
 const warningLevelList = [
-  { level: 0, name: "一级告警" },
-  { level: 1, name: "二级告警" },
-  { level: 2, name: "三级告警" }
+  { level: 1, name: "一级告警" },
+  { level: 2, name: "二级告警" },
+  { level: 3, name: "三级告警" }
 ];
 const warningLevelObj =
 {
-  0: { text: "一级告警", img: require('@/assets/images/detail/warn_level_1.png') },
-  1: { text: "二级告警", img: require('@/assets/images/detail/warn_level_2.png') },
-  2: { text: "三级告警", img: require('@/assets/images/detail/warn_level_3.png') }
+  1: { text: "一级告警", img: require('@/assets/images/detail/warn_level_1.png') },
+  2: { text: "二级告警", img: require('@/assets/images/detail/warn_level_2.png') },
+  3: { text: "三级告警", img: require('@/assets/images/detail/warn_level_3.png') }
 };
 const deviceTypeList = [
   {
@@ -154,14 +154,16 @@ const vehicleColumn = [
     label: "车辆",
     prop: "licenseNumber",
     sortNum: 1,
-    tooltip: true
+    tooltip: true,
+    width: 80
   },
   {
     isShow: true,
     label: "司机",
     prop: "nickName",
     sortNum: 2,
-    tooltip: true
+    tooltip: true,
+    width: 80
   }
 ];
 
@@ -171,33 +173,45 @@ const driverColumn = [
     label: "司机",
     prop: "nickName",
     sortNum: 1,
-    tooltip: true
+    tooltip: true,
+    width: 80
   },
   {
     isShow: true,
     label: "车辆",
     prop: "licenseNumber",
     sortNum: 2,
-    tooltip: true
+    tooltip: true,
+    width: 80
   }
 ];
 
 const tableColumnsConfig = [
   {
     isShow: true,
-    label: "告警类型",
+    label: "告警类别",
     prop: "alarmTypeName",
     sortNum: 3,
     tooltip: true,
     headerSlot: true,
-    width: 100
+    width: 80
+  },
+
+  {
+    isShow: true,
+    label: "告警类型",
+    prop: "vendorAlarmTypeName",
+    sortNum: 4,
+    tooltip: true,
+    headerSlot: true,
+    width: 80
   },
   
   {
     isShow: true,
     label: "告警级别",
     prop: "alarmLevel",
-    sortNum: 4,
+    sortNum: 5,
     tooltip: true,
     width: 80
   },
@@ -205,9 +219,9 @@ const tableColumnsConfig = [
     isShow: true,
     label: "告警描述",
     prop: "alarmContent",
-    sortNum: 5,
+    sortNum: 6,
     tooltip: true,
-    width: 120
+    width: 140
   },
  
   // {
@@ -222,7 +236,7 @@ const tableColumnsConfig = [
     isShow: true,
     label: "告警时间",
     prop: "alarmTime",
-    sortNum: 8,
+    sortNum: 7,
     tooltip: true,
     width: 120
   },
