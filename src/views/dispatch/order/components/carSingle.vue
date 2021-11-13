@@ -125,9 +125,8 @@
         v-if="isZj && currVehicleInfo.vehicleOwnership === 1"
       >
         <el-col :span="12">
-          
           <el-form-item
-            :label="pageData.settlementWay == 1 ? '应收金额' : '运费单价'"
+            :label="pageData.settlementWay == 1 ? '应付金额' : '应付单价'"
             prop="freight"
           >
             <el-input
@@ -140,6 +139,14 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item
+            :label="pageData.settlementWay == 1 ? '应收金额' : '运费单价'"
+            prop="realFreight"
+            :rules="[
+              { required: true, message: '请填写应收金额', trigger: 'blur' },
+              { validator: this.priceNo, trigger: 'blur' },
+            ]"
+          >
             <el-input
               v-model="form.realFreight"
               clearable
@@ -149,6 +156,7 @@
               style="width: 220px"
               ><template slot="append">元</template>
             </el-input>
+          </el-form-item>
         </el-col>
       </el-row>
     </div>
@@ -241,9 +249,20 @@ export default {
   },
   methods: {
     // 应付金额校验
-    priceNo(e) {
-      console.log('priceNo',e)
+    priceNo(rule, value, callback) {
+      if (value === undefined || value === null || value === "") {
+        callback();
+      }
+      if (parseInt(this.form.realFreight) > parseInt(this.pageData.freight)) {
+        const tmp1 = this.pageData.settlementWay == 1 ? "应付金额" : "应付单价";
+        const tmp2 = this.pageData.settlementWay == 1 ? "应收金额" : "运费单价";
+        const msg = `${tmp2}不能高于${ tmp1}`;
+        callback(new Error(msg));
+      } else {
+        callback();
+      }
     },
+
     // 处理车辆颜色和文字
     dealvehicleListSubText(sub, type, w) {
       const obj = {

@@ -298,7 +298,7 @@ export default {
         console.log('this.pageData.settlementWay',this.pageData.settlementWay)
         const tmp1 = this.pageData.settlementWay == 1?'应付金额':'应付单价'
         const tmp2 = this.pageData.settlementWay == 1 ? '应收金额' : '运费单价'
-        const msg = `${tmp1}不能高于${tmp2}`
+        const msg = `${tmp2}不能高于${ tmp1}`
           this.$confirm(msg, "提示", {
             confirmButtonText: "确定",
                 showCancelButton: false,
