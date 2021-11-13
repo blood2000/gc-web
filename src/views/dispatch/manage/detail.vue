@@ -294,7 +294,7 @@
           <span class="dispatch-base-text"> {{ settlementInfo.weight }}</span>
         </div>
         <div style="padding-bottom: 16px">
-          <span class="dispatch-base-label">货物单价:</span>
+          <span class="dispatch-base-label">运费单价:</span>
           <span class="dispatch-base-text">
             {{ settlementInfo.goodsPrice }}</span
           >

@@ -5,7 +5,7 @@
     direction="rtl"
     :before-close="handleClose"
     :wrapperClosable="true"
-    size="80%"
+    size="45%"
   >
     <TitleSideBlueTip title="订单信息" />
     <div class="dispatch-contents-box">
@@ -94,7 +94,7 @@
           </el-col>
           <el-col :span="8" v-show="isZj">
             <el-form-item
-              :label="pageData.settlementWay == 1 ? '运费总额' : '货物单价'"
+              :label="pageData.settlementWay == 1 ? '运费总额' : '运费单价'"
               prop="freight"
             >
               <el-tooltip

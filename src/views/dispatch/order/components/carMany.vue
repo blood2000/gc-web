@@ -77,7 +77,6 @@
           v-for="(item, index) in vehicleList"
           @click.stop="checkChanges(item, index)"
         >
-        
           <!-- 主题 -->
           <div class="carMany-list-bottom-item-body">
             <!-- 已派车提示框 -->
@@ -181,7 +180,7 @@
               </el-input>
             </div>
           </div>
-            <!-- 是否已派车  -->
+          <!-- 是否已派车  -->
           <div
             class="carMany-list-bottom-item-tip"
             v-show="item.haveAppointCarRecord"
@@ -295,6 +294,20 @@ export default {
       const tmp = e.match(/^[0-9]+(\.[0-9]{0,2})?/g) ?? [""];
       console.log("tmp", tmp[0]);
       this.vehicleList[index][value] = tmp[0];
+      if( Number(e)  > parseInt(this.pageData.freight)){
+        console.log('this.pageData.settlementWay',this.pageData.settlementWay)
+        const tmp1 = this.pageData.settlementWay == 1?'应付金额':'应付单价'
+        const tmp2 = this.pageData.settlementWay == 1 ? '应收金额' : '运费单价'
+        const msg = `${tmp1}不能高于${tmp2}`
+          this.$confirm(msg, "提示", {
+            confirmButtonText: "确定",
+                showCancelButton: false,
+                showClose: false,
+                 type: "warning",
+         }).then(() => {
+           this.vehicleList[index][value] = ''
+              });
+      }
     },
     // 运单校验
     plateNo(rule, value, callback) {
@@ -305,7 +318,7 @@ export default {
       if (Number(value) >= parseInt(this.pageData.freight)) {
         let str = "";
         if (this.pageData.settlementWay == 1) {
-          str = "应付单价不能超过货物单价";
+          str = "应付单价不能超过运费单价";
         } else {
           str = "应付金额不能超过运费总额";
         }
@@ -488,12 +501,17 @@ export default {
               obj.vehicleCode = item.vehicleCode;
               obj.driverCode = item.driverCode;
               obj.realFreight = item.realFreight;
-              if(this.isZj &&
-              item.vehicleOwnership == 1 &&
-              item.haveAppointCarRecord === false&&!obj.realFreight){
-                  return   this.msgWarning(`请填写车辆【${item.vehicleNumber}】的${
-                    this.pageData.settlementWay == 1?"应付金额":"应付单价"
-                  }`);
+              if (
+                this.isZj &&
+                item.vehicleOwnership == 1 &&
+                item.haveAppointCarRecord === false &&
+                !obj.realFreight
+              ) {
+                return this.msgWarning(
+                  `请填写车辆【${item.vehicleNumber}】的${
+                    this.pageData.settlementWay == 1 ? "应付金额" : "应付单价"
+                  }`
+                );
               }
               vehicleDrivers.push(obj);
             }
@@ -544,7 +562,7 @@ export default {
   padding: 0px 40px;
 }
 .carMany-list {
-  width: 700px;
+  width: 100%;
   .header {
     display: flex;
     justify-content: space-between;

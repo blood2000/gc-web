@@ -84,7 +84,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item
-              :label="pageData.settlementWay == 1 ? '运费总额' : '货物单价'"
+              :label="pageData.settlementWay == 1 ? '运费总额' : '运费单价'"
               prop="freight"
             >
               <el-tooltip
@@ -111,7 +111,7 @@
           <span class="dispatch-base-label">{{
             isPageShow("expenseInfoVO", "settlementWay") == 1
               ? "运费总额"
-              : "货物单价:"
+              : "运费单价:"
           }}</span>
           <span class="dispatch-base-text">
             {{ isPageShow("expenseInfoVO", "freight") }}</span

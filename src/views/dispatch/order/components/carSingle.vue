@@ -16,7 +16,7 @@
 
     <div style="margin-bottom: 40px">
       <el-row class="dispatch-base-contents-big">
-        <el-col :span="8">
+        <el-col :span="12">
           <el-form-item label="出车日期:" prop="startDate">
             <el-date-picker
               v-model="form.startDate"
@@ -28,7 +28,7 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="12">
           <el-form-item label="出车时间:" prop="outCarTime">
             <el-time-picker
               :picker-options="{
@@ -49,7 +49,7 @@
         >{{ haveAppointCarRecordText }}</el-tag
       >
       <el-row class="dispatch-base-contents-big">
-        <el-col :span="8">
+        <el-col :span="12">
           <el-form-item label="承运车辆:" prop="vehicleCode">
             <el-select
               v-model="form.vehicleCode"
@@ -82,7 +82,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="12">
           <el-form-item
             label="承运司机:"
             prop="driverCode"
@@ -124,7 +124,8 @@
         class="dispatch-base-contents-big"
         v-if="isZj && currVehicleInfo.vehicleOwnership === 1"
       >
-        <el-col :span="8">
+        <el-col :span="12">
+          
           <el-form-item
             :label="pageData.settlementWay == 1 ? '应收金额' : '运费单价'"
             prop="freight"
@@ -139,14 +140,6 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item
-            :label="pageData.settlementWay == 1 ? '应付金额' : '应付单价'"
-            prop="realFreight"
-            :rules="[
-              { required: true, message: '请填写应收金额', trigger: 'blur' },
-              { validator: this.priceNo, trigger: 'blur' },
-            ]"
-          >
             <el-input
               v-model="form.realFreight"
               clearable
@@ -156,7 +149,6 @@
               style="width: 220px"
               ><template slot="append">元</template>
             </el-input>
-          </el-form-item>
         </el-col>
       </el-row>
     </div>
@@ -240,13 +232,6 @@ export default {
     this.getDriverList();
   },
   computed: {
-    realFreightRules() {
-      return this.isZj &&
-        this.currVehicleInfo &&
-        this.currVehicleInfo.vehicleOwnership === 1
-        ? true
-        : false;
-    },
     outCarMinTime() {
       const tmpTime = new Date();
       const result = this.parseTime(tmpTime, "{h}:{i}:{s}");
@@ -256,15 +241,8 @@ export default {
   },
   methods: {
     // 应付金额校验
-    priceNo(rule, value, callback) {
-      if (value === undefined || value === null || value === "") {
-        callback();
-      }
-      if (parseInt(this.form.realFreight) > parseInt(this.pageData.freight)) {
-        callback(new Error("应收金额不可高于应付金额"));
-      } else {
-        callback();
-      }
+    priceNo(e) {
+      console.log('priceNo',e)
     },
     // 处理车辆颜色和文字
     dealvehicleListSubText(sub, type, w) {

@@ -57,7 +57,7 @@
         </el-row>
       </el-form>
     </div>
-    <div class="play-back-search" v-show="isResult">
+    <div class="play-back-search" >
       <div class="play-back-search-title">查询结果：</div>
       <div
         :class="isbigger ? 'dialog-video' : ''"
@@ -83,7 +83,7 @@
             ref="video"
             width="100%"
             height="100%"
-            :poster="require('../../../utils/RVC/img/video.png')"
+            :poster="require('../../../utils/RVC/img/video-img.png')"
             autoplay
             @canplay="getDuration"
             muted
@@ -285,7 +285,7 @@ export default {
           MSGID,
           userId: "1",
         };
-      video.poster = "../../../utils/RVC/timg.gif";
+      video.poster = require("../../../utils/RVC/img/timg.gif");
       this.wfs.attachMedia(video, [wfsObj, player, userInfo]);
     },
     //退出播放
@@ -430,7 +430,7 @@ export default {
 }
 .dialog-video-full {
   opacity: 1 !important;
-  width: 54% !important;
+  width: 38.5% !important;
   height: 45% !important;
   position: absolute !important;
   top: 20% !important;
@@ -459,9 +459,13 @@ export default {
 }
 .toBigger {
   position: absolute;
-  bottom: 2px;
+  bottom: 7px;
   right: 2px;
   width: 17px;
   height: 17px;
+}
+#video{
+    width: 100%; 
+    object-fit:fill; 
 }
 </style>

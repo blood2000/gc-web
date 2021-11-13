@@ -16,7 +16,6 @@
       </template>
       <div class="content-title">
         <titleSideBlueTip title="运单信息" />
-      
       </div>
       <div class="content-info">
         <el-row>
@@ -27,7 +26,9 @@
 
           <el-col :span="8">
             <div class="content-info-label">调度单来源：</div>
-            <div class="content-info-value">{{ sourceConfig[pageObj.source] }}</div>
+            <div class="content-info-value">
+              {{ sourceConfig[pageObj.source] }}
+            </div>
           </el-col>
 
           <el-col :span="8">
@@ -53,36 +54,36 @@
         <el-button @click="colse"> 取消</el-button>
         <el-button type="primary" :loading="loading" @click="submitForm">确定</el-button>
       </div> -->
-       <CarMany
-      v-if="isMany"
-      :pageData="detailData"
-      :dispatchOrderCode="pageObj.dispatchOrderCode"
-      :carDrawer="showDispatchVehicle"
-      :isZj="isZj"
-      @handleClose="colse"
-    />
-    <CarSingle
-      v-if="!isMany"
-      :pageData="detailData"
-      :dispatchOrderCode="pageObj.dispatchOrderCode"
-      :carDrawer="showDispatchVehicle"
-      :isZj="isZj"
-      @handleClose="colse"
-    />
+      <CarMany
+        v-if="isdetailData && isMany"
+        :pageData="detailData"
+        :dispatchOrderCode="pageObj.dispatchOrderCode"
+        :carDrawer="showDispatchVehicle"
+        :isZj="isZj"
+        @handleClose="colse"
+      />
+      <CarSingle
+        v-if="isdetailData && !isMany"
+        :pageData="detailData"
+        :dispatchOrderCode="pageObj.dispatchOrderCode"
+        :carDrawer="showDispatchVehicle"
+        :isZj="isZj"
+        @handleClose="colse"
+      />
     </el-dialog>
   </div>
 </template>
 
 <script>
 import { http_request } from "@/api";
-import config from './config'
-import CarMany from "./carMany.vue";
-import CarSingle from "./carSingle.vue"; 
+import config from "./config";
+import CarMany from "../../dispatch/order/components/carMany.vue";
+import CarSingle from "../../dispatch/order/components/carSingle.vue";
 export default {
   name: "DispathcVehicle",
   data() {
     return {
-      sourceConfig:{},
+      sourceConfig: {},
       pageObj: {
         companyName: "",
         source: "",
@@ -91,15 +92,20 @@ export default {
         unloadFormattedAddress: "",
         vehicleCode: null,
         driverCode: null,
-        dispatchOrderCode:null
+        dispatchOrderCode: null,
       },
-      detailData:{}
+      detailData: {},
     };
   },
 
   components: { CarMany, CarSingle },
 
   computed: {
+    isdetailData() {
+      console.log("this.detailData", this.detailData);
+      if (JSON.stringify(this.detailData) === "{}") return false;
+      return true;
+    },
     showDispatchVehicle() {
       console.log(
         "this.$store.getters.showDispatchVehicle",
@@ -107,35 +113,40 @@ export default {
       );
       if (this.$store.getters.showDispatchVehicle) {
         this.renderPageObj();
-         
       }
       return this.$store.getters.showDispatchVehicle;
     },
-    isZj(){
-      console.log('this.pageObj.source',this.pageObj.source)
-      return this.pageObj.source === 'chy'?false:true
+    isZj() {
+      console.log("this.pageObj.source", this.pageObj.source);
+      return this.pageObj.source === "chy" ? false : true;
     },
-    isMany(){
-      console.log('this.$store.getters.isMany',this.$store.getters.isMany)
-      return this.$store.getters.isMany
-    }
+    isMany() {
+      console.log("this.$store.getters.isMany", this.$store.getters.isMany);
+      return this.$store.getters.isMany;
+    },
   },
 
   mounted() {
     console.log("派车");
-    this.sourceConfig =  config.sourceConfig
+    this.sourceConfig = config.sourceConfig;
   },
 
   methods: {
-    async getDetail(code){
-      console.log('1111',code)
-            const obj = {
+    async getDetail(code) {
+      console.log("1111", code);
+      const obj = {
         moduleName: "http_dispatch",
         method: "get",
         url_alias: "detail_dispatch",
         url_code: [code],
       };
-      this.detailData = await http_request(obj);
+      const res = await http_request(obj);
+      this.detailData = res.data;
+      if (this.isZj) {
+        this.detailData.freight = this.detailData.expenseInfoVO.freight;
+        this.detailData.settlementWay =
+          this.detailData.expenseInfoVO.settlementWay;
+      }
     },
     colse() {
       //重置
@@ -147,14 +158,8 @@ export default {
         this.$store.getters.dispatchInfo.dispatchOrderCode;
       const pageObj = this.pageObj;
       console.log("pageObj", pageObj, this.$store.getters.dispatchInfo);
-       this.getDetail(pageObj.dispatchOrderCode)
+      this.getDetail(pageObj.dispatchOrderCode);
     },
-   
-  
- 
- 
- 
- 
   },
 };
 </script>

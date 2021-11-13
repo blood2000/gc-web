@@ -12,7 +12,7 @@
         id="video"
         width="100%"
         height="100%"
-        poster="../../../assets/images/RVC/video.png"
+        poster="../../../utils/RVC/img/video-img.png"
         autoplay
         muted
       ></video>
@@ -102,7 +102,7 @@ export default {
           userId: "1",
         };
       console.log("poster", video);
-      video.poster = "../../../assets/images/RVC/timg.gif";
+      video.poster = require( "../../../utils/RVC/img/timg.gif");
       console.log("video.poster", video.poster);
       this.wfs.attachMedia(video, [wfsObj, player, userInfo]);
     },
@@ -173,7 +173,7 @@ export default {
   background: rgba(0, 0, 0, 0.26);
   &-full {
     opacity: 1;
-    width: 50%;
+    width: 44.5%;
     height: 50%;
     position: absolute;
     top: 20%;
@@ -209,5 +209,9 @@ export default {
       height: 60px;
     }
   }
+}
+#video{
+    width: 100%; 
+    object-fit:fill; 
 }
 </style>
