@@ -20,8 +20,8 @@
                     <p class="g-single-row text">{{ item.alarmTypeName }}</p>
                   </div>
                   <div v-if="item.alarmLevel" class="ly-flex-v ly-flex-align-center">
-                    <img src="~@/assets/images/device/warn_label_1.png">
-                    <p class="g-single-row text">{{ item.alarmLevel }}</p>
+                    <img :src="require('@/assets/images/device/warn_label_'+item.alarmLevel+'.png')">
+                    <p class="g-single-row text">{{ item.alarmLevel }}级告警</p>
                   </div>
                   <div v-if="item.alarmValue" class="ly-flex-v ly-flex-align-center">
                     <p class="g-single-row"><strong>{{ item.alarmValue }}</strong> km/h</p>
@@ -39,7 +39,7 @@
             </li>
           </template>
         </template>
-        <!-- vehicle 车辆，device 设备，person 人员 -->
+        <!-- vehicle 车辆，device 设备，driver 人员 -->
         <template v-else>
           <template v-if="otherDataList.length > 0">
             <li class="warning-list-adas" v-for="(item, index) in otherDataList" :key="index" @click="handleDetail(item)">
@@ -50,8 +50,8 @@
                     <p class="g-single-row text">{{ item.alarmTypeName }}</p>
                   </div>
                   <div v-if="item.alarmLevel" class="ly-flex-v ly-flex-align-center">
-                    <img src="~@/assets/images/device/warn_label_2.png">
-                    <p class="g-single-row text">{{ item.alarmLevel }}</p>
+                    <img :src="require('@/assets/images/device/warn_label_'+item.alarmLevel+'.png')">
+                    <p class="g-single-row text">{{ item.alarmLevel }}级告警</p>
                   </div>
                   <div v-if="item.number || item.number == 0" class="ly-flex-v">
                     <p class="g-single-row count">{{ item.number }}</p>
@@ -141,7 +141,7 @@ export default {
         code: 'device',
         tabName: '设备报警'
       }, {
-        code: 'person',
+        code: 'driver',
         tabName: '人员报警'
       }],
       // 实时报警列表
@@ -194,7 +194,12 @@ export default {
         if (this.orgOrVehicleInfo.vehicleFlag) {
           this.queryParams.vehicleCode = this.orgOrVehicleInfo.orgOrVehicleCode;
         } else {
-          this.queryParams.orgCode = this.orgOrVehicleInfo.orgOrVehicleCode;
+          if (this.orgOrVehicleInfo.icon === 'second') {
+            // 如果是顶层,告警参数不传orgCode
+            this.queryParams.orgCode = null;
+          } else {
+            this.queryParams.orgCode = this.orgOrVehicleInfo.orgOrVehicleCode;
+          }
         }
       }
       // 根据不同tab请求不同接口
@@ -231,7 +236,7 @@ export default {
       const params = {
         start: 1,
         limit: 4,
-        alarmObject // 告警对象(vehicle 车辆，device 设备，person 人员)
+        alarmObject // 告警对象(vehicle 车辆，device 设备，driver 人员)
       };
       const obj = {
         moduleName: 'http_map',
