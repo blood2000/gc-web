@@ -142,6 +142,10 @@
           <el-form-item
             :label="pageData.settlementWay == 1 ? '应付金额' : '应付单价'"
             prop="realFreight"
+            :rules="[
+              { required: true, message: '请填写应收金额', trigger: 'blur' },
+              { validator: this.priceNo, trigger: 'blur' },
+            ]"
           >
             <el-input
               v-model="form.realFreight"
@@ -236,6 +240,13 @@ export default {
     this.getDriverList();
   },
   computed: {
+    realFreightRules() {
+      return this.isZj &&
+        this.currVehicleInfo &&
+        this.currVehicleInfo.vehicleOwnership === 1
+        ? true
+        : false;
+    },
     outCarMinTime() {
       const tmpTime = new Date();
       const result = this.parseTime(tmpTime, "{h}:{i}:{s}");
@@ -244,6 +255,18 @@ export default {
     },
   },
   methods: {
+    // 应付金额校验
+    priceNo(rule, value, callback) {
+      if (value === undefined || value === null || value === "") {
+        callback();
+      }
+      if (parseInt(this.form.realFreight) > parseInt(this.pageData.freight)) {
+        callback(new Error("应收金额不可高于应付金额"));
+      } else {
+        callback();
+      }
+    },
+    // 处理车辆颜色和文字
     dealvehicleListSubText(sub, type, w) {
       const obj = {
         text: () => {

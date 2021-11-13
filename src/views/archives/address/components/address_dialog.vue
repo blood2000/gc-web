@@ -377,6 +377,7 @@ export default {
               .then((updateres) => {
                 console.log("updateres", updateres);
                 this.loading = false;
+                this.reset()
                 this.$emit("colseDialog", "ok");
               })
               .catch((e) => {
@@ -393,6 +394,7 @@ export default {
               .then((addres) => {
                 console.log("addres", addres);
                 this.loading = false;
+                 this.reset()
                 this.$emit("colseDialog", "ok");
               })
               .catch((e) => {

@@ -11,9 +11,9 @@
   <!-- addressAlias addressName -->
     <div class="ddc-queryParams-left">
       <div class="up">
-        <el-form-item label="地址:" prop="addressName">
+        <el-form-item label="地址:" prop="formattedAddress">
           <el-input
-            v-model="queryParams.addressName"
+            v-model="queryParams.formattedAddress"
             placeholder="  请输入关键字"
             clearable
             style="width: 185px"

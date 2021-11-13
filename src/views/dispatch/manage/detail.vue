@@ -14,7 +14,7 @@
         <el-col :span="12" style="padding-bottom: 16px">
           <span class="dispatch-base-label">用车企业:</span>
           <span class="dispatch-dispatch-base-text">
-            {{ baseData.companyName }}</span
+            {{ baseData.companyName }}</span 
           >
         </el-col>
         <el-col :span="12" style="padding-bottom: 16px">

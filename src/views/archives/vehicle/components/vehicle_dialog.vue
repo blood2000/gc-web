@@ -572,6 +572,8 @@ export default {
         return false;
       if (this.options && this.options.currAuthStatus == 1)
         return false;
+         if (this.options && this.options.currAuthStatus == 2)
+        return false;
       return true;
     },
     //强制限制
