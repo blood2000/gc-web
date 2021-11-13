@@ -157,7 +157,7 @@
             alt=""
           />
           <div class="video-content-item-top">
-            <span> 通道 {{ index+1 }}</span>
+            <span> 通道 {{ index + 1 }}</span>
           </div>
           <div class="video-content-item-middle" v-show="videoShow">
             <img src="../../../assets/images/detail/play-back-play.png" />
@@ -644,10 +644,10 @@ export default {
         overflow: auto;
         flex-wrap: wrap;
         &-item {
-          margin-right: 25px;
+          margin-right: 10px;
           margin-bottom: 8px;
-          height: 80px;
-          width: 142px;
+          height: 93px;
+          width: 170px;
           border-radius: 2px;
           background: #3d4050;
           position: relative;

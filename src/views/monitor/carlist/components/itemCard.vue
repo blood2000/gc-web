@@ -17,7 +17,7 @@
           <span class="menu-item" @click="travelSeach">轨迹查看</span>
         </el-dropdown-item>
         <el-dropdown-item>
-          <span class="menu-item" @click="seeVideo">视频监控</span>
+          <span class="menu-item" @click="seeVideo">视频回放</span>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
