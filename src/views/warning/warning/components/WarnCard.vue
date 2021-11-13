@@ -36,7 +36,7 @@
       :class="'warn-level-' + (cardInfo.alarmLevel)"
     >
       <div class="card-main-left" v-if="cardInfo.vendorAlarmTypeName">
-        <img src="../../../../assets/images/detail/fms-yczd.png" alt="" />
+        <img src="../../../../assets/images/detail/aiot-yczd.png" alt="" />
         <div class="warn-card-type">{{ cardInfo.vendorAlarmTypeName || "无" }}</div>
       </div>
       <div class="card-main-right" v-if="cardInfo.vendorAlarmTypeName">

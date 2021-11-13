@@ -170,7 +170,7 @@ export default {
   methods: {
     dealAlarmImg() {
       if (!this.detail.key) return "";
-      return require("@/assets/images/detail/fms-yczd.png");
+      return require("@/assets/images/detail/aiot-yczd.png");
       // return require(`@/assets/images/detail/${this.detail.key}.png`);
     },
     levelDeal(type) {
