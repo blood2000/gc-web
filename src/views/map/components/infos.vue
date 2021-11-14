@@ -24,7 +24,7 @@
         />
         <div class="info-box ly-flex-1">
           <h5>{{ vehicleInfo.plateNumber }}</h5>
-          <p class="car-name">
+          <p class="car-name g-single-row">
             {{ vehicleInfo.driverName ? vehicleInfo.driverName : "暂无" }}
             <span style="margin: 0 10px">|</span>
             <!-- 无数据 -->
@@ -87,7 +87,7 @@
     <!-- 设备信息 -->
     <div
       class="info-box info-device"
-      :style="warnIsClose ? '' : 'height: calc(100% - 360px)'"
+      :style="warnIsClose ? '' : 'height: calc(100% - 300px)'"
     >
       <h5 class="info-box-title">设备信息</h5>
       <!-- content -->
@@ -119,7 +119,7 @@
         </li>
       </ul>
       <!--  :style="warnIsClose ? '' : 'height: calc(100% - 170px)'" -->
-      <ul class="info-list ly-flex map-scroll-panel">
+      <ul  class="info-list ly-flex map-scroll-panel">
         <li
           class="ly-flex ly-flex-align-center"
           v-for="item in attributesInfo"
@@ -435,6 +435,7 @@ export default {
             font-weight: 400;
             line-height: 20px;
             color: #3d4050;
+            width:285px
           }
           .car-type {
             font-size: 14px;

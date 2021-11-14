@@ -60,31 +60,49 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="省 / 市 / 区:" prop="loadFormattedAddress">
+                  <el-tooltip
+                    effect="dark"
+                    :content="addressInfo.loadFormattedAddress"
+                    placement="top"
+                  >
                   <el-input
                     v-model="addressInfo.loadFormattedAddress"
                     clearable
                     style="width: 220px"
                   />
+                  </el-tooltip>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="详细地址:" prop="loadAddressDetail">
+                   <el-tooltip
+                    effect="dark"
+                    :content="addressInfo.loadAddressDetail"
+                    placement="top"
+                  >
                   <el-input
                     v-model="addressInfo.loadAddressDetail"
                     clearable
                     style="width: 220px"
                   />
+                   </el-tooltip>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="8">
                 <el-form-item label="地址别名:" prop="loadAddressAlias">
+                  <el-tooltip
+                    effect="dark"
+                    :content="addressInfo.loadAddressAlias"
+                    placement="top"
+                  >
                   <el-input
                     v-model="addressInfo.loadAddressAlias"
                     clearable
                     style="width: 90%"
                   />
+                  </el-tooltip>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -113,32 +131,50 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="省 / 市 / 区:" prop="unloadFormattedAddress">
+                <el-tooltip
+                  effect="dark"
+                  :content="addressInfo.unloadFormattedAddress"
+                  placement="top"
+                >
                 <el-input
                   v-model="addressInfo.unloadFormattedAddress"
                   clearable
                   style="width: 220px"
                 />
+                </el-tooltip>
               </el-form-item>
             </el-col>
 
             <el-col :span="12">
               <el-form-item label="详细地址:" prop="unloadAddressDetail">
+                <el-tooltip
+                  effect="dark"
+                  :content="addressInfo.unloadAddressDetail"
+                  placement="top"
+                >
                 <el-input
                   v-model="addressInfo.unloadAddressDetail"
                   clearable
                   style="width: 220px"
                 />
+                </el-tooltip>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="8">
               <el-form-item label="地址别名:" prop="unloadAddressAlias">
+                <el-tooltip
+                  effect="dark"
+                  :content="addressInfo.unloadAddressAlias"
+                  placement="top"
+                >
                 <el-input
                   v-model="addressInfo.unloadAddressAlias"
                   clearable
                   style="width: 90%"
                 />
+                </el-tooltip>
               </el-form-item>
             </el-col>
             <el-col :span="8">

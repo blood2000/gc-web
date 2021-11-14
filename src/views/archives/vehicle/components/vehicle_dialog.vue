@@ -780,6 +780,7 @@ export default {
             http_request(obj)
               .then((addres) => {
                 console.log("addres", addres);
+                this.reset();
                 this.loading = false;
                 this.$emit("colseDialog", "ok");
               })
