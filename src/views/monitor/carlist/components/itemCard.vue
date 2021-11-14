@@ -33,7 +33,11 @@
       <img src="@/assets/images/monitor-line.png" alt="" />
     </div>
     <div class="monitor-card-content">
-      <img :src="dealBigImage" alt="" />
+
+      <div class="monitor-card-content-img">
+<img :src="dealBigImage" alt="" />
+      </div>
+      
       <div class="monitor-card-content-right">
         <div class="monitor-card-content-right-title">
           <div class="monitor-card-content-right-title-warn" v-if="data.alarmLevel">
@@ -300,9 +304,16 @@ export default {
     padding-left: 16px;
     padding-right: 16px;
     margin-bottom: 16px;
-    & > img {
-      width: 104px;
-      height: 68px;
+    &-img {
+      // width: 104px;
+      // height: 68px;
+      
+       min-width: 104px !important;
+      height: 68px !important;
+      &>img{
+        width:100%;
+        height: 100%;
+      }
     }
     &-right {
       padding-left: 12px;
