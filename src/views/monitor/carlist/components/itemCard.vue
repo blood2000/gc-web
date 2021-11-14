@@ -26,7 +26,13 @@
     </div>
     <div class="monitor-card-location">
       <span class="monitor-card-location-text1">当前位置 |</span>
+        <el-tooltip
+                    effect="dark"
+                    :content="data.attribute"
+                    placement="top"
+                  >
       <span class="monitor-card-location-text2">{{ data.attribute }}</span>
+        </el-tooltip>
     </div>
     <div class="monitor-card-driver">
       <span>最新告警</span>
@@ -49,20 +55,39 @@
             <span>{{ data.alarm_type }}</span>
           </div>
         </div>
-        <div class="monitor-card-content-right-address">
+         <el-tooltip
+                    effect="dark"
+                    :content="data.alarm_address"
+                    placement="top"
+                  >
+        <div class="monitor-card-content-right-address g-single-row">
           {{ data.alarm_address }}
         </div>
+         </el-tooltip>
         <div class="monitor-card-content-right-date">{{dealAlarmTime}}  </div>
       </div>
     </div>
     <div class="monitor-card-footer">
-      <div class="monitor-card-footer-left">
+      <div class="monitor-card-footer-left ">
+        
         <img src="../../../../assets/images/detail/monitor-phone.png" alt="" />
-        <span>{{ data.model_name }}</span>
+         <el-tooltip
+                    effect="dark"
+                    :content="data.model_name"
+                    placement="top"
+                  >
+        <span class="g-single-row">{{ data.model_name }}</span>
+         </el-tooltip>
       </div>
       <div class="monitor-card-footer-middle">
         <img src="../../../../assets/images/detail/monitor-people.png" alt="" />
-        <span>{{data.nick_name}}</span>
+         <el-tooltip
+                    effect="dark"
+                    :content="data.nick_name"
+                    placement="top"
+                  >
+        <span  class="g-single-row">{{data.nick_name}}</span>
+         </el-tooltip>
       </div>
       <div class="monitor-card-footer-right">
         <span
@@ -71,7 +96,8 @@
           v-show="dealVehicleStatus"
           >•
         </span>
-        <span :style="{ color: dealVehicleStatusColor }">{{
+        <!-- g-single-row -->
+        <span class="g-single-row" :style="{ color: dealVehicleStatusColor }">{{
           dealVehicleStatus
         }}</span>
       </div>
@@ -358,7 +384,7 @@ export default {
         }
       }
       &-address {
-        width: 270px;
+        width: 235px;
         font-size: 14px;
         font-family: PingFang SC;
         font-weight: 400;
@@ -381,12 +407,13 @@ export default {
   &-footer {
     border-top: 1px solid #f3f4f5;
     display: flex;
+    height: 40px;
     &-left {
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
       width: 180px;
-      padding: 10px 38px 12px 19px;
+      padding: 0 10px;
       border-right: 1px solid #f3f4f5;
       display: flex;
       align-items: center;
@@ -404,7 +431,7 @@ export default {
       }
     }
     &-middle {
-      padding: 10px 23px 12px 19px;
+      padding: 0 10px;
       width: 96px;
       border-right: 1px solid #f3f4f5;
       display: flex;
@@ -416,6 +443,7 @@ export default {
         margin-right: 2px;
       }
       & > span {
+        display: inline-block;
         font-size: 12px;
         font-family: PingFang SC;
         font-weight: bold;
@@ -424,7 +452,8 @@ export default {
       }
     }
     &-right {
-      padding: 10px 26px 12px 25px;
+       padding-left:  25px;
+       line-height: 40px;
       & > span {
         font-size: 12px;
         font-family: PingFang SC;
