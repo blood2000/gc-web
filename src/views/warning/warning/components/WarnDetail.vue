@@ -58,16 +58,24 @@
           <span class="dispatch-base-text">{{ detail.speed || "-" }}km/h</span>
         </el-col> -->
         <el-col :span="24" style="padding-bottom: 16px">
-          <span class="dispatch-base-label">告警地址:</span>
-          <span class="dispatch-base-text">{{
-            detail.alarmAddress || "-"
-          }}</span>
+          <div class="dispatch-base-line">
+            <span class="label">告警地址:</span>
+            <span class="text">
+              {{ detail.alarmAddress || "-" }}
+            </span>
+          </div>
         </el-col>
         <el-col :span="24" style="padding-bottom: 16px">
-          <span class="dispatch-base-label">告警地址:</span>
+          <div class="dispatch-base-line">
+            <span class="label">告警描述:</span>
+            <span class="text">
+              {{ detail.alarmContent || "-" }}
+            </span>
+          </div>
+          <!-- <span class="dispatch-base-label">告警描述:</span>
           <span class="dispatch-base-text">
             {{ detail.alarmContent || "-" }}
-          </span>
+          </span> -->
         </el-col>
         <el-col :span="24">
           <span class="dispatch-base-label">告警时间:</span>
@@ -411,8 +419,9 @@ export default {
   justify-content: flex-start;
   margin-bottom: 28px;
   &-box {
-    width: 76px;
+    min-width: 76px;
     height: 76px;
+    padding: 0 10px;
     border: 1px solid rgba(112, 112, 112, 0.14901960784313725);
     opacity: 1;
     border-radius: 6px;
@@ -426,6 +435,11 @@ export default {
       align-items: center;
       & > span {
         padding-top: 5px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        // width: 64px;
+        text-align: center;
       }
     }
   }
@@ -478,5 +492,22 @@ export default {
   background: url("../../../../assets/images/detail/warn_img_corner.png")
     no-repeat center;
   background-size: contain;
+}
+
+.label {
+  min-width: 60px;
+  font-size: 14px;
+  color: #adb5bd;
+  margin-right: 5px;
+  text-align: right;
+}
+
+.text {
+  flex: 1;
+  font-size: 14px;
+  font-family: PingFang SC;
+  font-weight: 400;
+  line-height: 22px;
+  color: #3d4050;
 }
 </style>

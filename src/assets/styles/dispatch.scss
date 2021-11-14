@@ -51,6 +51,12 @@
 .dispatch-order-info {
   width: 1250px;
 }
+
+.dispatch-base-line {
+  display: flex;
+  align-items: center;
+}
+
 .dispatch-base-label {
   font-size: 14px;
   color: #adb5bd;
