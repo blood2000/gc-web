@@ -578,6 +578,7 @@ export default {
             http_request(obj)
               .then((addRes) => {
                 console.log("addRes", addRes);
+                this.reset();
                 this.$emit("colseDialog", "ok");
                 this.loading = false;
               })
