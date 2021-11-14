@@ -30,21 +30,35 @@
         <img src="../../../../assets/images/monitor-line.png" alt="" />
       </div>
     </div>
-    <div
-      
-      class="warn-card-main"
-      :class="'warn-level-' + (cardInfo.alarmLevel)"
-    >
+    <div class="warn-card-main" :class="'warn-level-' + cardInfo.alarmLevel">
       <div class="card-main-left" v-if="cardInfo.vendorAlarmTypeName">
-        <img src="../../../../assets/images/detail/aiot-yczd.png" alt="" />
-        <div class="warn-card-type">{{ cardInfo.vendorAlarmTypeName || "无" }}</div>
+        <!-- <img src="../../../../assets/images/detail/aiot-yczd.png" alt="" /> -->
+        <img :src="dealAlarmImg()" alt="" />
+        <el-tooltip
+          class="item"
+          effect="dark"
+          :content="cardInfo.vendorAlarmTypeName || '-'"
+          placement="top-start"
+        >
+          <div class="warn-card-type">
+            {{ cardInfo.vendorAlarmTypeName || "无" }}
+          </div>
+        </el-tooltip>
       </div>
       <div class="card-main-right" v-if="cardInfo.vendorAlarmTypeName">
-        <div>{{ cardInfo.alarmAddress || "-" }}</div>
+        <el-tooltip
+          class="item"
+          effect="dark"
+          :content="cardInfo.alarmAddress || '-'"
+          placement="top-start"
+        >
+          <div>{{ cardInfo.alarmAddress || "-" }}</div>
+        </el-tooltip>
+        
         <div>{{ cardInfo.alarmTime || "-" }}</div>
       </div>
       <div class="card-main-none" v-if="!cardInfo.vendorAlarmTypeName">
-        <img src="../../../../assets/images/detail/warn_none.png" alt="">
+        <img src="../../../../assets/images/detail/warn_none.png" alt="" />
         <div>暂无数据</div>
       </div>
     </div>
@@ -114,6 +128,12 @@ export default {
   methods: {
     openList(type) {
       this.$emit("openList", { type: type, item: this.cardInfo });
+    },
+
+    dealAlarmImg() {
+      if (!this.cardInfo.key) return "";
+      // return require(`@/assets/images/detail/${this.cardInfo.key}.png`);
+      return require(`@/assets/images/detail/aiot-yczd.png`);
     },
   },
 };
@@ -305,6 +325,10 @@ export default {
 
 .warn-card-type {
   font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
 }
 
 .card-main-right {
