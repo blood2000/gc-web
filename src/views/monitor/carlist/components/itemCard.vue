@@ -119,10 +119,11 @@ export default {
     dealBigImage() {
       const result = this.data.model_code;
       if (result) {
-        return "http://static.zjz1.net/device/model/A1/A1-{tag}.png".replace(
-          /\{tag\}/g,
-          result
-        );
+        return `http://static.zjz1.net/device/model/${result}/${result}-icon.png`
+        // return "http://static.zjz1.net/device/model/A1/A1-{tag}.png".replace(
+        //   /\{tag\}/g,
+        //   "icon"
+        // );
       } else {
         return "";
       }
