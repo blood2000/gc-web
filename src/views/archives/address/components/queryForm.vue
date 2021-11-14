@@ -29,9 +29,9 @@
             @keyup.enter.native="$emit('handleQuery')"
           />
         </el-form-item>
-        <el-form-item label="联系人姓名:" prop="contactName">
+        <el-form-item label="联系人姓名:" prop="contact">
           <el-input
-            v-model="queryParams.contactName"
+            v-model="queryParams.contact"
             placeholder="  请输入关键字"
             clearable
             style="width: 185px"
