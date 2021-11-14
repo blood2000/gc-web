@@ -177,7 +177,7 @@ export default {
     height: 50%;
     position: absolute;
     top: 20%;
-    left: 22%;
+    left: 27.78%;
     background: #3d4050;
     border-radius: 2px;
     border-radius: 2px;

@@ -57,11 +57,11 @@
         </el-row>
       </el-form>
     </div>
-    <div class="play-back-search" >
+    <div class="play-back-search">
       <div class="play-back-search-title">查询结果：</div>
       <div
         :class="isbigger ? 'dialog-video' : ''"
-        style="margin-top: 40px"
+        :style="{ 'margin-top': isbigger ? '' : '40px' }"
         @click="colse"
       >
         <div
@@ -156,9 +156,31 @@ export default {
   mounted() {
     this.timeUpdate();
     this.getChannelNumListList();
+    this.initTime();
   },
   computed: {},
   methods: {
+    initTime() {
+      console.log(
+        this.parseTime(
+          new Date(new Date().setHours(0, 0, 0, 0)),
+          "{y}-{m}-{d} {h}:{i}:{s}"
+        )
+      );
+
+      this.queryParams.dateRange.push(
+        new Date(new Date().setHours(0, 0, 0, 0))
+      );
+      this.queryParams.dateRange.push(
+        new Date(
+          new Date(new Date().setHours(0, 0, 0, 0)).getTime() +
+            24 * 60 * 60 * 1000 -
+            1
+        )
+      );
+
+      console.log("this.queryParams.dateRange", this.queryParams.dateRange);
+    },
     getChannelNumListList() {
       const type = "vehicle,location,device,function,attribute,field"; // 获取信息类型, 可指定多个
       const obj = {
@@ -433,8 +455,8 @@ export default {
   width: 38.5% !important;
   height: 45% !important;
   position: absolute !important;
-  top: 20% !important;
-  left: 25% !important;
+  top: 27.5% !important;
+  left: 30.78% !important;
   background: #3d4050 !important;
   border-radius: 2px !important;
 }
@@ -464,8 +486,8 @@ export default {
   width: 17px;
   height: 17px;
 }
-#video{
-    width: 100%; 
-    object-fit:fill; 
+#video {
+  width: 100%;
+  object-fit: fill;
 }
 </style>
