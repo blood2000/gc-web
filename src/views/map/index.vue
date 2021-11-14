@@ -345,7 +345,7 @@
       @handleSlideChange="handleSlideChange"
     />
     <PlayBack
-     v-if="headerTab === 4&&orgOrVehicleCode" 
+     v-if="headerTab === 4&&orgOrVehicleCode&&resetPalyback" 
      ref="PlayBackRef" 
      :vehicleCode="orgOrVehicleCode"
      class="play-back" />
@@ -384,6 +384,7 @@ export default {
       // 地图
       map: null,
       geocoder: null,
+      resetPalyback:false,
       // 时间
       timer: null,
       currentday: "",
@@ -524,6 +525,15 @@ export default {
         this.driverQuery();
       },
     },
+    orgOrVehicleCode:{
+      handler(){
+        console.log('刷新重置 视频回放')
+        this.resetPalyback = false
+        this.$nextTick(()=>{
+          this.resetPalyback = true
+        })
+      }
+    }
   },
   computed: {
     showDispatchVehicle() {
@@ -1232,6 +1242,7 @@ export default {
       // if (this.orgOrVehicleCode === data.orgOrVehicleCode) return;
       console.log("tree-node: ", data);
       this.orgOrVehicleCode = data.orgOrVehicleCode;
+      this.resetPalyback = true
       this.CurrorgOrlicenseNumber = data.orgOrlicenseNumber;
       this.orgOrVehicleInfo = data;
       if (data.vehicleFlag) {

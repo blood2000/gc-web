@@ -35,10 +35,10 @@
                 placeholder="请选择摄像头"
               >
                 <el-option
-                  v-for="(item, index) in channelNumList"
-                  :key="index"
-                  :label="`通道${index + 1}`"
-                  :value="`${index + 1}`"
+                  v-for="item  in channelNumList"
+                  :key="item.key"
+                  :label="item.key"
+                  :value="item.value"
                 />
               </el-select>
             </el-form-item>
@@ -49,6 +49,7 @@
                 type="primary"
                 icon="el-icon-search"
                 @click="searchResult"
+                :disabled="channelNumList.length == 0"
               >
                 查询
               </el-button>
@@ -128,7 +129,7 @@ export default {
       isShow: false,
       queryParams: {
         dateRange: [],
-        CHANNEL: "1", //通道号
+        CHANNEL: null, //通道号
         VEHICLEID: "0", ////车辆ID
         VEHICLELICENSE: "闽A80808", //车牌号
         DEVICENO: "015800117661", //设备编码
@@ -155,8 +156,11 @@ export default {
   },
   mounted() {
     this.timeUpdate();
+    console.log('进来了')
     this.getChannelNumListList();
     this.initTime();
+  },
+  watch:{
   },
   computed: {},
   methods: {
@@ -190,12 +194,22 @@ export default {
         url_code: [this.vehicleCode, type],
       };
       http_request(obj).then((res) => {
+        
         const fields = res.data.fields;
         this.channelNumList = [];
         for (let i = 0; i < Number(fields.channelNum); i++) {
-          this.channelNumList.push(i);
+          const obj ={
+            key:`通道${i + 1}`,
+            value:`${i + 1}`,
+          }
+          this.channelNumList.push(obj);
         }
-      });
+        if(fields.channelNum>0){
+          this.queryParams.CHANNEL = "1"
+        }
+      }).catch(()=>{
+        console.log('没有接口')
+      })
     },
     // 时长转换
     durationTrans(a) {

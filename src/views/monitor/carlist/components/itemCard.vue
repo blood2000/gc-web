@@ -137,8 +137,9 @@ export default {
     // 处理异常图片
     dealAlarmImg() {
       if (!this.data.key) return "";
-      console.log("this.detail.key", this.data);
-      return require(`@/assets/images/detail/${this.data.key}.png`);
+      // console.log("this.detail.key", this.data);
+      return require(`@/assets/images/detail/aiot-yczd.png`);
+      // return require(`@/assets/images/detail/${this.data.key}.png`);
     },
     // 处理危险等级显示
      levelDeal(type) {
