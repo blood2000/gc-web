@@ -65,11 +65,13 @@
                     :content="addressInfo.loadFormattedAddress"
                     placement="top"
                   >
-                    <el-input
-                      v-model="addressInfo.loadFormattedAddress"
-                      clearable
-                      style="width: 220px"
-                    />
+                    <div>
+                      <el-input
+                        v-model="addressInfo.loadFormattedAddress"
+                        clearable
+                        style="width: 220px"
+                      />
+                    </div>
                   </el-tooltip>
                 </el-form-item>
               </el-col>
@@ -347,9 +349,6 @@
 <script>
 import { http_request } from "../../../api";
 import { statusList } from "./manage_config";
-import { Vue } from 'vue';
-import { Tooltip } from 'element-ui';
-Vue.use(Tooltip);
 export default {
   name: "detail",
   components: {},
