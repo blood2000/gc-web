@@ -32,11 +32,11 @@
     </div>
     <div class="monitor-card-driver">
       <span>最新告警</span>
-      <img src="@/assets/images/monitor-line.png" alt="" />
+      <img src="@/assets/images/monitor-line.png"  />
     </div>
     <div class="monitor-card-content">
       <div class="monitor-card-content-img">
-        <img :src="dealBigImage" alt="" />
+        <img v-if="dealBigImage" :src="dealBigImage" />
       </div>
 
       <div class="monitor-card-content-right">
@@ -45,11 +45,11 @@
             class="monitor-card-content-right-title-warn"
             v-if="data.alarmLevel"
           >
-            <img :src="levelDeal('img')" alt="" />
+            <img :src="levelDeal('img')"  />
             <span>{{ levelDeal("text") }}</span>
           </div>
           <div class="monitor-card-content-right-title-anomaly">
-            <img :src="dealAlarmImg()" alt="" />
+            <img :src="dealAlarmImg()"  />
             <span>{{ data.alarm_type }}</span>
           </div>
         </div>
