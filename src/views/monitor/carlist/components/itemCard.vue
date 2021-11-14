@@ -26,27 +26,25 @@
     </div>
     <div class="monitor-card-location">
       <span class="monitor-card-location-text1">当前位置 |</span>
-        <el-tooltip
-                    effect="dark"
-                    :content="data.attribute"
-                    placement="top"
-                  >
-      <span class="monitor-card-location-text2">{{ data.attribute }}</span>
-        </el-tooltip>
+      <el-tooltip effect="dark" :content="data.attribute" placement="top">
+        <span class="monitor-card-location-text2">{{ data.attribute }}</span>
+      </el-tooltip>
     </div>
     <div class="monitor-card-driver">
       <span>最新告警</span>
       <img src="@/assets/images/monitor-line.png" alt="" />
     </div>
     <div class="monitor-card-content">
-
       <div class="monitor-card-content-img">
-<img :src="dealBigImage" alt="" />
+        <img :src="dealBigImage" alt="" />
       </div>
-      
+
       <div class="monitor-card-content-right">
         <div class="monitor-card-content-right-title">
-          <div class="monitor-card-content-right-title-warn" v-if="data.alarmLevel">
+          <div
+            class="monitor-card-content-right-title-warn"
+            v-if="data.alarmLevel"
+          >
             <img :src="levelDeal('img')" alt="" />
             <span>{{ levelDeal("text") }}</span>
           </div>
@@ -55,39 +53,26 @@
             <span>{{ data.alarm_type }}</span>
           </div>
         </div>
-         <el-tooltip
-                    effect="dark"
-                    :content="data.alarm_address"
-                    placement="top"
-                  >
-        <div class="monitor-card-content-right-address g-single-row">
-          {{ data.alarm_address }}
-        </div>
-         </el-tooltip>
-        <div class="monitor-card-content-right-date">{{dealAlarmTime}}  </div>
+        <el-tooltip effect="dark" :content="data.alarm_address" placement="top">
+          <div class="monitor-card-content-right-address g-single-row">
+            {{ data.alarm_address }}
+          </div>
+        </el-tooltip>
+        <div class="monitor-card-content-right-date">{{ dealAlarmTime }}</div>
       </div>
     </div>
     <div class="monitor-card-footer">
-      <div class="monitor-card-footer-left ">
-        
+      <div class="monitor-card-footer-left">
         <img src="../../../../assets/images/detail/monitor-phone.png" alt="" />
-         <el-tooltip
-                    effect="dark"
-                    :content="data.model_name"
-                    placement="top"
-                  >
-        <span class="g-single-row">{{ data.model_name }}</span>
-         </el-tooltip>
+        <el-tooltip effect="dark" :content="data.model_name" placement="top">
+          <span class="g-single-row">{{ data.model_name }}</span>
+        </el-tooltip>
       </div>
       <div class="monitor-card-footer-middle">
         <img src="../../../../assets/images/detail/monitor-people.png" alt="" />
-         <el-tooltip
-                    effect="dark"
-                    :content="data.nick_name"
-                    placement="top"
-                  >
-        <span  class="g-single-row">{{data.nick_name}}</span>
-         </el-tooltip>
+        <el-tooltip effect="dark" :content="data.nick_name" placement="top">
+          <span class="g-single-row">{{ data.nick_name }}</span>
+        </el-tooltip>
       </div>
       <div class="monitor-card-footer-right">
         <span
@@ -105,8 +90,12 @@
   </div>
 </template>
 <script>
-import { tableColumnsConfig, vehicleStatusList ,warningLevelObj} from "../config";
-import { parseTime} from '../../../../utils/ddc'
+import {
+  tableColumnsConfig,
+  vehicleStatusList,
+  warningLevelObj,
+} from "../config";
+import { parseTime } from "../../../../utils/ddc";
 export default {
   name: "itemCard",
   data() {
@@ -122,16 +111,22 @@ export default {
       },
     },
   },
-  computed:{
-    dealAlarmTime(){
-     return parseTime( Number(this.data.alarm_time) )
+  computed: {
+    dealAlarmTime() {
+      return parseTime(Number(this.data.alarm_time));
     },
     //返回大图
     dealBigImage() {
-      return "http://static.zjz1.net/device/model/A1/A1-{tag}.png".replace(
-        /\{tag\}/g,
-        "icon"
-      );
+      const result = this.data.model_code;
+      if (result) {
+        return "http://static.zjz1.net/device/model/A1/A1-{tag}.png".replace(
+          /\{tag\}/g,
+          result
+        );
+      } else {
+        return "";
+      }
+
       //http://static.zjz1.net/device/model/A1/A1-icon.png
     },
     //处理车辆状态
@@ -168,24 +163,21 @@ export default {
       // return require(`@/assets/images/detail/${this.data.key}.png`);
     },
     // 处理危险等级显示
-     levelDeal(type) {
-       console.log('levelDeal',type,this.data)
+    levelDeal(type) {
+      console.log("levelDeal", type, this.data);
       const obj = {
         text: () => {
           if (!this.data.alarmLevel) return "-";
-          console.log(
-            "text",
-             warningLevelObj[this.data.alarmLevel][type]
-          );
-          return  warningLevelObj[this.data.alarmLevel].text;
+          console.log("text", warningLevelObj[this.data.alarmLevel][type]);
+          return warningLevelObj[this.data.alarmLevel].text;
         },
         img: () => {
           if (!this.data.alarmLevel) return "";
           console.log(
             " warningLevelObj[this.data.alarmLevel].img",
-             warningLevelObj[this.data.alarmLevel]
+            warningLevelObj[this.data.alarmLevel]
           );
-          return  warningLevelObj[this.data.alarmLevel].img;
+          return warningLevelObj[this.data.alarmLevel].img;
         },
       };
       return obj[type]();
@@ -334,11 +326,11 @@ export default {
     &-img {
       // width: 104px;
       // height: 68px;
-      
-       min-width: 104px !important;
+
+      min-width: 104px !important;
       height: 68px !important;
-      &>img{
-        width:100%;
+      & > img {
+        width: 100%;
         height: 100%;
       }
     }
@@ -452,8 +444,8 @@ export default {
       }
     }
     &-right {
-       padding-left:  25px;
-       line-height: 40px;
+      padding-left: 25px;
+      line-height: 40px;
       & > span {
         font-size: 12px;
         font-family: PingFang SC;
