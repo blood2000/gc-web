@@ -172,7 +172,7 @@
         </el-row>
       </div>
     </div>
-    <div v-if="!isZj" style="margin-bottom: 114px">
+    <div  >
       <TitleSideBlueTip title="货源信息" />
       <el-row class="dispatch-contents-box">
         <el-col :span="12">
@@ -224,7 +224,7 @@
       </el-row>
     </div>
 
-    <div v-if="isZj">
+    <div >
       <TitleSideBlueTip title="费用信息" />
       <div class="dispatch-base-contents-box">
         <el-row style="margin-bottom: 114px">

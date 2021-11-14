@@ -27,8 +27,12 @@
           <div class="addr end-addr">{{ item.unloadFormattedAddress }}</div>
         </div>
         <div class="btn-box">
-          <div class="btn dispatch" @click="toDispatchVehicle(item,false)">单次派车</div>
-          <div class="btn dispatch" @click="toDispatchVehicle(item,true)">批量派车</div>
+          <div class="btn dispatch" @click="toDispatchVehicle(item, false)">
+            单次派车
+          </div>
+          <div class="btn dispatch" @click="toDispatchVehicle(item, true)">
+            批量派车
+          </div>
           <div class="btn detail" @click="toDispatchDetail(item)">详情</div>
         </div>
       </div>
@@ -48,6 +52,12 @@
       :options="{ title: '调度单派车' }"
       @colseDetailDrawer="colseDetailDrawer"
     />
+    <CreatedDetail
+      :code="currCode"
+      :detailDrawer="createDetailDrawer"
+      :options="{ title: '调度单详情' }"
+      @colsecreateDetailDrawer="colsecreateDetailDrawer"
+    />
   </div>
 </template>
 
@@ -55,6 +65,8 @@
 import { http_request } from "../../../api";
 import config from "./config";
 import Detail from "../../dispatch/order/detail.vue";
+import CreatedDetail from "../../dispatch/order/createdDetail.vue";
+
 export default {
   data() {
     return {
@@ -76,14 +88,15 @@ export default {
         endDate: "", //创建结束时间 yyyy-MM-dd
         remark: null, //备注
         dispatchOrderStatus: [1, 2], //状态为非关闭的调度单
-       
       },
-       detailDrawer: false,
-       currCode:null
+      detailDrawer: false,
+      createDetailDrawer: false, // 自建详情
+
+      currCode: null,
     };
   },
 
-  components: { Detail },
+  components: { Detail, CreatedDetail },
   computed: {
     isFresh() {
       if (this.$store.getters.isFresh) {
@@ -103,17 +116,22 @@ export default {
   },
 
   methods: {
-    toDispatchVehicle(item,isMany) {
-      console.log('派车 字段',item,isMany)
+    toDispatchVehicle(item, isMany) {
+      console.log("派车 字段", item, isMany);
       this.showDispatchVehicle = true;
-      this.$store.commit('set_isMany',isMany)
+      this.$store.commit("set_isMany", isMany);
       this.$store.commit("set_dispatchVehicle", true);
       this.$store.commit("set_dispatchInfo", item);
     },
     //跳转调度单详情
     toDispatchDetail(data) {
+      console.log("data", data);
       this.currCode = data.dispatchOrderCode;
-      this.detailDrawer = true;
+      if (data.source === "zj") {
+        this.createDetailDrawer = true;
+      } else {
+        this.detailDrawer = true;
+      }
       // const code = item.dispatchOrderCode;
       // this.$router.push("../../dispatch/order/detail?code=" + code);
     },
@@ -158,9 +176,12 @@ export default {
       this.queryParams.pageNum = 1;
       this.getList();
     },
-    colseDetailDrawer(){
-            this.detailDrawer = false
-    }
+    colseDetailDrawer() {
+      this.detailDrawer = false;
+    },
+    colsecreateDetailDrawer() {
+      this.createDetailDrawer = false;
+    },
   },
 };
 </script>

@@ -347,6 +347,9 @@
 <script>
 import { http_request } from "../../../api";
 import { statusList } from "./manage_config";
+import { Vue } from 'vue';
+import { Tooltip } from 'element-ui';
+Vue.use(Tooltip);
 export default {
   name: "detail",
   components: {},
