@@ -36,7 +36,7 @@
       <img :src="dealBigImage" alt="" />
       <div class="monitor-card-content-right">
         <div class="monitor-card-content-right-title">
-          <div class="monitor-card-content-right-title-warn">
+          <div class="monitor-card-content-right-title-warn" v-if="data.alarmLevel">
             <img :src="levelDeal('img')" alt="" />
             <span>{{ levelDeal("text") }}</span>
           </div>
@@ -141,7 +141,7 @@ export default {
        console.log('levelDeal',type,this.data)
       const obj = {
         text: () => {
-          if (!this.data.alarmLevel) return "-";s
+          if (!this.data.alarmLevel) return "-";
           console.log(
             "text",
              warningLevelObj[this.data.alarmLevel][type]
@@ -301,7 +301,7 @@ export default {
     padding-right: 16px;
     margin-bottom: 16px;
     & > img {
-      width: 68px;
+      width: 104px;
       height: 68px;
     }
     &-right {
