@@ -51,7 +51,7 @@
         </div>
       </div>
       <pagination
-        v-show="total > 0"
+        v-show="total > queryParams.pageSize"
         :total="total"
         layout="prev, pager, next,jumper, total,sizes"
         :page.sync="queryParams.pageNum"
@@ -208,6 +208,7 @@ export default {
         }
       });
       this.total = res.data.total;
+      // alert(this.total)
       this.loading = false;
     },
     formToList() {
