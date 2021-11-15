@@ -6,7 +6,7 @@
     direction="rtl"
     style="z-index: 2000"
     :before-close="handleClose"
-    size="40%"
+    size="760px"
     :append-to-body="true"
   >
     <div class="dispatch-base-contents-box" style="padding-top: 25px">
@@ -304,8 +304,8 @@ export default {
       return options;
     },
     onPlayerFullScreenchange(player, item) {
-      player.exitFullscreen(); //强制退出全屏，恢复正常大小
-      item.isFull = !item.isFull;
+      // player.exitFullscreen(); //强制退出全屏，恢复正常大小
+      // item.isFull = !item.isFull;
     },
   },
 };

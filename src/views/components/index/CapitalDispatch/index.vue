@@ -84,6 +84,17 @@
         <div class="home-item-bg vehicle-list-bg"></div>
       </div>
     </div>
+    <!-- 调试使用，不用上传 -->
+    <!-- <div class="home-title">调式</div>
+    <div class="home-box">
+      <div class="home-test" @click="forTest(0)">驾驶员异常报警(driver)</div>
+      <div class="home-test" @click="forTest(1)">前向碰撞报警(driver)</div>
+      <div class="home-test" @click="forTest(2)">频繁变道报警(vehicle)</div>
+      <div class="home-test" @click="forTest(3)">驾驶辅助功能失效报警(device)</div>
+      <div class="home-test" @click="forTest(4)">障碍物报警(device)</div>
+      <div class="home-test" @click="forTest(5)">双手同时脱离方向盘报警(driver)</div>
+      <div class="home-test" @click="forTest(6)">分神驾驶报警(driver)</div>
+    </div> -->
   </div>
 </template>
 
@@ -118,6 +129,26 @@ export default {
   },
 
   methods: {
+    //调试用
+    forTest(index) {
+      const obj = {
+        moduleName: "http_home",
+        method: "get",
+        url_alias: "",
+      };
+      let url = 'forTest';
+      if (index === 0) {
+        url = url;
+      } else {
+        url += index;
+      }
+      obj.url_alias = url;
+      console.log(obj)
+      http_request(obj).then((res) => {
+        console.log("调试切换--->", res);
+        
+      });
+    },
     getVehicle() {
       const obj = {
         moduleName: "http_home",
@@ -218,6 +249,14 @@ export default {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+}
+
+.home-test {
+  width: 200px;
+  padding: 10px;
+  background: #ddd;
+  margin-right: 20px;
+  cursor: pointer;
 }
 
 .home-item {
