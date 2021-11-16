@@ -31,12 +31,12 @@
             />
           </div>
           <div>
-            <div class="warn-drawer-queryForm-label">告警类型:</div>
+            <div class="warn-drawer-queryForm-label">告警类别:</div>
             <el-input
               v-model="warningNames"
               clearable
               :readonly="true"
-              placeholder="请选择告警类型"
+              placeholder="请选择告警类别"
               style="width: 160px"
               @focus="chooseWarningTypes"
             />

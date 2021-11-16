@@ -47,12 +47,12 @@
               end-placeholder="结束日期"
             />
           </el-form-item>
-          <el-form-item label="告警类型" prop="warningTypes">
+          <el-form-item label="告警类别" prop="warningTypes">
             <el-input
               v-model="warningNames"
               clearable
               :readonly="true"
-              placeholder="请选择告警类型"
+              placeholder="请选择告警类别"
               style="width: 160px"
               @focus="chooseWarningTypes"
             />
@@ -102,7 +102,7 @@
       </div>
     </el-form>
     <el-dialog
-      title="告警类型选择"
+      title="告警类别选择"
       :visible.sync="open"
       width="800px"
       append-to-body
