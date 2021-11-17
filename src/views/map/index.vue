@@ -1,5 +1,6 @@
 <template>
   <div class="map-container">
+    <!-- 标题 -->
     <div class="header-panel ly-flex-pack-start">
       <img class="header-panel-logo" src="~@/assets/images/device/logo.png" />
       <div class="time-box ly-flex-pack-center ly-flex-align-center">
@@ -21,7 +22,7 @@
       </ul>
       <div class="return-button" @click="backPage">返回</div>
     </div>
-
+    <!-- 树 -->
     <div class="left-tree-panel">
       <ul class="left-tree-panel__tab ly-flex-pack-justify ly-flex-align-end">
         <li :class="{ active: currentType === '1' }" @click="handleType('1')">
@@ -280,16 +281,13 @@
         </div>
       </div>
     </div>
-
     <!-- 地图 -->
     <div id="device-map-container" />
-
     <!-- 定时刷新 -->
     <div class="time-refresh-box">
       <img src="~@/assets/images/device/icon_notify.png" />
       {{ refreshMarkerTime }}秒后刷新
     </div>
-
     <!-- 设备信息 -->
     <Infos
       v-if="
@@ -312,14 +310,12 @@
       :vehicleCode="orgOrVehicleCode"
       :orgOrVehicleInfo="orgOrVehicleInfo"
     />
-
     <!-- 调度指派 -->
     <DispatchList
       v-if="headerTab === 2"
       ref="DispatchListRef"
       class="dispatch-list-panel"
     />
-
     <!-- 派车 -->
     <DispatchVehicle />
     <!-- 车辆详情 -->
@@ -327,7 +323,6 @@
       v-if="showVehicleDetail"
       class="vehicle-detail-panel"
     /> -->
-
     <!-- 轨迹回放 -->
     <TrackList
       v-if="headerTab === 3"
@@ -344,6 +339,7 @@
       @clearPathSimplifierIns="clearPathSimplifierIns"
       @handleSlideChange="handleSlideChange"
     />
+    <!-- 视频回放 -->
     <PlayBack
      v-if="headerTab === 4&&orgOrVehicleCode&&resetPalyback" 
      ref="PlayBackRef" 
@@ -361,8 +357,6 @@ import VehicleDetail from "./dispatch/vehicleDetail";
 import TrackList from "./track/trackList.vue";
 import { http_request } from "@/api";
 import PlayBack from "./playback/playback.vue";
-import store from "@/store";
-import { mapState } from "vuex";
 export default {
   name: "MapInfo",
   components: {
@@ -384,7 +378,8 @@ export default {
       // 地图
       map: null,
       geocoder: null,
-      resetPalyback:false,
+      // 视频回放组件刷新
+      resetPalyback:false, 
       // 时间
       timer: null,
       currentday: "",
@@ -431,16 +426,16 @@ export default {
       orgOrVehicleInfo: null,
       // 司机小tab
       driverActiveTab: "0",
-      driverTablist: [
-        {
-          code: "0",
-          tabName: "空闲",
-        },
-        {
-          code: "1",
-          tabName: "任务",
-        },
-      ],
+      // driverTablist: [
+      //   {
+      //     code: "0",
+      //     tabName: "空闲",
+      //   },
+      //   {
+      //     code: "1",
+      //     tabName: "任务",
+      //   },
+      // ],
       // 司机各个状态统计值
       countDriver: {
         countAll: 0, // 全部
@@ -515,16 +510,19 @@ export default {
   },
 
   watch: {
+    // 车tree监听
     "vehicleParams.licenseNumber": {
       handler() {
         this.vehicleQuery();
       },
     },
+    //司机tree监听 
     "driverParams.driverName": {
       handler() {
         this.driverQuery();
       },
     },
+    // 刷新重置 视频回放
     orgOrVehicleCode:{
       handler(){
         console.log('刷新重置 视频回放')
@@ -539,6 +537,7 @@ export default {
     showDispatchVehicle() {
       return this.$store.getters.showDispatchVehicle;
     },
+    // 车辆详情组件显示
     showVehicleDetail() {
       return this.$store.getters.showVehicleDetail;
     },
