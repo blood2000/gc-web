@@ -8,13 +8,13 @@
     label-width="90px"
     label-position="top"
   >
-    <el-tag class="warning-text" type="danger" v-show="!isZj"
-      >超好运货源，仅认证通过的车辆与司机可以进行运输</el-tag
-    >
-    <div class="carMany-content">
-      <div class="carMany-content-left">
-        <el-row>
-          <el-col :span="24">
+    <div class="carMany-list">
+      <el-tag class="warning-text" type="danger" v-show="!isZj"
+        >超好运货源，仅认证通过的车辆与司机可以进行运输</el-tag
+      >
+      <div class="header">
+        <el-row style="width: 350px">
+          <el-col :span="11">
             <el-form-item label="开始日期:" prop="startDate">
               <el-date-picker
                 v-model="form.startDate"
@@ -27,7 +27,7 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
+          <el-col :span="11" :offset="2">
             <el-form-item label="出车时间:" prop="outCarTime">
               <el-time-picker
                 :picker-options="{
@@ -42,173 +42,88 @@
             </el-form-item>
           </el-col>
         </el-row>
-      </div>
-      <div class="carMany-content-right">
-        <div class="carMany-content-search">
-          <el-input
-            placeholder="请输入车牌号"
-            v-model="listSearch"
-            class="input-with-select"
-          >
-            <el-button
-              slot="append"
-              :loading="loadSearching"
-              @click="listVehicleSelect"
-              icon="el-icon-search"
-            ></el-button>
-          </el-input>
-        </div>
         <div class="title">
           <div class="title-left" style="margin-right: 20px">
             <span>已选择车辆：</span>
-            <span class="title-number">{{ checkedVehicle }} </span>
+            <span class="title-left-number">{{ checkedVehicle }} </span>
             <span>辆</span>
           </div>
           <div class="title-right">
             <span>已分配司机：</span>
-            <span class="title-number">{{ allocationDriver }} </span>
+            <span class="title-left-number">{{ allocationDriver }} </span>
             <span>人</span>
           </div>
         </div>
-        <ul class="carMany-list-bottom">
-          <li
-            :key="index"
-            class="carMany-list-bottom-item"
-            v-for="(item, index) in vehicleList"
-            @click.stop="checkChanges(item, index)"
-          >
-            <!-- 主题 -->
-            <div class="carMany-list-bottom-item-body">
-              <!-- 勾选 -->
-              <div style="position: relative">
-                <div class="carMany-list-bottom-item-checked-modal"></div>
-                <el-checkbox
-                  class="carMany-list-bottom-item-body-checked"
-                  v-model="item.checked"
-                />
-              </div>
-              <!-- 车牌 -->
-              <div class="carMany-list-bottom-item-body-vehicleNumber">
-                {{ item.vehicleNumber }}
-              </div>
-              <!-- 是否外援 -->
-              <div>
-                <span
-                  class="self"
-                  :style="{
-                    color: item.vehicleOwnership === 0 ? '#4682FA' : '#7E7F81',
-                    'border-color':
-                      item.vehicleOwnership === 0 ? '#4682FA' : '#7E7F81',
-                  }"
-                >
-                  {{ vehicleOwnershipObj[item.vehicleOwnership] }}
-                </span>
-                <!-- <span
-                  class="self"
-                  v-else
-                  :style="{
-                    background: dealvehicleListSubText(item, 'color', 'v'),
-                    color: item.authStatus === '3' ? '#212121' : '#fff',
-                  }"
-                  >{{ dealvehicleListSubText(item, "text", "v") }}</span
-                > -->
-              </div>
-              <!-- 应付 -->
-              <div
-                class="carMany-list-bottom-item-footer"
-                v-if="
-                  isZj &&
-                  item.vehicleOwnership == 1 &&
-                  item.haveAppointCarRecord === false
-                "
-                @click.stop=""
+      </div>
+      <div class="carMany-list-search">
+        <el-input
+          placeholder="请输入车牌号"
+          v-model="listSearch"
+          class="input-with-select"
+        >
+          <el-button
+            slot="append"
+            :loading="loadSearching"
+            @click="listVehicleSelect"
+            icon="el-icon-search"
+          ></el-button>
+        </el-input>
+      </div>
+
+      <ul class="carMany-list-bottom">
+        <li
+          class="carMany-list-bottom-item"
+          :key="index"
+          v-for="(item, index) in vehicleList"
+          @click.stop="checkChanges(item, index)"
+        >
+          <!-- 主题 -->
+          <div class="carMany-list-bottom-item-body">
+            <!-- 已派车提示框 -->
+
+            <!-- 勾选 -->
+            <div style="position: relative">
+              <div class="carMany-list-bottom-item-checked-modal"></div>
+              <el-checkbox
+                class="carMany-list-bottom-item-body-checked"
+                v-model="item.checked"
+              />
+            </div>
+            <!-- 车牌 -->
+            <div class="carMany-list-bottom-item-body-vehicleNumber">
+              {{ item.vehicleNumber }}
+            </div>
+            <!-- 是否外援 -->
+            <div>
+              <span class="self" v-if="isZj || item.authStatus === '3'">{{
+                vehicleOwnershipObj[item.vehicleOwnership]
+              }}</span>
+              <span
+                class="self"
+                v-else
+                :style="{
+                  background: dealvehicleListSubText(item, 'color', 'v'),
+                  color: item.authStatus === '3' ? '#212121' : '#fff',
+                }"
+                >{{ dealvehicleListSubText(item, "text", "v") }}</span
               >
-                <div
-                  class="carMany-list-bottom-item-price"
-                  v-if="pageData.settlementWay == 1"
-                >
-                  <i class="el-icon-warning-outline"></i>
-                  <span style="margin-right: 7px"> 应付金额:</span>
-                  <el-input
-                    type="number"
-                    style="width: 192px"
-                    @input="imposeInput($event, 'realFreight', index)"
-                    placeholder="请输入内容"
-                    v-model="item.realFreight"
-                  >
-                    <span slot="append">元</span>
-                  </el-input>
-                </div>
-                <div v-if="pageData.settlementWay != 1">
-                  <el-input
-                    type="number"
-                    @input="imposeInput($event, 'realFreight', index)"
-                    placeholder="请输入内容"
-                    v-model="item.realFreight"
-                  >
-                    <template slot="prepend">应付单价</template>
-                    <template slot="append">元 / 吨</template>
-                  </el-input>
-                </div>
-              </div>
-              <!-- 是否已派车  -->
-              <div
-                class="carMany-list-bottom-item-tip"
-                v-show="item.haveAppointCarRecord"
-              >
-                <i
-                  style="color: rgba(250, 173, 20, 1)"
-                  class="el-icon-warning-outline"
-                ></i>
-                <span :style="{'margin-right':isZj && item.vehicleOwnership == 1 && item.realFreight?'60px':'0px'}">{{
-                  item.haveAppointCarRecordText
-                }}</span>
-                <span
-                  v-if="isZj && item.vehicleOwnership == 1 && item.realFreight"
-                  >应付金额 {{ item.realFreight }} 元</span
-                >
-              </div>
             </div>
             <!-- 选择司机 -->
-            <div
-              v-if="isZj || item.authStatus === '3'"
-              class="carMany-list-bottom-item-body-userinfo"
-              @click.stop
-            >
+            <div class="carMany-list-bottom-item-body-userinfo" @click.stop>
               <el-dropdown
                 trigger="click"
                 placement="bottom"
                 @command="handleCommand"
               >
-                <div class="carMany-list-bottom-item-body-all">
-                  <img
-                    v-show="item.driverName"
-                    style="margin-right: 8px"
-                    class="carMany-list-bottom-item-body-a"
-                    src="@/assets/images/profile.png"
-                  />
-                  <span
-                    v-show="item.driverName"
-                    style="margin-right: 8px"
-                    class="name"
-                    >{{ item.driverName }}</span
-                  >
-                  <span
-                    style="margin-right: 16px"
-                    v-show="item.driverName"
-                    class="name"
-                    >{{ item.driverPhone }}</span
-                  >
-                  <div style="margin-right: 16px">
-                    <span v-show="!item.driverName" class="cheange-name"
-                      >选择司机</span
-                    >
-                    <span v-show="item.driverName" class="cheange-name"
-                      >更换司机</span
-                    >
-                  </div>
+                <div>
+                  <span v-show="item.driverName" class="name">{{
+                    item.driverName
+                  }}</span>
+                  <span v-show="item.driverName" class="name">{{
+                    item.driverPhone
+                  }}</span>
+                  <span v-show="!item.driverName" class="name">请选择司机</span>
                 </div>
-
                 <el-dropdown-menu style="width: 220px" slot="dropdown">
                   <el-dropdown-item
                     class="driver-list"
@@ -231,27 +146,60 @@
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
-            <div
-              v-else
-              :style="{
-                background: dealvehicleListSubText(item, 'color', 'v'),
-                color: item.authStatus === '3' ? '#212121' : '#fff',
-              }"
-              class="fail"
-            >
-              <span>{{ dealvehicleListSubText(item, "text", "v") }}</span>
+          </div>
+          <!-- 应付 -->
+          <div
+            class="carMany-list-bottom-item-footer"
+            v-if="
+              isZj &&
+              item.vehicleOwnership == 1 &&
+              item.haveAppointCarRecord === false
+            "
+            @click.stop=""
+          >
+            <div v-if="pageData.settlementWay == 1">
+              <el-input
+                type="number"
+                @input="imposeInput($event, 'realFreight', index)"
+                placeholder="请输入内容"
+                v-model="item.realFreight"
+              >
+                <template slot="prepend">应付金额</template>
+                <template slot="append">元</template>
+              </el-input>
             </div>
-          </li>
-        </ul>
-        <el-form-item>
-          <div class="confrim">
-            <el-button @click="resetForm('ruleForm')">重置</el-button>
-            <el-button type="primary" @click="submitForm('ruleForm')"
-              >确定</el-button
+            <div v-if="pageData.settlementWay != 1">
+              <el-input
+                type="number"
+                @input="imposeInput($event, 'realFreight', index)"
+                placeholder="请输入内容"
+                v-model="item.realFreight"
+              >
+                <template slot="prepend">应付单价</template>
+                <template slot="append">元 / 吨</template>
+              </el-input>
+            </div>
+          </div>
+          <!-- 是否已派车  -->
+          <div
+            class="carMany-list-bottom-item-tip"
+            v-show="item.haveAppointCarRecord"
+          >
+            <span>{{ item.haveAppointCarRecordText }}</span>
+            <span v-if="isZj && item.vehicleOwnership == 1 && item.realFreight"
+              >应付金额 {{ item.realFreight }} 元</span
             >
           </div>
-        </el-form-item>
-      </div>
+        </li>
+      </ul>
+      <el-form-item>
+        <div class="dispatch-base-confrim">
+          <el-button @click="resetForm('ruleForm')">重置</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')"
+            >确定</el-button
+          >
+        </div>
+      </el-form-item>
     </div>
   </el-form>
 </template>
@@ -346,19 +294,19 @@ export default {
       const tmp = e.match(/^[0-9]+(\.[0-9]{0,2})?/g) ?? [""];
       console.log("tmp", tmp[0]);
       this.vehicleList[index][value] = tmp[0];
-      if (Number(e) > parseInt(this.pageData.freight)) {
-        console.log("this.pageData.settlementWay", this.pageData.settlementWay);
-        const tmp1 = this.pageData.settlementWay == 1 ? "应付金额" : "应付单价";
-        const tmp2 = this.pageData.settlementWay == 1 ? "应收金额" : "运费单价";
-        const msg = `${tmp2}不能高于${tmp1}`;
-        this.$confirm(msg, "提示", {
-          confirmButtonText: "确定",
-          showCancelButton: false,
-          showClose: false,
-          type: "warning",
-        }).then(() => {
-          this.vehicleList[index][value] = "";
-        });
+      if( Number(e)  > parseInt(this.pageData.freight)){
+        console.log('this.pageData.settlementWay',this.pageData.settlementWay)
+        const tmp1 = this.pageData.settlementWay == 1?'应付金额':'应付单价'
+        const tmp2 = this.pageData.settlementWay == 1 ? '应收金额' : '运费单价'
+        const msg = `${tmp2}不能高于${ tmp1}`
+          this.$confirm(msg, "提示", {
+            confirmButtonText: "确定",
+                showCancelButton: false,
+                showClose: false,
+                 type: "warning",
+         }).then(() => {
+           this.vehicleList[index][value] = ''
+              });
       }
     },
     // 运单校验
@@ -613,148 +561,89 @@ export default {
   width: 100%;
   padding: 0px 40px;
 }
-.warning-text {
-  margin-bottom: 10px;
-  display: block;
-  background: transparent;
-  border-color: transparent;
-  padding-left: 0;
-}
-.carMany-content {
-  display: flex;
-  height: 300px;
-
-  &-left {
-    height: 100%;
-    width: 220px;
-    // padding: 10px 0;
-    padding-right: 35px;
-    border-right: 1px solid #e4ecf4;
+.carMany-list {
+  width: 100%;
+  .header {
+    display: flex;
+    justify-content: space-between;
   }
-  &-right {
-    padding-left: 30px;
-    flex: 1;
+  .title {
+    display: flex;
+    // justify-content: space-around;
+    align-items: flex-end;
+    font-size: 14px;
+    font-family: PingFang SC;
+    padding-bottom: 20px;
+    &-left {
+      &-number {
+        font-weight: 700;
+        font-size: 18px;
+      }
+    }
   }
-}
-.carMany-content-search {
-  width: 196px;
-  margin-bottom: 12px;
-}
-.title {
-  display: flex;
-  justify-content: space-between;
-  width: 220px;
-  margin-bottom: 22px;
-}
+  &-search {
+    margin-bottom: 20px;
+  }
+  &-bottom {
+    height: 500px;
+    overflow: auto;
+    // padding: 16px;
+    position: relative;
+    margin-bottom: 20px;
+    .carMany-list-bottom-item:hover {
+      background: #ebeef5;
+    }
+    &-item {
+      position: relative;
+      background: #ffffff;
 
-.title-left,
-.title-right {
-  font-size: 12px;
-  font-family: PingFang SC;
-  font-weight: 400;
-  color: #262626;
-}
-.title-number {
-  font-size: 12px;
-  font-family: PingFang SC;
-  font-weight: bold;
-  color: #262626;
-}
-.carMany-list-bottom {
-  height: 200px;
-  overflow: auto;
-  margin-bottom: 50px;
-}
-.carMany-list-bottom-item {
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #e4ecf4;
-  align-items: center;
-  height: 44px;
-}
-.carMany-list-bottom-item-body {
-  display: flex;
-  align-items: center;
-}
-.carMany-list-bottom-item-body-userinfo {
-  display: flex;
-  align-items: center;
-  margin-right: 8px;
-}
-.carMany-list-bottom-item-checked-modal {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 25px;
-  height: 25px;
-  z-index: 120;
-  background: transparent;
-}
-.carMany-list-bottom-item-body-checked {
-  display: inline-block;
-  padding-right: 15px !important;
-}
-::v-deep .el-checkbox__inner {
-  // border-radius: 50%;
-  width: 16px;
-  height: 16px;
-}
-::v-deep .el-checkbox__inner::after {
-  height: 9px;
-  left: 4px;
-  width: 4px;
-  border: 2px solid #ffffff;
-  border-left: 0;
-  border-top: 0;
-}
-.carMany-list-bottom-item-body-vehicleNumber {
-  font-size: 14px;
-  font-family: PingFang SC;
-  font-weight: bold;
-  color: #3d4050;
-  margin-right: 15px;
-  width: 77px;
-}
-.self {
-  display: inline-block;
-  text-align: center;
-  width: 40px;
-  height: 20px;
-  border: 1px solid #4682fa;
-  border-radius: 2px;
-  line-height: 20px;
-}
-.carMany-list-bottom-item-price {
-  margin-left: 20px;
-  display: flex;
-  justify-content: center;
-  font-size: 14px;
-  font-family: PingFang SC;
-  font-weight: 400;
-  line-height: 24px;
-  color: #3d4050;
-  align-items: center;
-}
-.el-icon-warning-outline {
-  margin-right: 7px;
-}
-
-::v-deep .el-input--medium .el-input__inner {
-  height: 30px;
-  line-height: 30px;
-}
-::v-deep .el-input-group__append,
-.el-input-group__prepend {
-  background: transparent;
-}
-.carMany-list-bottom-item-body-all {
-  display: flex;
-  align-items: center;
-  font-size: 12px;
-  font-family: PingFang SC;
-  font-weight: 400;
-  color: #262626;
-   cursor: pointer;
+      width: 100%;
+      border: 1px solid #e4e7ed;
+      border-radius: 5px;
+      margin-bottom: 30px;
+      // line-height: 50px;
+      &-tip {
+        background: #fff1e5;
+      }
+      &-body {
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        &-checked {
+          display: inline-block;
+          padding-right: 20px !important;
+        }
+        &-vehicleNumber {
+          width: 130px;
+          font-size: 24px;
+          font-family: PingFang SC;
+          font-weight: bold;
+          color: #333333;
+        }
+        .self {
+          display: inline-block;
+          margin-left: 10px;
+          padding: 5px 18px;
+          height: 35px;
+          min-width: 70px;
+          line-height: 25px;
+          font-size: 16px;
+          color: #212121;
+          // line-height: 25px;
+          background: #e4e7ed;
+          border-radius: 5px;
+          font-weight: 700;
+        }
+        &-userinfo {
+          position: absolute;
+          right: 40px;
+          line-height: 45px;
+          height: 45px;
+          padding: 0 16px;
+          border-radius: 5px;
+          background: #f3f6ff;
+          text-align: center;
+          cursor: pointer;
           -webkit-touch-callout: none;
 
           -webkit-user-select: none;
@@ -766,53 +655,68 @@ export default {
           -ms-user-select: none;
 
           user-select: none;
-}
-.carMany-list-bottom-item-body-a {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 1px solid #e0e5ed;
-}
-.cheange-name {
-  font-size: 12px;
-  font-family: PingFang SC;
-  font-weight: 400;
-  color: #4682fa;
+          .name {
+            font-size: 18px;
+            font-family: PingFang SC;
+            font-weight: 500;
+            color: #3a65ff;
+            margin-right: 10px;
+          }
+        }
+      }
+      &-footer {
+        padding: 5px 16px;
+        width: 50%;
+      }
+    }
+    ::v-deep .el-checkbox__inner {
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+    }
+    ::v-deep .el-checkbox__inner::after {
+      height: 11px;
+      left: 5px;
+      width: 5px;
+      border: 2px solid #ffffff;
+      border-left: 0;
+      border-top: 0;
+    }
+  }
 }
 .driver-list {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  font-size: 16px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   font-family: PingFang SC;
 }
-.fail {
-  width: 70px;
-  height: 24px;
-  background: #fff8f8;
-  border-radius: 12px;
-  text-align: center;
-  line-height: 24px;
-  margin-right: 12px;
-  font-size: 12px;
-  font-family: PingFang SC;
-  
+.carMany-list-bottom-item-checked-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 25px;
+  height: 25px;
+  z-index: 120;
+  background: transparent;
 }
 .carMany-list-bottom-item-tip {
-  margin-left: 15px;
-  padding: 4px 12px 0 8px;
-  height: 24px;
-  background: rgba(250, 173, 20, 0.1);
-  border-radius: 2px;
-  line-height: 16px;
-  color: rgba(61, 64, 80, 1);
-  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  line-height: 25px;
+  color: #ff8422;
   font-family: PingFang SC;
-  font-weight: 400;
+  font-size: 14px;
 }
-.confrim{
-  float: right;
-  margin-bottom:50px ;
+.warning-text {
+  display: inline-block;
+  // margin: 5px 40px;
+  width: 100%;
+  height: 50px;
+  font-size: 16px;
+  line-height: 50px;
+  padding-left: 20px;
 }
 </style>

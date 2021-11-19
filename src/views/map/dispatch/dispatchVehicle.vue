@@ -4,7 +4,7 @@
     <el-dialog
       class="DispathcVehicle"
       :visible.sync="showDispatchVehicle"
-      width="780px"
+      width="1300px"
       append-to-body
       :close-on-click-modal="false"
       :before-close="colse"

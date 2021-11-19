@@ -160,6 +160,12 @@ export default {
     this.getChannelNumListList();
     this.initTime();
   },
+  beforeDestroy(){
+    console.log('推出播放')
+    if(this.wfs){
+      this.colse()
+    }
+  },
   watch:{
   },
   computed: {},
