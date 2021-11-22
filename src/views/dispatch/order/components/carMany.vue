@@ -70,12 +70,19 @@
             <span>人</span>
           </div>
         </div>
-        <ul class="carMany-list-bottom">
+        <ul
+          class="carMany-list-bottom"
+          @dragstart="onDragStart"
+          @dragover="onDragOver"
+          @dragend="onDragEnd"
+          ref="parentNode"
+        >
           <li
-            :key="index"
+            :key="item.vehicleCode"
             class="carMany-list-bottom-item"
             v-for="(item, index) in vehicleList"
-            @click.stop="checkChanges(item, index)"
+            @click.stop="checkChanges($event, item, index)"
+            draggable="true"
           >
             <!-- 主题 -->
             <div class="carMany-list-bottom-item-body">
@@ -160,9 +167,15 @@
                   style="color: rgba(250, 173, 20, 1)"
                   class="el-icon-warning-outline"
                 ></i>
-                <span :style="{'margin-right':isZj && item.vehicleOwnership == 1 && item.realFreight?'60px':'0px'}">{{
-                  item.haveAppointCarRecordText
-                }}</span>
+                <span
+                  :style="{
+                    'margin-right':
+                      isZj && item.vehicleOwnership == 1 && item.realFreight
+                        ? '60px'
+                        : '0px',
+                  }"
+                  >{{ item.haveAppointCarRecordText }}</span
+                >
                 <span
                   v-if="isZj && item.vehicleOwnership == 1 && item.realFreight"
                   >应付金额 {{ item.realFreight }} 元</span
@@ -287,6 +300,9 @@ export default {
       vehicleOwnershipObj, //静态配置 自有 外援
       haveAppointCarRecordText: "", //已派车文字
       loadSearching: false,
+      draging: null, //被拖拽的对象
+      target: null, //目标对象
+      currCheckel: null,
       form: {
         startDate: null,
         outCarTime: null,
@@ -340,6 +356,128 @@ export default {
     this.getDriverList();
   },
   methods: {
+    // 拖拽开始
+    onDragStart(e) {
+      console.log("drag start", e);
+      this.draging = e.target;
+    },
+    _index(el) {
+      let domData = Array.from(this.$refs.parentNode.childNodes);
+      return domData.findIndex((i) => i.innerText == el.innerText);
+    },
+
+    // 拖拽中
+    onDragOver(e) {
+      this.target = e.target;
+      let targetTop = this.target.getBoundingClientRect().top;
+      let dragingTop = this.draging.getBoundingClientRect().top;
+      console.log("this.target.nodeName", this.target.nodeName);
+      if (this.target.nodeName !== "LI") return;
+      if (this.target.nodeName === "LI" && this.target !== this.draging) {
+        if (this.target) {
+          if (this.target.animated) {
+            return;
+          }
+        }
+      }
+      // console.log('this._index(this.draging)',this._index(this.draging))
+      // console.log('this._index(this.target)',this._index(this.target))
+      if (this._index(this.draging) < this._index(this.target)) {
+        this.target.parentNode.insertBefore(
+          this.draging,
+          this.target.nextSibling
+        );
+      } else {
+        this.target.parentNode.insertBefore(this.draging, this.target);
+      }
+      this._anim(targetTop, this.target);
+      this._anim(dragingTop, this.draging);
+    },
+    _anim(startPos, dom) {
+      let offset = startPos - dom.getBoundingClientRect().top;
+      console.log("offset", offset);
+      dom.style.transition = "none";
+      dom.style.transform = `translateY(${offset}px)`;
+      dom.style.borderBottomColor = "#409EFF";
+      //触发重绘
+      dom.offsetWidth;
+      dom.style.transition = "transform .3s";
+      dom.style.transform = ``;
+      clearTimeout(dom.animated);
+      dom.animated = setTimeout(() => {
+        dom.style.transition = "";
+        dom.style.transform = ``;
+        dom.style.borderBottomColor = "#e4ecf4";
+        dom.animated = false;
+      }, 200);
+    },
+    _animMove(startPos, dom) {
+      console.log(' dom.getBoundingClientRect().top', dom.getBoundingClientRect().top)
+      console.log('startPos',startPos)
+      let offset = startPos - dom.getBoundingClientRect().top;
+      console.log("offset", offset);
+      dom.style.transition = "none";
+      dom.style.transform = `translateY(${offset}px)`;
+      //触发重绘
+      dom.offsetWidth;
+      dom.style.transition = "transform .3s";
+      dom.style.transform = ``;
+      clearTimeout(dom.animated);
+      dom.animated = setTimeout(() => {
+        dom.style.transition = "";
+        dom.style.transform = ``;
+        dom.animated = false;
+      }, 1200);
+    },
+    // 拖拽完
+    onDragEnd(e) {
+      console.log("drag end", e);
+      let currentNodes = Array.from(this.$refs.parentNode.childNodes);
+      // console.log("currentNodes", currentNodes);
+      let data = currentNodes.map((i, index) => {
+        // console.log("i", i.innerText);
+        let item = this.vehicleList.find((c) => {
+          // console.log("c", c);
+          if (i.innerText.includes(c.vehicleNumber)) return c;
+        });
+        return item;
+      });
+      console.log(data);
+    },
+    // 选择车辆向上平移
+    vehicleOffset(targetEvent) {
+      console.log("targetEvent", targetEvent);
+      // 获取平移的目标位置
+      const vehicleList = this.vehicleList;
+      let sourceIndex = 0;
+      const currentNodes = Array.from(this.$refs.parentNode.childNodes);
+      for (let i = vehicleList.length - 1; i >= 0; i--) {
+        const item = vehicleList[i];
+        console.log("i", i);
+        if (item.checked && targetEvent !== currentNodes[i]) {
+          sourceIndex = i;
+          break;
+        }
+      }
+      console.log("sourceIndex", sourceIndex);
+      const sourceItem1 = currentNodes[sourceIndex];
+      console.log("currentNodes", currentNodes, targetEvent);
+      console.log("targetEvent.parentNode", targetEvent.parentNode);
+      if (this._index(targetEvent) < this._index(sourceItem1)) {
+        sourceItem1.parentNode.insertBefore(
+          targetEvent,
+          sourceItem1.nextSibling
+        );
+      } else {
+        sourceItem1.parentNode.insertBefore(targetEvent, sourceItem1);
+      }
+      let targetTop = sourceItem1.getBoundingClientRect().top;
+      console.log('targetTop',targetTop)
+      let dragingTop = targetEvent.getBoundingClientRect().top;
+      console.log('dragingTop',dragingTop)
+      this._animMove(targetTop, targetEvent);
+      this._animMove(dragingTop, sourceItem1);
+    },
     //强制限制
     imposeInput(e, value, index) {
       console.log("强制限制", e);
@@ -457,33 +595,33 @@ export default {
       };
       return obj[type]();
     },
+
     // 选择车辆
-    checkChanges(val, index) {
+    checkChanges(e, val, index) {
       console.log("val", val);
       if (!this.isZj && val.authStatus != "3") {
         this.msgWarning("未认证不可选择");
         return;
       }
-      console.log("checked", val, index);
+      if (!this.vehicleList[index].driverCode) {
+        this.msgWarning("请选择司机");
+        return;
+      }
+      const vehicleList = this.vehicleList;
+      // 拷贝
       const tmp = { ...val };
+      // 当前index下的checked状态
       const oldTmpCheck = tmp.checked;
       delete tmp.checked;
       console.log("tmp", tmp, oldTmpCheck);
-      const vehicleList = this.vehicleList;
+      // 改成true
       vehicleList[index].checked = this.$set(vehicleList, index, {
         ...tmp,
         checked: !oldTmpCheck,
       });
       console.log("vehicleList", vehicleList);
-      if (vehicleList[index].checked && !vehicleList[index].driverCode) {
-        // 提醒选司机
-        this.msgWarning("请选择司机");
-        this.vehicleList[index].checked = this.$set(vehicleList, index, {
-          ...tmp,
-          checked: false,
-        });
-        return;
-      } else if (vehicleList[index].checked && vehicleList[index].driverCode) {
+      this.vehicleOffset(e.target);
+      if (vehicleList[index].checked) {
         this.haveAppointCarRecordHttp(
           vehicleList[index].driverCode,
           vehicleList[index].vehicleCode,
@@ -572,6 +710,7 @@ export default {
           result.dispatchOrderCode = me.dispatchOrderCode;
           result.endDate = me.form.startDate;
           console.log("result", result);
+          return;
           const obj = {
             moduleName: "http_dispatch",
             method: "post",
@@ -754,18 +893,18 @@ export default {
   font-family: PingFang SC;
   font-weight: 400;
   color: #262626;
-   cursor: pointer;
-          -webkit-touch-callout: none;
+  cursor: pointer;
+  -webkit-touch-callout: none;
 
-          -webkit-user-select: none;
+  -webkit-user-select: none;
 
-          -khtml-user-select: none;
+  -khtml-user-select: none;
 
-          -moz-user-select: none;
+  -moz-user-select: none;
 
-          -ms-user-select: none;
+  -ms-user-select: none;
 
-          user-select: none;
+  user-select: none;
 }
 .carMany-list-bottom-item-body-a {
   width: 14px;
@@ -797,7 +936,6 @@ export default {
   margin-right: 12px;
   font-size: 12px;
   font-family: PingFang SC;
-  
 }
 .carMany-list-bottom-item-tip {
   margin-left: 15px;
@@ -811,8 +949,8 @@ export default {
   font-family: PingFang SC;
   font-weight: 400;
 }
-.confrim{
+.confrim {
   float: right;
-  margin-bottom:50px ;
+  margin-bottom: 50px;
 }
 </style>
