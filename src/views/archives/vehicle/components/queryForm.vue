@@ -69,7 +69,7 @@
         </el-form-item>
       </div>
       <div class="down" v-show="isShow">
-        <el-form-item label="是否停运" prop="enabled">
+        <el-form-item label="是否启用" prop="enabled">
           <el-select
             v-model="queryParams.enabled"
             clearable

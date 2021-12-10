@@ -51,8 +51,11 @@
     </div>
 
     <!-- 调度信息 -->
-    <div class="info-box info-dispatch">
-      <h5 class="info-box-title">调度信息</h5>
+    <div
+      class="info-box info-dispatch"
+      v-if="dispatchInfo.unloadFormattedAddress"
+    >
+      <h5 class="info-box-title">运输信息</h5>
       <div
         class="info-box-status green"
         v-if="dispatchInfo.loadFormattedAddress"
@@ -84,11 +87,8 @@
       </div>
     </div>
 
-    <!-- 设备信息 -->
-    <div
-      class="info-box info-device"
-      :style="warnIsClose ? '' : 'height: calc(100% - 300px)'"
-    >
+    <!-- 设备信息  :style="warnIsClose ? '' : 'height: calc(100% - 300px)'" -->
+    <div class="info-box info-device">
       <h5 class="info-box-title">设备信息</h5>
       <!-- content -->
       <div class="device-content ly-flex ly-flex-align-center">
@@ -119,7 +119,7 @@
         </li>
       </ul>
       <!--  :style="warnIsClose ? '' : 'height: calc(100% - 170px)'" -->
-      <ul  class="info-list ly-flex map-scroll-panel">
+      <ul class="info-list ly-flex map-scroll-panel">
         <li
           class="ly-flex ly-flex-align-center"
           v-for="item in attributesInfo"
@@ -143,7 +143,7 @@
         </li>
       </ul>
       <!-- 视频 -->
-      <ul class="video-content" v-if="warnIsClose">
+      <ul class="video-content">
         <li
           class="video-content-item"
           :key="index"
@@ -247,10 +247,10 @@ export default {
     },
   },
   computed: {
-    warnIsClose() {
-      console.log("this.$sotre.getters.isClose", this.$store.getters.isClose);
-      return this.$store.getters.isClose;
-    },
+    // warnIsClose() {
+    //   console.log("this.$sotre.getters.isClose", this.$store.getters.isClose);
+    //   return this.$store.getters.isClose;
+    // },
   },
   mounted() {
     // bus
@@ -284,7 +284,7 @@ export default {
         url_code: [this.vehicleCode, type],
       };
       http_request(obj).then((res) => {
-        console.log("res,,,,", res.data);
+        // console.log("res,,,,", res.data);
         const { vehicle, location, device, functions, attributes, fields } =
           res.data;
         this.vehicleInfo = vehicle || {};
@@ -435,7 +435,7 @@ export default {
             font-weight: 400;
             line-height: 20px;
             color: #3d4050;
-            width:285px
+            width: 285px;
           }
           .car-type {
             font-size: 14px;
@@ -515,8 +515,8 @@ export default {
     // 设备信息
     &.info-device {
       padding-right: 0;
-      min-height: 280px;
-      max-height: 484px;
+      height: 428px;
+      overflow: scroll;
       .device-content {
         padding: 8px 12px 0 0;
         > .img-box {
@@ -640,9 +640,7 @@ export default {
         }
       }
       .video-content {
-        height: 172px;
         display: flex;
-        overflow: auto;
         flex-wrap: wrap;
         &-item {
           margin-right: 10px;

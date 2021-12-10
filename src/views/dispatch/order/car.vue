@@ -4,7 +4,7 @@
     :visible.sync="carDrawer"
     direction="rtl"
     :before-close="handleClose"
-    :wrapperClosable="true"
+    :wrapperClosable="false"
     size="71.5%"
   >
     <!--  size="61.5%" -->

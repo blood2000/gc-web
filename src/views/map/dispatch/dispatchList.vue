@@ -10,8 +10,16 @@
         :key="index"
         @click="chooseItem(index)"
       >
-        <div class="first-line">
-          <div>{{ item.goodsBigTypeName }}</div>
+        <div
+          class="first-line"
+          :class="item.source === 'zj' ? 'first-line-green' : 'first-line-blue'"
+        >
+          <div class="first-line-title">
+            <img v-if="item.source === 'zj'" src="@/assets/images/map/zj.png" />
+            <img v-else src="@/assets/images/map/chy.png" />
+
+            <span> {{ item.goodsBigTypeName }}</span>
+          </div>
           <div>
             {{ parseFloat(item.freightStr) }}
             <span>{{ "元/" + item.freightStr.split("/")[1] }}</span>
@@ -49,7 +57,7 @@
     <Detail
       :code="currCode"
       :detailDrawer="detailDrawer"
-      :options="{ title: '调度单派车' }"
+      :options="{ title: '调度单详情' }"
       @colseDetailDrawer="colseDetailDrawer"
     />
     <CreatedDetail
@@ -248,17 +256,42 @@ export default {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+
+    font-size: 16px;
+    font-weight: bold;
+    color: #3d4050;
+    &-title {
+      display: flex;
+      align-items: center;
+      & > img {
+        width: 37px;
+        height: 20px;
+        margin-right: 6px;
+      }
+      & > span {
+        font-size: 18px;
+        font-family: PingFang SC;
+        font-weight: bold;
+        color: #3d4050;
+      }
+    }
+    span {
+      font-size: 12px;
+    }
+  }
+  .first-line-blue {
     background: linear-gradient(
       90deg,
       rgba(70, 130, 250, 0.16) 0%,
       rgba(70, 130, 250, 0) 100%
     );
-    font-size: 16px;
-    font-weight: bold;
-    color: #3d4050;
-    span {
-      font-size: 12px;
-    }
+  }
+  .first-line-green {
+    background: linear-gradient(
+      90deg,
+      rgba(67, 185, 30, 0.16) 0%,
+      rgba(67, 185, 30, 0) 100%
+    );
   }
   .second-line {
     height: 20px;

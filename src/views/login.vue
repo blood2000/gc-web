@@ -89,9 +89,9 @@
         </el-button>
       </el-form-item>
       <div class="form-bottom">
-        <router-link class="link-type" :to="'/register'">
+        <!-- <router-link class="link-type" :to="'/register'">
           立即注册
-        </router-link>
+        </router-link> -->
         <router-link class="link-type" :to="'/resetPwd'" v-show="!captchaOnOff">
           忘记密码
         </router-link>

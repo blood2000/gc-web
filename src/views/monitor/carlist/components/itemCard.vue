@@ -1,5 +1,5 @@
 <template>
-  <div class="monitor-card">
+  <div class="monitor-card" @click="mapSearch">
     <el-dropdown class="monitor-card-menu-ab" trigger="click">
       <div>
         <div></div>

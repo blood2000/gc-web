@@ -132,13 +132,15 @@
                     <div class="info-box ly-flex-1">
                       <h5>
                         {{ data.orgOrlicenseNumber }}
+                      </h5>
+                      <div>
                         <span class="type">{{
                           selectDictLabel(
                             vehicleCarrierTypeOptions,
                             data.carrierType
                           )
                         }}</span>
-                      </h5>
+                      </div>
                       <p>
                         <!-- 在线/离线 -->
                         <span
@@ -292,7 +294,7 @@
     <Infos
       v-if="
         (headerTab === 1 && isShowVehicleInfo) ||
-        (headerTab === 2 && showVehicleDetail)
+        (headerTab === 2 && showVehicleDetail && isShowVehicleInfo)
       "
       ref="InfosRef"
       class="map-info-panel"
@@ -341,10 +343,11 @@
     />
     <!-- 视频回放 -->
     <PlayBack
-     v-if="headerTab === 4&&orgOrVehicleCode&&resetPalyback" 
-     ref="PlayBackRef" 
-     :vehicleCode="orgOrVehicleCode"
-     class="play-back" />
+      v-if="headerTab === 4 && orgOrVehicleCode && resetPalyback"
+      ref="PlayBackRef"
+      :vehicleCode="orgOrVehicleCode"
+      class="play-back"
+    />
   </div>
 </template>
 
@@ -379,7 +382,7 @@ export default {
       map: null,
       geocoder: null,
       // 视频回放组件刷新
-      resetPalyback:false, 
+      resetPalyback: false,
       // 时间
       timer: null,
       currentday: "",
@@ -516,22 +519,22 @@ export default {
         this.vehicleQuery();
       },
     },
-    //司机tree监听 
+    //司机tree监听
     "driverParams.driverName": {
       handler() {
         this.driverQuery();
       },
     },
     // 刷新重置 视频回放
-    orgOrVehicleCode:{
-      handler(){
-        console.log('刷新重置 视频回放')
-        this.resetPalyback = false
-        this.$nextTick(()=>{
-          this.resetPalyback = true
-        })
-      }
-    }
+    orgOrVehicleCode: {
+      handler() {
+        // console.log('刷新重置 视频回放')
+        this.resetPalyback = false;
+        this.$nextTick(() => {
+          this.resetPalyback = true;
+        });
+      },
+    },
   },
   computed: {
     showDispatchVehicle() {
@@ -677,6 +680,13 @@ export default {
           extensions: "all",
         });
       });
+
+      // setTimeout(()=>{
+      //   this.clearMap()
+      // },3500)
+      //   setTimeout(()=>{
+      //   this.clearMap()
+      // },5500)
     },
     /** 绘制标记
      * @param {Array} position 经纬度必传
@@ -859,8 +869,10 @@ export default {
     },
     /** 绘制巡航轨迹 */
     initPathSimplifier() {
+      console.log("绘制巡航轨迹");
       const that = this;
       AMapUI.load(["ui/misc/PathSimplifier"], (PathSimplifier) => {
+        console.log("绘制巡航轨迹 PathSimplifier", PathSimplifier);
         if (!PathSimplifier.supportCanvas) {
           alert("当前环境不支持 Canvas！");
           return;
@@ -894,12 +906,20 @@ export default {
             renderAllPointsIfNumberBelow: -1, // 绘制路线节点，如不需要可设置为-1
           },
         });
+        console.log(
+          "绘制巡航轨迹 jmTracklist",
+          that.$refs.TrackListRef.jmTracklist
+        );
         // 设置数据
         that.pathSimplifierIns.setData([
           {
             path: that.$refs.TrackListRef.jmTracklist,
           },
         ]);
+        
+        // 清除原来的标记
+        that.clearMap()
+        console.log("绘制巡航轨迹");
         // 对线路创建一个巡航器
         const icon = that.orgOrVehicleInfo.carrierType || "qt";
         const contentImg = require(`@/assets/images/device/map_car_${icon}.png`);
@@ -1036,6 +1056,7 @@ export default {
     },
     /** 巡航轨迹事件 */
     startPathSimplifier() {
+      console.log("巡航轨迹事件");
       this.$refs.TrackListRef.setPlayStatus(1);
       // this.map.setZoomAndCenter(12, this.$refs.TrackListRef.jmTracklist[0]);
       this.navgtr.start();
@@ -1239,9 +1260,9 @@ export default {
     // 车树节点选中
     vehicleNodeClick(data) {
       // if (this.orgOrVehicleCode === data.orgOrVehicleCode) return;
-      console.log("tree-node: ", data);
+      // console.log("tree-node: ", data);
       this.orgOrVehicleCode = data.orgOrVehicleCode;
-      this.resetPalyback = true
+      this.resetPalyback = true;
       this.CurrorgOrlicenseNumber = data.orgOrlicenseNumber;
       this.orgOrVehicleInfo = data;
       if (data.vehicleFlag) {
@@ -1330,7 +1351,7 @@ export default {
         data: params,
       };
       http_request(obj).then((res) => {
-        console.log("res", res);
+        console.log("获取车辆定位列表 res", res);
         // 绘制前先清空之前的绘制, 避免重复绘制
         this.clearMarkerList();
         if (res.data.rows && res.data.rows.length > 0) {
@@ -1435,6 +1456,9 @@ export default {
         offset: this.offsetList[carrier_type || "qt"],
         angle: 0,
       };
+      console.log("绘制车辆定位marker styleObj ", styleObj);
+      console.log("绘制车辆定位marker position", position);
+
       const marker = this.drawMarker(position, styleObj);
       this.markerList[vehicle_code] = marker;
       this.clusterMarkerList.push(marker);
@@ -1451,7 +1475,7 @@ export default {
             "</span>"
         );
       info.push("</h5>");
-      if (contentValue.length > 0)
+      if (contentValue.length > 0 && tip.deviceStatusText != "设备离线")
         info.push(
           "<p class='input-item'>" + contentValue.join("  |  ") + "</p>"
         );
@@ -1487,8 +1511,11 @@ export default {
     },
     // 切换地图tab
     handleHeaderTab(code) {
-      console.log("切换地图tab", code);
+      console.log("切换地图tab", code, 'from',this.headerTab);
       if (this.headerTab === code) return;
+      if(this.headerTab == 3){
+         this.getVehicleLoLocations(null, true);
+      }
       this.headerTab = code;
       // 清除巡航轨迹
       this.clearPathSimplifierIns();

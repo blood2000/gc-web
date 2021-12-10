@@ -106,143 +106,159 @@
             </el-form-item>
           </div>
         </div>
-            <div class="ddc-queryParams-right">
-
-        <el-form-item>
-          <el-button
-            type="primary"
-            icon="el-icon-search"
-            size="mini"
-            @click="handleQuery"
-            >搜索</el-button
-          >
-          <el-button
-            type="primary"
-            plain
-            icon="el-icon-refresh"
-            size="mini"
-            class="ddc-queryParams-right-reset"
-            @click="resetQuery"
-            >重置</el-button
-          >
-        </el-form-item>
-            </div>
-
+        <div class="ddc-queryParams-right">
+          <el-form-item>
+            <el-button
+              type="primary"
+              icon="el-icon-search"
+              size="mini"
+              @click="handleQuery"
+              >搜索</el-button
+            >
+            <el-button
+              type="primary"
+              plain
+              icon="el-icon-refresh"
+              size="mini"
+              class="ddc-queryParams-right-reset"
+              @click="resetQuery"
+              >重置</el-button
+            >
+          </el-form-item>
+        </div>
       </el-form>
       <!-- 分割线 -->
       <div class="divier"></div>
-            <div class="page-table-layout-set">
-
-      <el-row :gutter="10" class="toolsbar">
-        <el-col :span="1.5">
-          <el-button
-            v-hasPermi="['employee:add']"
-            type="primary"
-            icon="el-icon-plus"
-            size="mini"
-            @click="handleAdd"
-            >新增</el-button
-          >
-        </el-col>
-        <el-col :span="1.5">
-          <el-button
-            v-hasPermi="['employee:delete']"
-            type="danger"
-            icon="el-icon-delete"
-            size="mini"
-            :disabled="multiple"
-            @click="handleDeleteMultiple"
-            >删除</el-button
-          >
-        </el-col>
-        <el-col :span="1.5">
-          <el-button
-            v-hasPermi="['employee:export']"
-            type="warning"
-            icon="el-icon-download"
-            size="mini"
-            :loading="exportLoading"
-            @click="handleExport"
-            >导出</el-button
-          >
-        </el-col>
-      </el-row>
-      <el-table
-        v-loading="loading"
-        highlight-current-row
-        :stripe="true"
-        :data="dataList"
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column
-          type="selection"
-          width="50"
-          align="center"
-          :selectable="checkboxSelectable"
-        />
-        <el-table-column label="序号" type="index" width="50" align="center" />
-        <el-table-column
-          label="姓名"
-          align="center"
-          prop="nickName"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          label="手机号"
-          align="center"
-          prop="phonenumber"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          label="所属组织"
-          align="center"
-          prop="orgName"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          label="所属角色"
-          align="center"
-          prop="roleNames"
-          :show-overflow-tooltip="true"
-        />
-        <!-- 0 启用 1 禁用 -->
-        <el-table-column label="账号状态" align="center" prop="employeeStatus">
-          <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.employeeStatus"
-              :active-value="0"
-              :inactive-value="1"
-              :disabled="scope.row.teamLeaderFlag"
-              @change="handleStatusChange(scope.row)"
-            />
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="创建时间"
-          align="center"
-          prop="createTime"
-          width="160"
-        >
-          <template slot-scope="scope">
-            <span>{{ parseTime(scope.row.createTime) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          align="center"
-          width="200"
-          class-name="small-padding fixed-width"
-        >
-          <template slot-scope="scope">
+      <div class="page-table-layout-set">
+        <el-row :gutter="10" class="toolsbar">
+          <el-col :span="1.5">
             <el-button
-              v-if="!scope.row.teamLeaderFlag"
-              v-hasPermi="['employee:edit']"
+              v-hasPermi="['employee:add']"
+              type="primary"
+              icon="el-icon-plus"
               size="mini"
-              type="text"
-              @click="handleUpdate(scope.row)"
-              >修改</el-button
+              @click="handleAdd"
+              >新增</el-button
             >
-            <!-- <el-button
+          </el-col>
+          <el-col :span="1.5">
+            <el-button
+              v-hasPermi="['employee:delete']"
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+              :disabled="multiple"
+              @click="handleDeleteMultiple"
+              >删除</el-button
+            >
+          </el-col>
+          <el-col :span="1.5">
+            <el-button
+              v-hasPermi="['employee:export']"
+              type="warning"
+              icon="el-icon-download"
+              size="mini"
+              :loading="exportLoading"
+              @click="handleExport"
+              >导出</el-button
+            >
+          </el-col>
+        </el-row>
+        <el-table
+          v-loading="loading"
+          highlight-current-row
+          :stripe="true"
+          :data="dataList"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column
+            type="selection"
+            width="50"
+            align="center"
+            :selectable="checkboxSelectable"
+          />
+          <el-table-column
+            label="序号"
+            type="index"
+            width="50"
+            align="center"
+          />
+          <el-table-column
+            label="姓名"
+            align="center"
+            prop="nickName"
+            :show-overflow-tooltip="true"
+          />
+          <el-table-column
+            label="手机号"
+            align="center"
+            prop="phonenumber"
+            :show-overflow-tooltip="true"
+          />
+          <el-table-column
+            label="所属组织"
+            align="center"
+            prop="orgName"
+            :show-overflow-tooltip="true"
+          />
+          <el-table-column
+            label="所属角色"
+            align="center"
+            prop="roleNames"
+            :show-overflow-tooltip="true"
+          >
+            <template slot-scope="scope">
+              <i
+                class="el-icon-time"
+                v-if="dealRoleName(scope.row.roleNameList)"
+              ></i>
+              <span style="margin-left: 10px">{{
+                dealRoleName(scope.row.roleNameList)
+              }}</span>
+            </template>
+          </el-table-column>
+          <!-- 0 启用 1 禁用 -->
+          <el-table-column
+            label="账号状态"
+            align="center"
+            prop="employeeStatus"
+          >
+            <template slot-scope="scope">
+              <el-switch
+                v-model="scope.row.employeeStatus"
+                :active-value="0"
+                :inactive-value="1"
+                :disabled="scope.row.teamLeaderFlag"
+                @change="handleStatusChange(scope.row)"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="创建时间"
+            align="center"
+            prop="createTime"
+            width="160"
+          >
+            <template slot-scope="scope">
+              <span>{{ parseTime(scope.row.createTime) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作"
+            align="center"
+            width="200"
+            class-name="small-padding fixed-width"
+          >
+            <template slot-scope="scope">
+              <el-button
+                v-if="!scope.row.teamLeaderFlag"
+                v-hasPermi="['employee:edit']"
+                size="mini"
+                type="text"
+                @click="handleUpdate(scope.row)"
+                >修改</el-button
+              >
+              <!-- <el-button
                   v-hasPermi="['employee:rel:role']"
                   size="mini"
                   type="text"
@@ -254,25 +270,25 @@
                   type="text"
                   @click="handleOrg(scope.row)"
                 >调整组织</el-button> -->
-            <el-button
-              v-hasPermi="['employee:reset']"
-              size="mini"
-              type="text"
-              @click="handleResetPwd(scope.row)"
-              >重置密码</el-button
-            >
-            <el-button
-              v-if="!scope.row.teamLeaderFlag"
-              v-hasPermi="['employee:delete']"
-              size="mini"
-              type="text"
-              @click="handleDelete(scope.row)"
-              >删除</el-button
-            >
-          </template>
-        </el-table-column>
-      </el-table>
-            </div>
+              <el-button
+                v-hasPermi="['employee:reset']"
+                size="mini"
+                type="text"
+                @click="handleResetPwd(scope.row)"
+                >重置密码</el-button
+              >
+              <el-button
+                v-if="!scope.row.teamLeaderFlag"
+                v-hasPermi="['employee:delete']"
+                size="mini"
+                type="text"
+                @click="handleDelete(scope.row)"
+                >删除</el-button
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
       <pagination
         v-show="total > 0"
         :total="total"
@@ -370,6 +386,13 @@ export default {
     this.getList();
   },
   methods: {
+    dealRoleName(roleName) {
+      console.log("roleName", roleName);
+      if (!roleName) return "";
+      let result = roleName.join();
+      console.log(result);
+      return result;
+    },
     /** 获取组织树 */
     getTree() {
       const obj = {

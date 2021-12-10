@@ -1,9 +1,18 @@
 
 export default {
+  // 测试
+  // login:'/fmsweb/basic/common/v2/login',  // 密码登录方法
+  // loginBySms:'/fmsweb/basic/common/v2/loginBySms',  // 验证码登录方法
+  // 正式
   login:'/fmsweb/basic/common/v1/login',  // 密码登录方法
   loginBySms:'/fmsweb/basic/common/v1/loginBySms',  // 验证码登录方法
+
   register:'/fmsweb/basic/common/v1/register', // 注册方法
+  // 测试
+  // getInfo:'/fmsweb/basic/common/v2/userinfo', // 获取用户详细信息
+  // 正式
   getInfo:'/fmsweb/basic/common/v1/userinfo', // 获取用户详细信息
+  
   logout:'/logout', // 退出方法
   getCodeImg:'/captchaImage', // 获取验证码
   mock_test:'/parameter/query', //mock测试

@@ -35,7 +35,7 @@
                 placeholder="请选择摄像头"
               >
                 <el-option
-                  v-for="item  in channelNumList"
+                  v-for="item in channelNumList"
                   :key="item.key"
                   :label="item.key"
                   :value="item.value"
@@ -49,7 +49,7 @@
                 type="primary"
                 icon="el-icon-search"
                 @click="searchResult"
-                :disabled="channelNumList.length == 0"
+                :disabled="channelNumList.length == 0 ||!queryParams.dateRange ||queryParams.dateRange.length == 0 || !queryParams.CHANNEL"
               >
                 查询
               </el-button>
@@ -130,8 +130,13 @@ export default {
       queryParams: {
         dateRange: [],
         CHANNEL: null, //通道号
+        // VEHICLEID: "0", ////车辆ID
+        // VEHICLELICENSE: "闽A80808", //车牌号
+        // DEVICENO: "015800117661", //设备编码
+        // PLATECOLOR: "2", //车牌颜色
+        // STREAMTYPE: "1", //主/子码流
         VEHICLEID: "0", ////车辆ID
-        VEHICLELICENSE: "闽A80808", //车牌号
+        VEHICLELICENSE: "", //车牌号
         DEVICENO: "015800117661", //设备编码
         PLATECOLOR: "2", //车牌颜色
         STREAMTYPE: "1", //主/子码流
@@ -156,18 +161,17 @@ export default {
   },
   mounted() {
     this.timeUpdate();
-    console.log('进来了')
+    console.log("进来了");
     this.getChannelNumListList();
     this.initTime();
   },
-  beforeDestroy(){
-    console.log('推出播放')
-    if(this.wfs){
-      this.colse()
+  beforeDestroy() {
+    console.log("推出播放");
+    if (this.wfs) {
+      this.colse();
     }
   },
-  watch:{
-  },
+  watch: {},
   computed: {},
   methods: {
     initTime() {
@@ -199,23 +203,26 @@ export default {
         url_alias: "getVehicleInfo",
         url_code: [this.vehicleCode, type],
       };
-      http_request(obj).then((res) => {
-        
-        const fields = res.data.fields;
-        this.channelNumList = [];
-        for (let i = 0; i < Number(fields.channelNum); i++) {
-          const obj ={
-            key:`通道${i + 1}`,
-            value:`${i + 1}`,
+      http_request(obj)
+        .then((res) => {
+          console.log('res',res)
+          this.queryParams.VEHICLELICENSE = res.data.vehicle && res.data.vehicle.plateNumber
+          const fields = res.data.fields;
+          this.channelNumList = [];
+          for (let i = 0; i < Number(fields.channelNum); i++) {
+            const obj = {
+              key: `通道${i + 1}`,
+              value: `${i + 1}`,
+            };
+            this.channelNumList.push(obj);
           }
-          this.channelNumList.push(obj);
-        }
-        if(fields.channelNum>0){
-          this.queryParams.CHANNEL = "1"
-        }
-      }).catch(()=>{
-        console.log('没有接口')
-      })
+          if (fields.channelNum > 0) {
+            this.queryParams.CHANNEL = "1";
+          }
+        })
+        .catch(() => {
+          console.log("没有接口");
+        });
     },
     // 时长转换
     durationTrans(a) {
@@ -269,7 +276,7 @@ export default {
         const video = document.getElementById("video");
         const queryParams = this.queryParams;
         console.log("queryParams.dateRange", queryParams.dateRange);
-        if (!queryParams || queryParams.dateRange.length !== 2) return;
+        if (!queryParams.dateRange || queryParams.dateRange.length !== 2) return;
         const startTime =
           parseInt(queryParams.dateRange[0].getTime() / 1000) + "";
         const endTime =

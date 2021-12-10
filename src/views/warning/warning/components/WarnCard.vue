@@ -1,12 +1,12 @@
 <!-- 告警卡片组件 -->
 <template>
   <div class="warn-card" @click="openList(0)">
-    <div class="warn-card-more">
+    <!-- <div class="warn-card-more">
       <div class="warn-card-more-box">
         <div class="point"></div>
         <div class="point"></div>
         <div class="point"></div>
-      </div>
+      </div> -->
       <!-- <el-dropdown>
         <div class="warn-card-more-box">
           <div class="point"></div>
@@ -18,7 +18,7 @@
           <el-dropdown-item>狮子头</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown> -->
-    </div>
+    <!-- </div> -->
 
     <div class="warn-card-title" v-if="tabIndex === '1'">
       {{ cardInfo.licenseNumber }}

@@ -46,7 +46,7 @@
             size="mini"
             type="text"
             @click="handleCarlog(row)"
-            >查看派车单</el-button
+            >{{`查看派车单(${row.appointCarOrderCount})`}}</el-button
           >
           <el-button
             size="mini"

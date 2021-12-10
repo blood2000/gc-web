@@ -47,7 +47,7 @@
       <div class="divier"></div>
       <div class="page-table-layout-set">
         <div class="page-table-layout-set-item" :key="index"  v-for="(item,index) in list">
-        <ItemCard :data='item'/>
+        <ItemCard :data='item' />
         </div>
       </div>
       <pagination
