@@ -64,6 +64,13 @@ const tableColumnsConfig = [
   },
   {
     isShow: true,
+    label: "所属组织",
+    prop: "orgName",
+    sortNum: 3,
+    tooltip: true,
+  },
+  {
+    isShow: true,
     label: "分组",
     prop: "groupName",
     sortNum: 3,
@@ -76,13 +83,27 @@ const tableColumnsConfig = [
     sortNum: 4,
     tooltip: true,
   },
-  // {
-  //   isShow: true,
-  //   label: "绑定设备",
-  //   prop: "deviceInf",
-  //   sortNum: 5,
-  //   tooltip: true,
-  // },
+  {
+    isShow: true,
+    label: "司机",
+    prop: "driver",
+    sortNum: 4,
+    tooltip: true,
+  },
+  {
+    isShow: true,
+    label: "绑定设备",
+    prop: "seriesModelName",
+    sortNum: 5,
+    tooltip: true,
+  },
+  {
+    isShow: true,
+    label: "设备编码",
+    prop: "factoryOnlyCode",
+    sortNum: 5,
+    tooltip: true,
+  },
   {
     isShow: true,
     label: "创建时间",

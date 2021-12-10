@@ -117,22 +117,19 @@
               @change="handleStatusChange(row)"
             />
           </template>
-          <template #deviceInf="{ row }">
-            <div
-              class="deviceInf-cion"
-              v-for="item in row.deviceInf"
-              :key="item.img"
-            >
-              <el-tooltip
-                class="item"
-                effect="dark"
-                :content="item.name"
-                placement="top"
-              >
-                <img :src="item.img" alt="" />
-              </el-tooltip>
-            </div>
+          <template #licenseNumber="{ row }">
+          {{row.vehicleAlias?`(${row.vehicleAlias})  ${row.licenseNumber}`:row.licenseNumber}}
           </template>
+           <template #driver="{ row }">
+          {{(row.name === null?'':row.name) +'  '+ (row.telphone === null?'':row.telphone)}}
+          </template>
+          <template #seriesModelName="{ row }">
+          {{!row.seriesModelName?'未绑定':row.seriesModelName}}
+          </template>
+           <template #factoryOnlyCode="{ row }">
+          {{!row.factoryOnlyCode?'-':row.factoryOnlyCode}}
+          </template>
+
 
           <template #edit="{ row }" width="200">
             <el-button size="mini" type="text" @click="handleUpdate(row)"
