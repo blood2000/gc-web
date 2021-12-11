@@ -17,6 +17,7 @@ import http_home from './home/home'
 import http_company from './archives/company'
 import http_address from './archives/address'
 import http_statistic from './statistic/statistic'
+import http_weight from './weight/weight'
 import Vue from 'vue'
 
 export const defaultH = {
@@ -52,7 +53,8 @@ const selModuleName = (name) => {
     http_home,
     http_company,
     http_address,
-    http_statistic
+    http_statistic,
+    http_weight
   }
   return tmpObj[name]
 }
