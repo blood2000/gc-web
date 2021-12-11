@@ -27,18 +27,17 @@
     <div class="monitor-card-location">
       <span class="monitor-card-location-text1">当前位置 |</span>
       <el-tooltip effect="dark" :content="data.attribute" placement="top">
-        <span class="monitor-card-location-text2">{{ data.attribute }}</span>
+        <span class="monitor-card-location-text2">{{ data.attribute?data.attribute:'暂无数据' }}</span>
       </el-tooltip>
     </div>
     <div class="monitor-card-driver">
       <span>最新告警</span>
       <img src="@/assets/images/monitor-line.png"  />
     </div>
-    <div class="monitor-card-content">
+    <div v-if="data.sn" class="monitor-card-content">
       <div class="monitor-card-content-img">
         <img v-if="dealBigImage" :src="dealBigImage" />
       </div>
-
       <div class="monitor-card-content-right">
         <div class="monitor-card-content-right-title">
           <div
@@ -61,17 +60,23 @@
         <div class="monitor-card-content-right-date">{{ dealAlarmTime }}</div>
       </div>
     </div>
+    <div v-else class="nothing">
+
+        <el-empty image-size="39.5" 
+        ></el-empty>
+
+    </div>
     <div class="monitor-card-footer">
       <div class="monitor-card-footer-left">
         <img src="../../../../assets/images/detail/monitor-phone.png" alt="" />
         <el-tooltip effect="dark" :content="data.model_name" placement="top">
-          <span class="g-single-row">{{ data.model_name }}</span>
+          <span class="g-single-row">{{data.model_name? data.model_name :'暂未绑定设备...'}}</span>
         </el-tooltip>
       </div>
       <div class="monitor-card-footer-middle">
         <img src="../../../../assets/images/detail/monitor-people.png" alt="" />
         <el-tooltip effect="dark" :content="data.nick_name" placement="top">
-          <span class="g-single-row">{{ data.nick_name }}</span>
+          <span class="g-single-row">{{data.nick_name?data.nick_name:'未分配' }}</span>
         </el-tooltip>
       </div>
       <div class="monitor-card-footer-right">
@@ -460,5 +465,8 @@ export default {
 .menu-item {
   padding-right: 10px;
   color: #4682fa;
+}
+.nothing{
+  
 }
 </style>
