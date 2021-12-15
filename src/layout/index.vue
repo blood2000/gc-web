@@ -45,6 +45,20 @@ import variables from "@/assets/styles/variables.scss";
 
 export default {
   name: "Layout",
+  data() {
+    return {
+      goodsBigTypeConfig: {
+        status: "0",
+        dictPid: "0",
+        dictType: "goodsType",
+      },
+      goodsTypeConfig: {
+        status: "0",
+        dictPid: "",
+        dictType: "goodsType",
+      },
+    };
+  },
   components: {
     AppMain,
     Navbar,
@@ -77,7 +91,40 @@ export default {
       return variables;
     },
   },
+  mounted() {
+    console.log("我是layout");
+    this.getGoodsTypeList();
+  },
   methods: {
+    //获取级联形式大类小类
+    async getGoodsTypeList() {
+      const resBig = await this.getDicts(null, this.goodsBigTypeConfig);
+      // console.log("resBig", resBig);
+      if (resBig.code != "200") return;
+      const bigList = resBig.data;
+      const result = [];
+      for (const item of bigList) {
+        const bigObj = {};
+        if (item.dictCode && item.dictLabel) {
+          bigObj.value = item.dictCode;
+          bigObj.label = item.dictLabel;
+          bigObj.children = [];
+          this.goodsTypeConfig.dictPid = item.dictCode;
+          const res = await this.getDicts(null, this.goodsTypeConfig);
+          // console.log("ressmall", res);
+          if (res.code != "200") return;
+          for (const el of res.data) {
+            const obj = {};
+            obj.value = el.dictValue;
+            obj.label = el.dictLabel;
+            bigObj.children.push(obj);
+          }
+          result.push(bigObj);
+        }
+      }
+      this.$store.commit("set_goodsTypeList", result);
+      console.log("set_goodsTypeList", result);
+    },
     handleClickOutside() {
       this.$store.dispatch("app/closeSideBar", { withoutAnimation: false });
     },

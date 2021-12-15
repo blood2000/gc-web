@@ -67,7 +67,9 @@ export default {
   data() {
     return {};
   },
-  created() {},
+  created() {
+    console.log('登录之后进来了')
+  },
   methods: {},
 };
 </script>
