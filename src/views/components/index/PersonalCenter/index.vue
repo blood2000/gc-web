@@ -1,377 +1,463 @@
 <template>
   <div class="personalCenter">
-    <!-- 个人中心 -->
-    <div class="home-title">个人中心</div>
-    <div class="ly-flex bg-info">
-      <div class="information g-single-row">
-        <div class="top g-single-row">HI, {{ user.nickName }}</div>
-        <div class="role g-single-row g-flex">
-          <!-- <div class="g-single-row" style="max-width: 90px; margin-right: 5px">
-            {{ dept || "-" }}
-          </div> -->
-          {{companyName}}
-        </div>
-      </div>
+    <!-- 用户信息 -->
+    <div class="user-container">
       <div class="avatar">
-        <img v-if="user.avatar" class="user-avator" :src="user.avatar" />
+        <img v-if="user.avatar" :src="user.avatar" />
         <img
           v-else
-          class="user-avator"
           src="../../../../assets/images/profile.png"
           alt="默认头像"
         />
       </div>
+      <div class="info">
+        <div class="top g-single-row">HI, {{ user.nickName }}</div>
+        <div class="bottom g-single-row">研发部｜工程师</div>
+      </div>
     </div>
-
-    <!-- 考勤统计 -->
-    <!-- <div class="statistics ly-flex-align-center ly-flex-pack-justify">
-      <div class="item">
-        <span class="item0">22</span>
-        <span class="item1">考勤统计</span>
-      </div>
-      <div class="item">
-        <span class="item0">22</span>
-        <span class="item1">考勤统计</span>
-      </div>
-    </div> -->
-
     <!-- 日历表 -->
-
-    <div class="ly-flex my_calendar_header">
-      <span class="shou" @click="skip('preYear')">
-        <!-- <i v-once class="iconfont icon-zuoshuangjiantou" /> -->
-        <i class="el-icon-d-arrow-left"></i>
-      </span>
-
-      <span class="shou" @click="skip('preMon')">
-        <!-- <i v-once class="iconfont icon-shangyiye" /> -->
-        <i class="el-icon-arrow-left"></i>
-      </span>
-
-      <span class="shou el-calendar__title mtime" @click="skip('today')">
-        {{ currentTM }}
-      </span>
-
-      <span class="shou" @click="skip('nextMon')">
-        <i class="el-icon-arrow-right"></i>
-      </span>
-
-      <span class="shou" @click="skip('nextYear')">
-        <i class="el-icon-d-arrow-right"></i>
-      </span>
-    </div>
-    <el-calendar ref="monChild" v-model="value" :first-day-of-week="7">
-      <!-- 这里使用的是 2.5 slot 语法，对于新项目请使用 2.6 slot 语法-->
-      <!-- slot="dateCell" -->
-      <!-- slot-scope="{date, data}"> -->
-      <template #dateCell="{ data }">
-        <div
-          :class="data.isSelected ? 'is-selected' : ''"
-          @click="handleClick(data)"
-        >
-          <div style="line-height: 17px">
-            {{ parseTime(data.day, "{d}") }}
-          </div>
-          <div class="g-flexcenter">
-            <div
-              v-if="
-                dispatchDateList.findIndex((res) => res === data.day) !==
-                -1
-              "
-              :class="data.isSelected ? 'schedule' : 'schedule g-color-blue'"
-            >
-              ·
-            </div>
-            <div
-              v-if="
-                warnDateList.findIndex((res) => res.alarmTime === data.day) !==
-                  -1 && new Date() > new Date(data.day).getTime()
-              "
-              :class="data.isSelected ? 'schedule' : 'schedule g-color-error'"
-            >
-              ·
-            </div>
-          </div>
-          <!-- <div v-else style="height: 5px" /> -->
+    <div class="calendar-container">
+      <!-- 日期操作 -->
+      <div class="calendar-container__tips">
+        <div class="calendar-container__date">{{ currentTM }}</div>
+        <div class="calendar-container__op">
+          <i class="arrow el-icon-arrow-left" @click="skip('preMon')"></i>
+          <i class="arrow el-icon-arrow-right" @click="skip('nextMon')"></i>
         </div>
-      </template>
-    </el-calendar>
-    <div class="tag-frame g-flexcenter">
-      <div class="schedule g-color-blue margin-r">·</div>
-      <div class="tag">派车</div>
-      <div class="schedule g-color-error margin-r">·</div>
-      <div class="tag">告警</div>
+      </div>
+      <!-- 日历表 -->
+      <div class="calendar-container__main">
+        <el-calendar ref="monChild" v-model="value" :first-day-of-week="7">
+          <template slot="dateCell" slot-scope="{ date, data }">
+            <div :class="data.isSelected ? 'is-selected' : ''">
+              <div style="line-height: 17px">
+                {{ parseTime(data.day, '{d}') }}
+              </div>
+              <div class="g-flexcenter">
+                <div
+                  v-if="
+                    warnDateList.findIndex(
+                      (res) => res.alarmTime === data.day
+                    ) !== -1 && new Date() > new Date(data.day).getTime()
+                  "
+                  :class="
+                    data.isSelected ? 'schedule' : 'schedule g-color-error'
+                  "
+                >
+                  ·
+                </div>
+                <div
+                  v-if="transList.findIndex((res) => res === data.day) !== -1"
+                  :class="
+                    data.isSelected ? 'schedule' : 'schedule g-color-blue'
+                  "
+                >
+                  ·
+                </div>
+              </div>
+            </div>
+          </template>
+        </el-calendar>
+      </div>
+      <!-- 告警运输 -->
+      <div class="calendar-container__detail">
+        <div class="bar">
+          <span class="left">告警</span>
+          <span class="right">
+            {{ warnDateCount }}
+          </span>
+        </div>
+        <div class="bar">
+          <span class="left">运输</span>
+          <span class="right">
+            {{ transCount }}
+          </span>
+        </div>
+      </div>
     </div>
-    <!-- <schedule-dialog
-      ref="ScheduleDialog"
-      :title="title"
-      :open.sync="openSchedule"
-      @refresh="getList"
-    /> -->
+    <!-- 数据 -->
+    <div class="date-container">
+      <div class="date-container__box">
+        <div class="date-container__title">
+          <img
+            class="icon"
+            src="../../../../assets/images/home/vehicle.png"
+            alt=""
+          />
+          <span>车辆</span>
+        </div>
+        <div class="date-container__tips">
+          <div>
+            已安装设备<span>{{ vehicle.bindingDevice }}</span>
+          </div>
+          <div>
+            全部车辆<span class="bigger">{{ vehicle.allVehicle }}</span>
+          </div>
+        </div>
+        <el-progress
+          class="date-container__progress"
+          :percentage="vehicle.percent"
+          :show-text="false"
+          color="#4682fa"
+          :stroke-width="4"
+        />
+        <div class="date-container__tips date-container__detail">
+          <div class="blue">
+            任务中<span>{{ vehicle.taskVehicle }}</span>
+          </div>
+          <div class="green">
+            空闲中<span class="bigger">{{ vehicle.freeVehicle }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="date-container__box">
+        <div class="date-container__title">
+          <img
+            class="icon"
+            src="../../../../assets/images/home/driver.png"
+            alt=""
+          />
+          <span>司机</span>
+        </div>
+        <div class="date-container__tips">
+          <div></div>
+          <div>
+            全部司机<span class="bigger">{{ driver.allDriver }}</span>
+          </div>
+        </div>
+        <el-progress
+          class="date-container__progress"
+          :percentage="driver.percent"
+          :show-text="false"
+          color="#4682fa"
+          :stroke-width="4"
+        />
+        <div class="date-container__tips date-container__detail">
+          <div class="blue">
+            任务中<span>{{ driver.taskDriver }}</span>
+          </div>
+          <div class="green">
+            空闲中<span class="bigger">{{ driver.freeDriver }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="date-container__box">
+        <div class="date-container__title">
+          <img
+            class="icon"
+            src="../../../../assets/images/home/device.png"
+            alt=""
+          />
+          <span>设备</span>
+        </div>
+        <div class="date-container__tips">
+          <div>
+            未激活设备<span>{{ device.inactiveDevice }}</span>
+          </div>
+          <div>
+            全部设备<span class="bigger">{{ device.allDevice }}</span>
+          </div>
+        </div>
+        <el-progress
+          class="date-container__progress"
+          :percentage="device.percent"
+          :show-text="false"
+          color="#4682fa"
+          :stroke-width="4"
+        />
+        <div class="date-container__tips date-container__detail">
+          <div class="blue">
+            任务中<span>{{ device.taskDevice }}</span>
+          </div>
+          <div class="green">
+            空闲中<span class="bigger">{{ device.freeDevice }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-// import { getUserInfo } from '@/utils/auth';
-// import { listSchedule } from "@/api/workbench/workbench";
-// import { WebDaily } from "@/api/application/daily";
-// import ScheduleDialog from "./ScheduleDialog.vue";
-import { http_request } from "@/api";
-import { mapGetters } from "vuex";
+import { http_request } from '@/api'
 export default {
-  name: "PersonalCenter",
-  components: {
-    // ScheduleDialog,
-  },
+  name: 'PersonalCenter',
   data() {
     return {
       user: {},
-      dept: "",
+      dept: '',
       companyName: '',
       value: new Date(),
-      dispatchDateList: [],
-      // warnDateList: ['2021-10-12', '2021-10-13'],
+      warnDateCount: 0,
       warnDateList: [],
-      title: "",
+      transCount: 0,
+      transList: [],
+      title: '',
       openSchedule: false,
-    };
+      vehicle: {}, // 车辆
+      driver: {}, // 司机
+      device: {} // 设备
+    }
   },
-
   computed: {
-    // 获取用户信息
-    // userInfo() {
-    //   console.log(getUserInfo());
-    //   return getUserInfo() || {};
-    // },
-
-    // 结构用户
-    // user() {
-    //   return this.userInfo.user || {};
-    // },
-
-    // 结构角色
-    roles() {
-      return this.user.roles
-        ? this.user.roles.map((e) => e.roleName).join(",")
-        : "";
-    },
-
     currentTM() {
-      return this.parseTime(this.value, "{y}年{m}月");
-    },
+      return this.parseTime(this.value, '{y}年{m}月')
+    }
   },
   created() {
-    this.getUser();
-    this.getList();
+    this.getUser()
+    this.getList()
+    this.queryDriverVehicleEquipment()
   },
   methods: {
     // 获取用户信息
     getUser() {
-      this.$store.dispatch("GetInfo").then((res) => {
-        console.log("用户信息==>", res);
-        this.user = res.user;
-        this.dept = res.dept;
-        this.companyName = res.company.name;
-      });
-      // getUserProfile().then(response => {
-      //   this.user = response.data;
-      //   this.roleGroup = response.roleGroup;
-      //   this.postGroup = response.postGroup;
-      // });
+      this.$store.dispatch('GetInfo').then((res) => {
+        console.log('用户信息==>', res)
+        this.user = res.user
+        this.dept = res.dept
+        this.companyName = res.company.name
+      })
     },
     getList() {
-      this.getDispatch();
-      this.getWarn();
+      this.getDispatch()
+      this.getWarn()
     },
-    getDispatch() {
-      const objDispatch = {
-        moduleName: "http_home",
-        method: "get",
-        url_alias: "schedule_dispatch",
-        data: {
-          date: this.parseTime(this.value, "{y}-{m}"),
-        },
-      };
-      http_request(objDispatch).then((res) => {
-        console.log("日历派车--->", res);
-        this.dispatchDateList = res.data;
-      });
-    },
+    // 日历告警
     getWarn() {
       const obj = {
-        moduleName: "http_home",
-        method: "get",
-        url_alias: "schedule_warn",
+        moduleName: 'http_home',
+        method: 'get',
+        url_alias: 'schedule_warn',
         data: {
-          alarmTime: this.parseTime(this.value, "{y}-{m}"),
-        },
-      };
+          alarmTime: this.parseTime(this.value, '{y}-{m}')
+        }
+      }
       http_request(obj).then((res) => {
-        console.log("日历告警--->", res);
-        this.warnDateList = res.data;
-      });
+        console.log('日历告警--->', res)
+        let count = 0
+        res.data.forEach((item) => {
+          count += item.number
+        })
+        this.warnDateCount = count
+        this.warnDateList = res.data
+      })
     },
-    handleClick(data) {
-      return;
-      this.$refs.ScheduleDialog.reset();
-      this.title = "今日事项（" + data.day + "）";
-      this.openSchedule = true;
-      const schedule = this.dateList.find(
-        (item) => item.scheduleTime === data.day
-      );
-      const daily = this.dailyList.find((item) => item.dailyTime === data.day);
-      // console.log(schedule);
-      this.$refs.ScheduleDialog.setForm(data, schedule, daily);
-      // console.log(this.dateList.findIndex(res => res.scheduleTime === data.day));
+    // 日历运输
+    getDispatch() {
+      const objDispatch = {
+        moduleName: 'http_home',
+        method: 'get',
+        url_alias: 'schedule_dispatch',
+        data: {
+          date: this.parseTime(this.value, '{y}-{m}')
+        }
+      }
+      http_request(objDispatch).then((res) => {
+        console.log('日历运输--->', res)
+        this.transCount = res.data.count
+        this.transList = res.data.date
+      })
     },
-
+    // 获取司机设备车辆信息
+    queryDriverVehicleEquipment() {
+      const obj = {
+        moduleName: 'http_home',
+        method: 'get',
+        url_alias: 'driverVehicleEquipment'
+      }
+      http_request(obj).then((res) => {
+        console.log('qewqwwe--->', res)
+        const data = res.data
+        if (data) {
+          this.vehicle = data.vehicle
+          this.vehicle.percent = parseInt(
+            (this.vehicle.taskVehicle /
+              (this.vehicle.taskVehicle + this.vehicle.freeVehicle)) *
+              100
+          )
+          this.driver = data.driver
+          this.driver.percent = parseInt(
+            (this.driver.taskDriver /
+              (this.driver.taskDriver + this.driver.freeDriver)) *
+              100
+          )
+          this.device = data.device
+          this.device.percent = parseInt(
+            (this.device.taskDevice /
+              (this.device.taskDevice + this.device.freeDevice)) *
+              100
+          )
+        }
+      })
+    },
     // 周切换
     skip(val) {
-      if (val === "preMon") {
-        // console.log(this.value.getMonth() - 1);
-        // console.log(new Date(this.value.setMonth(this.value.getMonth() - 1)));
-        this.value = new Date(this.value.setMonth(this.value.getMonth() - 1));
-        // console.log(this.$refs.monChild);
-        // this.$refs.monChild.changeValue(this.value)
-      } else if (val === "nextMon") {
-        this.value = new Date(this.value.setMonth(this.value.getMonth() + 1));
-      } else if (val === "today") {
-        this.value = new Date();
-      } else if (val === "preYear") {
+      if (val === 'preMon') {
+        this.value = new Date(this.value.setMonth(this.value.getMonth() - 1))
+      } else if (val === 'nextMon') {
+        this.value = new Date(this.value.setMonth(this.value.getMonth() + 1))
+      } else if (val === 'today') {
+        this.value = new Date()
+      } else if (val === 'preYear') {
         this.value = new Date(
           this.value.setFullYear(this.value.getFullYear() - 1)
-        );
-        // getFullYear()
-      } else if (val === "nextYear") {
+        )
+      } else if (val === 'nextYear') {
         this.value = new Date(
           this.value.setFullYear(this.value.getFullYear() + 1)
-        );
+        )
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
-.home-title {
-  color: #3d4050;
-  font-size: 16px;
-  font-weight: bold;
+.personalCenter {
+  .user-container {
+    height: 56px;
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    .avatar {
+      height: 56px;
+      margin-right: 18px;
+      img {
+        width: 56px;
+        height: 56px;
+        border-radius: 100%;
+      }
+    }
+    .info {
+      flex: 1 1 auto;
+      width: 0;
+      .top {
+        font-size: 20px;
+        font-weight: bold;
+        color: #3d4050;
+      }
+      .bottom {
+        font-size: 14px;
+        color: #3d4050;
+      }
+    }
+  }
+  .calendar-container {
+    margin-top: 30px;
+    &__tips {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    &__date {
+      font-size: 20px;
+      font-weight: bold;
+      color: #3d4050;
+    }
+    &__op {
+      display: flex;
+      align-items: center;
+      .arrow {
+        width: 24px;
+        height: 24px;
+        border: 1px solid #e1e1e1;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #7e7f81;
+        font-weight: bold;
+        cursor: pointer;
+        &:first-child {
+          margin-right: 13px;
+        }
+      }
+    }
+    &__main {
+      margin-top: 15px;
+    }
+    &__detail {
+      margin: 20px 0;
+      .bar {
+        width: 100%;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 14px;
+        font-weight: bold;
+        color: #3d4050;
+        &:first-child {
+          background: rgba(239, 105, 105, 0.1);
+          margin-bottom: 12px;
+          border-left: 4px solid #ef6969;
+        }
+        &:last-child {
+          background: rgba(70, 130, 250, 0.1);
+          border-left: 4px solid #4682fa;
+        }
+        .left {
+          margin-left: 8px;
+        }
+        .right {
+          margin-right: 16px;
+        }
+      }
+    }
+  }
+  .date-container {
+    &__box {
+      padding: 8px 12px;
+      background: #f7f9fb;
+      border-radius: 3px;
+      margin-bottom: 20px;
+    }
+    &__title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #3d4050;
+      display: flex;
+      align-items: center;
+      .icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 12px;
+      }
+    }
+    &__tips {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #3d4050;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      .bigger {
+        font-size: 22px;
+        font-weight: bold;
+        font-family: Bahnschrift;
+        margin-left: 3px;
+      }
+    }
+    &__detail {
+      margin-top: 3px;
+      .bigger {
+        font-size: 14px;
+      }
+      .blue {
+        color: #4682fa;
+      }
+      .green {
+        color: #43b91e;
+      }
+    }
+  }
 }
 .schedule {
   line-height: 5px;
   font-weight: bold;
   font-size: 22px;
 }
-.tag + .schedule {
-  margin-left: 26px;
-}
-.margin-r {
-  margin-right: 7px;
-}
-.tag {
-  color: #3d4050;
-}
-.tag-frame {
-  border-top: 1px solid #e4ecf4;
-  padding: 5px;
-  margin-top: 10px;
-}
-
-.personalCenter {
-  height: 100%;
-  .bg-info {
-    position: relative;
-    right: 15px;
-    margin: 4% 0 4%;
-    padding: 8px 10px 8px 30px;
-    background: url("~@/assets/images/home/info-bg.png") no-repeat;
-    background-size: 100% 100%;
-    border-radius: 0 100px 100px 0;
-  }
-  .ly-flex {
-    width: 100%;
-  }
-  .avatar {
-    width: 60px;
-    // min-width: 60px;
-    height: 60px;
-    border: 5px solid #ffffff;
-    border-radius: 50%;
-    overflow: hidden;
-    & > img {
-      width: 100%;
-      height: 100%;
-    }
-  }
-  .information {
-    flex: 1;
-    height: 60px;
-    // padding-left: 15px;
-    .top {
-      font-size: 20px;
-      line-height: 1;
-      padding: 10px 0;
-      font-weight: bold;
-      color: #ffffff;
-    }
-    .role {
-      line-height: 1;
-      font-size: 14px;
-      font-weight: 400;
-      color: #ffffff;
-    }
-  }
-
-  // 考勤统计
-  .statistics {
-    width: 100%;
-    height: 70px;
-    background-color: #f7f8fb;
-    margin: 20px 0 0;
-    .item {
-      width: 50%;
-      text-align: left;
-      padding-left: 20px;
-      // display: flex;
-      // flex-wrap: wrap;
-      span {
-        display: block;
-        width: 100%;
-      }
-      .item0 {
-        font-size: 20px;
-        font-weight: 700;
-      }
-    }
-  }
-}
-
-// 其他样式
-// .is-selected{
-//     color: #1989FA;
-// }
-
-// 日历
-
-.my_calendar_header {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 20px;
-  border-bottom: 1px solid #ebeef5;
-  color: #8592ad;
-  .mtime {
-    font-weight: 700;
-  }
-  .iconfont {
-    font-size: 14px;
-  }
-}
-
-// .el-calendar{
-//     // width: 100%;
-//     // height: 3.15rem;
-// }
 ::v-deep .el-calendar__header {
   display: none;
   font-size: 12px;
@@ -382,7 +468,7 @@ export default {
   }
 }
 ::v-deep .el-calendar__body {
-  padding: 10px 10px 0;
+  padding: 0;
   .el-calendar-table thead th {
     padding: 0;
   }
@@ -390,9 +476,6 @@ export default {
 
 ::v-deep .el-calendar-table .el-calendar-day {
   height: auto;
-  //   padding: .02rem;
-  //   width: 25px;
-  // height: 28px;
   padding: 5px;
 }
 ::v-deep .el-calendar-table tr td {
@@ -404,15 +487,12 @@ export default {
   justify-content: center;
   background: #fff;
   .el-calendar-day {
-    // padding: 0;
-    // margin: 0 auto;
     width: 30px;
     height: 30px;
     background: #4682fa;
     background: linear-gradient(180deg, #68b1fc 0%, #007dff 100%);
     box-shadow: 0px 3px 6px rgba(70, 130, 250, 0.23);
     border-radius: 50%;
-    // font-family: PingFang SC;
     font-weight: bold;
     color: #ffffff;
   }
@@ -425,5 +505,7 @@ export default {
   background: #68b1fc;
   color: #fff;
 }
+::v-deep .date-container .el-progress-bar__outer {
+  background: #43b91e;
+}
 </style>
-

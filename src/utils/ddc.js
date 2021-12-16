@@ -354,3 +354,14 @@
    }
  }
  
+  /**
+  * 计算往前多少天的日期
+  */
+ export function getDisDayTime(time, day) {
+   if (day <= 0) {
+    return parseTime(time, '{y}-{m}-{d}')
+   } else {
+    const date = time.getTime() - day * 24 * 60 * 60 * 1000
+    return parseTime(new Date(date), '{y}-{m}-{d}')
+   }
+ }
