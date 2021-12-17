@@ -97,19 +97,38 @@ export default {
   methods: {
     handleAdd() {
       this.options.title = "添加磅单";
-      this.editType = false;
-      this.currCode = null
+      this.options.editType = false;
+      this.currCode = null;
       this.open = true;
     },
     handleUpdate(code) {
-       this.options.title = "修改磅单";
-      this.editType = true;
+      this.options.title = "修改磅单";
+      this.options.editType = true;
       this.currCode = code;
       this.open = true;
-      console.log("obj", obj);
+      console.log("code", code);
     },
-    handleDelete(obj) {
-      console.log("del obj", obj);
+    handleDelete(code) {
+      console.log("del code", code);
+      //deleteWeighbridgeRecord
+      this.$confirm("删除操作不可恢复，确认要删除该磅单吗？", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        const obj = {
+          moduleName: "http_weight",
+          method: "delete",
+          url_alias: "deleteWeighbridgeRecord",
+          url_code: [code],
+        };
+        http_request(obj).then((res) => {
+          if (res && res.code == "200") {
+            this.msgSuccess("删除成功");
+          }
+          this.searchQuery();
+        });
+      });
     },
     handleDetail(code) {
       console.log("123123");
@@ -197,5 +216,9 @@ export default {
 .menu-item {
   padding-right: 10px;
   color: #4682fa;
+}
+/deep/ .pagination-container {
+  background: transparent;
+  padding: 0;
 }
 </style>

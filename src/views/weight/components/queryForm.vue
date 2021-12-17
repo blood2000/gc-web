@@ -151,7 +151,8 @@ export default {
   },
   methods: {
     cascaderChange(e) {
-      this.queryParams.goodsType = this.queryParams.goodsType[1];
+      if (!e || e.length < 2) return;
+      this.queryParams.goodsCode = e[1];
       this.$emit("handleQuery");
     },
 

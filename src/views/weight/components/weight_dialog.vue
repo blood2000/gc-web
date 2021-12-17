@@ -117,25 +117,32 @@
                   alt=""
                 />
                 <span class="shipmentName">
-                  {{ routeData.companyName }}
+                  {{ routeData && routeData.companyName }}
                 </span>
               </div>
               <div>
                 <div class="icon-base icon-base-start">起</div>
-                <div class="address-title">{{ routeData.startRoute }}</div>
+                <div class="address-title">
+                  {{ routeData && routeData.startRoute }}
+                </div>
                 <img
                   class="to-img"
                   src="../../../assets/images/bang/to.png"
                   alt=""
                 />
                 <div class="icon-base icon-base-end">终</div>
-                <div class="address-title">{{ routeData.endRoute }}</div>
+                <div class="address-title">
+                  {{ routeData && routeData.endRoute }}
+                </div>
               </div>
               <div class="x" @click="delXRouteData(index)">
                 <img src="../../../assets/images/bang/x.png" alt="" />
               </div>
             </div>
-            <div class="img-error-red" v-if="!routeData && hasUpRoute[index]">
+            <div
+              class="img-error-red"
+              v-if="!form.recordForms[index].routeCode && hasUpRoute[index]"
+            >
               请选择路线
             </div>
           </el-form-item>
@@ -325,8 +332,12 @@
         </div>
       </div>
     </el-form>
-    <div slot="footer" class="dialog-footer flex-end-layout">
-      <div class="weight-edit">
+    <div
+      slot="footer"
+      style="height: 64px"
+      class="dialog-footer flex-end-layout"
+    >
+      <div class="weight-edit" v-if="options && !options.editType">
         <div
           @click="addWeight"
           class="weight-edit-item"
@@ -342,7 +353,7 @@
           <span>相同路线再来一单</span>
         </div>
       </div>
-      <div>
+      <div class="group-btn">
         <el-button @click="cancel">取 消</el-button>
         <el-button type="primary" @click="submitForm" :loading="loading">
           确 定
@@ -382,6 +393,9 @@ export default {
       handler() {
         if (this.open) {
           console.log("ckc open", this.options);
+          if (this.options.editType) {
+            this.getDetail();
+          }
         }
       },
     },
@@ -444,13 +458,92 @@ export default {
     this.getDriverList();
     this.getVehicleList();
   },
-  watch: {},
   computed: {
     goodsList() {
       return this.$store.state.dict.goodsTypeList;
     },
   },
   methods: {
+    init() {
+      this.loading = false;
+      this.hasUpImage = [false];
+      this.hasUpRoute = [false];
+      this.routeShow = false;
+      (this.routeData = null), (this.currIndex = null);
+      this.form = {
+        recordDate: null, //磅单日期
+        vehicleCode: null, //车辆Code
+        driverCode: null, //司机Code
+        recordForms: [
+          {
+            fold: false,
+            goodsCode: null, //货品Code
+            shipmentCode: null, //企业Code
+            routeCode: null, //路线Code
+            goodsFreightPrice: null, //货品运费单价
+            driverFreightPrice: null, //司机运费
+            driverSurchargePrice: null, //司机额外收取
+            loadingNetWeight: null, //装货净重
+            unloadingNetWeight: null, //卸货净重
+            voucherImageUrls: [], //凭证
+          },
+        ],
+      };
+      this.resetForm("form");
+    },
+    async getDetail() {
+      const obj = {
+        moduleName: "http_weight",
+        method: "get",
+        url_alias: "detailWeighbridge",
+        url_code: [this.code],
+      };
+      const res = await http_request(obj);
+      console.log("detail res", res);
+      this.detailToForm(res.data);
+    },
+    detailToForm(data) {
+      console.log("data===", data);
+      this.routeData = {
+        endRoute: data.endRoute,
+        startRoute: data.startRoute,
+        companyName: data.companyName,
+      };
+      this.form = {
+        recordDate: data.recordDate, //磅单日期
+        vehicleCode: data.vehicleCode, //车辆Code
+        driverCode: data.driverCode, //司机Code
+        recordForms: [
+          {
+            fold: false,
+            goodsCode: data.goodsCode, //货品Code
+            shipmentCode: data.shipmentCode, //企业Code
+            routeCode: data.routeCode, //路线Code
+            goodsFreightPrice: data.goodsFreightPrice, //货品运费单价
+            driverFreightPrice: data.driverFreightPrice, //司机运费
+            driverSurchargePrice: data.driverSurchargePrice, //司机额外收取
+            loadingNetWeight: data.loadingNetWeight, //装货净重
+            unloadingNetWeight: data.unloadingNetWeight, //卸货净重
+            voucherImageUrls: this.getImageUrl(data.voucherImageUrls), //凭证
+          },
+        ],
+      };
+    },
+    getImageUrl(str) {
+      console.log("str", str);
+      const tmp = str.split(",");
+      console.log("tmp", tmp);
+      const result = [];
+      for (const item of tmp) {
+        const obj = {
+          url: item,
+          name: item,
+        };
+        result.push(obj);
+      }
+
+      return result;
+    },
     voucherImgList(index) {
       console.log(
         "this.form.recordForms[index].voucherImageUrls.length",
@@ -492,9 +585,13 @@ export default {
         voucherImageUrls: [], //凭证
         fold: false,
       });
+      this.hasUpImage.push(false);
+      this.hasUpRoute.push(false);
     },
     againWeight() {
       console.log(this.form.recordForms[this.form.recordForms.length - 1]);
+      this.hasUpImage.push(false);
+      this.hasUpRoute.push(false);
       this.form.recordForms.push({
         ...this.form.recordForms[this.form.recordForms.length - 1],
       });
@@ -601,18 +698,79 @@ export default {
         "this.hasUpRoute",
         this.hasUpRoute
       );
+
+      // 转化
+      const body = JSON.parse(JSON.stringify(this.form));
+      body.recordForms.forEach((element) => {
+        console.log("element", element);
+        delete element.fold;
+        if (element.voucherImageUrls.length > 0) {
+          let temp = "";
+          element.voucherImageUrls.forEach((el) => {
+            temp += el.url + ",";
+          });
+          temp = temp.substr(0, temp.length - 1);
+          console.log("temp", temp);
+          element.voucherImageUrls = temp;
+        }
+      });
+      return body;
     },
+    arrToStr(body) {},
     submitForm() {
       const me = this;
-      this.checkForm();
+      const bodys = this.checkForm();
       me.$refs["form"].validate((valid) => {
         if (valid) {
           me.loading = true;
-          console.log(me.form);
+          console.log("bodys 参数", bodys);
+          if (this.options.editType) {
+            bodys.code = this.code
+               const obj = {
+              moduleName: "http_weight",
+              method: "post",
+              url_alias: "updateWeighBridgeRecord",
+              data: bodys,
+            };
+             http_request(obj)
+              .then((res) => {
+              console.log("编辑返回", res);
+                me.loading = false;
+                if (res.code != 200) {
+                  return this.msgError("编辑失败");
+                } else {
+                  this.$emit("closeDialog", "ok");
+                }
+              })
+              .catch(() => {
+                me.loading = false;
+              });
+          } else {
+            const obj = {
+              moduleName: "http_weight",
+              method: "post",
+              url_alias: "addWeighBridgeRecord",
+              data: bodys,
+            };
+            http_request(obj)
+              .then((res) => {
+                console.log("添加返回", res);
+                me.loading = false;
+                if (res.code != 200) {
+                  return this.msgError("添加失败");
+                } else {
+                  this.$emit("closeDialog", "ok");
+                }
+              })
+              .catch(() => {
+                me.loading = false;
+              });
+          }
         }
       });
     },
     cancel() {
+      this.init();
       this.$emit("closeDialog", "no");
     },
     closeRoutersDialog() {
@@ -772,6 +930,9 @@ export default {
 .weight-edit {
   display: flex;
   align-items: center;
+  position: absolute;
+  bottom: 30px;
+  left: 36px;
   &-item {
     display: flex;
     align-items: center;
@@ -787,6 +948,7 @@ export default {
     }
   }
 }
+
 .flex-end-layout {
   display: flex;
   align-items: center;
@@ -869,5 +1031,10 @@ export default {
   position: absolute;
   top: -5px;
   right: -15px;
+}
+.group-btn {
+  position: absolute;
+  bottom: 15px;
+  right: 19px;
 }
 </style>
