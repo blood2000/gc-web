@@ -7,7 +7,7 @@
         <div class="point"></div>
         <div class="point"></div>
       </div> -->
-      <!-- <el-dropdown>
+    <!-- <el-dropdown>
         <div class="warn-card-more-box">
           <div class="point"></div>
           <div class="point"></div>
@@ -34,6 +34,8 @@
       <div class="card-main-left" v-if="cardInfo.vendorAlarmTypeName">
         <!-- <img src="../../../../assets/images/detail/aiot-yczd.png" alt="" /> -->
         <img :src="dealAlarmImg()" alt="" />
+      </div>
+      <div class="card-main-right" v-if="cardInfo.vendorAlarmTypeName">
         <el-tooltip
           class="item"
           effect="dark"
@@ -41,21 +43,19 @@
           placement="top-start"
         >
           <div class="warn-card-type">
-            {{ cardInfo.vendorAlarmTypeName || "无" }}
+            {{ cardInfo.vendorAlarmTypeName || '无' }}
           </div>
         </el-tooltip>
-      </div>
-      <div class="card-main-right" v-if="cardInfo.vendorAlarmTypeName">
         <el-tooltip
           class="item"
           effect="dark"
           :content="cardInfo.alarmAddress || '-'"
           placement="top-start"
         >
-          <div>{{ cardInfo.alarmAddress || "-" }}</div>
+          <div class="text">{{ cardInfo.alarmAddress || '-' }}</div>
         </el-tooltip>
-        
-        <div>{{ cardInfo.alarmTime || "-" }}</div>
+
+        <div class="text">{{ cardInfo.alarmTime || '-' }}</div>
       </div>
       <div class="card-main-none" v-if="!cardInfo.vendorAlarmTypeName">
         <img src="../../../../assets/images/detail/warn_none.png" alt="" />
@@ -98,25 +98,25 @@
 <script>
 export default {
   data() {
-    return {};
+    return {}
   },
 
   components: {},
   props: {
     level: {
       type: Number,
-      default: 1,
+      default: 1
     },
     cardInfo: {
       type: Object,
       default() {
-        return {};
-      },
+        return {}
+      }
     },
     tabIndex: {
       type: String,
-      default: "1",
-    },
+      default: '1'
+    }
   },
 
   computed: {},
@@ -127,22 +127,22 @@ export default {
 
   methods: {
     openList(type) {
-      this.$emit("openList", { type: type, item: this.cardInfo });
+      this.$emit('openList', { type: type, item: this.cardInfo })
     },
 
     dealAlarmImg() {
-      if (!this.cardInfo.key) return "";
+      if (!this.cardInfo.key) return ''
       // return require(`@/assets/images/detail/${this.cardInfo.key}.png`);
-      return require(`@/assets/images/detail/aiot-yczd.png`);
-    },
-  },
-};
+      return require(`@/assets/images/detail/aiot-yczd.png`)
+    }
+  }
+}
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .warn-card {
   position: relative;
   width: 23%;
-  height: 192px;
+  height: 200px;
   background: #fefefe;
   border-radius: 6px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
@@ -178,8 +178,8 @@ export default {
   &-subtitle {
     padding: 0 15px;
     margin-bottom: 3px;
-    height: 28px;
-    line-height: 28px;
+    height: 17px;
+    line-height: 17px;
     display: flex;
     align-items: center;
     font-size: 12px;
@@ -201,28 +201,26 @@ export default {
   &-main {
     position: relative;
     width: calc(100% - 30px);
-    margin: 0 auto;
-    padding: 0 10px;
-    height: 60px;
+    margin: 8px auto;
+    padding-right: 10px;
+    height: 72px;
     font-size: 12px;
     color: #3d4050;
     border-radius: 2px;
     display: flex;
-    align-items: center;
     div {
       z-index: 2;
     }
   }
   &-bottom {
     padding-right: 7px;
-    margin-top: 8px;
     height: 57px;
     display: flex;
     &-item {
       // flex: 1;
       box-sizing: border-box;
       width: 33%;
-      height: 56px;
+      height: 50px;
       padding: 5px 20px;
       text-align: left;
       border-top: 1px solid #f3f4f5;
@@ -257,17 +255,17 @@ export default {
 }
 
 .warn-card-main::before {
-  content: "";
+  content: '';
   position: absolute;
   width: 4px;
-  height: 60px;
+  height: 72px;
   border-radius: 2px;
   top: 0;
   left: 0;
 }
 
 .warn-card-main::after {
-  content: "";
+  content: '';
   position: absolute;
   width: 100%;
   height: 100%;
@@ -311,32 +309,35 @@ export default {
   );
 }
 .card-main-left {
-  min-width: 50px;
-  margin-right: 17px;
+  min-width: 60px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
   img {
-    width: 28px;
-    height: 28px;
+    width: 33px;
+    height: 33px;
     object-fit: contain;
+    margin-top: 2px;
   }
 }
 
 .warn-card-type {
+  width: 100%;
+  margin: 5px 0 2px 0;
+  font-size: 16px;
   font-weight: bold;
+  color: #3d4050;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: 100%;
 }
 
 .card-main-right {
   box-sizing: border-box;
   max-width: 80%;
   padding-right: 20px;
-  div {
-    padding: 2px 0;
+  .text {
+    font-size: 14px;
+    color: #a7a5a5;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
