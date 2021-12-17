@@ -851,4 +851,5 @@ export default {
   opacity: 1;
   margin-right: 20px;
 }
+
 </style>

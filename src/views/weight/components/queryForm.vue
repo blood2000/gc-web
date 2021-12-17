@@ -141,11 +141,11 @@ export default {
         this.$emit("input", value);
       },
     },
-    goodsTypeList(){
+    goodsTypeList() {
       return this.$store.state.dict.goodsTypeList;
-    }
+    },
   },
- 
+
   mounted() {
     this.getListCompany();
   },
@@ -154,7 +154,7 @@ export default {
       this.queryParams.goodsType = this.queryParams.goodsType[1];
       this.$emit("handleQuery");
     },
-   
+
     async getListCompany() {
       const obj = {
         moduleName: "http_weight",
@@ -163,7 +163,7 @@ export default {
       };
       const res = await http_request(obj);
       console.log("res", res);
-      this.listCompany = res.data;
+      this.listCompany = res.data.filter((item) => item);
     },
     reset() {
       this.queryParams.pageNum = 1;
