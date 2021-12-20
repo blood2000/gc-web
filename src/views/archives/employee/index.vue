@@ -95,6 +95,7 @@
                 filterable
                 size="small"
                 style="width: 200px"
+                @change="employeeStatusChange"
               >
                 <el-option
                   v-for="dict in employeeStatusOptions"
@@ -226,8 +227,8 @@
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.employeeStatus"
-                :active-value="0"
-                :inactive-value="1"
+                active-value="0"
+                inactive-value="1"
                 :disabled="scope.row.teamLeaderFlag"
                 @change="handleStatusChange(scope.row)"
               />
@@ -368,8 +369,8 @@ export default {
       title: "",
       // 字典
       employeeStatusOptions: [
-        { dictLabel: "启用", dictValue: 0 },
-        { dictLabel: "禁用", dictValue: 1 },
+        { dictLabel: "启用", dictValue: "0" },
+        { dictLabel: "禁用", dictValue: "1" },
       ],
       // 导出按钮
       exportLoading: false,
@@ -386,6 +387,13 @@ export default {
     this.getList();
   },
   methods: {
+    employeeStatusChange(e) {
+      console.log(e);
+      console.log(
+        "this.queryParams.employeeStatus",
+        this.queryParams.employeeStatus
+      );
+    },
     dealRoleName(roleName) {
       console.log("roleName", roleName);
       if (!roleName) return "";
@@ -441,6 +449,9 @@ export default {
         params.startTime = params.startTime + " 00:00:00";
       if (params.endTime && params.endTime !== "")
         params.endTime = params.endTime + " 23:59:59";
+      console.log("params", params);
+      if (!params.employeeStatus && params.employeeStatus === 0)
+        params.employeeStatus = params.employeeStatus + "";
       // 构造参数end
       const obj = {
         moduleName: "http_employee",
@@ -494,7 +505,7 @@ export default {
     },
     /** 用户状态修改 */
     handleStatusChange(row) {
-      const text = row.employeeStatus === 0 ? "启用" : "停用";
+      const text = row.employeeStatus === "0" ? "启用" : "停用";
       this.$confirm("确认要" + text + '"' + row.nickName + '"用户吗?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -516,7 +527,7 @@ export default {
           this.msgSuccess(text + "成功");
         })
         .catch(function () {
-          row.employeeStatus = row.employeeStatus === 1 ? 0 : 1;
+          row.employeeStatus = row.employeeStatus === "1" ? '0' : '1';
         });
     },
     /** 重置密码 */
