@@ -591,7 +591,7 @@ export default {
         params.startTime = params.startTime + " 00:00:00";
       if (params.endTime && params.endTime !== "")
         params.endTime = params.endTime + " 23:59:59";
-      this.download("/fmsweb/basic/teamEmployee/v1/export", params, `职员信息`);
+      this.download("/fmsweb/basic/teamEmployee/v2/export", params, `职员信息`);
       this.exportLoading = false;
     },
     /** 车队长的checkbox不可选 */
