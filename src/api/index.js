@@ -15,7 +15,6 @@ import http_map from './map/map';
 import http_monitor from './monitor/carlist'
 import http_home from './home/home'
 import http_company from './archives/company'
-import http_address from './archives/address'
 import http_statistic from './statistic/statistic'
 import http_weight from './weight/weight'
 import http_route from './archives/route'
@@ -53,7 +52,6 @@ const selModuleName = (name) => {
     http_monitor,
     http_home,
     http_company,
-    http_address,
     http_statistic,
     http_weight,
     http_route
