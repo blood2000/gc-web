@@ -137,7 +137,7 @@ export default {
         // STREAMTYPE: "1", //主/子码流
         VEHICLEID: "0", ////车辆ID
         VEHICLELICENSE: "", //车牌号
-        DEVICENO: "015800117661", //设备编码
+        DEVICENO: "", //设备编码
         PLATECOLOR: "2", //车牌颜色
         STREAMTYPE: "1", //主/子码流
       },
@@ -205,8 +205,9 @@ export default {
       };
       http_request(obj)
         .then((res) => {
-          console.log('res',res)
+          console.log('playback res',res)
           this.queryParams.VEHICLELICENSE = res.data.vehicle && res.data.vehicle.plateNumber
+           this.queryParams.DEVICENO =res.data.device && res.data.device.deviceSN
           const fields = res.data.fields;
           this.channelNumList = [];
           for (let i = 0; i < Number(fields.channelNum); i++) {
