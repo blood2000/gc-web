@@ -120,9 +120,9 @@ export default {
     //请求详情
     requsetDetail() {
       const tmp = {
-        moduleName: "http_company",
+        moduleName: "http_common",
         method: "get",
-        url_alias: "shipment_get_id",
+        url_alias: "shipment_getid",
         url_code: [this.options.code],
       };
       console.log("tmp", tmp);
@@ -163,7 +163,7 @@ export default {
           this.loading = true;
           if (me.options.editType == "update") {
             const obj = {
-              moduleName: "http_company",
+              moduleName: "http_common",
               method: "put",
               url_alias: "shipment_update",
               data: me.form,
@@ -178,7 +178,7 @@ export default {
           } else {
             console.log("添加请求");
             const obj = {
-              moduleName: "http_company",
+              moduleName: "http_common",
               method: "post",
               url_alias: "shipment_add",
               data: me.form,

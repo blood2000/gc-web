@@ -114,9 +114,9 @@ export default {
       }).then(() => {
         console.log("开始删了 ids", ids);
         const tmp = {
-          moduleName: "http_company",
+          moduleName: "http_common",
           method: "post",
-          url_alias: "shipment_common_del",
+          url_alias: "shipment_del",
           data: { ids },
         };
         http_request(tmp).then(() => {
@@ -128,9 +128,9 @@ export default {
     async getList() {
       this.loading = true;
       const obj = {
-        moduleName: "http_company",
+        moduleName: "http_common",
         method: "post",
-        url_alias: "shipment_list",
+        url_alias: "shipment_llist",
         data: this.pagingToFrom(),
       };
       console.log("所有参数列表", obj);
