@@ -19,6 +19,7 @@ import http_address from './archives/address'
 import http_statistic from './statistic/statistic'
 import http_weight from './weight/weight'
 import http_route from './archives/route'
+import http_coRoute from './archives/coRoute'
 import Vue from 'vue'
 
 export const defaultH = {
@@ -56,7 +57,8 @@ const selModuleName = (name) => {
     http_address,
     http_statistic,
     http_weight,
-    http_route
+    http_route,
+    http_coRoute
   }
   return tmpObj[name]
 }
