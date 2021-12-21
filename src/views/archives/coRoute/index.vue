@@ -45,7 +45,7 @@
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item @click.native="onClickChange(item)">
-                    修改
+                    编辑
                   </el-dropdown-item>
                   <el-dropdown-item @click.native="onClickDel(item)">
                     删除
