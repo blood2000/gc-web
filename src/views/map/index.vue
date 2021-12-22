@@ -132,13 +132,20 @@
                     <div class="info-box ly-flex-1">
                       <h5>
                         {{ data.orgOrlicenseNumber }}
+                        <span>
+                          {{
+                            data.vehicleAlias ? `(${data.vehicleAlias})` : ""
+                          }}</span
+                        >
+                      </h5>
+                      <div>
                         <span class="type">{{
                           selectDictLabel(
                             vehicleCarrierTypeOptions,
                             data.carrierType
                           )
                         }}</span>
-                      </h5>
+                      </div>
                       <p>
                         <!-- 在线/离线 -->
                         <span
@@ -427,16 +434,6 @@ export default {
       orgOrVehicleInfo: null,
       // 司机小tab
       driverActiveTab: "0",
-      // driverTablist: [
-      //   {
-      //     code: "0",
-      //     tabName: "空闲",
-      //   },
-      //   {
-      //     code: "1",
-      //     tabName: "任务",
-      //   },
-      // ],
       // 司机各个状态统计值
       countDriver: {
         countAll: 0, // 全部
@@ -594,28 +591,24 @@ export default {
       console.log('document.location.search.split("=")', document.location);
       this.locationProp = this.locationQueryDeal();
       this.headerTab = Number(this.locationProp.trackType);
-      const obj = {
-        //appinfo
-        moduleName: "http_map",
-        method: "get",
-        url_alias: "appinfo",
-      };
-      http_request(obj).then((res) => {});
     }
-    // 时间
+    // 当前时间
     this.getCurrentTime();
+    // 当前刷新时间
     this.refreshTime();
-    // 地图
+    // 地图初始化
     this.$nextTick(() => {
       this.initMap();
     });
-    // 字典
+    // 字典数据
     this.getDictData();
-    // 统计值
+    // 统计车辆
     this.getCountVehicle();
+    // 统计司机
     this.getCountDriver();
-    // 树
+    // 车辆树
     this.getOrgVehicleTree();
+    // 司机树
     this.getOrgDriverTree();
     // 获取全部车定位
     this.getVehicleLoLocations(null, true);
@@ -628,6 +621,7 @@ export default {
     this.clearReadTime();
   },
   methods: {
+    // 视频socketinit
     initSocket() {
       const websocketIP = "219.134.190.133:6003"; //媒体服务ip
       const websocket = new WebSocket("ws://" + websocketIP); //获取文件列表websocket对象
@@ -656,6 +650,7 @@ export default {
         //setMessageInnerHTML(event.data);
       };
     },
+    // 路由传入值进行操作
     locationQueryDeal() {
       const url = location.search; //获取url中"?"符后的字串 ('?modFlag=business&role=1')
       const theRequest = new Object();
@@ -669,8 +664,7 @@ export default {
       console.log("theRequest", theRequest);
       return theRequest;
     },
-
-    /** 初始化地图 */
+    // 初始化地图
     initMap() {
       const _this = this;
       this.map = new AMap.Map("device-map-container", {
@@ -1043,15 +1037,18 @@ export default {
       });
     },
     /** 巡航轨迹事件 */
+    // 开始
     startPathSimplifier() {
       this.$refs.TrackListRef.setPlayStatus(1);
       // this.map.setZoomAndCenter(12, this.$refs.TrackListRef.jmTracklist[0]);
       this.navgtr.start();
     },
+    // 暂停
     pausePathSimplifier() {
       this.$refs.TrackListRef.setPlayStatus(2);
       this.navgtr.pause();
     },
+    // 重新
     resumePathSimplifier() {
       this.$refs.TrackListRef.setPlayStatus(1);
       this.navgtr.resume();
@@ -1164,7 +1161,7 @@ export default {
         url_alias: "countVehicle",
       };
       http_request(obj).then((res) => {
-        console.log("getCountVehicle res.data", res.data);
+        // console.log("getCountVehicle res.data", res.data);
         this.countVehicle = res.data;
       });
     },
@@ -1177,9 +1174,10 @@ export default {
         data: this.vehicleParams,
       };
       http_request(obj).then((res) => {
-        console.log("车 树 查询res", res);
+        console.log("车 树 查询res", res, this.locationProp);
         this.vehicleTreeOptions = res.data;
         let result = { row: null, isTure: false };
+        // 路由地址上有参数时候
         if (this.locationProp) {
           this.recursionVehicleTree(res.data, result);
           console.log("result", result);
@@ -1187,6 +1185,7 @@ export default {
         }
       });
     },
+    // 递归树
     recursionVehicleTree(data, result) {
       const me = this;
       for (const el of data) {
@@ -1289,7 +1288,7 @@ export default {
         url_alias: "countDriver",
       };
       http_request(obj).then((res) => {
-        console.log("countDriver res.data", res.data);
+        // console.log("countDriver res.data", res.data);
         this.countDriver = res.data;
       });
     },
@@ -1338,7 +1337,7 @@ export default {
         data: params,
       };
       http_request(obj).then((res) => {
-        console.log("res", res);
+        // console.log("res", res);
         // 绘制前先清空之前的绘制, 避免重复绘制
         this.clearMarkerList();
         if (res.data.rows && res.data.rows.length > 0) {
@@ -1415,6 +1414,7 @@ export default {
     },
     // 绘制车辆定位marker
     drawVehicleMarker(row) {
+      console.log("绘制车辆定位marker", row);
       const _this = this;
       const { vehicle_code, carrier_type, plate_number, tip, attribute } = row;
       const direction = attribute.direction || {};
@@ -1570,7 +1570,6 @@ export default {
         if (res.code == 200) {
           _this.refreshMarkerTime = parseInt(res.data.map_refresh_interval);
         }
-        console.log('_this.refreshMarkerTime',_this.refreshMarkerTime)
         this.clearReadTime();
         this.readTimer = setInterval(() => {
           if (_this.refreshMarkerTime < 1) {

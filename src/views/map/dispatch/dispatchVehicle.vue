@@ -102,15 +102,15 @@ export default {
 
   computed: {
     isdetailData() {
-      console.log("this.detailData", this.detailData);
+      // console.log("this.detailData", this.detailData);
       if (JSON.stringify(this.detailData) === "{}") return false;
       return true;
     },
     showDispatchVehicle() {
-      console.log(
-        "this.$store.getters.showDispatchVehicle",
-        this.$store.getters.showDispatchVehicle
-      );
+      // console.log(
+      //   "this.$store.getters.showDispatchVehicle",
+      //   this.$store.getters.showDispatchVehicle
+      // );
       if (this.$store.getters.showDispatchVehicle) {
         this.renderPageObj();
       }
@@ -127,7 +127,7 @@ export default {
   },
 
   mounted() {
-    console.log("派车");
+    // console.log("派车");
     this.sourceConfig = config.sourceConfig;
   },
 

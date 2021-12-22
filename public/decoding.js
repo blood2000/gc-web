@@ -3518,7 +3518,6 @@
                  * WFS interface, Jeff Yang 2016.10
                  */
                 'use strict';
-                console.log('decoding 18')
                 Object.defineProperty(exports, "__esModule", {
                     value: true
                 });
@@ -3696,4 +3695,3 @@
 
 
     var UserInfoGlobal = null
-    console.log('我在运行')
