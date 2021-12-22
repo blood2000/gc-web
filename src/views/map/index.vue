@@ -1252,6 +1252,7 @@ export default {
       this.resetPalyback = true;
       this.CurrorgOrlicenseNumber = data.orgOrlicenseNumber;
       this.orgOrVehicleInfo = data;
+      console.log("data.vehicleFlag", data.vehicleFlag);
       if (data.vehicleFlag) {
         // 选中车
         this.isShowVehicleInfo = true;
@@ -1404,6 +1405,10 @@ export default {
             // 刷新点位后不重新设置视野
             if (isFresh && this.headerTab !== 3) {
               this.$nextTick(() => {
+                console.log(
+                  " attribute.coordinate.value",
+                  attribute.coordinate.value
+                );
                 this.map.setZoomAndCenter(13, attribute.coordinate.value);
               });
             }
@@ -1415,24 +1420,12 @@ export default {
     },
     // 绘制车辆定位marker
     drawVehicleMarker(row) {
-      console.log("绘制车辆定位marker", row);
+      // console.log("绘制车辆定位marker", row);
       const _this = this;
-      const { vehicle_code, carrier_type, plate_number, tip, attribute } = row;
+      const { vehicle_code, carrier_type, plate_number, attribute } = row;
       const direction = attribute.direction || {};
       const speed = attribute.speed || {};
       const position = attribute.coordinate.value;
-      // let statusColor = "#ADB5BD";
-      // if (tip.deviceStatus === 0) {
-      //   statusColor = "#ADB5BD"; // 离线
-      // } else if (tip.deviceStatus === 1) {
-      //   statusColor = "#43B91E"; // 在线
-      // } else if (tip.deviceStatus === -1) {
-      //   statusColor = "#EF6969"; // 异常
-      // }
-      // const contentValue = [];
-      // if (tip.speedText !== null && tip.speedText !== undefined)
-      //   contentValue.push(tip.speedText);
-      // if (tip.vehicleStatusText) contentValue.push(tip.vehicleStatusText);
       // 绘制车辆标记
       const vehicleContent = `<div 
       style="transform:rotate(${direction.value || -30}deg);
@@ -1478,25 +1471,7 @@ export default {
           </div>
         </div>`
       );
-      // info.push("<div class='own-map-vehicle-marker-label'>");
-      // info.push("<h5>" + plate_number);
-      // if (tip.deviceStatusText)
-      //   info.push(
-      //     "<span class='status' style='color:" +
-      //       statusColor +
-      //       "'><strong class='mr5'>· </strong>" +
-      //       tip.deviceStatusText +
-      //       "</span>"
-      //   );
-      // info.push("</h5>");
-      // if (contentValue.length > 0)
-      //   info.push(
-      //     "<p class='input-item'>" + contentValue.join("  |  ") + "</p>"
-      //   );
-      // info.push("</div>");
-      // console.log("info", info);
       const content = this.setLabelContent(info, { offset: [0, -10] });
-      console.log("content", content);
       this.setLabel(marker, content);
       // 双击定位
       marker.on("dblclick", function (e) {
@@ -1504,11 +1479,6 @@ export default {
       });
       // 单击
       marker.on("click", function (e) {
-        // if (JSON.stringify(marker.getLabel()) === "{}") {
-        //   _this.setLabel(marker, content);
-        // } else {
-        //   _this.setLabel(marker, {});
-        // }
         if (_this.headerTab !== 3) {
           // 和树节点字段保持一致
           row.orgOrVehicleCode = row.vehicle_code;
