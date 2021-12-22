@@ -12,9 +12,9 @@ export default {
   vehicle_enabled: '/fmsweb/basic/vehicle/v2/updateEnabled', //修改停用状态
   paging_de_driver: '/fmsweb/basic/vehicle/v2/pagingDefaultDriver',
   device_list: '/fmsweb/basic/org/device/v1/list',//获取当前组织所有设备列表
-  device_paging: '/fmsweb/basic/org/device/v1/paging',//获取当前组织所有设备分页列表
-  device_bind: '/fmsweb/vehicle/device/v1/binding',//绑定设备
-  device_unbind: '/fmsweb/vehicle/device/v1/unbinding',//解除绑定
+  device_paging: '/fmsweb/basic/org/device/v2/paging',//获取当前组织所有设备分页列表
+  device_bind: '/fmsweb/vehicle/device/v2/binding',//绑定设备
+  device_unbind: '/fmsweb/vehicle/device/v2/unbinding',//解除绑定
   qrcode_decode: (type) => `/fmsweb/basic/common/v1/qrcode/decode/${type}`,
   checkAdd: '/fmsweb/basic/vehicle/v2/checkAdd',  //校验车辆
   confirmAdd: '/fmsweb/basic/vehicle/v2/confirmAdd', //确认添加

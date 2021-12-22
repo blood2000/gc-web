@@ -469,4 +469,7 @@ export default {
 .nothing{
   
 }
+/deep/ .el-empty{
+  padding: 0;
+}
 </style>
