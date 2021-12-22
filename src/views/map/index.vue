@@ -834,6 +834,7 @@ export default {
     },
     /** 清除指定的地图点位集合 */
     clearMarkerList() {
+      console.log("清除指定的地图点位集合 this.markerList", this.markerList);
       for (const key in this.markerList) {
         this.markerList[key].setMap(null);
         this.markerList[key] = null;
@@ -1109,7 +1110,7 @@ export default {
       this.clearTimer();
       this.timer = setInterval(() => {
         this.getCurrentTime();
-      }, 60 * 1000);
+      }, this.refreshMarkerTime * 1000);
     },
     // 清除定时器
     clearTimer() {
@@ -1420,26 +1421,28 @@ export default {
       const direction = attribute.direction || {};
       const speed = attribute.speed || {};
       const position = attribute.coordinate.value;
-      let statusColor = "#ADB5BD";
-      if (tip.deviceStatus === 0) {
-        statusColor = "#ADB5BD"; // 离线
-      } else if (tip.deviceStatus === 1) {
-        statusColor = "#43B91E"; // 在线
-      } else if (tip.deviceStatus === -1) {
-        statusColor = "#EF6969"; // 异常
-      }
-      const contentValue = [];
-      if (tip.speedText !== null && tip.speedText !== undefined)
-        contentValue.push(tip.speedText);
-      if (tip.vehicleStatusText) contentValue.push(tip.vehicleStatusText);
-      // 绘制标记
+      // let statusColor = "#ADB5BD";
+      // if (tip.deviceStatus === 0) {
+      //   statusColor = "#ADB5BD"; // 离线
+      // } else if (tip.deviceStatus === 1) {
+      //   statusColor = "#43B91E"; // 在线
+      // } else if (tip.deviceStatus === -1) {
+      //   statusColor = "#EF6969"; // 异常
+      // }
+      // const contentValue = [];
+      // if (tip.speedText !== null && tip.speedText !== undefined)
+      //   contentValue.push(tip.speedText);
+      // if (tip.vehicleStatusText) contentValue.push(tip.vehicleStatusText);
+      // 绘制车辆标记
+      const vehicleContent = `<div 
+      style="transform:rotate(${direction.value || -30}deg);
+      background:url('${require(`../../assets/images/map/${this.dealVheicleType(
+        row
+      )}.png`)}') no-repeat;" 
+      class="own-device-marker-car "
+      ></div>`;
       const styleObj = {
-        content:
-          '<div style="transform:rotate(' +
-          (direction.value || -30) +
-          'deg)" class="own-device-marker-car ' +
-          (carrier_type || "qt") +
-          '"></div>',
+        content: vehicleContent,
         offset: this.offsetList[carrier_type || "qt"],
         angle: 0,
       };
@@ -1448,23 +1451,52 @@ export default {
       this.clusterMarkerList.push(marker);
       // 绘制文本框
       const info = [];
-      info.push("<div class='own-map-vehicle-marker-label'>");
-      info.push("<h5>" + plate_number);
-      if (tip.deviceStatusText)
-        info.push(
-          "<span class='status' style='color:" +
-            statusColor +
-            "'><strong class='mr5'>· </strong>" +
-            tip.deviceStatusText +
-            "</span>"
-        );
-      info.push("</h5>");
-      if (contentValue.length > 0)
-        info.push(
-          "<p class='input-item'>" + contentValue.join("  |  ") + "</p>"
-        );
-      info.push("</div>");
+      info.push(
+        `<div class='own-map-vehicle-marker-label'>
+          <div class='label-img'>
+          <img src="${require(`../../assets/images/map/${this.dealCurrStatusImage(
+            row
+          )}.png`)}"/>
+          </div>
+          <div class='label-content'>
+            <div class='label-content-name'>
+             ${
+               row.vehicle_alias
+                 ? `<span>
+             ${row.vehicle_alias}
+             </span> <span  class="label-content-name-right">(${plate_number})</span>`
+                 : `  <span>
+             ${plate_number}
+             </span>`
+             }
+            </div>
+            <div class='label-content-status'>
+            ${this.dealCurrStatus(row)}
+              <span class="label-content-status-line">|</span>   
+              ${this.dealTaskStatus(row)}
+              </div>
+          </div>
+        </div>`
+      );
+      // info.push("<div class='own-map-vehicle-marker-label'>");
+      // info.push("<h5>" + plate_number);
+      // if (tip.deviceStatusText)
+      //   info.push(
+      //     "<span class='status' style='color:" +
+      //       statusColor +
+      //       "'><strong class='mr5'>· </strong>" +
+      //       tip.deviceStatusText +
+      //       "</span>"
+      //   );
+      // info.push("</h5>");
+      // if (contentValue.length > 0)
+      //   info.push(
+      //     "<p class='input-item'>" + contentValue.join("  |  ") + "</p>"
+      //   );
+      // info.push("</div>");
+      // console.log("info", info);
       const content = this.setLabelContent(info, { offset: [0, -10] });
+      console.log("content", content);
       this.setLabel(marker, content);
       // 双击定位
       marker.on("dblclick", function (e) {
@@ -1510,7 +1542,7 @@ export default {
       this.clearRefreshMarkerTimer();
       this.refreshMarkerTimer = setInterval(() => {
         this.getDeviceLocationInfoByCode();
-      }, 60 * 1000);
+      }, this.refreshMarkerTime * 1000);
       // 车定位刷新读秒
       this.setReadTime();
     },
@@ -1586,6 +1618,31 @@ export default {
         this.readTimer = null;
         this.refreshMarkerTime = 45;
       }
+    },
+    // 处理车辆·标签速度
+    dealCurrStatus(row) {
+      if (row.vehicle_status === 1) {
+        return row.tip.speedText;
+      } else {
+        return row.vehicle_status_name;
+      }
+    },
+    //  处理车辆·标签任务
+    dealTaskStatus(row) {
+      return row.vehicle_type_name;
+    },
+    //  处理车辆·标签图片
+    dealCurrStatusImage(row) {
+      const obj = {
+        行驶中: "success",
+        超速: "error",
+        怠速中: "warn",
+        熄火: "outline",
+      };
+      return obj[row.vehicle_status_name];
+    },
+    dealVheicleType(row) {
+      return row.carrier_type + "_" + row.vehicle_status;
     },
   },
 };
@@ -1960,50 +2017,46 @@ export default {
     }
     // 车标记的信息样式
     ::v-deep.own-map-vehicle-marker-label {
-      min-width: 218px;
-      min-height: 40px;
+      width: 269px;
+      height: 70px;
       background: rgba(255, 255, 255, 0.7);
       box-shadow: 0px 3px 5px rgba(206, 206, 206, 0.7);
       border-radius: 4px;
-      padding: 8px 12px;
-      > h5 {
-        font-size: 20px;
-        font-family: PingFang SC;
-        font-weight: bold;
-        line-height: 24px;
-        color: #3d4050;
-        > .status {
-          float: right;
-          font-size: 12px;
+      padding: 8px;
+      box-sizing: border-box;
+      display: flex;
+      .label-img {
+        width: 51px;
+        height: 51px;
+        border-radius: 8px;
+        margin-right: 13px;
+        & > img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .label-content {
+        .label-content-name {
+          font-size: 20px;
           font-family: PingFang SC;
           font-weight: bold;
           line-height: 24px;
-          &.blue {
-            color: #4682fa;
-          }
-          &.green {
-            color: rgba(67, 185, 30, 1);
-          }
-          &.red {
-            color: rgba(239, 105, 105, 1);
-          }
-          &.gray {
-            color: rgba(173, 181, 189, 1);
+          color: #3d4050;
+          margin-bottom: 3px;
+          &-right {
+            margin-left: 10px;
           }
         }
-      }
-      > .input-item {
-        height: 26px;
-        line-height: 26px;
-        background: #e4ecf4;
-        opacity: 1;
-        border-radius: 5px;
-        margin-top: 8px;
-        padding: 0 8px;
-        font-size: 14px;
-        font-family: PingFang SC;
-        font-weight: 600;
-        color: #3d4050;
+        .label-content-status {
+          font-size: 16px;
+          font-family: PingFang SC;
+          font-weight: 400;
+          line-height: 22px;
+          color: #999999;
+          &-line {
+            margin: 0 10px;
+          }
+        }
       }
     }
     // 巡航信息窗体样式
@@ -2090,36 +2143,33 @@ export default {
     // 标记物车样式
     ::v-deep.own-device-marker-car {
       transform-origin: center center;
-      &.ztc {
-        width: 34px;
-        height: 76px;
-        background: url("~@/assets/images/device/map_car_ztc.png") no-repeat;
-        background-size: 100% 100%;
-      }
-      &.jbc {
-        width: 34px;
-        height: 80px;
-        background: url("~@/assets/images/device/map_car_jbc.png") no-repeat;
-        background-size: 100% 100%;
-      }
-      &.llc {
-        width: 28px;
-        height: 62px;
-        background: url("~@/assets/images/device/map_car_llc.png") no-repeat;
-        background-size: 100% 100%;
-      }
-      &.phc {
-        width: 31px;
-        height: 79px;
-        background: url("~@/assets/images/device/map_car_phc.png") no-repeat;
-        background-size: 100% 100%;
-      }
-      &.qt {
-        width: 31px;
-        height: 79px;
-        background: url("~@/assets/images/device/map_car_qt.png") no-repeat;
-        background-size: 100% 100%;
-      }
+      width: 70px;
+      height: 130px;
+      background-size: 100% 100%;
+      // &.ztc {
+      //   width: 34px;
+      //   height: 76px;
+      //   // background: url("~@/assets/images/device/map_car_ztc.png") no-repeat;
+      //   background-size: 100% 100%;
+      // }
+      // &.jbc {
+      //   width: 34px;
+      //   height: 80px;
+      //   // background: url("~@/assets/images/device/map_car_jbc.png") no-repeat;
+      //   background-size: 100% 100%;
+      // }
+      // &.llc {
+      //   width: 28px;
+      //   height: 62px;
+      //   // background: url("~@/assets/images/device/map_car_llc.png") no-repeat;
+      //   background-size: 100% 100%;
+      // }
+      // &.qt {
+      //   width: 31px;
+      //   height: 79px;
+      //   // background: url("~@/assets/images/device/map_car_qt.png") no-repeat;
+      //   background-size: 100% 100%;
+      // }
     }
     // 巡航装卸货停车点样式
     ::v-deep.own-navgtr-marker {
