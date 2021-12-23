@@ -100,6 +100,19 @@
           :border="false"
           :stripe="true"
         >
+          <template #authStatus="{ row }">
+            <img
+              :src="require(`../../../assets/images/dialog/${getAuthStatusListConfigOption(row.authStatus).img}.png`)"
+              alt=""
+            />
+            <span
+              :style="{
+                color: getAuthStatusListConfigOption(row.authStatus).color,
+              }"
+            >
+              {{ getAuthStatusListConfigOption(row.authStatus).label }}
+            </span>
+          </template>
           <template #vehicleStatus="{ row }">
             <span
               :style="{
@@ -118,18 +131,25 @@
             />
           </template>
           <template #licenseNumber="{ row }">
-          {{row.vehicleAlias?`(${row.vehicleAlias})  ${row.licenseNumber}`:row.licenseNumber}}
+            {{
+              row.vehicleAlias
+                ? `(${row.vehicleAlias})  ${row.licenseNumber}`
+                : row.licenseNumber
+            }}
           </template>
-           <template #driver="{ row }">
-          {{(row.name === null?'':row.name) +'  '+ (row.telphone === null?'':row.telphone)}}
+          <template #driver="{ row }">
+            {{
+              (row.name === null ? "" : row.name) +
+              "  " +
+              (row.telphone === null ? "" : row.telphone)
+            }}
           </template>
           <template #seriesModelName="{ row }">
-          {{!row.seriesModelName?'未绑定':row.seriesModelName}}
+            {{ !row.seriesModelName ? "未绑定" : row.seriesModelName }}
           </template>
-           <template #factoryOnlyCode="{ row }">
-          {{!row.factoryOnlyCode?'-':row.factoryOnlyCode}}
+          <template #factoryOnlyCode="{ row }">
+            {{ !row.factoryOnlyCode ? "-" : row.factoryOnlyCode }}
           </template>
-
 
           <template #edit="{ row }" width="200">
             <el-button size="mini" type="text" @click="handleUpdate(row)"
@@ -177,7 +197,7 @@
         defaultDriverList: defaultDriverList,
         orgCode: queryParams.orgCode,
         authStatusValue: authStatusValue,
-        currAuthStatus:currAuthStatus
+        currAuthStatus: currAuthStatus,
       }"
       :open="open"
       :title="title"
@@ -232,6 +252,7 @@ export default {
       },
       vehicleCode: "",
       vehicleStatusList: [], //车辆状态
+      authStatusList: [],
       vehicleStatusOptions: {},
       enabledList: [], //是否启用列表
       groupList: [], //分组列表
@@ -251,7 +272,7 @@ export default {
         title: "",
       },
       authStatusValue: null,
-      currAuthStatus:null,
+      currAuthStatus: null,
       currCode: null,
       detailDrawer: false,
     };
@@ -301,6 +322,7 @@ export default {
     },
     getConfigData() {
       this.vehicleStatusList = vehicleConfig.vehicleStatusList;
+      this.authStatusList = vehicleConfig.authStatusList;
       this.enabledList = vehicleConfig.enabledList;
       this.tableColumnsConfig = vehicleConfig.tableColumnsConfig;
     },
@@ -326,6 +348,9 @@ export default {
         }
       });
       return result;
+    },
+    getAuthStatusListConfigOption(item) {
+      return vehicleConfig.authStatusList.filter((el) => el.value == item)[0];
     },
     //停用状态修改
     handleStatusChange(row) {
@@ -503,13 +528,29 @@ export default {
           return http_request(checkTmp);
         })
         .then((el) => {
-          if(el.data.type === 0){
-   this.$confirm(el.data.msg, "警告", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning",
-          }).then(() => {
-            console.log("开始删了");
+          if (el.data.type === 0) {
+            this.$confirm(el.data.msg, "警告", {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning",
+            }).then(() => {
+              console.log("开始删了");
+              //删除
+              const tmp = {
+                moduleName: "http_vehicle",
+                method: "post",
+                url_alias: "vehicle_del",
+                data: { list: ids },
+              };
+              http_request(tmp).then((res) => {
+                console.log("看看数据", res);
+                if (res && res.code == "200") {
+                  this.msgSuccess("删除成功");
+                }
+                this.searchQuery();
+              });
+            });
+          } else {
             //删除
             const tmp = {
               moduleName: "http_vehicle",
@@ -524,24 +565,7 @@ export default {
               }
               this.searchQuery();
             });
-          });
-          }else{
-               //删除
-            const tmp = {
-              moduleName: "http_vehicle",
-              method: "post",
-              url_alias: "vehicle_del",
-              data: { list: ids },
-            };
-               http_request(tmp).then((res) => {
-              console.log("看看数据", res);
-              if (res && res.code == "200") {
-                this.msgSuccess("删除成功");
-              }
-              this.searchQuery();
-            });
           }
-       
         });
 
       // //删除
@@ -568,7 +592,7 @@ export default {
       this.open = true;
       this.vehicleCode = obj.code;
       this.authStatusValue = obj.authStatusValue;
-      this.currAuthStatus = obj.authStatus
+      this.currAuthStatus = obj.authStatus;
     },
     handlePosition(obj) {
       console.log("obj", obj);
