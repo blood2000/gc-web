@@ -14,10 +14,13 @@
         v-for="item in alarmList"
         :key="item.id"
       >
-        <div class="alarmInfo-wrapper__box">
+        <div
+          class="alarmInfo-wrapper__box"
+          :class="'alarmInfo-wrapper__level' + item.alarmLevel"
+        >
           <div class="alarmInfo-wrapper__tips">
             <img src="@/assets/images/index/alarmInfo-vibration.png" alt="" />
-            <p>异常震动</p>
+            <p class="g-single-row">{{ item.vendorAlarmTypeName }}</p>
           </div>
           <div class="alarmInfo-wrapper__detail">
             <div class="top">
@@ -130,17 +133,41 @@ export default {
       }
     }
     &__box {
+      position: relative;
       padding: 7px 10px;
       display: flex;
       align-items: center;
-      &:hover {
-        background: linear-gradient(
-          273deg,
-          rgba(255, 0, 0, 0) 0%,
-          rgba(255, 0, 0, 0.1) 100%
-        );
-        border-radius: 2px;
+      &:after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: 0.29;
+        z-index: 1;
       }
+    }
+    &__level1::after {
+      background: linear-gradient(
+        273deg,
+        rgba(255, 0, 0, 0) 0%,
+        rgba(255, 0, 0, 0.3) 100%
+      );
+    }
+    &__level2::after {
+      background: linear-gradient(
+        273deg,
+        rgba(255, 143, 0, 0) 0%,
+        rgba(255, 143, 0, 0.35) 100%
+      );
+    }
+    &__level3::after {
+      background: linear-gradient(
+        273deg,
+        rgba(70, 130, 250, 0) 0%,
+        rgba(70, 130, 250, 0.35) 100%
+      );
     }
     &__tips {
       width: 50px;

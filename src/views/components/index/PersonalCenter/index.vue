@@ -29,7 +29,10 @@
       <div class="calendar-container__main">
         <el-calendar ref="monChild" v-model="value" :first-day-of-week="7">
           <template slot="dateCell" slot-scope="{ date, data }">
-            <div :class="data.isSelected ? 'is-selected' : ''">
+            <div
+              @click="onClickDay(data)"
+              :class="data.isSelected ? 'is-selected' : ''"
+            >
               <div style="line-height: 17px">
                 {{ parseTime(data.day, '{d}') }}
               </div>
@@ -47,7 +50,10 @@
                   ·
                 </div>
                 <div
-                  v-if="transList.findIndex((res) => res === data.day) !== -1"
+                  v-if="
+                    transList.findIndex((res) => res.datetime === data.day) !==
+                    -1
+                  "
                   :class="
                     data.isSelected ? 'schedule' : 'schedule g-color-blue'
                   "
@@ -235,12 +241,10 @@ export default {
       }
       http_request(obj).then((res) => {
         console.log('日历告警--->', res)
-        let count = 0
-        res.data.forEach((item) => {
-          count += item.number
-        })
-        this.warnDateCount = count
         this.warnDateList = res.data
+        this.onClickDay({
+          day: this.parseTime(this.value, '{y}-{m}-{d}')
+        })
       })
     },
     // 日历运输
@@ -255,8 +259,10 @@ export default {
       }
       http_request(objDispatch).then((res) => {
         console.log('日历运输--->', res)
-        this.transCount = res.data.count
-        this.transList = res.data.date
+        this.transList = res.data
+        this.onClickDay({
+          day: this.parseTime(this.value, '{y}-{m}-{d}')
+        })
       })
     },
     // 获取司机设备车辆信息
@@ -308,6 +314,24 @@ export default {
           this.value.setFullYear(this.value.getFullYear() + 1)
         )
       }
+    },
+    // 点击了日子
+    onClickDay(data) {
+      let warnDateCount = 0
+      this.warnDateList.forEach((item) => {
+        if (item.alarmTime === data.day) {
+          warnDateCount = item.number
+        }
+      })
+      this.warnDateCount = warnDateCount
+
+      let transCount = 0
+      this.transList.forEach((item) => {
+        if (item.datetime === data.day) {
+          transCount = item.number
+        }
+      })
+      this.transCount = transCount
     }
   }
 }
