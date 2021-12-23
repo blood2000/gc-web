@@ -2,7 +2,7 @@
   <div class="transport">
     <div class="transport-bar">
       <div class="transport-title">运输统计（单）</div>
-      <el-button type="text">文字按钮</el-button>
+      <el-button type="text">查看更多</el-button>
     </div>
     <div ref="chart" class="chart-wrapper"></div>
   </div>
@@ -53,17 +53,79 @@ export default {
               {
                 value: this.transChart[0].unloadCount,
                 itemStyle: {
-                  color: 'linear-gradient(90deg, #EF8C8C 0%, #EF6969 100%);'
+                  color: {
+                    type: 'linear',
+                    x: 0,
+                    y: 0,
+                    x2: 1,
+                    y2: 0,
+                    colorStops: [
+                      {
+                        offset: 0,
+                        color: '#EF8C8C'
+                      },
+                      {
+                        offset: 1,
+                        color: '#EF6969'
+                      }
+                    ]
+                  }
                 }
               },
-              200,
-              100
+              {
+                value: this.transChart[0].loadCount,
+                itemStyle: {
+                  color: {
+                    type: 'linear',
+                    x: 0,
+                    y: 0,
+                    x2: 1,
+                    y2: 0,
+                    colorStops: [
+                      {
+                        offset: 0,
+                        color: '#75DB56'
+                      },
+                      {
+                        offset: 1,
+                        color: '#43B91E'
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                value: this.transChart[0].receiveCount,
+                itemStyle: {
+                  color: {
+                    type: 'linear',
+                    x: 0,
+                    y: 0,
+                    x2: 1,
+                    y2: 0,
+                    colorStops: [
+                      {
+                        offset: 0,
+                        color: '#6290ED'
+                      },
+                      {
+                        offset: 1,
+                        color: '#2069FA'
+                      }
+                    ]
+                  }
+                }
+              }
             ],
             type: 'bar',
             showBackground: true,
             barWidth: 24,
             backgroundStyle: {
               color: '#F7F7F7'
+            },
+            label: {
+              show: true,
+              position: 'right'
             }
           }
         ]
