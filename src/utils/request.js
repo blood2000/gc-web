@@ -203,7 +203,7 @@ export function getDicts(dictType, dictObj) {
   } else {
     formData.append('dictType', dictType)
   }
-  return service.post('/chy/system/dict/data/listByDict', formData, {
+  return service.post('/system/dict/data/listByDict', formData, {
     headers: Object.assign({}, defaultH, {
       'Content-Type': 'application/x-www-form-urlencoded'
     })
