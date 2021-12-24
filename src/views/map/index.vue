@@ -2253,7 +2253,7 @@ export default {
         margin-top: -114px;
         width: 228px;
         height: 228px;
-        background: url("../../assets/images/statistic/index_before.png")
+        background: url("../../assets/images/map/red.webp")
           no-repeat;
         background-size: 228px 228px;
         z-index: 0;
@@ -2267,7 +2267,7 @@ export default {
         margin-top: -114px;
         width: 228px;
         height: 228px; //index_before_first
-        background: url("../../assets/images/statistic/index_before_first.png")
+        background: url("../../assets/images/map/blue.webp")
           no-repeat;
         background-size: 228px 228px;
         z-index: 0;
