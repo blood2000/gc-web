@@ -96,7 +96,7 @@
               </div>
               <!-- 车牌 -->
               <div class="carMany-list-bottom-item-body-vehicleNumber">
-                {{ item.vehicleNumber }}
+                {{item.vehicleAlias?`(${item.vehicleAlias})  ${item.vehicleNumber}`: item.vehicleNumber }}
               </div>
               <!-- 是否外援 -->
               <div>
@@ -710,7 +710,6 @@ export default {
           result.dispatchOrderCode = me.dispatchOrderCode;
           result.endDate = me.form.startDate;
           console.log("result", result);
-          return;
           const obj = {
             moduleName: "http_dispatch",
             method: "post",
@@ -811,6 +810,9 @@ export default {
   align-items: center;
   height: 44px;
 }
+.carMany-list-bottom-item-footer{
+  margin-left: 20px;
+}
 .carMany-list-bottom-item-body {
   display: flex;
   align-items: center;
@@ -852,7 +854,7 @@ export default {
   font-weight: bold;
   color: #3d4050;
   margin-right: 15px;
-  width: 77px;
+  width: 160px;
 }
 .self {
   display: inline-block;

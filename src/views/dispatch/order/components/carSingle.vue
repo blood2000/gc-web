@@ -66,7 +66,7 @@
                 :value="sub.vehicleCode"
                 :disabled="!isZj && sub.authStatus != '3'"
               >
-                <span style="float: left">{{ sub.vehicleNumber }}</span>
+                <span style="float: left">{{sub.vehicleAlias?`(${sub.vehicleAlias})    ${sub.vehicleNumber}`: sub.vehicleNumber }}</span>
                 <span
                   v-if="isZj || sub.authStatus === '3'"
                   class="vehicle-item-sub-right"

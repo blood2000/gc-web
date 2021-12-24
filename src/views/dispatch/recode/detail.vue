@@ -220,7 +220,7 @@
           <el-col :span="12" style="padding-bottom: 16px">
             <span class="dispatch-base-label">承运车辆:</span>
             <span class="dispatch-base-text">
-              {{ pageData.vehicleNumber }}</span
+              {{ pageData.vehicleAlias?`(${pageData.vehicleAlias})  ${pageData.vehicleNumber}`: pageData.vehicleNumber }}</span
             >
           </el-col>
           <el-col :span="12" style="padding-bottom: 16px">

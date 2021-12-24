@@ -37,6 +37,14 @@
           :border="false"
           :stripe="true"
         >
+        <!-- vehicleAlias vehicleNumber -->
+           <template #vehicleNumber="{ row }">
+            {{
+              row.vehicleAlias
+                ? `(${row.vehicleAlias})  ${row.vehicleNumber}`
+                : row.vehicleNumber
+            }}
+          </template>
           <template #driverName="{ row }">
             <span>{{ `${row.driverName}[${row.driverPhone}]` }}</span>
           </template>

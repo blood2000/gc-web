@@ -21,7 +21,13 @@
     <!-- </div> -->
 
     <div class="warn-card-title" v-if="tabIndex === '1'">
-      {{ cardInfo.licenseNumber }}
+      <span>
+        {{ cardInfo.licenseNumber }}
+      </span>
+      <!-- cardInfo -->
+      <span v-if="cardInfo.vehicleAlias" class="warn-card-label">
+        {{ cardInfo.vehicleAlias }}
+      </span>
     </div>
     <div class="warn-card-title" v-else>{{ cardInfo.nickName }}</div>
     <div class="warn-card-subtitle">
@@ -43,7 +49,7 @@
           placement="top-start"
         >
           <div class="warn-card-type">
-            {{ cardInfo.vendorAlarmTypeName || '无' }}
+            {{ cardInfo.vendorAlarmTypeName || "无" }}
           </div>
         </el-tooltip>
         <el-tooltip
@@ -52,10 +58,10 @@
           :content="cardInfo.alarmAddress || '-'"
           placement="top-start"
         >
-          <div class="text">{{ cardInfo.alarmAddress || '-' }}</div>
+          <div class="text">{{ cardInfo.alarmAddress || "-" }}</div>
         </el-tooltip>
 
-        <div class="text">{{ cardInfo.alarmTime || '-' }}</div>
+        <div class="text">{{ cardInfo.alarmTime || "-" }}</div>
       </div>
       <div class="card-main-none" v-if="!cardInfo.vendorAlarmTypeName">
         <img src="../../../../assets/images/detail/warn_none.png" alt="" />
@@ -98,25 +104,25 @@
 <script>
 export default {
   data() {
-    return {}
+    return {};
   },
 
   components: {},
   props: {
     level: {
       type: Number,
-      default: 1
+      default: 1,
     },
     cardInfo: {
       type: Object,
       default() {
-        return {}
-      }
+        return {};
+      },
     },
     tabIndex: {
       type: String,
-      default: '1'
-    }
+      default: "1",
+    },
   },
 
   computed: {},
@@ -127,16 +133,16 @@ export default {
 
   methods: {
     openList(type) {
-      this.$emit('openList', { type: type, item: this.cardInfo })
+      this.$emit("openList", { type: type, item: this.cardInfo });
     },
 
     dealAlarmImg() {
-      if (!this.cardInfo.key) return ''
+      if (!this.cardInfo.key) return "";
       // return require(`@/assets/images/detail/${this.cardInfo.key}.png`);
-      return require(`@/assets/images/detail/aiot-yczd.png`)
-    }
-  }
-}
+      return require(`@/assets/images/detail/aiot-yczd.png`);
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
 .warn-card {
@@ -148,6 +154,7 @@ export default {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
   margin: 0 1% 20px 1%;
   cursor: pointer;
+
   &-more {
     position: absolute;
     top: 0;
@@ -174,7 +181,20 @@ export default {
     font-family: PingFang SC;
     font-weight: bold;
     color: #3d4050;
+    .warn-card-label {
+      padding: 1px 6px;
+      margin-left: 9px;
+      width: 60px;
+      height: 20px;
+      background: #ebf2ff;
+      border-radius: 2px;
+      font-size: 14px;
+      font-family: PingFang SC;
+      font-weight: bold;
+      color: #4682fa;
+    }
   }
+
   &-subtitle {
     padding: 0 15px;
     margin-bottom: 3px;
@@ -255,7 +275,7 @@ export default {
 }
 
 .warn-card-main::before {
-  content: '';
+  content: "";
   position: absolute;
   width: 4px;
   height: 72px;
@@ -265,7 +285,7 @@ export default {
 }
 
 .warn-card-main::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 100%;
   height: 100%;

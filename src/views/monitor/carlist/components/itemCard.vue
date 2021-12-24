@@ -23,6 +23,9 @@
     </el-dropdown>
     <div class="monitor-card-title">
       <span>{{ data.plate_number }}</span>
+        <span v-if="data.vehicleAlias" class="monitor-card-label">
+        {{ data.vehicleAlias }}
+      </span>
     </div>
     <div class="monitor-card-location">
       <span class="monitor-card-location-text1">当前位置 |</span>
@@ -279,6 +282,22 @@ export default {
     color: #3d4050;
     padding-left: 16px;
     padding-right: 16px;
+    // &>span{
+    //   display: inline-block;
+    //   margin-right: 9px;
+    // }
+  }
+    &-label {
+      margin-left: 9px;
+    width: 60px;
+    height: 20px;
+    background: #ebf2ff;
+    border-radius: 2px;
+    font-size: 14px;
+    font-family: PingFang SC;
+    font-weight: bold;
+    color: #4682fa;
+    padding:1px 6px;
   }
   &-location {
     font-size: 14px;
