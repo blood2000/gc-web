@@ -141,17 +141,47 @@
       </el-row>
       <el-row :gutter="15">
         <el-col :span="12">
-          <el-form-item prop="engineNumber" label="发动机号">
-            <el-input
-              v-model="form.engineNumber"
-              placeholder="请输入发动机号"
+          <el-form-item label="车辆能源类型" prop="vehicleEnergyType">
+            <el-select
+              v-model="form.vehicleEnergyType"
               clearable
+              filterable
               style="width: 256px"
+              placeholder="请选择车辆能源类型"
               :disabled="disabledDeal()"
-            />
+            >
+              <el-option
+                v-for="(item, index) in vehicleEnergyTypeList"
+                :key="index"
+                :label="item.dictLabel"
+                :value="item.dictValue"
+              />
+            </el-select>
           </el-form-item>
         </el-col>
-
+        <el-col :span="12">
+          <el-form-item
+            style="display: inline-block"
+            label="车牌颜色"
+            prop="vehicleLicenseColorCode"
+          >
+            <el-select
+              v-model="form.vehicleLicenseColorCode"
+              clearable
+              filterable
+              style="width: 256px"
+              placeholder="请选择"
+              :disabled="disabledDeal()"
+            >
+              <el-option
+                v-for="(item, index) in vehicleLicenseColorCodeList"
+                :key="index"
+                :label="item.dictLabel"
+                :value="item.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
         <el-col :span="12">
           <el-form-item label="车辆识别代号" prop="chassisNumber">
             <el-input
@@ -163,7 +193,142 @@
             />
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+          <el-form-item prop="engineNumber" label="发动机号">
+            <el-input
+              v-model="form.engineNumber"
+              placeholder="请输入发动机号"
+              clearable
+              style="width: 256px"
+              :disabled="disabledDeal()"
+            />
+          </el-form-item>
+        </el-col>
       </el-row>
+      <el-row :gutter="15">
+        <el-col :span="12">
+          <el-form-item label="车辆可载重量:" prop="vehicleLoadWeight">
+            <el-input
+              v-model="form.vehicleLoadWeight"
+              placeholder="请输入可载重量"
+              clearable
+              style="width: 256px"
+              type="number"
+              @input="imposeInput($event, 'vehicleLoadWeight')"
+              :disabled="disabledDeal()"
+            >
+              <template slot="append">吨</template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="车辆总重量:" prop="vehicleTotalWeight">
+            <el-input
+              v-model="form.vehicleTotalWeight"
+              placeholder="请输入总重量"
+              clearable
+              style="width: 256px"
+              type="number"
+              @input="imposeInput($event, 'vehicleTotalWeight')"
+              :disabled="disabledDeal()"
+            >
+              <template slot="append">吨</template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="15">
+        <el-col :span="12">
+          <el-form-item
+            style="display: inline-block"
+            label="注册时间"
+            prop="registerDate"
+          >
+            <el-date-picker
+              v-model="form.registerDate"
+              type="date"
+              style="width: 256px"
+              placeholder="选择日期"
+              :disabled="disabledDeal()"
+            >
+            </el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item
+            style="display: inline-block"
+            label="发证日期"
+            prop="issueDate"
+          >
+            <el-date-picker
+              v-model="form.issueDate"
+              type="date"
+              style="width: 256px"
+              placeholder="选择日期"
+              :disabled="disabledDeal()"
+            >
+            </el-date-picker>
+          </el-form-item>
+        </el-col>
+        <!-- issuingOrganizations -->
+        <el-col :span="12">
+          <el-form-item label="发证机关:" prop="issuingOrganizations">
+            <el-input
+              v-model="form.issuingOrganizations"
+              placeholder="请输入发证机关"
+              clearable
+              style="width: 256px"
+              @input="imposeInput($event, 'issuingOrganizations')"
+              :disabled="disabledDeal()"
+            >
+            </el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="15">
+        <el-col :span="12">
+          <el-form-item label="车辆归属" prop="vehicleOwnership">
+            <el-select
+              v-model="form.vehicleOwnership"
+              clearable
+              filterable
+              style="width: 256px"
+              placeholder="请选择车辆归属"
+            >
+              <el-option
+                v-for="(item, index) in vehicleOwnershipList"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item
+            style="display: inline-block"
+            label="车辆承运类型"
+            prop="carrierType"
+          >
+            <el-select
+              v-model="form.carrierType"
+              clearable
+              filterable
+              style="width: 256px"
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="(item, index) in carrierTypeList"
+                :key="index"
+                :label="item.dictLabel"
+                :value="item.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
       <el-row :gutter="15">
         <el-col :span="12">
           <el-form-item
@@ -209,155 +374,20 @@
       </el-row>
       <el-row :gutter="15">
         <el-col :span="12">
-          <el-form-item label="车辆可载重量:" prop="vehicleLoadWeight">
+          <el-form-item prop="vehicleAlias" label="车辆别名">
             <el-input
-              v-model="form.vehicleLoadWeight"
-              placeholder="请输入可载重量"
+              v-model="form.vehicleAlias"
+              placeholder="请输入车辆别名"
               clearable
               style="width: 256px"
-              type="number"
-              @input="imposeInput($event, 'vehicleLoadWeight')"
               :disabled="disabledDeal()"
-            >
-              <template slot="append">吨</template>
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="车辆总重量:" prop="vehicleTotalWeight">
-            <el-input
-              v-model="form.vehicleTotalWeight"
-              placeholder="请输入总重量"
-              clearable
-              style="width: 256px"
-              type="number"
-              @input="imposeInput($event, 'vehicleTotalWeight')"
-              :disabled="disabledDeal()"
-            >
-              <template slot="append">吨</template>
-            </el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="15">
-        <el-col :span="12">
-          <el-form-item
-            style="display: inline-block"
-            label="车辆承运类型"
-            prop="carrierType"
-          >
-            <el-select
-              v-model="form.carrierType"
-              clearable
-              filterable
-              style="width: 256px"
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="(item, index) in carrierTypeList"
-                :key="index"
-                :label="item.dictLabel"
-                :value="item.dictValue"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item
-            style="display: inline-block"
-            label="车牌类型"
-            prop="vehicleLicenseColorCode"
-          >
-            <el-select
-              v-model="form.vehicleLicenseColorCode"
-              clearable
-              filterable
-              style="width: 256px"
-              placeholder="请选择"
-              :disabled="disabledDeal()"
-            >
-              <el-option
-                v-for="(item, index) in vehicleLicenseColorCodeList"
-                :key="index"
-                :label="item.dictLabel"
-                :value="item.dictValue"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="15">
-        <el-col :span="12">
-          <el-form-item
-            style="display: inline-block"
-            label="注册时间"
-            prop="registerDate"
-          >
-            <el-date-picker
-              v-model="form.registerDate"
-              type="date"
-              style="width: 256px"
-              placeholder="选择日期"
-              :disabled="disabledDeal()"
-            >
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item
-            style="display: inline-block"
-            label="发证日期"
-            prop="issueDate"
-          >
-            <el-date-picker
-              v-model="form.issueDate"
-              type="date"
-              style="width: 256px"
-              placeholder="选择日期"
-              :disabled="disabledDeal()"
-            >
-            </el-date-picker>
+            />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="12">
-          <el-form-item label="车辆能源类型" prop="vehicleEnergyType">
-            <el-select
-              v-model="form.vehicleEnergyType"
-              clearable
-              filterable
-              style="width: 256px"
-              placeholder="请选择车辆能源类型"
-            >
-              <el-option
-                v-for="(item, index) in vehicleEnergyTypeList"
-                :key="index"
-                :label="item.dictLabel"
-                :value="item.dictValue"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
         <!-- vehicleOwnership -->
-        <el-col :span="12">
-          <el-form-item label="车辆归属" prop="vehicleOwnership">
-            <el-select
-              v-model="form.vehicleOwnership"
-              clearable
-              filterable
-              style="width: 256px"
-              placeholder="请选择车辆归属"
-            >
-              <el-option
-                v-for="(item, index) in vehicleOwnershipList"
-                :key="index"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
+
         <el-col :span="8">
           <el-form-item
             ref="roadTransportCertificateImgRef"
@@ -474,6 +504,8 @@ export default {
         // remark: null, //备注
         defaultDriverCode: null, //默认司机
         vehicleOwnership: null, // 车辆归属 自有0 1外部
+        issuingOrganizations: null, //发证机关
+        vehicleAlias: null, //车辆别名
       },
       rules: {
         vehicleLicenseImg: [
@@ -493,9 +525,6 @@ export default {
             trigger: ["change", "blur"],
           },
         ],
-        // engineNumber: [
-        //   { required: true, message: "发动机号不能为空", trigger: "blur" },
-        // ],
         chassisNumber: [
           { required: true, message: "车辆识别号码不能为空", trigger: "blur" },
         ],
@@ -513,6 +542,9 @@ export default {
             message: "请选择车辆归属",
             trigger: "change",
           },
+        ],
+        issuingOrganizations: [
+          { required: true, message: "发证机关不能为空", trigger: "blur" },
         ],
         vehicleEnergyType: [
           {
@@ -876,6 +908,7 @@ export default {
         vehicleLoadWeight: null, // 可载重量
         vehicleTypeCode: null, //  车辆类型
         engineNumber: null, //发动机号
+        vehicleAlias: null, //车辆别名
         chassisNumber: null, //车辆识别号码
         licenseNumber: null, //车牌号
         vehicleTotalWeight: null, //车辆总重量
@@ -885,6 +918,7 @@ export default {
         orgCode: orgCode, //组织
         carrierType: null, //车辆承运类型
         vehicleOwnership: null,
+        issuingOrganizations: null,
         // deviceNumber: null, //绑定设备的编号
         // remark: null, //备注
         defaultDriverCode: null,
@@ -905,8 +939,10 @@ export default {
       console.log("LoadChooseImg", e);
     },
     ocrToform(result) {
+      console.log("ocrToform", result);
       this.form.licenseNumber = result.number;
       this.form.engineNumber = result.engine_no;
+      this.form.issuingOrganizations = result.issuing_authority;
       this.form.chassisNumber = result.vin;
       this.form.issueDate = result.issue_date;
       this.form.registerDate = result.register_date;
@@ -921,15 +957,19 @@ export default {
       }
     },
     async ocrHttp(imgPath, type, side) {
+      const params =  {
+          imgPath,
+          type,
+          side,
+        }
+        if(side =="front"){
+          // params.returnIssuingAuthority = true
+        }
       const obj = {
         moduleName: "http_common",
         method: "post",
         url_alias: "ocr",
-        data: {
-          imgPath,
-          type,
-          side,
-        },
+        data:params
       };
       console.log("ocr请求 参数", obj);
       const res = await http_request(obj);
@@ -975,6 +1015,9 @@ export default {
       this.form.vehicleLoadWeight = data.vehicleInf.vehicleLoadWeight; // 可载重量
       this.form.vehicleTypeCode = data.vehicleLicenseInf.vehicleTypeCode; //  车辆类型*
       this.form.engineNumber = data.vehicleLicenseInf.engineNumber; //发动机号
+      this.form.vehicleAlias = data.vehicleAlias; //车辆别名
+      this.form.issuingOrganizations =
+        data.vehicleLicenseInf.issuingOrganizations;
       this.form.chassisNumber = data.vehicleInf.chassisNumber; //车辆识别号码
       this.form.licenseNumber = data.vehicleLicenseInf.licenseNumber; //车牌号
       this.form.vehicleTotalWeight = data.vehicleInf.vehicleTotalWeight; //车辆总重量
@@ -1005,8 +1048,10 @@ export default {
         roadTransportCertificateImg: me.form.roadTransportCertificateImg,
         carrierType: me.form.carrierType,
         vehicleOwnership: me.form.vehicleOwnership,
+        vehicleAlias: me.form.vehicleAlias,
         vehicleLicenseInf: {
           engineNumber: me.form.engineNumber,
+          issuingOrganizations: me.issuingOrganizations,
           vehicleLicenseSecondImg: me.form.vehicleLicenseSecondImg,
           issueDate: me.form.issueDate,
           registerDate: me.form.registerDate,
@@ -1042,9 +1087,11 @@ export default {
           vehicleTotalWeight: me.form.vehicleTotalWeight,
           vehicleTypeCode: me.form.vehicleTypeCode,
           engineNumber: me.form.engineNumber,
+          issuingOrganizations: me.form.issuingOrganizations,
           chassisNumber: me.form.chassisNumber,
           licenseNumber: me.form.licenseNumber,
         },
+        vehicleAlias: me.form.vehicleAlias,
         carrierType: me.form.carrierType,
         vehicleOwnership: me.form.vehicleOwnership,
         roadTransportCertificateImg: me.form.roadTransportCertificateImg,
