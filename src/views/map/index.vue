@@ -489,7 +489,7 @@ export default {
       cluster: null,
       // 定时刷新地图点位
       refreshMarkerTimer: null,
-      refreshMarkerTime: 10,
+      refreshMarkerTime: 45,
       readTimer: null,
       // 不同承运类型车辆图片大小不同所以点位偏移不同
       offsetList: {
@@ -1631,7 +1631,7 @@ export default {
       };
       http_request(obj).then((res) => {
         if (res.code == 200) {
-          // _this.refreshMarkerTime = parseInt(res.data.map_refresh_interval);
+          _this.refreshMarkerTime = parseInt(res.data.map_refresh_interval);
         }
         this.clearReadTime();
         this.readTimer = setInterval(() => {
@@ -1647,7 +1647,7 @@ export default {
       if (this.readTimer) {
         clearInterval(this.readTimer);
         this.readTimer = null;
-        this.refreshMarkerTime = 10;
+        this.refreshMarkerTime = 45;
       }
     },
     // 处理车辆·标签速度
