@@ -56,9 +56,43 @@
     <div class="benefit-right">
       <div class="wrapper">
         <div class="left">
-          <Transport :transChart="statistic.transChart" />
+          <Transport
+            v-show="!isMany"
+            :transChart="statistic.transChart"
+            :startDate="startDate"
+            :endDate="endDate || startDate"
+          />
+          <TransportMany
+            v-show="isMany"
+            :transChart="statistic.transChart"
+            :startDate="startDate"
+            :endDate="endDate || startDate"
+          />
+          <Freight
+            v-show="!isMany"
+            :freightChart="statistic.freightChart"
+            :startDate="startDate"
+            :endDate="endDate || startDate"
+          />
+          <FreightMany
+            v-show="isMany"
+            :freightChart="statistic.freightChart"
+            :startDate="startDate"
+            :endDate="endDate || startDate"
+          />
         </div>
-        <div class="right"></div>
+        <div class="right">
+          <Vehicle
+            :vehicleBenefitInfo="statistic.vehicleBenefitInfo || {}"
+            :startDate="startDate"
+            :endDate="endDate || startDate"
+          />
+          <Driver
+            :driverBenefitInfo="statistic.driverBenefitInfo || {}"
+            :startDate="startDate"
+            :endDate="endDate || startDate"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -68,22 +102,45 @@
 import { http_request } from '@/api'
 import { compareBeginEndTime } from '@/utils/index'
 import Transport from './components/transport.vue'
+import TransportMany from './components/transportMany.vue'
+import Freight from './components/freight.vue'
+import FreightMany from './components/freightMany.vue'
+import Vehicle from './components/vehicle.vue'
+import Driver from './components/driver.vue'
 
 export default {
   components: {
-    Transport
+    Transport,
+    TransportMany,
+    Freight,
+    FreightMany,
+    Vehicle,
+    Driver
   },
   data() {
     return {
       value: new Date(),
       startDate: this.parseTime(new Date(), '{y}-{m}-{d}'),
       endDate: this.parseTime(new Date(), '{y}-{m}-{d}'),
+      isMany: false,
       statistic: {
         appointCarOrderCount: '', // 总调度量
         revenue: '', // 已收款
         driverCount: '', // 任务司机
         vehicleCount: '', // 任务车辆
-        transChart: [] // 运输图表
+        transChart: [], // 运输图表
+        freightChart: [], // 运费图表
+        vehicleBenefitInfo: {
+          // 车辆效益
+          revenueCount: 0, // 已收款派车单
+          revenue: 0, // 已收款
+          vehicleBenefitRanking: [] // 车辆排行
+        },
+        driverBenefitInfo: {
+          driverCount: 0, // 任务司机
+          revenue: 0, // 已收款
+          driverBenefitRanking: [] // 司机排行
+        }
       }
     }
   },
@@ -106,6 +163,13 @@ export default {
   methods: {
     // 点击搜索
     onSearch() {
+      if (!this.startDate) {
+        this.$message.error('请选择需要查询的开始日期')
+        return
+      }
+      if (!this.endDate) {
+        this.endDate = this.startDate
+      }
       const params = {
         moduleName: 'http_statistic',
         method: 'get',
@@ -116,7 +180,11 @@ export default {
         }
       }
       http_request(params).then((res) => {
-        console.log('看看', res)
+        this.isMany = !(
+          this.startDate &&
+          this.endDate &&
+          this.startDate === this.endDate
+        )
         this.statistic = res.data
       })
     },
@@ -170,8 +238,9 @@ export default {
       return ''
     },
     onReset() {
-      this.startDate = ''
-      this.endDate = ''
+      this.startDate = this.parseTime(new Date(), '{y}-{m}-{d}')
+      this.endDate = this.parseTime(new Date(), '{y}-{m}-{d}')
+      this.onSearch()
     }
   }
 }
@@ -179,7 +248,7 @@ export default {
 
 <style lang="scss" scoped>
 .benefit {
-  padding: 0 20px;
+  padding: 0 0 0 20px;
   display: flex;
   &-left {
     width: 300px;
@@ -262,12 +331,10 @@ export default {
     }
     .left {
       width: 1024px;
-      height: 500px;
       margin: 0 16px;
     }
     .right {
       width: 460px;
-      height: 300px;
     }
   }
 }

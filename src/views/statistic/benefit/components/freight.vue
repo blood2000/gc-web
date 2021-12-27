@@ -1,8 +1,8 @@
 <template>
-  <div class="transport">
-    <div class="transport-bar">
-      <div class="transport-title">运输统计（单）</div>
-      <TransportMore :startDate="startDate" :endDate="endDate" />
+  <div class="freight">
+    <div class="freight-bar">
+      <div class="freight-title">运费统计（元）</div>
+      <FreightMore :startDate="startDate" :endDate="endDate" />
     </div>
     <div ref="chart" class="chart-wrapper"></div>
   </div>
@@ -11,11 +11,11 @@
 <script>
 import { http_request } from '@/api'
 import * as echarts from 'echarts'
-import TransportMore from './transportMore.vue'
+import FreightMore from './freightMore.vue'
 
 export default {
   props: {
-    transChart: {
+    freightChart: {
       type: Array,
       default: []
     },
@@ -29,14 +29,14 @@ export default {
     }
   },
   components: {
-    TransportMore
+    FreightMore
   },
   data() {
     return {}
   },
   mounted() {
     this.initChart()
-    if (this.transChart && this.transChart.length > 0) {
+    if (this.freightChart && this.freightChart.length > 0) {
       this.setChart()
     }
   },
@@ -44,13 +44,13 @@ export default {
     initChart() {
       this.chart = echarts.init(this.$refs.chart, 'macarons', {
         width: 1000,
-        height: 380
+        height: 330
       })
     },
     setChart() {
       const styleOptions = {
         label: {
-          formatter: '{c}单',
+          formatter: '{c}元',
           color: '#3D4050',
           fontSize: 20,
           fontWeight: 'bold'
@@ -65,6 +65,9 @@ export default {
       }
 
       this.option = {
+        grid: {
+          y: 50
+        },
         xAxis: {
           type: 'value',
           splitLine: {
@@ -76,32 +79,13 @@ export default {
         },
         yAxis: {
           type: 'category',
-          data: ['已回车', '已出车', '已接单']
+          data: ['已收款', '待收款']
         },
         series: [
           {
             data: [
               {
-                value: this.transChart[0].unloadCount,
-                label: styleOptions.label,
-                itemStyle: {
-                  color: {
-                    ...styleOptions.itemStyle,
-                    colorStops: [
-                      {
-                        offset: 0,
-                        color: '#EF8C8C'
-                      },
-                      {
-                        offset: 1,
-                        color: '#EF6969'
-                      }
-                    ]
-                  }
-                }
-              },
-              {
-                value: this.transChart[0].loadCount,
+                value: this.freightChart[0].revenue,
                 label: styleOptions.label,
                 itemStyle: {
                   color: {
@@ -120,7 +104,7 @@ export default {
                 }
               },
               {
-                value: this.transChart[0].receiveCount,
+                value: this.freightChart[0].notRevenue,
                 label: styleOptions.label,
                 itemStyle: {
                   color: {
@@ -161,8 +145,8 @@ export default {
     }
   },
   watch: {
-    transChart() {
-      if (this.transChart && this.transChart.length > 0) {
+    freightChart() {
+      if (this.freightChart && this.freightChart.length > 0) {
         this.setChart()
       }
     }
@@ -171,7 +155,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.transport {
+.freight {
   height: 465px;
   background: #fff;
   padding: 25px 20px;
