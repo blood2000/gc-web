@@ -19,6 +19,14 @@ export default {
   checkAdd: '/fmsweb/basic/vehicle/v2/checkAdd',  //校验车辆
   confirmAdd: '/fmsweb/basic/vehicle/v2/confirmAdd', //确认添加
   checkDelete:'/fmsweb/basic/vehicle/v2/checkDelete',//校验车辆删除
+  listByDeviceInfo:'/fmsweb/basic/device/v2/listByDeviceInfo',//设备管理分页
+  device_detail:(deviceCode)=>`/fmsweb/basic/device/v2/detail/${deviceCode}`,//设备详情
+  boundVehicle:'/fmsweb/basic/device/v2/boundVehicle',//绑定车辆
+  untieTheVehicle:'/fmsweb/basic/device/v2/untieTheVehicle',//解绑车辆
+  getVehicleList:'/fmsweb/basic/device/v2/getVehicleList',//车辆列表
+  moduleName:'/fmsweb/basic/device/v2/moduleName',//设备型号列表
+  seriesName:'/fmsweb/basic/device/v2/seriesName',//设备系列列表
+
 }
 
 // 正式
