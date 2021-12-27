@@ -120,7 +120,7 @@ const tableColumnsConfig = [
   {
     isShow: true,
     label: "司机",
-    prop: "driver",
+    prop: "defaultDriverName",
     sortNum: 4,
     tooltip: true,
   },

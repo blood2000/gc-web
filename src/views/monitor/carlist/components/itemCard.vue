@@ -1,6 +1,7 @@
 <template>
   <div class="monitor-card" @click="mapSearch">
-    <el-dropdown class="monitor-card-menu-ab" trigger="click">
+    <div @click.stop="">
+<el-dropdown class="monitor-card-menu-ab" trigger="click" >
       <div>
         <div></div>
         <div></div>
@@ -21,6 +22,8 @@
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
+    </div>
+    
     <div class="monitor-card-title">
       <span>{{ data.plate_number }}</span>
         <span v-if="data.vehicleAlias" class="monitor-card-label">
@@ -29,9 +32,10 @@
     </div>
     <div class="monitor-card-location">
       <span class="monitor-card-location-text1">当前位置 |</span>
-      <el-tooltip effect="dark" :content="data.attribute" placement="top">
-        <span class="monitor-card-location-text2">{{ data.attribute?data.attribute:'暂无数据' }}</span>
+      <el-tooltip v-if="data.attribute" effect="dark" :content="data.attribute" placement="top">
+        <span class="monitor-card-location-text2">{{ data.attribute }}</span>
       </el-tooltip>
+      <span v-else  class="monitor-card-location-text2">暂无数据</span>
     </div>
     <div class="monitor-card-driver">
       <span>最新告警</span>
@@ -65,22 +69,24 @@
     </div>
     <div v-else class="nothing">
 
-        <el-empty image-size="39.5" 
+        <el-empty :image-size="39.5" 
         ></el-empty>
 
     </div>
     <div class="monitor-card-footer">
       <div class="monitor-card-footer-left">
         <img src="../../../../assets/images/detail/monitor-phone.png" alt="" />
-        <el-tooltip effect="dark" :content="data.model_name" placement="top">
-          <span class="g-single-row">{{data.model_name? data.model_name :'暂未绑定设备...'}}</span>
+        <el-tooltip effect="dark" v-if="data.model_name" :content="data.model_name" placement="top">
+          <span class="g-single-row">{{ data.model_name }}</span>
         </el-tooltip>
+         <span v-else class="g-single-row">'暂未绑定设备...</span>
       </div>
       <div class="monitor-card-footer-middle">
         <img src="../../../../assets/images/detail/monitor-people.png" alt="" />
-        <el-tooltip effect="dark" :content="data.nick_name" placement="top">
-          <span class="g-single-row">{{data.nick_name?data.nick_name:'未分配' }}</span>
+        <el-tooltip v-if="data.nick_name" effect="dark" :content="data.nick_name" placement="top">
+          <span class="g-single-row">{{data.nick_name}}</span>
         </el-tooltip>
+           <span v-else class="g-single-row">未分配</span>
       </div>
       <div class="monitor-card-footer-right">
         <span
@@ -198,7 +204,7 @@ export default {
 
     // 查看地图
     mapSearch() {
-      console.log("this.data", this.data);
+      console.log("查看地图 this.data", this.data);
       const vehicleCode = this.data.vehicle_code;
       const trackType = 1;
       this.$router.push(

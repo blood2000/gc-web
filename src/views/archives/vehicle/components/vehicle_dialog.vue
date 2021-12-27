@@ -380,7 +380,6 @@
               placeholder="请输入车辆别名"
               clearable
               style="width: 256px"
-              :disabled="disabledDeal()"
             />
           </el-form-item>
         </el-col>
@@ -398,7 +397,6 @@
             <ImageUploadSimple
               v-model="form.roadTransportCertificateImg"
               @input="LoadChooseImg"
-              :disabled="disabledDeal()"
             >
               <template slot="initImage">
                 <div class="dispatch-bg-upload dispatch-load">
