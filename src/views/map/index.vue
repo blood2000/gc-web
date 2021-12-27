@@ -489,7 +489,7 @@ export default {
       cluster: null,
       // 定时刷新地图点位
       refreshMarkerTimer: null,
-      refreshMarkerTime: 45,
+      refreshMarkerTime: 10,
       readTimer: null,
       // 不同承运类型车辆图片大小不同所以点位偏移不同
       offsetList: {
@@ -1348,6 +1348,7 @@ export default {
         if (res.data.rows && res.data.rows.length > 0) {
           this.markerData = res.data.rows;
           // 绘制全部车辆点位
+          const realData = [];
           res.data.rows.forEach((el) => {
             const { attribute } = el;
             if (
@@ -1358,6 +1359,7 @@ export default {
               attribute.coordinate.value[0] &&
               attribute.coordinate.value[1]
             ) {
+              realData.push(el);
               this.drawVehicleMarker(el);
             }
           });
@@ -1368,8 +1370,13 @@ export default {
           // })
           // 刷新点位后不重新设置视野
           if (isFresh && this.headerTab !== 3) {
+            // console.log("realData", realData);
+            const positions = [];
+            this.postCenter(realData, positions);
+            console.log("positions", positions);
             this.$nextTick(() => {
-              this.map.setFitView();
+              // this.map.setFitView();
+              this.map.setZoomAndCenter(4.1, positions);
             });
           }
         } else {
@@ -1571,8 +1578,8 @@ export default {
         }, 5 * 1000);
       } else {
         console.log("ckc 1");
-        this.clearRealWarnMarker();
-        this.drawVehicleMarker(tmp);
+        // this.clearRealWarnMarker();
+        // this.drawVehicleMarker(tmp);
       }
     },
     // 绘制告警点位
@@ -1624,7 +1631,7 @@ export default {
       };
       http_request(obj).then((res) => {
         if (res.code == 200) {
-          _this.refreshMarkerTime = parseInt(res.data.map_refresh_interval);
+          // _this.refreshMarkerTime = parseInt(res.data.map_refresh_interval);
         }
         this.clearReadTime();
         this.readTimer = setInterval(() => {
@@ -1640,7 +1647,7 @@ export default {
       if (this.readTimer) {
         clearInterval(this.readTimer);
         this.readTimer = null;
-        this.refreshMarkerTime = 45;
+        this.refreshMarkerTime = 10;
       }
     },
     // 处理车辆·标签速度
@@ -1669,6 +1676,17 @@ export default {
       return row.carrier_type
         ? row.carrier_type + "_" + row.vehicle_status
         : row.carrierType + "_" + 0;
+    },
+    postCenter(data, positions) {
+      let value = 0;
+      let value1 = 0;
+      data.forEach((el) => {
+        const { coordinate } = el.attribute;
+        value += coordinate.value[0];
+        value1 += coordinate.value[1];
+      });
+      positions[0] = value / data.length - 1;
+      positions[1] = (value1 / data.length - 1 )- 7;
     },
   },
 };
@@ -2253,8 +2271,7 @@ export default {
         margin-top: -114px;
         width: 228px;
         height: 228px;
-        background: url("../../assets/images/map/red.webp")
-          no-repeat;
+        background: url("../../assets/images/map/red.webp") no-repeat;
         background-size: 228px 228px;
         z-index: 0;
         opacity: 0.5;
@@ -2267,8 +2284,7 @@ export default {
         margin-top: -114px;
         width: 228px;
         height: 228px; //index_before_first
-        background: url("../../assets/images/map/blue.webp")
-          no-repeat;
+        background: url("../../assets/images/map/blue.webp") no-repeat;
         background-size: 228px 228px;
         z-index: 0;
         opacity: 0.5;

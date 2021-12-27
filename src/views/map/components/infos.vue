@@ -87,8 +87,8 @@
       </div>
     </div>
 
-    <!-- 设备信息  :style="warnIsClose ? '' : 'height: calc(100% - 300px)'" -->
-    <div class="info-box info-device">
+    <!-- 设备信息   -->
+    <div class="info-box info-device" :style="warnIsClose ? 'height:620px' : 'height: 428px'">
       <h5 class="info-box-title">设备信息</h5>
       <!-- content -->
       <div class="device-content ly-flex ly-flex-align-center">
@@ -247,10 +247,10 @@ export default {
     },
   },
   computed: {
-    // warnIsClose() {
-    //   console.log("this.$sotre.getters.isClose", this.$store.getters.isClose);
-    //   return this.$store.getters.isClose;
-    // },
+    warnIsClose() {
+      console.log("this.$sotre.getters.isClose", this.$store.getters.isClose);
+      return this.$store.getters.isClose;
+    },
   },
   mounted() {
     // bus
@@ -294,6 +294,7 @@ export default {
         this.attributesInfo = attributes || [];
         this.fieldsInfo = fields || {};
         this.channelNumList = [];
+        if(!fields || !fields.channelNum)
         for (let i = 0; i < Number(fields.channelNum); i++) {
           this.channelNumList.push(i);
         }
@@ -515,7 +516,7 @@ export default {
     // 设备信息
     &.info-device {
       padding-right: 0;
-      height: 428px;
+      // height: ;
       overflow: scroll;
       .device-content {
         padding: 8px 12px 0 0;

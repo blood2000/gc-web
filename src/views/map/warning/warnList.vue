@@ -269,9 +269,7 @@ export default {
       this.getList(2);
     });
   },
-  beforeDestroy() {
-    this.clearTimer();
-  },
+  
   methods: {
     /** 切换tab */
     handleTab(code) {
@@ -379,6 +377,7 @@ export default {
     },
     /** 点击实时告警事件 */
     handleRealWarnCard(row, index, type) {
+      if(!row || !row.vehicleCode) return 
       if (type === 2) {
         if (row.vehicleCode == this.$store.getters.warnInfoCode) {
           type = 1;
