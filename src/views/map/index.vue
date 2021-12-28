@@ -1564,7 +1564,7 @@ export default {
         this.timerWarn = setTimeout(() => {
           this.clearRealWarnMarker();
           // 绘制成正常车辆
-          this.drawVehicleMarker(tmp);
+          // this.drawVehicleMarker(tmp);
           clearTimeout(this.timerWarn);
         }, 5 * 1000);
       } else if (type == 2) {
@@ -1573,12 +1573,12 @@ export default {
         this.timerWarn = setTimeout(() => {
           this.clearRealWarnMarker();
           // 绘制成正常车辆
-          this.drawVehicleMarker(tmp);
+          // this.drawVehicleMarker(tmp);
           clearTimeout(this.timerWarn);
         }, 5 * 1000);
       } else {
         console.log("ckc 1");
-        // this.clearRealWarnMarker();
+        this.clearRealWarnMarker();
         // this.drawVehicleMarker(tmp);
       }
     },
