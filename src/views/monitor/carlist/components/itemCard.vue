@@ -79,7 +79,7 @@
         <el-tooltip effect="dark" v-if="data.model_name" :content="data.model_name" placement="top">
           <span class="g-single-row">{{ data.model_name }}</span>
         </el-tooltip>
-         <span v-else class="g-single-row">'暂未绑定设备...</span>
+         <span v-else class="g-single-row">暂未绑定设备...</span>
       </div>
       <div class="monitor-card-footer-middle">
         <img src="../../../../assets/images/detail/monitor-people.png" alt="" />
