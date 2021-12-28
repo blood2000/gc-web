@@ -35,17 +35,17 @@ module.exports = {
       [process.env.VUE_APP_BASE_API]: {
         // target: process.env.VUE_PROTOCOL+process.env.VUE_APP_BASE_HOST, // 测试
         // target: `http://10.0.0.66:8080`, // test
+        // target: `http://192.168.30.71:8080`, //本地 
+        // target:'http://192.168.30.224:8080', //本地 
+        target: `http://192.168.30.68:8080`, //本地 -- 调度
         // target: `http://192.168.30.71:8080`, //本地
-        // target:'http://192.168.30.224:8080', //本地
-        // target: `http://192.168.30.68:8080`, //本地 -- 调度
-        // target: `http://192.168.30.71:8080`, //本地
-        target: `http://192.168.1.18:8080`, //本地--强强
+        // target: `http://192.168.1.18:8080`, //本地--强强
         // target: `http://192.168.30.166:8080`, //本地
         // target: `http://192.168.30.10:8080`, //本地---地图
         // target:`http://192.168.30.36:8080`,
         // target:`http://192.168.1.34:8080`,
         // target:`http://192.168.30.62:8080`,    //萌旗
-        //  target:`http://api.zjz1.net`,    //线上
+          //  target:`http://api.zjz1.net`,    //线上
 
         changeOrigin: true,
         pathRewrite: {
