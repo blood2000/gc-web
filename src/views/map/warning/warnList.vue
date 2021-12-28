@@ -24,12 +24,11 @@
               class="warning-list-li"
               v-for="(item, index) in dataList"
               :key="index"
-              @click="handleRealWarnCard(item, index,0)"
+              @click="handleRealWarnCard(item, index, 0)"
             >
-              <div
-                class="warning-card"
-                :class="{ active: index === activeRealWarnCard }"
-              >
+              <div class="warning-card" :style="getWarnAm(index)">
+                <!-- <img  v-if="index === activeRealWarnCard" style="width:100%;height:100%" :src="loading_chuan(index)"  alt=""> -->
+                <!-- :class="{ active: index === activeRealWarnCard }" -->
                 <h5 class="g-single-row">{{ item.licenseNumber }}</h5>
                 <p class="label mb10 g-single-row">
                   {{ item.nickName ? item.nickName : "暂无"
@@ -191,6 +190,7 @@
 import { http_request } from "@/api";
 import bus from "../components/bus";
 import WarnDetail from "./warnDetail.vue";
+import ttt1 from "../../../assets/images/map/test-demo.gif";
 export default {
   components: {
     WarnDetail,
@@ -213,6 +213,8 @@ export default {
       timer: null,
       // 当前选中tab
       activeTab: "real",
+      // 啥颜色 true red  false blue
+      isRealWarn: false,
       // tab
       tabList: [
         {
@@ -251,6 +253,7 @@ export default {
       },
       // 当前选中的实时告警卡片
       activeRealWarnCard: 0,
+      timerWarn: null,
     };
   },
   watch: {
@@ -269,8 +272,33 @@ export default {
       this.getList(2);
     });
   },
-  
+  computed: {},
   methods: {
+    loading_chuan(index) {
+      console.log("123", ttt1 + "?+" + new Date().getTime());
+      return ttt1 + "?+" + new Date().getTime() + index;
+    },
+    // 那个动画
+    getWarnAm(index) {
+      let result = {};
+      if (this.isRealWarn) {
+        result = {
+          background:
+            index === this.activeRealWarnCard
+              ? `url(${require(`../../../assets/images/map/warn-red.webp`)}?+${new Date().getTime()}${index})`
+              : "",
+        };
+      } else {
+        result = {
+          background:
+            index === this.activeRealWarnCard
+              ? `url(${require(`../../../assets/images/map/warn-blue.webp`)}?+${new Date().getTime()}${index})`
+              : "",
+        };
+      }
+      console.log("ckc  result ===========", result);
+      return result;
+    },
     /** 切换tab */
     handleTab(code) {
       console.log("handleTab0");
@@ -377,16 +405,23 @@ export default {
     },
     /** 点击实时告警事件 */
     handleRealWarnCard(row, index, type) {
-      if(!row || !row.vehicleCode) return 
+      this.isRealWarn = false;
+      if (!row || !row.vehicleCode) return;
       if (type === 2) {
         if (row.vehicleCode == this.$store.getters.warnInfoCode) {
           type = 1;
         } else {
+          this.isRealWarn = true;
           this.$store.commit("set_warnInfoCode", row.vehicleCode);
         }
       }
+      clearTimeout(this.timerWarn);
       console.log("点击实时告警事件", type);
-      this.activeRealWarnCard = index;
+      this.activeRealWarnCard = type === 1 ? -1 : index;
+      this.timerWarn = setTimeout(() => {
+        this.activeRealWarnCard = -1;
+        clearTimeout(this.timerWarn);
+      }, 5 * 1000);
       this.$parent.dealDarwRealWarn(row, type);
     },
   },
@@ -470,31 +505,19 @@ export default {
           padding: 12px 14px;
           overflow: hidden;
           position: relative;
-          &.active {
-            &::before {
-              content: "";
-              position: absolute;
-              left: 0;
-              top: 0;
-              width: 100%;
-              height: 100%;
-              background: linear-gradient(
-                90deg,
-                rgba(239, 105, 105, 0.16) 0%,
-                rgba(239, 105, 105, 0) 100%
-              );
-              z-index: 0;
-              animation: show-linear 0.6s;
-              @keyframes show-linear {
-                0% {
-                  width: 0;
-                }
-                100% {
-                  width: 100%;
-                }
-              }
-            }
-          }
+          background-size: 100% 100% !important;
+          // &.active {
+          //   background: url("../../../assets/images/map/test-demo.gif");
+
+          // }
+          // &.active-red {
+          //   background: url("../../../assets/images/map/warn-red.webp");
+          //   background-size: 100% 100%;
+          // }
+          // &.no-active {
+          //   background: url("../../../assets/images/map/red.webp");
+          //   background-size: 100% 100%;
+          // }
           > h5 {
             font-size: 20px;
             font-family: PingFang SC;

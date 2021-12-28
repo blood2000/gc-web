@@ -1443,7 +1443,7 @@ export default {
       style="transform:rotate(${direction.value || -30}deg);
       background:url('${require(`../../assets/images/map/${this.dealVheicleType(
         row
-      )}.png`)}') no-repeat;" 
+      )}.png`)}') no-repeat; background-size:43px 79px" 
       class="own-device-marker-car "
       ></div>`;
       const styleObj = {
@@ -1595,7 +1595,7 @@ export default {
       style="transform:rotate(${direction.value || -30}deg);
       background:url('${require(`../../assets/images/map/${this.dealVheicleType(
         tmp
-      )}.png`)}') no-repeat;" 
+      )}.png`)}') no-repeat;  background-size:43px 79px" 
       class="own-device-marker-warn "
       ><div class="warn-car "></div><div class="${
         type != 0 ? "warn-cirle" : "warn-cirle-blue"
@@ -1654,7 +1654,9 @@ export default {
     dealCurrStatus(row) {
       if (row.vehicle_status === 1) {
         return row.tip.speedText;
-      } else {
+      } else if(row.vehicle_status === 3){
+         return `${row.vehicle_status_name}(${row.tip.speedText})`
+        }else{
         return row.vehicle_status_name;
       }
     },
@@ -2187,8 +2189,8 @@ export default {
     // 标记物车样式
     ::v-deep.own-device-marker-car {
       transform-origin: center center;
-      width: 70px;
-      height: 130px;
+      width: 43px;
+      height: 79px;
       background-size: 100% 100%;
       // &.ztc {
       //   width: 34px;
@@ -2254,8 +2256,8 @@ export default {
     ::v-deep.own-device-marker-warn {
       position: relative;
       transform-origin: center center;
-      width: 70px;
-      height: 130px;
+      width: 43px;
+      height: 79px;
       background-size: 100% 100%;
       z-index: 100;
 
