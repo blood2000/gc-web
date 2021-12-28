@@ -19,7 +19,7 @@
           :class="'alarmInfo-wrapper__level' + item.alarmLevel"
         >
           <div class="alarmInfo-wrapper__tips">
-            <img src="@/assets/images/index/alarmInfo-vibration.png" alt="" />
+            <img :src="item.icon" alt="" />
             <p class="g-single-row">{{ item.vendorAlarmTypeName }}</p>
           </div>
           <div class="alarmInfo-wrapper__detail">
@@ -173,8 +173,8 @@ export default {
       width: 50px;
       margin-right: 20px;
       img {
-        width: 31px;
-        height: 31px;
+        width: 48px;
+        height: 30px;
         display: block;
         margin: auto;
       }

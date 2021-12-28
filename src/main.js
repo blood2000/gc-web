@@ -22,7 +22,7 @@ import './permission' // permission control
 import { getDicts } from "@/utils/request";
 import { getConfigKey } from "@/api/system/config";
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from "@/utils/ruoyi";
-import { download } from "@/utils/request";
+import { download, downloadFileName } from "@/utils/request";
 // 表单校验
 import formValidate from '@/utils/formValidate';
 // 分页组件
@@ -78,6 +78,7 @@ Vue.prototype.addDateRange = addDateRange
 Vue.prototype.selectDictLabel = selectDictLabel
 Vue.prototype.selectDictLabels = selectDictLabels
 Vue.prototype.download = download
+Vue.prototype.downloadFileName = downloadFileName
 Vue.prototype.handleTree = handleTree
 Vue.prototype.formValidate = formValidate
 

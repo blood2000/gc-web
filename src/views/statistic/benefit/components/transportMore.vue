@@ -80,7 +80,7 @@
           v-loading="loading"
           highlight-current-row
           :stripe="true"
-          :data="transport.list"
+          :data="transportList"
         >
           <el-table-column label="日期" prop="date" width="130" />
           <el-table-column label="已接单数" prop="receiveCount" />
@@ -121,16 +121,16 @@ export default {
       transport: {
         receiveCount: 0, // 已接单
         loadCount: 0, // 已出车
-        unloadCount: 0, // 已回车
-        list: [
-          // {
-          //   date: '', // 日期
-          //   receiveCount: 0, // 已接单
-          //   loadCount: 0, // 已出车
-          //   unloadCount: 0 // 已回车
-          // }
-        ]
+        unloadCount: 0 // 已回车
       },
+      transportList: [
+        // {
+        //   date: '', // 日期
+        //   receiveCount: 0, // 已接单
+        //   loadCount: 0, // 已出车
+        //   unloadCount: 0 // 已回车
+        // }
+      ],
       queryParams: {
         dateList: [new Date(), new Date()],
         pageNum: 1,
@@ -161,19 +161,21 @@ export default {
         method: 'get',
         url_alias: 'transportationStatistics',
         data: {
-          ...this.queryParams,
           startDate: this.parseTime(
             this.queryParams.dateList[0],
             '{y}-{m}-{d}'
           ),
-          endDate: this.parseTime(this.queryParams.dateList[1], '{y}-{m}-{d}')
+          endDate: this.parseTime(this.queryParams.dateList[1], '{y}-{m}-{d}'),
+          pageNum: this.queryParams.pageNum,
+          pageSize: this.queryParams.pageSize
         }
       }
       this.loading = true
       http_request(params).then((res) => {
         if (res.data) {
-          res.data.list = res.data.list || []
           this.transport = res.data
+          this.transportList = res.data.paging.rows || []
+          this.total = res.data.paging.total
         }
         this.loading = false
       })

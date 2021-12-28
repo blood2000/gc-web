@@ -91,7 +91,7 @@
           v-loading="loading"
           highlight-current-row
           :stripe="true"
-          :data="freight.list"
+          :data="freightList"
         >
           <el-table-column label="日期" prop="date" width="130" />
           <el-table-column label="待收款单数" prop="notRevenueCount" />
@@ -134,17 +134,17 @@ export default {
         notRevenueCount: 0, // 待收款单数
         notRevenue: 0, // 待收款金额
         revenueCount: 0, // 已收款单数
-        revenue: 0, // 已收款金额
-        list: [
-          // {
-          //   date: '', // 日期
-          //   notRevenueCount: 0, // 待收款单数
-          //   notRevenue: 0, // 待收款金额
-          //   revenueCount: 0, // 已收款单数
-          //   revenue: 0 // 已收款金额
-          // }
-        ]
+        revenue: 0 // 已收款金额
       },
+      freightList: [
+        // {
+        //   date: '', // 日期
+        //   notRevenueCount: 0, // 待收款单数
+        //   notRevenue: 0, // 待收款金额
+        //   revenueCount: 0, // 已收款单数
+        //   revenue: 0 // 已收款金额
+        // }
+      ],
       queryParams: {
         dateList: [new Date(), new Date()],
         pageNum: 1,
@@ -175,19 +175,21 @@ export default {
         method: 'get',
         url_alias: 'freightStatistics',
         data: {
-          ...this.queryParams,
           startDate: this.parseTime(
             this.queryParams.dateList[0],
             '{y}-{m}-{d}'
           ),
-          endDate: this.parseTime(this.queryParams.dateList[1], '{y}-{m}-{d}')
+          endDate: this.parseTime(this.queryParams.dateList[1], '{y}-{m}-{d}'),
+          pageNum: this.queryParams.pageNum,
+          pageSize: this.queryParams.pageSize
         }
       }
       this.loading = true
       http_request(params).then((res) => {
         if (res.data) {
-          res.data.list = res.data.list || []
           this.freight = res.data
+          this.freightList = res.data.paging.rows || []
+          this.total = res.data.paging.total
         }
         this.loading = false
       })
