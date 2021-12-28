@@ -380,7 +380,6 @@
               placeholder="请输入车辆别名"
               clearable
               style="width: 256px"
-              :disabled="disabledDeal()"
             />
           </el-form-item>
         </el-col>
@@ -398,7 +397,6 @@
             <ImageUploadSimple
               v-model="form.roadTransportCertificateImg"
               @input="LoadChooseImg"
-              :disabled="disabledDeal()"
             >
               <template slot="initImage">
                 <div class="dispatch-bg-upload dispatch-load">
@@ -586,7 +584,6 @@ export default {
         if (node.childrenOrgList && node.childrenOrgList.length > 0) {
           obj.children = node.childrenOrgList;
         }
-        console.log("obj", obj);
         return obj;
       },
       vehicleLicenseColorCodeList: [], //车牌类型
@@ -599,7 +596,7 @@ export default {
   created() {},
   watch: {
     options() {
-      console.log("this.$store.getters", this.$store.getters);
+      // console.log("this.$store.getters", this.$store.getters);
       this.vehicleEnergyTypeList = this.$store.getters.vehicleEnergyTypeList;
       this.vehicleTypeCodeList = this.$store.getters.vehicleTypeCodeList;
       this.carrierTypeList = this.$store.getters.carrierTypeList;
@@ -608,10 +605,7 @@ export default {
       //请求
       this.defaultDriverList = this.options.defaultDriverList;
       this.vehicleOwnershipList = vehicleConfig.vehicleOwnershipList;
-      console.log(" this.defaultDriverList", this.defaultDriverList);
       if (this.options.editType == "update" && this.open) {
-        console.log("this.options", this.options, this.open);
-
         this.requsetDetail();
       }
     },
@@ -803,7 +797,6 @@ export default {
           result: null,
         };
         this.recursionorgTree(this.deptOptions, e, result);
-        console.log("result", result);
         if (!result.result) {
           this.form.orgCode = null;
         }
@@ -812,7 +805,6 @@ export default {
     recursionorgTree(data, e, result) {
       const me = this;
       for (const el of data) {
-        console.log(el);
         if (el.code == e) {
           result.result = el.orgName;
           break;
@@ -834,13 +826,21 @@ export default {
       console.log("tmp", tmp);
       http_request(tmp)
         .then((res) => {
-          console.log("requsetDetail res", res);
-
+          console.log("是不是超好运 res", res.data.vehicleInf.isChy);
+           this.rulesDis(res.data.vehicleInf.isChy)
           this.getDetailToForm(res.data);
         })
         .catch((err) => {
           console.log("err:", err);
         });
+    },
+    // 校验规则关闭
+    rulesDis(isChy){
+      if(isChy){
+       vehicleConfig.rulesDisList.forEach((value)=>{
+         this.rules[value][0].required = false
+       })
+      }
     },
     //提交表单
     submitForm() {

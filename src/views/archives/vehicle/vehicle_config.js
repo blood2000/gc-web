@@ -120,7 +120,7 @@ const tableColumnsConfig = [
   {
     isShow: true,
     label: "司机",
-    prop: "driver",
+    prop: "defaultDriverName",
     sortNum: 4,
     tooltip: true,
   },
@@ -225,6 +225,16 @@ const warningInfoTableColumnsConfig = [
   }
 ];
 
+const rulesDisList=['vehicleLicenseImg','vehicleLicenseSecondImg',
+'licenseNumber',
+'vehicleTypeCode',
+'chassisNumber',
+'issuingOrganizations',
+'vehicleEnergyType',
+'vehicleLicenseColorCode',
+'vehicleLoadWeight',
+'vehicleTotalWeight']
+
 
 
 export default {
@@ -234,5 +244,6 @@ export default {
   warningInfoTableColumnsConfig,
   offsetList,
   vehicleOwnershipList,
-  authStatusList
+  authStatusList,
+  rulesDisList
 }
