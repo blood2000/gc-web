@@ -42,7 +42,7 @@
                     v-if="item.alarmTypeName"
                     class="ly-flex-v ly-flex-align-center"
                   >
-                    <img src="~@/assets/images/device/warn_icon_1.png" />
+                    <img :src="item.icon" />
                     <p class="g-single-row text">{{ item.alarmTypeName }}</p>
                   </div>
                   <div
@@ -100,7 +100,7 @@
                     v-if="item.alarmTypeName"
                     class="ly-flex-v ly-flex-align-center"
                   >
-                    <img src="~@/assets/images/device/warn_icon_1.png" />
+                     <img :src="item.icon" />
                     <p class="g-single-row text">{{ item.alarmTypeName }}</p>
                   </div>
                   <div
