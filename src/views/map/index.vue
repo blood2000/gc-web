@@ -393,6 +393,7 @@ export default {
       currentday: "",
       currentDate: "",
       currentTime: "",
+      timerWarn: null,
       // 树切换
       currentType: "1",
       // 车小tab
@@ -483,6 +484,7 @@ export default {
       // 地图点位集合
       markerList: {},
       clusterMarkerList: [],
+      markerData: [],
       // 聚合
       cluster: null,
       // 定时刷新地图点位
@@ -673,6 +675,7 @@ export default {
         center: [119.358267, 26.04577],
         zoom: 11,
       });
+      console.log("ckc init");
       this.map.plugin(["AMap.Geocoder"], function () {
         _this.geocoder = new AMap.Geocoder({
           radius: 1000,
@@ -1339,11 +1342,13 @@ export default {
         data: params,
       };
       http_request(obj).then((res) => {
-        // console.log("res", res);
+        console.log("获取车辆定位列表 res", res);
         // 绘制前先清空之前的绘制, 避免重复绘制
         this.clearMarkerList();
         if (res.data.rows && res.data.rows.length > 0) {
+          this.markerData = res.data.rows;
           // 绘制全部车辆点位
+          const realData = [];
           res.data.rows.forEach((el) => {
             const { attribute } = el;
             if (
@@ -1354,6 +1359,7 @@ export default {
               attribute.coordinate.value[0] &&
               attribute.coordinate.value[1]
             ) {
+              realData.push(el);
               this.drawVehicleMarker(el);
             }
           });
@@ -1364,8 +1370,13 @@ export default {
           // })
           // 刷新点位后不重新设置视野
           if (isFresh && this.headerTab !== 3) {
+            // console.log("realData", realData);
+            const positions = [];
+            this.postCenter(realData, positions);
+            console.log("positions", positions);
             this.$nextTick(() => {
-              this.map.setFitView();
+              // this.map.setFitView();
+              this.map.setZoomAndCenter(4.1, positions);
             });
           }
         } else {
@@ -1409,6 +1420,7 @@ export default {
                   " attribute.coordinate.value",
                   attribute.coordinate.value
                 );
+                console.log("ckc 获取设备定位信息");
                 this.map.setZoomAndCenter(13, attribute.coordinate.value);
               });
             }
@@ -1420,7 +1432,7 @@ export default {
     },
     // 绘制车辆定位marker
     drawVehicleMarker(row) {
-      // console.log("绘制车辆定位marker", row);
+      console.log("绘制车辆定位marker", row);
       const _this = this;
       const { vehicle_code, carrier_type, plate_number, attribute } = row;
       const direction = attribute.direction || {};
@@ -1431,7 +1443,7 @@ export default {
       style="transform:rotate(${direction.value || -30}deg);
       background:url('${require(`../../assets/images/map/${this.dealVheicleType(
         row
-      )}.png`)}') no-repeat;" 
+      )}.png`)}') no-repeat; background-size:43px 79px" 
       class="own-device-marker-car "
       ></div>`;
       const styleObj = {
@@ -1440,6 +1452,7 @@ export default {
         angle: 0,
       };
       const marker = this.drawMarker(position, styleObj);
+      console.log("ckc ", vehicle_code, marker);
       this.markerList[vehicle_code] = marker;
       this.clusterMarkerList.push(marker);
       // 绘制文本框
@@ -1512,10 +1525,14 @@ export default {
       this.clearRefreshMarkerTimer();
       this.refreshMarkerTimer = setInterval(() => {
         this.getDeviceLocationInfoByCode();
-      }, this.refreshMarkerTime * 1000);
+        (this.$refs.WarnListRef.activeTab = "real"),
+          // 刷新告警
+          this.$refs.WarnListRef.getList(2);
+      }, this.refreshMarkerTime * 1000); //
       // 车定位刷新读秒
       this.setReadTime();
     },
+    // 刷新程序
     getDeviceLocationInfoByCode() {
       if (this.isShowVehicleInfo) {
         // 选中车
@@ -1531,29 +1548,73 @@ export default {
     clearRefreshMarkerTimer() {
       if (this.refreshMarkerTimer) clearInterval(this.refreshMarkerTimer);
     },
+    // 判断如果绘制告警点 type//红蓝
+    // isNew 是否最新刷新的告警红
+    dealDarwRealWarn(row, type) {
+      console.log("绘制告警点位：", row, this.markerList);
+      console.log("markerData", this.markerData);
+      clearTimeout(this.timerWarn);
+      const tmp = this.markerData.filter(
+        (el) => el.vehicle_code == row.vehicleCode
+      )[0];
+      console.log("tmp", tmp);
+      if (!type) {
+        console.log("ckc 0");
+        this.darwRealWarnMarker(row, type, tmp);
+        this.timerWarn = setTimeout(() => {
+          this.clearRealWarnMarker();
+          // 绘制成正常车辆
+          this.drawVehicleMarker(tmp);
+          clearTimeout(this.timerWarn);
+        }, 5 * 1000);
+      } else if (type == 2) {
+        console.log("ckc 2");
+        this.darwRealWarnMarker(row, type, tmp);
+        this.timerWarn = setTimeout(() => {
+          this.clearRealWarnMarker();
+          // 绘制成正常车辆
+          this.drawVehicleMarker(tmp);
+          clearTimeout(this.timerWarn);
+        }, 5 * 1000);
+      } else {
+        console.log("ckc 1");
+        // this.clearRealWarnMarker();
+        // this.drawVehicleMarker(tmp);
+      }
+    },
     // 绘制告警点位
-    darwRealWarnMarker(row) {
-      // console.log("绘制告警点位：", row);
+    darwRealWarnMarker(row, type, tmp) {
       // 绘制前先清除
       this.clearRealWarnMarker();
-
-      if (row && row.lng && row.lat) {
-        const styleObj = {
-          content:
-            '<div style="transform:rotate(' +
-            (row.direction || -30) +
-            'deg)" class="own-device-marker-warn ' +
-            (row.carrier_type || "qt") +
-            '"><div class="warn-car"></div><div class="warn-cirle"></div></div>',
-          offset: this.offsetList[row.carrierType || "qt"],
-          angle: 0,
-        };
-        this.realWarnMarker = this.drawMarker([row.lng, row.lat], styleObj);
-        // this.map.setCenter([row.lng, row.lat]);
-      }
+      const { attribute } = tmp;
+      const direction = attribute.direction || {};
+      const position = attribute.coordinate.value;
+      console.log("this.markerList", this.markerList);
+      this.realWarnMarker = this.markerList[row.vehicleCode];
+      const contents = `<div 
+      style="transform:rotate(${direction.value || -30}deg);
+      background:url('${require(`../../assets/images/map/${this.dealVheicleType(
+        tmp
+      )}.png`)}') no-repeat;  background-size:43px 79px" 
+      class="own-device-marker-warn "
+      ><div class="warn-car "></div><div class="${
+        type != 0 ? "warn-cirle" : "warn-cirle-blue"
+      }"></div></div>`;
+      const styleObj = {
+        content: contents,
+        offset: this.offsetList[tmp.carrier_type || "qt"],
+        angle: 0,
+      };
+      // this.realWarnMarker.setContent(contents);
+      this.realWarnMarker = this.drawMarker(
+        [position[0], position[1]],
+        styleObj
+      );
+      this.map.setCenter([position[0], position[1]]);
     },
     // 清除告警点位
     clearRealWarnMarker() {
+      console.log("谁干的");
       if (this.realWarnMarker) {
         this.realWarnMarker.setMap(null);
         this.realWarnMarker = null;
@@ -1593,7 +1654,9 @@ export default {
     dealCurrStatus(row) {
       if (row.vehicle_status === 1) {
         return row.tip.speedText;
-      } else {
+      } else if(row.vehicle_status === 3){
+         return `${row.vehicle_status_name}(${row.tip.speedText})`
+        }else{
         return row.vehicle_status_name;
       }
     },
@@ -1612,7 +1675,20 @@ export default {
       return obj[row.vehicle_status_name];
     },
     dealVheicleType(row) {
-      return row.carrier_type + "_" + row.vehicle_status;
+      return row.carrier_type
+        ? row.carrier_type + "_" + row.vehicle_status
+        : row.carrierType + "_" + 0;
+    },
+    postCenter(data, positions) {
+      let value = 0;
+      let value1 = 0;
+      data.forEach((el) => {
+        const { coordinate } = el.attribute;
+        value += coordinate.value[0];
+        value1 += coordinate.value[1];
+      });
+      positions[0] = value / data.length - 1;
+      positions[1] = (value1 / data.length - 1 )- 7;
     },
   },
 };
@@ -2113,8 +2189,8 @@ export default {
     // 标记物车样式
     ::v-deep.own-device-marker-car {
       transform-origin: center center;
-      width: 70px;
-      height: 130px;
+      width: 43px;
+      height: 79px;
       background-size: 100% 100%;
       // &.ztc {
       //   width: 34px;
@@ -2180,88 +2256,40 @@ export default {
     ::v-deep.own-device-marker-warn {
       position: relative;
       transform-origin: center center;
+      width: 43px;
+      height: 79px;
+      background-size: 100% 100%;
+      z-index: 100;
+
       .warn-car {
         position: relative;
         z-index: 1;
-      }
-      &.ztc {
-        .warn-car {
-          width: 34px;
-          height: 76px;
-          background: url("~@/assets/images/device/map_car_ztc.png") no-repeat;
-          background-size: 100% 100%;
-        }
-      }
-      &.jbc {
-        .warn-car {
-          width: 34px;
-          height: 80px;
-          background: url("~@/assets/images/device/map_car_jbc.png") no-repeat;
-          background-size: 100% 100%;
-        }
-      }
-      &.llc {
-        .warn-car {
-          width: 28px;
-          height: 62px;
-          background: url("~@/assets/images/device/map_car_llc.png") no-repeat;
-          background-size: 100% 100%;
-        }
-      }
-      &.phc {
-        .warn-car {
-          width: 31px;
-          height: 79px;
-          background: url("~@/assets/images/device/map_car_phc.png") no-repeat;
-          background-size: 100% 100%;
-        }
-      }
-      &.qt {
-        .warn-car {
-          width: 31px;
-          height: 79px;
-          background: url("~@/assets/images/device/map_car_qt.png") no-repeat;
-          background-size: 100% 100%;
-        }
       }
       .warn-cirle {
         position: absolute;
         left: 50%;
         top: 50%;
-        margin-left: -45px;
-        margin-top: -45px;
-        width: 90px;
-        height: 90px;
-        border: 1px solid rgba(239, 105, 105, 0.6);
-        border-radius: 50%;
-        background: rgba(239, 105, 105, 0.15);
+        margin-left: -114px;
+        margin-top: -114px;
+        width: 228px;
+        height: 228px;
+        background: url("../../assets/images/map/red.webp") no-repeat;
+        background-size: 228px 228px;
         z-index: 0;
-        &::before {
-          content: "";
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          margin-left: -80px;
-          margin-top: -80px;
-          width: 160px;
-          height: 160px;
-          border: 1px solid rgba(239, 105, 105, 0.4);
-          border-radius: 50%;
-          background: rgba(239, 105, 105, 0.08);
-        }
-        &::after {
-          content: "";
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          margin-left: -114px;
-          margin-top: -114px;
-          width: 228px;
-          height: 228px;
-          border: 1px solid rgba(239, 105, 105, 0.2);
-          border-radius: 50%;
-          background: rgba(239, 105, 105, 0.04);
-        }
+        opacity: 0.5;
+      }
+      .warn-cirle-blue {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-left: -114px;
+        margin-top: -114px;
+        width: 228px;
+        height: 228px; //index_before_first
+        background: url("../../assets/images/map/blue.webp") no-repeat;
+        background-size: 228px 228px;
+        z-index: 0;
+        opacity: 0.5;
       }
     }
   }

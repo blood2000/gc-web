@@ -7,10 +7,14 @@ const map = {
     dispatchInfo: {},   //调度信息
     isClose:false, //展开收起面板
     isMany:false,
-    channelNumList:[]
+    channelNumList:[],
+    warnInfoCode:"",
 
   },
   mutations: {
+    set_warnInfoCode:(state,warnInfoCode)=>{
+      state.warnInfoCode = warnInfoCode
+    },
     set_channelNumList:(state ,channelNumList)=>{
         state.channelNumList = channelNumList
     },

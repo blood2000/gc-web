@@ -5,12 +5,12 @@
       <h5 class="info-box-title">车辆信息</h5>
       <div
         class="info-box-status"
-        :class="
-          selectDictColor(vehicleStatusOptions, vehicleInfo.vehicleStatus)
-        "
+        :style="{
+          color:selectDictColor(vehicleInfo.vehicleStatus)
+        }"
       >
         <strong class="mr8">·</strong>
-        {{ selectDictLabel(vehicleStatusOptions, vehicleInfo.vehicleStatus) }}
+        {{ vehicleInfo.vehicleStatusName }}
       </div>
       <!-- content -->
       <div class="car-content ly-flex ly-flex-align-center">
@@ -87,8 +87,8 @@
       </div>
     </div>
 
-    <!-- 设备信息  :style="warnIsClose ? '' : 'height: calc(100% - 300px)'" -->
-    <div class="info-box info-device">
+    <!-- 设备信息   -->
+    <div class="info-box info-device" :style="warnIsClose ? 'height:620px' : 'height: 428px'">
       <h5 class="info-box-title">设备信息</h5>
       <!-- content -->
       <div class="device-content ly-flex ly-flex-align-center">
@@ -247,10 +247,10 @@ export default {
     },
   },
   computed: {
-    // warnIsClose() {
-    //   console.log("this.$sotre.getters.isClose", this.$store.getters.isClose);
-    //   return this.$store.getters.isClose;
-    // },
+    warnIsClose() {
+      console.log("this.$sotre.getters.isClose", this.$store.getters.isClose);
+      return this.$store.getters.isClose;
+    },
   },
   mounted() {
     // bus
@@ -294,6 +294,7 @@ export default {
         this.attributesInfo = attributes || [];
         this.fieldsInfo = fields || {};
         this.channelNumList = [];
+        if(!fields || !fields.channelNum)
         for (let i = 0; i < Number(fields.channelNum); i++) {
           this.channelNumList.push(i);
         }
@@ -343,15 +344,22 @@ export default {
       });
     },
     // 字典匹配颜色
-    selectDictColor(datas, value) {
-      var actions = [];
-      Object.keys(datas).some((key) => {
-        if (datas[key].dictValue == "" + value) {
-          actions.push(datas[key].color);
-          return true;
-        }
-      });
-      return actions.join("");
+    selectDictColor( value) {
+      // var actions = [];
+      // Object.keys(datas).some((key) => {
+      //   if (datas[key].dictValue == "" + value) {
+      //     actions.push(datas[key].color);
+      //     return true;
+      //   }
+      // });
+      // return actions.join("");
+      const obj ={
+        3:'rgba(229, 94, 80, 1)',
+        0:'rgba(196, 196, 196, 1)',
+        1:'rgba(29, 185, 99, 1)',
+        2:'rgba(255, 183, 57, 1)'
+      }
+      return obj[value]
     },
     colseVideoDialog() {
       this.showVideoDialog = false;
@@ -515,7 +523,7 @@ export default {
     // 设备信息
     &.info-device {
       padding-right: 0;
-      height: 428px;
+      // height: ;
       overflow: scroll;
       .device-content {
         padding: 8px 12px 0 0;
