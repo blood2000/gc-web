@@ -55,7 +55,7 @@
               <span>{{ driver.orderReceived }}</span>
               单
             </div>
-            <img src="@/assets/images/statistic/icon_revenueCount.png" alt="" />
+            <img src="@/assets/images/statistics/icon_revenueCount.png" alt="" />
           </div>
           <div class="box">
             <div class="title">已回车</div>
@@ -63,7 +63,7 @@
               <span>{{ driver.pressEnter }}</span>
               车
             </div>
-            <img src="@/assets/images/statistic/icon_loadCount.png" alt="" />
+            <img src="@/assets/images/statistics/icon_loadCount.png" alt="" />
           </div>
           <div class="box">
             <div class="title">运费</div>
@@ -72,7 +72,7 @@
               元
             </div>
             <img
-              src="@/assets/images/statistic/icon_vehicle_revenue.png"
+              src="@/assets/images/statistics/icon_vehicle_revenue.png"
               alt=""
             />
           </div>

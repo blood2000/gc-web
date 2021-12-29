@@ -163,13 +163,13 @@ export default {
         background-repeat: no-repeat;
       }
       .rank_0 {
-        background-image: url('~@/assets/images/statistic/blue_1.png');
+        background-image: url('~@/assets/images/statistics/blue_1.png');
       }
       .rank_1 {
-        background-image: url('~@/assets/images/statistic/blue_2.png');
+        background-image: url('~@/assets/images/statistics/blue_2.png');
       }
       .rank_2 {
-        background-image: url('~@/assets/images/statistic/blue_3.png');
+        background-image: url('~@/assets/images/statistics/blue_3.png');
       }
       .vehicleNumber {
         flex: 1 1 auto;

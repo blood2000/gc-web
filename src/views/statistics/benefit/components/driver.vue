@@ -164,13 +164,13 @@ export default {
         background-repeat: no-repeat;
       }
       .rank_0 {
-        background-image: url('~@/assets/images/statistic/green_1.png');
+        background-image: url('~@/assets/images/statistics/green_1.png');
       }
       .rank_1 {
-        background-image: url('~@/assets/images/statistic/green_2.png');
+        background-image: url('~@/assets/images/statistics/green_2.png');
       }
       .rank_2 {
-        background-image: url('~@/assets/images/statistic/green_3.png');
+        background-image: url('~@/assets/images/statistics/green_3.png');
       }
       .driverNumber {
         flex: 1 1 auto;

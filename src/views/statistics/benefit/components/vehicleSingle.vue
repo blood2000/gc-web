@@ -55,7 +55,7 @@
               <span>{{ vehicle.transCount }}</span>
               趟
             </div>
-            <img src="@/assets/images/statistic/icon_revenueCount.png" alt="" />
+            <img src="@/assets/images/statistics/icon_revenueCount.png" alt="" />
           </div>
           <div class="box">
             <div class="title">载重</div>
@@ -63,7 +63,7 @@
               <span>{{ vehicle.weight }}</span>
               吨
             </div>
-            <img src="@/assets/images/statistic/icon_weight.png" alt="" />
+            <img src="@/assets/images/statistics/icon_weight.png" alt="" />
           </div>
           <div class="box">
             <div class="title">里程数</div>
@@ -71,7 +71,7 @@
               <span>{{ vehicle.mileage }}</span>
               公里
             </div>
-            <img src="@/assets/images/statistic/icon_mileage.png" alt="" />
+            <img src="@/assets/images/statistics/icon_mileage.png" alt="" />
           </div>
           <div class="box">
             <div class="title">运费</div>
@@ -80,7 +80,7 @@
               元
             </div>
             <img
-              src="@/assets/images/statistic/icon_vehicle_revenue.png"
+              src="@/assets/images/statistics/icon_vehicle_revenue.png"
               alt=""
             />
           </div>

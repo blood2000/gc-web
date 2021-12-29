@@ -18,12 +18,12 @@
         >
           <img
             v-show="orderDetail.source === 'chy'"
-            src="@/assets/images/statistic/icon_chy.png"
+            src="@/assets/images/statistics/icon_chy.png"
             alt=""
           />
           <img
             v-show="orderDetail.source === 'zj'"
-            src="@/assets/images/statistic/icon_zj.png"
+            src="@/assets/images/statistics/icon_zj.png"
             alt=""
           />
           <span>{{ orderDetail.title }}</span>
