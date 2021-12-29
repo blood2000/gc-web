@@ -16,7 +16,7 @@
             clearable
             filterable
             style="width: 185px"
-            placeholder="请选择车辆状态"
+            placeholder="请选择设备系列"
             @change="$emit('handleQuery')"
           >
             <el-option
@@ -33,7 +33,7 @@
             clearable
             filterable
             style="width: 185px"
-            placeholder="请选择车辆状态"
+            placeholder="请选择设备型号"
             @change="$emit('handleQuery')"
           >
             <el-option
@@ -50,7 +50,7 @@
             clearable
             filterable
             style="width: 185px"
-            placeholder="请选择车辆状态"
+            placeholder="请选择激活状态"
             @change="$emit('handleQuery')"
           >
             <el-option
@@ -67,7 +67,7 @@
             clearable
             filterable
             style="width: 185px"
-            placeholder="请选择车辆状态"
+            placeholder="请选择设备状态"
             @change="$emit('handleQuery')"
           >
             <el-option
@@ -81,7 +81,7 @@
         <el-form-item label="绑定车辆：" prop="licenseNumber">
           <el-input
             v-model="queryParams.licenseNumber"
-            placeholder="请输入车牌号"
+            placeholder="请输入绑定车辆"
             clearable
             style="width: 185px"
             @keyup.enter.native="$emit('handleQuery')"

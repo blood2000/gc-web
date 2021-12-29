@@ -26,7 +26,7 @@
     <Apply-Dialog
       :open="open"
       :cardTypeList="cardTypeList"
-      :amount="pageData.amount"
+      :amount="dealAmount"
       @colseDialog="colseDialog"
     >
     </Apply-Dialog>
@@ -80,7 +80,7 @@ export default {
         data: { pageNum: 1, pageSize: 1000 },
       };
       const res = await http_request(obj);
-      console.log("res", res);
+      console.log("getBankCardList res", res);
       this.cardTypeList = res.data.rows;
     },
     //获取钱包信息
@@ -91,7 +91,7 @@ export default {
         url_alias: "getInfoPersonWallet",
       };
       const res = await http_request(obj);
-      console.log("res", res);
+      console.log("获取钱包信息 res", res);
       this.pageData = res.data;
     },
     //提现申请弹窗

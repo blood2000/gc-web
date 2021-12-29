@@ -1525,7 +1525,7 @@ export default {
       this.clearRefreshMarkerTimer();
       this.refreshMarkerTimer = setInterval(() => {
         this.getDeviceLocationInfoByCode();
-        (this.$refs.WarnListRef.activeTab = "real"),
+        this.$refs.WarnListRef.activeTab = "real";
           // 刷新告警
           this.$refs.WarnListRef.getList(2);
       }, this.refreshMarkerTime * 1000); //

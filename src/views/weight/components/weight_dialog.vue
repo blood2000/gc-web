@@ -343,6 +343,7 @@
           class="weight-edit-item"
           style="margin-right: 32px"
         >
+        <!-- cursor: pointer; -->
           <img src="../../../assets/images/bang/add.png" alt="" />
 
           <span> 新增一单</span>
@@ -783,15 +784,17 @@ export default {
 <style lang="scss" scoped>
 ::v-deep .el-dialog__body {
   min-height: calc(90vh - 62px - 66px);
+  padding-right: 10px;
 }
-::v-deep .el-dialog__body::-webkit-scrollbar {
-  width: 0 !important;
-}
+// ::v-deep .el-dialog__body::-webkit-scrollbar {
+//   width: 0 !important;
+// }
 .btn-date-group {
   padding-top: 35px;
   .btn-date {
     color: rgba(70, 130, 250, 1) !important;
     margin-right: 22px;
+    
   }
 }
 .weight-header {
@@ -1036,5 +1039,8 @@ export default {
   position: absolute;
   bottom: 15px;
   right: 19px;
+}
+.weight-edit-item{
+cursor: pointer;
 }
 </style>

@@ -1,45 +1,50 @@
 <template>
   <div class="monitor-card" @click="mapSearch">
     <div @click.stop="">
-<el-dropdown class="monitor-card-menu-ab" trigger="click" >
-      <div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item>
-          <span class="menu-item" @click="lookCarOrder">查看派车单</span>
-        </el-dropdown-item>
-        <el-dropdown-item>
-          <span class="menu-item" @click="mapSearch">地图查看</span>
-        </el-dropdown-item>
-        <el-dropdown-item>
-          <span class="menu-item" @click="travelSeach">轨迹查看</span>
-        </el-dropdown-item>
-        <el-dropdown-item>
-          <span class="menu-item" @click="seeVideo">视频回放</span>
-        </el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
+      <el-dropdown class="monitor-card-menu-ab" trigger="click">
+        <div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item>
+            <span class="menu-item" @click="lookCarOrder">查看派车单</span>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <span class="menu-item" @click="mapSearch">地图查看</span>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <span class="menu-item" @click="travelSeach">轨迹查看</span>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <span class="menu-item" @click="seeVideo">视频回放</span>
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </div>
-    
+
     <div class="monitor-card-title">
       <span>{{ data.plate_number }}</span>
-        <span v-if="data.vehicleAlias" class="monitor-card-label">
+      <span v-if="data.vehicleAlias" class="monitor-card-label">
         {{ data.vehicleAlias }}
       </span>
     </div>
     <div class="monitor-card-location">
       <span class="monitor-card-location-text1">当前位置 |</span>
-      <el-tooltip v-if="data.attribute" effect="dark" :content="data.attribute" placement="top">
+      <el-tooltip
+        v-if="data.attribute"
+        effect="dark"
+        :content="data.attribute"
+        placement="top"
+      >
         <span class="monitor-card-location-text2">{{ data.attribute }}</span>
       </el-tooltip>
-      <span v-else  class="monitor-card-location-text2">暂无数据</span>
+      <span v-else class="monitor-card-location-text2">暂无数据</span>
     </div>
     <div class="monitor-card-driver">
       <span>最新告警</span>
-      <img src="@/assets/images/monitor-line.png"  />
+      <img src="@/assets/images/monitor-line.png" />
     </div>
     <div v-if="data.sn" class="monitor-card-content">
       <div class="monitor-card-content-img">
@@ -51,11 +56,11 @@
             class="monitor-card-content-right-title-warn"
             v-if="data.alarmLevel"
           >
-            <img :src="levelDeal('img')"  />
+            <img :src="levelDeal('img')" />
             <span>{{ levelDeal("text") }}</span>
           </div>
           <div class="monitor-card-content-right-title-anomaly">
-            <img :src="dealAlarmImg()"  />
+            <img :src="dealAlarmImg()" />
             <span>{{ data.alarm_type }}</span>
           </div>
         </div>
@@ -68,25 +73,32 @@
       </div>
     </div>
     <div v-else class="nothing">
-
-        <el-empty :image-size="39.5" 
-        ></el-empty>
-
+      <el-empty :image-size="39.5"></el-empty>
     </div>
     <div class="monitor-card-footer">
       <div class="monitor-card-footer-left">
         <img src="../../../../assets/images/detail/monitor-phone.png" alt="" />
-        <el-tooltip effect="dark" v-if="data.model_name" :content="data.model_name" placement="top">
+        <el-tooltip
+          effect="dark"
+          v-if="data.model_name"
+          :content="data.model_name"
+          placement="top"
+        >
           <span class="g-single-row">{{ data.model_name }}</span>
         </el-tooltip>
-         <span v-else class="g-single-row">暂未绑定设备...</span>
+        <span v-else class="g-single-row">暂未绑定设备...</span>
       </div>
       <div class="monitor-card-footer-middle">
         <img src="../../../../assets/images/detail/monitor-people.png" alt="" />
-        <el-tooltip v-if="data.nick_name" effect="dark" :content="data.nick_name" placement="top">
-          <span class="g-single-row">{{data.nick_name}}</span>
+        <el-tooltip
+          v-if="data.driver_name"
+          effect="dark"
+          :content="data.driver_name"
+          placement="top"
+        >
+          <span class="g-single-row">{{ data.driver_name }}</span>
         </el-tooltip>
-           <span v-else class="g-single-row">未分配</span>
+        <span v-else class="g-single-row">未分配</span>
       </div>
       <div class="monitor-card-footer-right">
         <span
@@ -133,7 +145,7 @@ export default {
     dealBigImage() {
       const result = this.data.model_code;
       if (result) {
-        return `http://static.zjz1.net/device/model/${result}/${result}-icon.png`
+        return `http://static.zjz1.net/device/model/${result}/${result}-icon.png`;
         // return "http://static.zjz1.net/device/model/A1/A1-{tag}.png".replace(
         //   /\{tag\}/g,
         //   "icon"
@@ -205,6 +217,14 @@ export default {
     // 查看地图
     mapSearch() {
       console.log("查看地图 this.data", this.data);
+      if (!this.data.sn) {
+        this.msgWarning("该车辆未绑定设备");
+        return;
+      }
+      if (!this.data.activation_flag) {
+        this.msgWarning("该设备未激活");
+        return;
+      }
       const vehicleCode = this.data.vehicle_code;
       const trackType = 1;
       this.$router.push(
@@ -288,13 +308,14 @@ export default {
     color: #3d4050;
     padding-left: 16px;
     padding-right: 16px;
+    
     // &>span{
     //   display: inline-block;
     //   margin-right: 9px;
     // }
   }
-    &-label {
-      margin-left: 9px;
+  &-label {
+    margin-left: 9px;
     width: 60px;
     height: 20px;
     background: #ebf2ff;
@@ -303,7 +324,7 @@ export default {
     font-family: PingFang SC;
     font-weight: bold;
     color: #4682fa;
-    padding:1px 6px;
+    padding: 1px 6px;
   }
   &-location {
     font-size: 14px;
@@ -491,10 +512,9 @@ export default {
   padding-right: 10px;
   color: #4682fa;
 }
-.nothing{
-  
+.nothing {
 }
-/deep/ .el-empty{
+/deep/ .el-empty {
   padding: 0;
 }
 </style>
