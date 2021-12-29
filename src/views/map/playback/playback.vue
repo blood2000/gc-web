@@ -1,70 +1,8 @@
 <template>
-  <div class="play-back">
-    <div class="play-back-warn">
-      <i class="el-icon-warning-outline"></i>
-      <span>历史视频也将消耗您的设备流量！</span>
-    </div>
-    <div class="play-back-form">
-      <el-form
-        ref="queryForm"
-        :model="queryParams"
-        :inline="true"
-        size="small"
-        label-position="top"
-      >
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="创建时间">
-              <el-date-picker
-                v-model="queryParams.dateRange"
-                unlink-panels
-                type="datetimerange"
-                size="small"
-                style="width: 348px"
-                range-separator="-"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="选择摄像头：" prop="CHANNEL">
-              <el-select
-                v-model="queryParams.CHANNEL"
-                clearable
-                filterable
-                style="width: 348px"
-                placeholder="请选择摄像头"
-              >
-                <el-option
-                  v-for="item in channelNumList"
-                  :key="item.key"
-                  :label="item.key"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24" class="play-back-form-btn">
-            <el-form-item>
-              <el-button
-                type="primary"
-                icon="el-icon-search"
-                @click="searchResult"
-                :disabled="channelNumList.length == 0 ||!queryParams.dateRange ||queryParams.dateRange.length == 0 || !queryParams.CHANNEL"
-              >
-                查询
-              </el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-    </div>
-    <div class="play-back-search">
-      <div class="play-back-search-title">查询结果：</div>
-      <div
-        :class="isbigger ? 'dialog-video' : ''"
-        :style="{ 'margin-top': isbigger ? '' : '40px' }"
-        @click="colse"
-      >
+  <div>
+    <div class="play-back-search" v-show="isShowVideo">
+      <!--        <div class="play-back-search-title">查询结果：</div>-->
+      <div :class="isbigger ? 'dialog-video' : ''">
         <div
           class="play-back-search-result"
           :class="isbigger ? 'dialog-video-full' : ''"
@@ -103,6 +41,89 @@
         </div>
       </div>
     </div>
+    <div class="play-back-right" :class="{'show-video': isShowVideo}">
+      <div class="play-back-warn">
+        <i class="el-icon-warning-outline"></i>
+        <span>历史视频也将消耗您的设备流量！</span>
+      </div>
+      <div class="play-back-form">
+        <el-form
+          ref="queryForm"
+          :model="queryParams"
+          :inline="true"
+          size="small"
+          label-position="top"
+        >
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="创建时间">
+                <el-date-picker
+                  v-model="queryParams.dateRange"
+                  unlink-panels
+                  type="datetimerange"
+                  size="small"
+                  style="width: 348px"
+                  range-separator="-"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="24">
+              <el-form-item label="选择摄像头：" prop="CHANNEL">
+                <el-select
+                  v-model="queryParams.CHANNEL"
+                  clearable
+                  filterable
+                  style="width: 348px"
+                  placeholder="请选择摄像头"
+                >
+                  <el-option
+                    v-for="item in channelNumList"
+                    :key="item.key"
+                    :label="item.key"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24" class="play-back-form-btn">
+              <el-form-item>
+                <el-button
+                  type="primary"
+                  icon="el-icon-search"
+                  @click="deviceFileList"
+                  :disabled="channelNumList.length == 0 ||!queryParams.dateRange ||queryParams.dateRange.length == 0 || !queryParams.CHANNEL"
+                >
+                  查询
+                </el-button>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </div>
+    </div>
+    <div class="play-back-bottom" v-show="isShowFileList">
+      <ul class="play-back-bottom__tab ly-flex-pack-start ly-flex-align-end">
+        <li class="active">录像文件</li>
+      </ul>
+      <div class="play-back-bottom__content ly-flex-pack-justify">
+        <el-table class="play-back-file-table" :data="fileList" v-loading="isLoadingFileList" style="background: transparent;" size="mini" height="260px">
+          <el-table-column label="序号" type="index"></el-table-column>
+          <el-table-column label="开始时间" prop="startTimeStr"></el-table-column>
+          <el-table-column label="结束时间" prop="endTimeStr"></el-table-column>
+          <el-table-column label="文件大小" prop="SIZESTR"></el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button type="text" size="mini" @click="openRecordingVideo(scope.row)">播放</el-button>
+              <el-button v-if="!scope.row.HTTPPATH" :disabled="scope.row.isDownloadingToCenter" type="text" size="mini" @click="downloadVideoCenter(scope.row)">
+                <template v-if="scope.row.isDownloadingToCenter">视频处理中<i class="el-icon-loading"></i></template>
+                <template v-else>下载</template>
+              </el-button>
+              <el-button v-else type="text" size="mini" @click="downloadFile(scope.row.HTTPPATH)">处理完成</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -112,6 +133,10 @@ import { videoPlayer } from "vue-video-player";
 import "video.js/dist/video-js.css";
 import "vue-video-player/src/custom-theme.css";
 import { http_request } from "../../../api";
+import {parseTime} from "../../../utils/ruoyi";
+
+
+let websocket = null
 
 export default {
   components: { videoPlayer },
@@ -124,6 +149,10 @@ export default {
   },
   data() {
     return {
+      isShowVideo: false,
+      isShowFileList: false,
+      isLoadingFileList: false,
+      fileList: [],
       getTimeRange,
       typeList,
       isShow: false,
@@ -150,7 +179,7 @@ export default {
       totalTime: 0,
       ttTime: 0,
       isbigger: false,
-      channelNumList: [],
+      channelNumList: []
     };
   },
   props: {
@@ -164,6 +193,7 @@ export default {
     console.log("进来了");
     this.getChannelNumListList();
     this.initTime();
+    this.initSocket()
   },
   beforeDestroy() {
     console.log("推出播放");
@@ -171,9 +201,19 @@ export default {
       this.colse();
     }
   },
-  watch: {},
   computed: {},
   methods: {
+    downloadFile (url) {
+      const elink = document.createElement('a');
+      elink.download = 'test.mp4'
+      elink.style.display = 'none'
+      elink.target = '_blank'
+      elink.href = url
+      document.body.appendChild(elink)
+      elink.click();
+      URL.revokeObjectURL(elink.href)
+      document.body.removeChild(elink)
+    },
     initTime() {
       console.log(
         this.parseTime(
@@ -188,12 +228,133 @@ export default {
       this.queryParams.dateRange.push(
         new Date(
           new Date(new Date().setHours(0, 0, 0, 0)).getTime() +
-            24 * 60 * 60 * 1000 -
-            1
+          24 * 60 * 60 * 1000 -
+          1
         )
       );
 
       console.log("this.queryParams.dateRange", this.queryParams.dateRange);
+    },
+    initSocket() {
+      return new Promise((resolve, reject) => {
+        if (websocket == null || websocket.readyState !== WebSocket.OPEN) {
+          const websocketIP = "219.134.190.133:6003"; //媒体服务ip
+          websocket = new WebSocket("ws://" + websocketIP); //获取文件列表websocket对象
+          websocket.onclose = function () {
+            console.log('onclose', arguments)
+            websocket = null
+          }
+          websocket.onerror = function () {
+            console.log('onerror', arguments)
+            reject()
+          }
+          websocket.onopen = function () {
+            resolve()
+            console.log('onopen', arguments)
+          }
+        } else {
+          websocket.onmessage = this.onSocketMessage
+          resolve()
+        }
+      })
+    },
+    onSocketMessage (event) {
+      console.log("event", event);
+      let jsonData = JSON.parse(event.data)
+      var msgid = jsonData.HEAD.MSGID;
+      switch (msgid) {
+        case 5: {
+          let itemList = jsonData.PARAM.ITEMLIST
+          itemList.forEach(item => {
+            item.startTimeStr = parseTime(item.STARTTIME * 1000)
+            item.endTimeStr = parseTime(item.ENDTIME * 1000)
+            item.HTTPPATH = null
+            item.isDownloadingToCenter = false
+          })
+          this.fileList = itemList
+          this.isLoadingFileList = false
+          this.serviceFileList() // 请求服务器路径
+          console.log(itemList)
+          //设备文件列表
+          // document.forms["formId"].output += event.data + "\n";
+          break;
+        }
+        case 11: // 赋值中心文件播放地址
+          let itemList = jsonData.PARAM.ITEMLIST
+          itemList.forEach(item => {
+            let fileInfo = this.fileList.find(file => file.STARTTIME === item.STARTTIME && file.ENDTIME === item.ENDTIME)
+            fileInfo.HTTPPATH = item['HTTPPATH']
+          })
+          break;
+        case 10: //下载完成
+          this.serviceFileList() // 请求服务器路径
+          //window.open(JSON.parse(event.data).PARAM.HTTPPATH);//下载h264文件
+          // alert("下载完成");
+          break;
+      }
+      //console.log(event.data);
+      //setMessageInnerHTML(event.data);
+    },
+    deviceFileList () {
+      const startTime = parseInt(this.queryParams.dateRange[0].getTime() / 1000) + "";
+      const endTime = parseInt(this.queryParams.dateRange[1].getTime() / 1000) + "";
+      var wfsObj = {
+        VEHICLEID: this.queryParams.VEHICLEID,
+        VEHICLELICENSE: this.queryParams.VEHICLELICENSE,
+        PLATECOLOR: this.queryParams.PLATECOLOR,
+        DEVICENO: this.queryParams.DEVICENO,
+        DEVICETYPE: 0xD000,
+        RECORDTYPE: 0,
+        DATATYPE: 0,
+        ALARMTYPE: 0,
+        CHANNEL: this.queryParams.CHANNEL,
+        STORAGE: 1,
+        STARTTIME: startTime,
+        ENDTIME: endTime
+      };
+      this.isShowFileList = true
+      this.isLoadingFileList = true
+      this.initSocket().then(() => {
+        websocket.send(JSON.stringify({ HEAD: {MSGID:0xF005, USERID: 1,TRANSNO:0}, PARAM: wfsObj}));
+      }).catch(() => {
+        this.msgError('连接失败')
+        this.isShowFileList = false
+        this.isLoadingFileList = false
+      })
+    },
+    serviceFileList() {
+      const startTime = parseInt(this.queryParams.dateRange[0].getTime() / 1000) + "";
+      const endTime = parseInt(this.queryParams.dateRange[1].getTime() / 1000) + "";
+      let wfsObj = {
+        VEHICLEID: this.queryParams.VEHICLEID,
+        VEHICLELICENSE: this.queryParams.VEHICLELICENSE,
+        PLATECOLOR: this.queryParams.PLATECOLOR,
+        DEVICENO: this.queryParams.DEVICENO,
+        DEVICETYPE: 0xD000,
+        CHANNEL: this.queryParams.CHANNEL,
+        STARTTIME: startTime,
+        ENDTIME: endTime
+      }
+      websocket.send(JSON.stringify({ HEAD: {MSGID:0xF00B, USERID:1, TRANSNO:0}, PARAM: wfsObj}));
+    },
+    downloadVideoCenter (row) {
+      row.isDownloadingToCenter = true
+      let wfsObj = {
+        VEHICLEID: this.queryParams.VEHICLEID,
+        VEHICLELICENSE: this.queryParams.VEHICLELICENSE,
+        PLATECOLOR: this.queryParams.PLATECOLOR,
+        DEVICENO: this.queryParams.DEVICENO,
+        DEVICETYPE: 0xD000,
+        RECORDTYPE: 0,
+        DATATYPE: 2,
+        ALARMTYPE: 0,
+        CHANNEL: this.queryParams.CHANNEL,
+        STORAGE: 1,
+        STARTTIME: row.STARTTIME,
+        ENDTIME: row.ENDTIME,
+        EXECUTEON: 0
+      };
+      websocket.send(JSON.stringify({ HEAD: {MSGID:0xF00A, USERID:1,TRANSNO:0}, PARAM: wfsObj}));
     },
     getChannelNumListList() {
       const type = "vehicle,location,device,function,attribute,field"; // 获取信息类型, 可指定多个
@@ -207,8 +368,11 @@ export default {
         .then((res) => {
           console.log('playback res',res)
           this.queryParams.VEHICLELICENSE = res.data.vehicle && res.data.vehicle.plateNumber
-           this.queryParams.DEVICENO =res.data.device && res.data.device.deviceSN
+          this.queryParams.DEVICENO =res.data.device && res.data.device.deviceSN
+          this.queryParams.DEVICENO = '016200116989'
+          // this.queryParams.DEVICENO = '015800117661'
           const fields = res.data.fields;
+          fields.channelNum = 5
           this.channelNumList = [];
           for (let i = 0; i < Number(fields.channelNum); i++) {
             const obj = {
@@ -269,74 +433,36 @@ export default {
       this.totalTime = this.durationTrans(parseInt(refVideo.duration));
       console.log("getDuration", this.totalTime);
     },
-    // 查询结果
-    searchResult() {
+    openRecordingVideo(row){
       this.colse(() => {
-        this.wfs = null;
-        console.log("表单", this.queryParams);
-        const video = document.getElementById("video");
-        const queryParams = this.queryParams;
-        console.log("queryParams.dateRange", queryParams.dateRange);
-        if (!queryParams.dateRange || queryParams.dateRange.length !== 2) return;
-        const startTime =
-          parseInt(queryParams.dateRange[0].getTime() / 1000) + "";
-        const endTime =
-          parseInt(queryParams.dateRange[1].getTime() / 1000) + "";
-        this.OpenRecordingVideo(
-          video,
-          queryParams.VEHICLEID,
-          queryParams.VEHICLELICENSE,
-          queryParams.PLATECOLOR,
-          queryParams.DEVICENO,
-          queryParams.CHANNEL,
-          startTime,
-          endTime
-        );
-        this.isResult = true;
-      });
-    },
-    //打开录像
-    OpenRecordingVideo(
-      video,
-      vehicleId,
-      vehiclelicense,
-      platecolor,
-      deviceno,
-      channel,
-      startTime,
-      endTime
-    ) {
-      if (this.wfs != null) return;
-      this.wfs = new Wfs();
-      const MSGID = 0xf006;
-      var wfsObj = {
-          VEHICLEID: vehicleId,
-          VEHICLELICENSE: vehiclelicense,
-          PLATECOLOR: platecolor,
-          DEVICENO: deviceno,
-          DEVICETYPE: 0xd000,
-          DOWNLOAD: 0,
-          CHANNEL: channel,
+        this.wfs = new Wfs()
+        let wfsObj = {
+          VEHICLEID: this.queryParams.VEHICLEID,
+          VEHICLELICENSE: this.queryParams.VEHICLELICENSE,
+          PLATECOLOR: this.queryParams.PLATECOLOR,
+          DEVICENO: this.queryParams.DEVICENO,
+          DEVICETYPE: 0xD000,
+          DOWNLOAD:0,
+          CHANNEL: this.queryParams.CHANNEL,
           STORAGE: 0,
-          VIDEOTYPE: 0,
-          STREAMTYPE: 2,
-          PLAYBACKTYPE: 0,
-          MULTIPLE: 0,
-          STARTTIME: startTime,
-          ENDTIME: endTime,
-        },
-        player = new PCMPlayer({
+          VIDEOTYPE:0,
+          STREAMTYPE:2,
+          PLAYBACKTYPE:0,
+          MULTIPLE:0,
+          STARTTIME: row.STARTTIME,
+          ENDTIME: row.ENDTIME
+        }
+        let player = new PCMPlayer({
           encoding: "16bitInt",
           channels: 1,
           sampleRate: 8000,
-          flushingTime: 1000,
-        }),
-        userInfo = {
-          MSGID,
-          userId: "1",
-        };
-      video.poster = require("../../../utils/RVC/img/timg.gif");
-      this.wfs.attachMedia(video, [wfsObj, player, userInfo]);
+          flushingTime: 1000
+        });
+        const video = document.getElementById("video")
+        video.poster = require("../../../utils/RVC/img/timg.gif")
+        this.wfs.attachMedia(video,[wfsObj,player, {MSGID: 0xF006, userId: "1",}]);
+        this.isShowVideo = true
+      })
     },
     //退出播放
     colse(callback) {
@@ -401,7 +527,82 @@ export default {
   },
 };
 </script>
+<style>
+.play-back-file-table .el-table--mini th, .el-table--mini td {
+  padding: 1px 0;
+}
+</style>
 <style lang="scss" scoped>
+.play-back-bottom {
+  $tab-height: 44px;
+  transition: height 0.3s;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 300px;
+  pointer-events: all;
+
+  &__tab {
+    position: absolute;
+    left: 0;
+    top: calc(-#{$tab-height});
+    height: 44px;
+    z-index: 0;
+
+    > li {
+      padding: 0 30px;
+      height: 38px;
+      background: #E3E7F0;
+      border-radius: 6px 6px 0 0;
+      font-size: 16px;
+      font-family: PingFang SC;
+      font-weight: 700;
+      line-height: 38px;
+      color: #8592AD;
+      cursor: pointer;
+      text-align: center;
+      box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.16);
+      transition: height 0.4s;
+      margin-right: 8px;
+
+      &.active {
+        color: #3D4050;
+        height: $tab-height;
+        font-weight: 700;
+        line-height: 44px;
+        background: rgba(255, 255, 255, 0.7);
+        box-shadow: 6px -2px 10px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+
+  &__content {
+    position: relative;
+    height: 100%;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.16);
+    //background: rgba(255, 255, 255, 0.72);
+    background: white;
+    opacity: .85;
+    border-radius: 0 8px 8px 8px;
+    padding: 20px 12px 6px 12px;
+    overflow: hidden;
+  }
+}
+.play-back-right {
+  box-sizing: border-box;
+  height: 390px;
+  width: 380px;
+  background: #ffffff;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.05);
+  opacity: 0.85;
+  border-radius: 6px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  pointer-events: all;
+}
 .play-back-warn {
   margin: 0 16px;
   margin-top: 16px;
@@ -426,11 +627,17 @@ export default {
   }
 }
 .play-back-search {
-  height: 262px;
-  border-top: 1px solid #dce3e9;
+  height: 390px;
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: 6px;
+  margin-right: 10px;
+  //border-top: 1px solid #dce3e9;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.05);
   padding: 20px 16px 16px 16px;
-  width: 100%;
-  position: relative;
+  width: 656px;
+  right: 380px;
+  pointer-events: all;
+  position: absolute;
   &-title {
     position: absolute;
     top: 10px;
@@ -445,8 +652,8 @@ export default {
     justify-content: space-between;
   }
   .play-back-search-result {
-    width: 356px;
-    height: 200px;
+    width: 623px;
+    height: 350px;
     border-radius: 2px;
     position: relative;
     &-play {
@@ -462,7 +669,7 @@ export default {
     }
     &-count {
       position: absolute;
-      bottom: 2px;
+      bottom: 6px;
       right: 28px;
       color: #fff;
     }
@@ -475,7 +682,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 3000;
+  z-index: 300;
   background: rgba(0, 0, 0, 0.26);
 }
 .dialog-video-full {
@@ -505,7 +712,7 @@ export default {
   display: inline-block;
   height: 15px;
   width: 15px;
-  z-index: 4000;
+  z-index: 400;
 }
 .toBigger {
   position: absolute;
@@ -514,8 +721,16 @@ export default {
   width: 17px;
   height: 17px;
 }
+.downloadBtn {
+  position: absolute;
+  bottom: 7px;
+  right: 25px;
+  width: 17px;
+  height: 17px;
+}
 #video {
   width: 100%;
   object-fit: fill;
 }
+
 </style>
