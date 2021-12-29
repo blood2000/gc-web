@@ -369,10 +369,10 @@ export default {
           console.log('playback res',res)
           this.queryParams.VEHICLELICENSE = res.data.vehicle && res.data.vehicle.plateNumber
           this.queryParams.DEVICENO =res.data.device && res.data.device.deviceSN
-          this.queryParams.DEVICENO = '016200116989'
+          // this.queryParams.DEVICENO = '016200116989'
           // this.queryParams.DEVICENO = '015800117661'
           const fields = res.data.fields;
-          fields.channelNum = 5
+          // fields.channelNum = 5
           this.channelNumList = [];
           for (let i = 0; i < Number(fields.channelNum); i++) {
             const obj = {
