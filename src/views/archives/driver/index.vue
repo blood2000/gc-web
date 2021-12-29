@@ -174,7 +174,7 @@
     </div>
 
     <DriverDialog
-      :options="{ editType: editType, code: dialogCode }"
+      :options="{ editType: editType, code: dialogCode , userCode:userCode }"
       :open="open"
       :title="title"
       :orgList="orgList"
@@ -237,6 +237,7 @@ export default {
       driverConfig: {},
       orgNmaetable: "",
       dialogCode: null,
+      userCode:null,
     };
   },
   watch: {
@@ -323,6 +324,7 @@ export default {
       this.open = true;
       console.log("修改司机弹窗 ckc obj ", obj.code);
       this.dialogCode = obj.code;
+      this.userCode = obj.userCode
     },
     handleDetail(obj) {
       this.editType = "detail";

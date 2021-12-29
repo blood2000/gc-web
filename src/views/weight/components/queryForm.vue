@@ -48,7 +48,7 @@
             clearable
             filterable
             style="width: 331px"
-            placeholder="请选择车辆状态"
+            placeholder="请选择用车企业及路线"
             @change="$emit('handleQuery')"
           >
             <el-option

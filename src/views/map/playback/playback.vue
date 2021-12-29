@@ -209,6 +209,7 @@ export default {
           this.queryParams.VEHICLELICENSE = res.data.vehicle && res.data.vehicle.plateNumber
            this.queryParams.DEVICENO =res.data.device && res.data.device.deviceSN
           const fields = res.data.fields;
+          console.log('通道',fields.channelNum)
           this.channelNumList = [];
           for (let i = 0; i < Number(fields.channelNum); i++) {
             const obj = {
@@ -265,8 +266,22 @@ export default {
     //获取视频的总时长
     getDuration() {
       const refVideo = this.$refs.video;
-      console.log("refVideo", refVideo);
+      console.log("refVideo", refVideo,refVideo.duration);
       this.totalTime = this.durationTrans(parseInt(refVideo.duration));
+      var hour = parseInt((refVideo.duration) / 3600);
+                    if (hour<10) {
+                        hour = "0" + hour;
+                    }
+                    var minute = parseInt((refVideo.duration % 3600) / 60);
+                    if (minute<10) {
+                        minute = "0" + minute;
+                    }
+                    var second = Math.ceil(refVideo.duration % 60);
+                    if (second<10) {
+                        second = "0" + second;
+                    }
+                    var filetime = hour + ":" + minute + ":" + second;
+                    console.log('测试结果至',filetime)
       console.log("getDuration", this.totalTime);
     },
     // 查询结果

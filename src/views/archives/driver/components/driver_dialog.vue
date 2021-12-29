@@ -312,6 +312,8 @@ export default {
       pickerOptions,
       isDriverDateValid: true,
       isIdDateValid: true,
+      oldIdentificationNumber: "",
+      oldTelphone: "",
       form: {
         orgCode: null, //所属组织
         // password: null, //用户密码
@@ -408,7 +410,6 @@ export default {
     this.getTree();
   },
   methods: {
-  
     selectTipColor() {
       const objColor = {
         0: "info",
@@ -425,24 +426,37 @@ export default {
     dateChange(e) {
       console.log("日期哦", e);
     },
-      telDisabled(){
+    telDisabled() {
       if (this.isDetail) return true;
       if (this.options && this.options.editType == "update") return true;
-      return false
+      return false;
     },
     isDisabled() {
       let result = false;
       if (this.isDetail) result = true;
-      if (this.options && this.options.editType == "update"){
-      if(this.form.authStatus == 3) result = true;
-      } 
+      if (this.options && this.options.editType == "update") {
+        if (this.form.authStatus == 3) result = true;
+      }
       return result;
     },
     changeBlurTel(e) {
-      this.checkIdOrphone("0", this.form.telphone);
+      if (
+        this.options.editType == "update" &&
+        this.oldTelphone != this.form.telphone
+      ) {
+        this.checkIdOrphone("0", this.form.telphone);
+        this.oldTelphone = this.form.telphone;
+      }
     },
     changeBlurId(e) {
-      this.checkIdOrphone("1", this.form.identificationNumber);
+      console.log("changeBlurId", this.oldIdentificationNumber);
+      if (
+        this.options.editType == "update" &&
+        this.oldIdentificationNumber != this.form.identificationNumber
+      ) {
+        this.checkIdOrphone("1", this.form.identificationNumber);
+        this.oldIdentificationNumber = this.form.identificationNumber;
+      }
     },
     //校验
     async checkIdOrphone(type, value) {
@@ -557,6 +571,7 @@ export default {
               url_alias: "driver_edit",
               data: me.FormToUpdate(),
             };
+            // userCode
             console.log("obj", obj);
             http_request(obj)
               .then((updateRes) => {
@@ -622,6 +637,8 @@ export default {
       };
       this.resetForm("form");
       this.isIdDateValid = true;
+      this.oldIdentificationNumber = "";
+      this.oldTelphone = "";
     },
     //身份证正面照/身份证反面照 上传结束后回调
     chooseImg(e) {
@@ -762,6 +779,8 @@ export default {
       if (data.driverLicenseInf.validPeriodTo === "长期") {
         this.isDriverDateValid = false;
       }
+      this.oldIdentificationNumber = this.form.identificationNumber;
+      this.oldTelphone = this.form.telphone;
     },
     FormToUpdate() {
       const form = this.form;
@@ -793,6 +812,7 @@ export default {
           identificationNumber: form.identificationNumber, //身份证号
         },
       };
+      obj.userCode = this.options.userCode
       return obj;
     },
     FormToAdd() {
@@ -851,5 +871,4 @@ export default {
   opacity: 1;
   margin-right: 20px;
 }
-
 </style>

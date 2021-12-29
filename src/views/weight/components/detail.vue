@@ -98,14 +98,16 @@
       </div>
     </div>
     <TitleSideBlueTip title="凭证信息" />
-    <viewer :images="imageList">
-      <div class="img-list" v-for="src in imageList" :key="src">
+
+    <viewer class="img-list" :images="imageList">
+      <div class="img-list-item" v-for="src in imageList" :key="src">
         <img :src="src" />
         <div @click="show"></div>
       </div>
     </viewer>
+
     <TitleSideBlueTip title="修改记录" />
-    <div v-if="pageData.logs" style="margin-bottom:30px">
+    <div v-if="pageData.logs" style="margin-bottom: 30px">
       <div class="record" v-for="item in pageData.logs" :key="item.updateTime">
         <div class="record-left">
           <div class="record-left-label">
@@ -125,16 +127,36 @@
               v-for="sub in item.updateData"
               :key="sub.fieldName + sub.beforeValue"
             >
-              <div style="width: 75px">{{ sub.chFieldName }}:</div>
-              <div v-if="!sub.beforeValue.includes('http')">
+              <div style="width: 100px" :class="dealData(sub)">
+                {{ sub.chFieldName }}:
+              </div>
+              <div
+                v-if="
+                  typeof sub.beforeValue != 'string' ||
+                  !sub.beforeValue.includes('http')
+                "
+              >
                 {{ sub.beforeValue }}
               </div>
-              <img v-else class="image-style" :src="sub.beforeValue" alt="" />
+              <div v-else-if="splitArr(sub.beforeValue).length > 0">
+                <div v-for="lest in splitArr(sub.beforeValue)" :key="lest">
+                  <img class="image-style" :src="lest" alt="" />
+                </div>
+              </div>
               <div class="gengXin">修改为</div>
-              <div v-if="!sub.afterValue.includes('http')">
+              <div
+                v-if="
+                  typeof sub.beforeValue != 'string' ||
+                  !sub.afterValue.includes('http')
+                "
+              >
                 {{ sub.afterValue }}
               </div>
-              <img v-else class="image-style" :src="sub.afterValue" alt="" />
+              <div v-else-if="splitArr(sub.afterValue).length > 0">
+                <div v-for="lest in splitArr(sub.afterValue)" :key="lest">
+                  <img class="image-style" :src="lest" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -188,6 +210,15 @@ export default {
     },
   },
   methods: {
+    splitArr(str) {
+      if (!str) return [];
+      const result = str.split(",");
+      console.log("splitArr result", result);
+      return result;
+    },
+    dealData(data) {
+      console.log("sub data", data);
+    },
     show() {
       this.$viewerApi({
         images: this.imageList,
@@ -206,7 +237,7 @@ export default {
       const res = await http_request(obj);
       console.log("detail res", res);
       this.pageData = res.data;
-      if(!this.pageData.logs) return
+      if (!this.pageData.logs) return;
       this.pageData.logs.push({
         updateData: [
           {
@@ -267,14 +298,22 @@ export default {
   width: 144px;
 }
 .img-list {
+  display: flex;
   margin-left: 44px;
+  flex-wrap: wrap;
+}
+.img-list-item {
   position: relative;
   width: 131px;
   height: 88px;
+  margin-right: 14px;
+  margin-bottom: 14px;
+  border-radius: 2px;
+  min-width: 0;
   & > img {
     width: 131px;
     height: 88px;
-    margin-right: 14px;
+    border-radius: 2px;
   }
   & > div {
     width: 18px;
@@ -348,7 +387,7 @@ export default {
         font-weight: 400;
         color: #3d4050;
         margin-bottom: 10px;
-        align-items: center;
+        // align-items: center;
       }
     }
   }

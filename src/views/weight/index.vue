@@ -8,7 +8,7 @@
         v-model="queryParams.isDel"
         @tab-click="handleTab"
       >
-        <el-tab-pane label="全部" :name="null"></el-tab-pane>
+        <el-tab-pane label="全部" name="-1"></el-tab-pane>
         <el-tab-pane label="删除" name="1"></el-tab-pane>
       </el-tabs>
       <div class="monitor-pages-info-right-content">
@@ -31,11 +31,12 @@
         </div>
 
         <pagination
-          v-show="total > queryParams.pageSize"
+          v-show="total > 12"
           :total="total"
           layout="prev, pager, next,jumper, total,sizes"
           :page.sync="queryParams.pageNum"
           :limit.sync="queryParams.pageSize"
+          :page-sizes="[12, 24, 36, 60]"
           @pagination="getList"
         />
       </div>
@@ -87,7 +88,7 @@ export default {
         // companyName:null,
         routeCode: null,
         goodsCode: null,
-        isDel: null,
+        isDel: "-1",
       },
     };
   },
@@ -145,7 +146,7 @@ export default {
       this.detailDrawer = false;
     },
     handleTab(tab, event) {
-      console.log(tab);
+      console.log("handleTab", event);
       this.searchQuery();
     },
     searchQuery() {
@@ -168,6 +169,9 @@ export default {
     },
     queryParamsToBody() {
       const tmp = { ...this.queryParams };
+      if (tmp.isDel === "-1") {
+        tmp.isDel = null;
+      }
       if (tmp.dateRange) {
         tmp.startDate = tmp.dateRange[0];
         tmp.endDate = tmp.dateRange[1];

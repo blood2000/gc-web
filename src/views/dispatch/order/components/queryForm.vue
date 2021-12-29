@@ -37,7 +37,7 @@
             @keyup.enter.native="$emit('handleQuery')"
           />
         </el-form-item>
-        <el-form-item label="调度单号：" prop="dispatchOrderNo">
+        <el-form-item label="调度单号" prop="dispatchOrderNo">
           <el-input
             v-model="queryParams.dispatchOrderNo"
             placeholder="请输入调度单号"
@@ -48,7 +48,7 @@
         </el-form-item>
       </div>
       <div class="down" v-show="isShow">
-        <el-form-item label="货物类型：" prop="goodsType">
+        <el-form-item label="货物类型" prop="goodsType">
           <!-- <el-select
             
             clearable
