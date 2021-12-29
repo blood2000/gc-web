@@ -27,9 +27,9 @@
             @canplay="getDuration"
             muted
           ></video>
-          <div class="play-back-search-result-count">
-            {{ `${this.currTimes}/${this.totalTime}` }}
-          </div>
+<!--          <div class="play-back-search-result-count">-->
+<!--            {{ `${this.currTimes}/${this.totalTime}` }}-->
+<!--          </div>-->
           <div
             class="toBigger"
             @click.stop="isbigger = true"
