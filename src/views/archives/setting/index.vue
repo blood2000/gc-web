@@ -107,7 +107,8 @@ export default {
   .setting-right {
     flex: 1 1 auto;
     width: 0;
-    padding: 20px;
+    padding: 20px 20px 0 20px;
+    min-height: 100%;
   }
 }
 </style>
