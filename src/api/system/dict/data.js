@@ -31,7 +31,7 @@ export function getDicts(dictType) {
 // 查询字典类
 export function listByDict(data) {
   return request({
-    url: '/system/dict/data/listByDict',
+    url: '/chy/system/dict/data/listByDict',
     method: 'post',
     data: data,
     headers: {

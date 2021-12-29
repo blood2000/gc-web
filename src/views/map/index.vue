@@ -1439,11 +1439,11 @@ export default {
       const speed = attribute.speed || {};
       const position = attribute.coordinate.value;
       // 绘制车辆标记
-      const vehicleContent = `<div 
+      const vehicleContent = `<div
       style="transform:rotate(${direction.value || -30}deg);
       background:url('${require(`../../assets/images/map/${this.dealVheicleType(
         row
-      )}.png`)}') no-repeat; background-size:43px 79px" 
+      )}.png`)}') no-repeat; background-size:43px 79px"
       class="own-device-marker-car "
       ></div>`;
       const styleObj = {
@@ -1478,7 +1478,7 @@ export default {
             </div>
             <div class='label-content-status'>
             ${this.dealCurrStatus(row)}
-              <span class="label-content-status-line">|</span>   
+              <span class="label-content-status-line">|</span>
               ${this.dealTaskStatus(row)}
               </div>
           </div>
@@ -1591,11 +1591,11 @@ export default {
       const position = attribute.coordinate.value;
       console.log("this.markerList", this.markerList);
       this.realWarnMarker = this.markerList[row.vehicleCode];
-      const contents = `<div 
+      const contents = `<div
       style="transform:rotate(${direction.value || -30}deg);
       background:url('${require(`../../assets/images/map/${this.dealVheicleType(
         tmp
-      )}.png`)}') no-repeat;  background-size:43px 79px" 
+      )}.png`)}') no-repeat;  background-size:43px 79px"
       class="own-device-marker-warn "
       ><div class="warn-car "></div><div class="${
         type != 0 ? "warn-cirle" : "warn-cirle-blue"
@@ -1991,17 +1991,14 @@ export default {
   }
   // 调度指派
   > .play-back {
-    box-sizing: border-box;
-    height: 511px;
-    width: 380px;
-    background: #ffffff;
-    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.05);
-    opacity: 0.85;
-    border-radius: 6px;
     position: absolute;
-    top: calc(#{$header-height} + 12px);
+    bottom: $bottom;
+    left: calc(#{$left-tree-width} + 10px);
     right: $right;
-    z-index: 1000;
+    z-index: 999;
+    width: calc(100% - #{$left-tree-width} - 10px - #{$right});
+    top: calc(#{$header-height} + 12px);
+    pointer-events: none;
   }
 
   //车辆详情
