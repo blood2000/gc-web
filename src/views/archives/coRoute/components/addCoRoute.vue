@@ -340,7 +340,6 @@ export default {
     },
     // 选择企业
     companySelection(data) {
-      console.log('dasdasdas', data)
       this.companyInfo = data
     },
     // 关闭选择企业弹窗
