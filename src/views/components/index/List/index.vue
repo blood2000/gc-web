@@ -4,20 +4,10 @@
       <div class="list-left__bar">
         <div class="list-left__title">磅单趋势图</div>
         <el-button-group>
-          <el-button
-            @click="onClickDay(0)"
-            :type="dayRadio === 0 ? '' : 'info'"
-            plain
-            size="small"
-          >
+          <el-button @click="onClickDay(0)" :type="dayRadio === 0 ? '' : 'info'" plain size="small">
             今日
           </el-button>
-          <el-button
-            @click="onClickDay(1)"
-            :type="dayRadio === 1 ? '' : 'info'"
-            plain
-            size="small"
-          >
+          <el-button @click="onClickDay(1)" :type="dayRadio === 1 ? '' : 'info'" plain size="small">
             7天
           </el-button>
         </el-button-group>
@@ -29,7 +19,7 @@
     <div class="list-right">
       <div class="list-right__bar">
         <div class="list-right__title">磅单信息</div>
-        <el-button type="text">更多信息</el-button>
+        <el-button type="text" @click="onClickMore">更多信息</el-button>
       </div>
       <NoneData v-if="list.length <= 0" />
       <div class="list-right__box" v-for="(item, index) in list" :key="index">
@@ -61,13 +51,13 @@ import NoneData from '../NoneData'
 export default {
   name: 'ListTrend',
   components: {
-    NoneData
+    NoneData,
   },
   data() {
     return {
       dayRadio: 0,
       chart: null,
-      list: []
+      list: [],
     }
   },
   created() {
@@ -83,8 +73,8 @@ export default {
         url_alias: 'pagingWeighbridgeTrend',
         data: {
           pageNum: 1,
-          pageSize: 3
-        }
+          pageSize: 3,
+        },
       }
       http_request(objDispatch).then((res) => {
         const data = res.data ? res.data.rows || [] : []
@@ -99,8 +89,8 @@ export default {
         url_alias: 'listWeighbridgeTrend',
         data: {
           startDate: getDisDayTime(new Date(), 6),
-          endDate: this.parseTime(new Date(), '{y}-{m}-{d}')
-        }
+          endDate: this.parseTime(new Date(), '{y}-{m}-{d}'),
+        },
       }
       http_request(objDispatch).then((res) => {
         const data = res.data
@@ -121,26 +111,26 @@ export default {
         return item.freightTotal
       })
       this.chart = echarts.init(this.$refs.chart, 'macarons', {
-        height: 360
+        height: 360,
       })
       this.option = {
         grid: {
-          top: '15%'
+          top: '15%',
         },
         tooltip: {
           trigger: 'axis',
           axisPointer: {
-            type: 'none'
-          }
+            type: 'none',
+          },
         },
         legend: {
           left: 0,
           itemHeight: 8,
-          data: ['磅单数', '结算运费']
+          data: ['磅单数', '结算运费'],
         },
         xAxis: {
           type: 'category',
-          data: this.dateList
+          data: this.dateList,
         },
         yAxis: [
           {
@@ -149,17 +139,17 @@ export default {
             splitLine: {
               lineStyle: {
                 color: ['#ebebeb'],
-                type: 'dashed'
-              }
-            }
+                type: 'dashed',
+              },
+            },
           },
           {
             type: 'value',
             name: '结算运费',
             splitLine: {
-              show: false
-            }
-          }
+              show: false,
+            },
+          },
         ],
         series: [
           {
@@ -170,17 +160,17 @@ export default {
             barWidth: 16,
             yAxisIndex: 0,
             backgroundStyle: {
-              color: '#F7F7F7'
-            }
+              color: '#F7F7F7',
+            },
           },
           {
             name: '结算运费',
             data: this.freightList,
             type: 'line',
             smooth: true,
-            yAxisIndex: 1
-          }
-        ]
+            yAxisIndex: 1,
+          },
+        ],
       }
       this.changeBarColor()
     },
@@ -200,25 +190,25 @@ export default {
           seriesData.push({
             value: this.tripList[i],
             itemStyle: {
-              color: '#4682FA'
+              color: '#4682FA',
             },
             emphasis: {
               itemStyle: {
-                color: '#5c90f7'
-              }
-            }
+                color: '#5c90f7',
+              },
+            },
           })
         } else {
           seriesData.push({
             value: this.tripList[i],
             itemStyle: {
-              color: this.dayRadio === 0 ? '#EBEBEB' : '#4682FA'
+              color: this.dayRadio === 0 ? '#EBEBEB' : '#4682FA',
             },
             emphasis: {
               itemStyle: {
-                color: '#5c90f7'
-              }
-            }
+                color: '#5c90f7',
+              },
+            },
           })
         }
       }
@@ -229,8 +219,11 @@ export default {
       if (this.chart) {
         this.chart.setOption(this.option)
       }
-    }
-  }
+    },
+    onClickMore() {
+      this.$router.push({ path: '/archives/weight' })
+    },
+  },
 }
 </script>
 

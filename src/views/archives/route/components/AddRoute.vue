@@ -1,26 +1,13 @@
 <template>
   <div class="addRoute">
-    <el-dialog
-      title="新增路线"
-      :visible.sync="visible"
-      width="700px"
-      :before-close="onClose"
-    >
-      <el-form
-        ref="form"
-        :model="data"
-        label-width="90px"
-        :rules="rules"
-        label-position="top"
-      >
+    <el-dialog title="新增路线" :visible.sync="visible" width="700px" :before-close="onClose">
+      <el-form ref="form" :model="data" label-width="90px" :rules="rules" label-position="top">
         <el-form-item label="路线名称" prop="routeName">
           <el-input v-model="data.routeName" placeholder="请输入路线名称" />
         </el-form-item>
         <div class="dispatch-title-item start_address">
           <span> 出发地信息</span>
-          <div class="common_address" @click="hanleAddressOpen(1)">
-            常用地址
-          </div>
+          <div class="common_address" @click="hanleAddressOpen(1)">常用地址</div>
         </div>
         <!-- 出发地信息 -->
         <div class="info-wrapper">
@@ -140,10 +127,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item
-                label="联系人电话"
-                prop="loadingAddressContactPhone"
-              >
+              <el-form-item label="联系人电话" prop="loadingAddressContactPhone">
                 <el-input
                   v-model="data.loadingAddressContactPhone"
                   clearable
@@ -154,11 +138,7 @@
             </el-col>
           </el-row>
           <el-form-item>
-            <el-checkbox
-              v-model="data.loadingWhetherToAdd"
-              :true-label="1"
-              :false-label="0"
-            >
+            <el-checkbox v-model="data.loadingWhetherToAdd" :true-label="1" :false-label="0">
               添加到常用地址
             </el-checkbox>
           </el-form-item>
@@ -166,9 +146,7 @@
 
         <div class="dispatch-title-item end_address">
           <span>目的地信息</span>
-          <div class="common_address" @click="hanleAddressOpen(2)">
-            常用地址
-          </div>
+          <div class="common_address" @click="hanleAddressOpen(2)">常用地址</div>
         </div>
         <div class="info-wrapper">
           <el-row :gutter="15">
@@ -287,10 +265,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item
-                label="联系人电话"
-                prop="unloadingAddressContactPhone"
-              >
+              <el-form-item label="联系人电话" prop="unloadingAddressContactPhone">
                 <el-input
                   v-model="data.unloadingAddressContactPhone"
                   clearable
@@ -301,11 +276,7 @@
             </el-col>
           </el-row>
           <el-form-item>
-            <el-checkbox
-              v-model="data.unloadingWhetherToAdd"
-              :true-label="1"
-              :false-label="0"
-            >
+            <el-checkbox v-model="data.unloadingWhetherToAdd" :true-label="1" :false-label="0">
               添加到常用地址
             </el-checkbox>
           </el-form-item>
@@ -313,13 +284,8 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="onClose">取 消</el-button>
-        <el-button v-show="whichType === 'add'" type="primary" @click="onSave">
-          保 存
-        </el-button>
-        <el-button
-          v-show="whichType === 'update'"
-          type="primary"
-          @click="onUpdate"
+        <el-button v-show="whichType === 'add'" type="primary" @click="onSave"> 保 存 </el-button>
+        <el-button v-show="whichType === 'update'" type="primary" @click="onUpdate"
           >修 改</el-button
         >
       </span>
@@ -333,10 +299,7 @@
       append-to-body
     >
       <div v-if="addressOpen">
-        <AddressDialog
-          :opaddresstype="currAddressType"
-          @radioSelection="radioSelection"
-        />
+        <AddressDialog :opaddresstype="currAddressType" @radioSelection="radioSelection" />
       </div>
     </el-dialog>
   </div>
@@ -349,13 +312,13 @@ import RouteDefaultData from '../route_config'
 
 const geocoder = new AMap.Geocoder({
   radius: 1000,
-  extensions: 'all'
+  extensions: 'all',
 })
 
 export default {
   name: 'AddRoute',
   components: {
-    AddressDialog
+    AddressDialog,
   },
   data() {
     return {
@@ -367,119 +330,119 @@ export default {
           {
             required: true,
             message: '路线名称不能为空',
-            trigger: ['blur', 'change']
-          }
+            trigger: ['blur', 'change'],
+          },
         ],
         loadingAddressProvinceCode: [
           {
             required: true,
             message: '请选择省',
-            trigger: ['blur', 'change']
-          }
+            trigger: ['blur', 'change'],
+          },
         ],
         loadingAddressCityCode: [
           {
             required: true,
             message: '请选择市',
-            trigger: ['blur', 'change']
-          }
+            trigger: ['blur', 'change'],
+          },
         ],
         loadingAddressDistrictCode: [
           {
             required: true,
             message: '请选择县/区',
-            trigger: ['blur', 'change']
-          }
+            trigger: ['blur', 'change'],
+          },
         ],
         loadingAddressDetail: [
           {
             required: true,
             message: '详细地址不能为空',
-            trigger: ['blur', 'change']
-          }
+            trigger: ['blur', 'change'],
+          },
         ],
         loadingAddressContact: [
           {
             required: true,
             message: '联系人不能为空',
-            trigger: ['blur', 'change']
-          }
+            trigger: ['blur', 'change'],
+          },
         ],
         loadingAddressContactPhone: [
           {
             required: true,
             message: '联系人电话不能为空',
-            trigger: ['blur', 'change']
-          }
+            trigger: ['blur', 'change'],
+          },
         ],
         unloadingAddressProvinceCode: [
           {
             required: true,
             message: '请选择省',
-            trigger: ['blur', 'change']
-          }
+            trigger: ['blur', 'change'],
+          },
         ],
         unloadingAddressCityCode: [
           {
             required: true,
             message: '请选择市',
-            trigger: ['blur', 'change']
-          }
+            trigger: ['blur', 'change'],
+          },
         ],
         unloadingAddressDistrictCode: [
           {
             required: true,
             message: '请选择县/区',
-            trigger: ['blur', 'change']
-          }
+            trigger: ['blur', 'change'],
+          },
         ],
         unloadingAddressDetail: [
           {
             required: true,
             message: '详细地址不能为空',
-            trigger: ['blur', 'change']
-          }
+            trigger: ['blur', 'change'],
+          },
         ],
         unloadingAddressContact: [
           {
             required: true,
             message: '联系人不能为空',
-            trigger: ['blur', 'change']
-          }
+            trigger: ['blur', 'change'],
+          },
         ],
         unloadingAddressContactPhone: [
           {
             required: true,
             message: '联系人电话不能为空',
-            trigger: ['blur', 'change']
-          }
-        ]
+            trigger: ['blur', 'change'],
+          },
+        ],
       },
       loadList: {
         provinceList: [],
         cityList: [],
         districtList: [],
         detailOptin: [],
-        loading: false
+        loading: false,
       },
       unLoadList: {
         provinceList: [],
         cityList: [],
         districtList: [],
         detailOptin: [],
-        loading: false
+        loading: false,
       },
       searchOption: {
         city: '全国',
-        citylimit: true
+        citylimit: true,
       },
       searchOption1: {
         city: '全国',
-        citylimit: true
+        citylimit: true,
       },
       selected: null,
       addressOpen: false,
-      currAddressType: 0
+      currAddressType: 0,
     }
   },
   created() {
@@ -509,7 +472,7 @@ export default {
         moduleName: 'http_route',
         method: 'get',
         url_alias: 'route_detail',
-        url_code: [id]
+        url_code: [id],
       }
       http_request(obj).then((res) => {
         this.data = res.data
@@ -531,6 +494,10 @@ export default {
     //常用地址选择
     radioSelection(data) {
       if (!data || !this.currAddressType) return
+      if (data.code === this.data.loadingCode || data.code === this.data.unloadingCode) {
+        this.$message.error('请勿选择重复地址')
+        return
+      }
       console.log('选择返回的数据', data, this.currAddressType)
       this.getCityListFun(data.provinceCode, this.currAddressType + '', () => {
         this.getDistrictFun(data.cityCode, this.currAddressType + '', () => {
@@ -548,6 +515,7 @@ export default {
           this.data[`${objName}AddressLng`] = Number(data.longitude) //经度
           this.data[`${objName}AddressLat`] = Number(data.latitude) //纬度
           this.data[`${objName}WhetherToAdd`] = 0 // 是否添加到常用地址：0否1是
+          this.data[`${objName}Code`] = data.code // 是否添加到常用地址：0否1是
           this.currAddressType = null
           this.addressOpen = false
         })
@@ -558,7 +526,7 @@ export default {
       const obj = {
         moduleName: 'http_purse',
         method: 'post',
-        url_alias: 'provinceList'
+        url_alias: 'provinceList',
       }
       http_request(obj).then((res) => {
         this.loadList.provinceList = res.data
@@ -567,7 +535,6 @@ export default {
     },
     // 获取市
     getCityListFun(code, type, callBack) {
-      console.log(',,,,,,,', code)
       if (code == null || code === '') {
         return
       }
@@ -576,7 +543,7 @@ export default {
         moduleName: 'http_purse',
         method: 'get',
         url_alias: 'cityList',
-        data: { provinceCode: code }
+        data: { provinceCode: code },
       }
       http_request(obj).then((res) => {
         if (type == '1') {
@@ -597,7 +564,7 @@ export default {
         moduleName: 'http_purse',
         method: 'get',
         url_alias: 'districtList',
-        url_code: [code]
+        url_code: [code],
       }
       http_request(obj).then((res) => {
         console.log('获取区', res)
@@ -735,29 +702,14 @@ export default {
       geocoder.getAddress(lnglat, function (status, result) {
         if (status === 'complete' && result.info === 'OK') {
           // 通过经纬度找出详细的地址
-          const {
-            adcode,
-            province,
-            city,
-            district,
-            township,
-            street,
-            streetNumber
-          } = result.regeocode.addressComponent
+          const { adcode, province, city, district, township, street, streetNumber } =
+            result.regeocode.addressComponent
 
           if (type == '1' && _this.data.loadingAddressDetail)
-            _this.data.loadingAddressDetail =
-              district + township + street + streetNumber
+            _this.data.loadingAddressDetail = district + township + street + streetNumber
           if (type == '2' && _this.data.unloadingAddressDetail)
-            _this.data.unloadingAddressDetail =
-              district + township + street + streetNumber
-          console.log(
-            'adcode, province, city, district',
-            adcode,
-            province,
-            city,
-            district
-          )
+            _this.data.unloadingAddressDetail = district + township + street + streetNumber
+          console.log('adcode, province, city, district', adcode, province, city, district)
           _this.getAreaCode(adcode, province, city, district, type)
         }
       })
@@ -830,7 +782,7 @@ export default {
         return {
           ...e,
           dictValue: e[dictValue],
-          dictLabel: e[dictLabel]
+          dictLabel: e[dictLabel],
         }
       })
     },
@@ -844,7 +796,7 @@ export default {
             moduleName: 'http_route',
             method: 'post',
             url_alias: 'route_add',
-            data: this.data
+            data: this.data,
           }
           http_request(obj).then((res) => {
             console.log('看看', res)
@@ -868,7 +820,7 @@ export default {
             moduleName: 'http_route',
             method: 'put',
             url_alias: 'route_update',
-            data: this.data
+            data: this.data,
           }
           http_request(obj).then((res) => {
             console.log('看看', res)
@@ -881,8 +833,8 @@ export default {
           })
         }
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

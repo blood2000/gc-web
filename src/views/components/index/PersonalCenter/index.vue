@@ -4,15 +4,28 @@
     <div class="user-container">
       <div class="avatar">
         <img v-if="user.avatar" :src="user.avatar" />
-        <img
-          v-else
-          src="../../../../assets/images/profile.png"
-          alt="默认头像"
-        />
+        <img v-else src="../../../../assets/images/profile.png" alt="默认头像" />
       </div>
       <div class="info">
         <div class="top g-single-row">HI, {{ user.nickName }}</div>
-        <div class="bottom g-single-row">研发部｜工程师</div>
+        <div class="mid g-single-row">{{ user.isAdmin === 1 ? companyName : dept.deptName }}</div>
+        <div class="bottom" v-if="roleNames.length > 0">
+          <el-tag class="mr5" size="mini">{{ roleNames[0] }}</el-tag>
+          <el-dropdown v-if="roleNames.length > 1">
+            <span class="el-dropdown-link">
+              <el-tag size="mini"><i class="el-icon-more"></i></el-tag>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item
+                v-for="(item, index) in roleNames"
+                :key="index"
+                v-show="index !== 0"
+              >
+                <el-tag size="mini">{{ item }}</el-tag>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
       </div>
     </div>
     <!-- 日历表 -->
@@ -29,34 +42,23 @@
       <div class="calendar-container__main">
         <el-calendar ref="monChild" v-model="value" :first-day-of-week="7">
           <template slot="dateCell" slot-scope="{ date, data }">
-            <div
-              @click="onClickDay(data)"
-              :class="data.isSelected ? 'is-selected' : ''"
-            >
+            <div @click="onClickDay(data)" :class="data.isSelected ? 'is-selected' : ''">
               <div style="line-height: 17px">
                 {{ parseTime(data.day, '{d}') }}
               </div>
               <div class="g-flexcenter">
                 <div
                   v-if="
-                    warnDateList.findIndex(
-                      (res) => res.alarmTime === data.day
-                    ) !== -1 && new Date() > new Date(data.day).getTime()
+                    warnDateList.findIndex((res) => res.alarmTime === data.day) !== -1 &&
+                    new Date() > new Date(data.day).getTime()
                   "
-                  :class="
-                    data.isSelected ? 'schedule' : 'schedule g-color-error'
-                  "
+                  :class="data.isSelected ? 'schedule' : 'schedule g-color-error'"
                 >
                   ·
                 </div>
                 <div
-                  v-if="
-                    transList.findIndex((res) => res.datetime === data.day) !==
-                    -1
-                  "
-                  :class="
-                    data.isSelected ? 'schedule' : 'schedule g-color-blue'
-                  "
+                  v-if="transList.findIndex((res) => res.datetime === data.day) !== -1"
+                  :class="data.isSelected ? 'schedule' : 'schedule g-color-blue'"
                 >
                   ·
                 </div>
@@ -85,11 +87,7 @@
     <div class="date-container">
       <div class="date-container__box">
         <div class="date-container__title">
-          <img
-            class="icon"
-            src="../../../../assets/images/home/vehicle.png"
-            alt=""
-          />
+          <img class="icon" src="../../../../assets/images/home/vehicle.png" alt="" />
           <span>车辆</span>
         </div>
         <div class="date-container__tips">
@@ -118,11 +116,7 @@
       </div>
       <div class="date-container__box">
         <div class="date-container__title">
-          <img
-            class="icon"
-            src="../../../../assets/images/home/driver.png"
-            alt=""
-          />
+          <img class="icon" src="../../../../assets/images/home/driver.png" alt="" />
           <span>司机</span>
         </div>
         <div class="date-container__tips">
@@ -149,11 +143,7 @@
       </div>
       <div class="date-container__box">
         <div class="date-container__title">
-          <img
-            class="icon"
-            src="../../../../assets/images/home/device.png"
-            alt=""
-          />
+          <img class="icon" src="../../../../assets/images/home/device.png" alt="" />
           <span>设备</span>
         </div>
         <div class="date-container__tips">
@@ -191,8 +181,9 @@ export default {
   data() {
     return {
       user: {},
-      dept: '',
+      dept: {},
       companyName: '',
+      roleNames: [],
       value: new Date(),
       warnDateCount: 0,
       warnDateList: [],
@@ -202,13 +193,13 @@ export default {
       openSchedule: false,
       vehicle: {}, // 车辆
       driver: {}, // 司机
-      device: {} // 设备
+      device: {}, // 设备
     }
   },
   computed: {
     currentTM() {
       return this.parseTime(this.value, '{y}年{m}月')
-    }
+    },
   },
   created() {
     this.getUser()
@@ -223,6 +214,7 @@ export default {
         this.user = res.user
         this.dept = res.dept
         this.companyName = res.company.name
+        this.roleNames = res.roleNames || []
       })
     },
     getList() {
@@ -236,14 +228,14 @@ export default {
         method: 'get',
         url_alias: 'schedule_warn',
         data: {
-          alarmTime: this.parseTime(this.value, '{y}-{m}')
-        }
+          alarmTime: this.parseTime(this.value, '{y}-{m}'),
+        },
       }
       http_request(obj).then((res) => {
         console.log('日历告警--->', res)
         this.warnDateList = res.data
         this.onClickDay({
-          day: this.parseTime(this.value, '{y}-{m}-{d}')
+          day: this.parseTime(this.value, '{y}-{m}-{d}'),
         })
       })
     },
@@ -254,14 +246,14 @@ export default {
         method: 'get',
         url_alias: 'schedule_dispatch',
         data: {
-          date: this.parseTime(this.value, '{y}-{m}')
-        }
+          date: this.parseTime(this.value, '{y}-{m}'),
+        },
       }
       http_request(objDispatch).then((res) => {
         console.log('日历运输--->', res)
         this.transList = res.data
         this.onClickDay({
-          day: this.parseTime(this.value, '{y}-{m}-{d}')
+          day: this.parseTime(this.value, '{y}-{m}-{d}'),
         })
       })
     },
@@ -270,7 +262,7 @@ export default {
       const obj = {
         moduleName: 'http_home',
         method: 'get',
-        url_alias: 'driverVehicleEquipment'
+        url_alias: 'driverVehicleEquipment',
       }
       http_request(obj).then((res) => {
         console.log('qewqwwe--->', res)
@@ -278,21 +270,15 @@ export default {
         if (data) {
           this.vehicle = data.vehicle
           this.vehicle.percent = parseInt(
-            (this.vehicle.taskVehicle /
-              (this.vehicle.taskVehicle + this.vehicle.freeVehicle)) *
-              100
+            (this.vehicle.taskVehicle / (this.vehicle.taskVehicle + this.vehicle.freeVehicle)) * 100
           )
           this.driver = data.driver
           this.driver.percent = parseInt(
-            (this.driver.taskDriver /
-              (this.driver.taskDriver + this.driver.freeDriver)) *
-              100
+            (this.driver.taskDriver / (this.driver.taskDriver + this.driver.freeDriver)) * 100
           )
           this.device = data.device
           this.device.percent = parseInt(
-            (this.device.taskDevice /
-              (this.device.taskDevice + this.device.freeDevice)) *
-              100
+            (this.device.taskDevice / (this.device.taskDevice + this.device.freeDevice)) * 100
           )
         }
       })
@@ -306,14 +292,11 @@ export default {
       } else if (val === 'today') {
         this.value = new Date()
       } else if (val === 'preYear') {
-        this.value = new Date(
-          this.value.setFullYear(this.value.getFullYear() - 1)
-        )
+        this.value = new Date(this.value.setFullYear(this.value.getFullYear() - 1))
       } else if (val === 'nextYear') {
-        this.value = new Date(
-          this.value.setFullYear(this.value.getFullYear() + 1)
-        )
+        this.value = new Date(this.value.setFullYear(this.value.getFullYear() + 1))
       }
+      this.getList()
     },
     // 点击了日子
     onClickDay(data) {
@@ -332,8 +315,8 @@ export default {
         }
       })
       this.transCount = transCount
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -364,6 +347,9 @@ export default {
       .bottom {
         font-size: 14px;
         color: #3d4050;
+        .mr5 {
+          margin-right: 5px;
+        }
       }
     }
   }
@@ -531,5 +517,8 @@ export default {
 }
 ::v-deep .date-container .el-progress-bar__outer {
   background: #43b91e;
+}
+::v-deep .el-tag {
+  border-radius: 12px;
 }
 </style>

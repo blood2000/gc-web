@@ -37,12 +37,7 @@
         </div>
         <div class="ddc-queryParams-right">
           <el-form-item>
-            <el-button
-              type="primary"
-              icon="el-icon-search"
-              size="mini"
-              @click="onSearch('reset')"
-            >
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="onSearch('reset')">
               搜索
             </el-button>
             <el-button
@@ -60,19 +55,10 @@
       </el-form>
     </div>
     <div class="dispatch__table">
-      <el-button
-        class="mb20"
-        type="primary"
-        :loading="exportLoading"
-        @click="onExport"
+      <el-button class="mb20" type="primary" :loading="exportLoading" @click="onExport"
         >导出</el-button
       >
-      <el-table
-        v-loading="loading"
-        highlight-current-row
-        :stripe="true"
-        :data="vehicleList"
-      >
+      <el-table v-loading="loading" highlight-current-row :stripe="true" :data="vehicleList">
         <el-table-column label="序号">
           <template slot-scope="scope">
             <span>{{ scope.$index + 1 }}</span>
@@ -85,9 +71,7 @@
         <el-table-column label="承运净重（吨）" prop="netWeightTotal" />
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="onClickDetail(scope.row)">
-              详情
-            </el-button>
+            <el-button type="text" @click="onClickDetail(scope.row)"> 详情 </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -111,7 +95,7 @@ import CompanyDetail from './components/companyDetail.vue'
 
 export default {
   components: {
-    CompanyDetail
+    CompanyDetail,
   },
   data() {
     return {
@@ -120,11 +104,11 @@ export default {
       vehicleList: [],
       queryParams: {
         companyName: '',
-        dateList: [new Date(), new Date()],
+        dateList: [this.parseTime(new Date(), '{y}-{m}') + '-01', new Date()],
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
       },
-      total: 0
+      total: 0,
     }
   },
   created() {
@@ -134,9 +118,9 @@ export default {
     onReset() {
       this.queryParams = {
         companyName: '',
-        dateList: [new Date(), new Date()],
+        dateList: [this.parseTime(new Date(), '{y}-{m}') + '-01', new Date()],
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
       }
       this.onSearch('reset')
     },
@@ -154,14 +138,11 @@ export default {
         url_alias: 'pagingFirstDispatchOrder',
         data: {
           companyName: this.queryParams.companyName,
-          startDate: this.parseTime(
-            this.queryParams.dateList[0],
-            '{y}-{m}-{d}'
-          ),
+          startDate: this.parseTime(this.queryParams.dateList[0], '{y}-{m}-{d}'),
           endDate: this.parseTime(this.queryParams.dateList[1], '{y}-{m}-{d}'),
           pageNum: this.queryParams.pageNum,
-          pageSize: this.queryParams.pageSize
-        }
+          pageSize: this.queryParams.pageSize,
+        },
       }
       this.loading = true
       http_request(params).then((res) => {
@@ -186,7 +167,7 @@ export default {
       this.exportLoading = true
       const params = {
         startDate: this.startDateNow,
-        endDate: this.endDateNow
+        endDate: this.endDateNow,
       }
       this.downloadFileName(
         '/fmsweb/basic/dispatch/v1/exportFirstDispatchOrder',
@@ -194,8 +175,8 @@ export default {
         `${params.startDate}至${params.endDate}整体运输情况报表`
       )
       this.exportLoading = false
-    }
-  }
+    },
+  },
 }
 </script>
 

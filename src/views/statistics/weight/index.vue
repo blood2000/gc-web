@@ -28,12 +28,7 @@
         </div>
         <div class="ddc-queryParams-right">
           <el-form-item>
-            <el-button
-              type="primary"
-              icon="el-icon-search"
-              size="mini"
-              @click="onSearch('reset')"
-            >
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="onSearch('reset')">
               搜索
             </el-button>
             <el-button
@@ -56,19 +51,10 @@
       <el-tab-pane label="按车辆" name="3" />
     </el-tabs>
     <div class="dispatch__table">
-      <el-button
-        class="mb20"
-        type="primary"
-        :loading="exportLoading"
-        @click="onExport"
+      <el-button class="mb20" type="primary" :loading="exportLoading" @click="onExport"
         >导出</el-button
       >
-      <el-table
-        v-loading="loading"
-        highlight-current-row
-        :stripe="true"
-        :data="weightList"
-      >
+      <el-table v-loading="loading" highlight-current-row :stripe="true" :data="weightList">
         <el-table-column label="序号">
           <template slot-scope="scope">
             <span>{{ scope.$index + 1 }}</span>
@@ -86,43 +72,17 @@
           prop="routeCount"
           :key="Math.random()"
         />
-        <el-table-column
-          v-if="queryParams.type === '2'"
-          label="路线名称"
-          prop="routeName"
-        />
-        <el-table-column
-          v-if="queryParams.type === '2'"
-          label="用车企业数"
-          prop="companyCount"
-        />
-        <el-table-column
-          v-if="queryParams.type === '2'"
-          label="出发地"
-          prop="startRoute"
-        />
-        <el-table-column
-          v-if="queryParams.type === '2'"
-          label="目的地"
-          prop="endRoute"
-        />
-        <el-table-column
-          v-if="queryParams.type === '3'"
-          label="车辆别名"
-          prop="vehicleAlias"
-        />
-        <el-table-column
-          v-if="queryParams.type === '3'"
-          label="车牌号"
-          prop="vehicleNumber"
-        />
+        <el-table-column v-if="queryParams.type === '2'" label="路线名称" prop="routeName" />
+        <el-table-column v-if="queryParams.type === '2'" label="用车企业数" prop="companyCount" />
+        <el-table-column v-if="queryParams.type === '2'" label="出发地" prop="startRoute" />
+        <el-table-column v-if="queryParams.type === '2'" label="目的地" prop="endRoute" />
+        <el-table-column v-if="queryParams.type === '3'" label="车辆别名" prop="vehicleAlias" />
+        <el-table-column v-if="queryParams.type === '3'" label="车牌号" prop="vehicleNumber" />
         <el-table-column label="磅单数" prop="weighbridgeCount" />
         <el-table-column label="结算总额（元）" prop="freightTotal" />
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="onClickDetail(scope.row)">
-              详情
-            </el-button>
+            <el-button type="text" @click="onClickDetail(scope.row)"> 详情 </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -146,7 +106,7 @@ import Detail from './components/detail.vue'
 
 export default {
   components: {
-    Detail
+    Detail,
   },
   data() {
     return {
@@ -154,12 +114,12 @@ export default {
       exportLoading: false,
       weightList: [],
       queryParams: {
-        dateList: [new Date(), new Date()],
+        dateList: [this.parseTime(new Date(), '{y}-{m}') + '-01', new Date()],
         type: '1',
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
       },
-      total: 0
+      total: 0,
     }
   },
   created() {
@@ -168,10 +128,10 @@ export default {
   methods: {
     onReset() {
       this.queryParams = {
-        dateList: [new Date(), new Date()],
+        dateList: [this.parseTime(new Date(), '{y}-{m}') + '-01', new Date()],
         type: '1',
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
       }
       this.onSearch('reset')
     },
@@ -194,14 +154,11 @@ export default {
         url_alias: 'pagingWeighbridgeStatistics',
         data: {
           type: this.queryParams.type,
-          startDate: this.parseTime(
-            this.queryParams.dateList[0],
-            '{y}-{m}-{d}'
-          ),
+          startDate: this.parseTime(this.queryParams.dateList[0], '{y}-{m}-{d}'),
           endDate: this.parseTime(this.queryParams.dateList[1], '{y}-{m}-{d}'),
           pageNum: this.queryParams.pageNum,
-          pageSize: this.queryParams.pageSize
-        }
+          pageSize: this.queryParams.pageSize,
+        },
       }
       this.loading = true
       http_request(params).then((res) => {
@@ -228,7 +185,7 @@ export default {
       const params = {
         startDate: this.startDateNow,
         endDate: this.endDateNow,
-        type: this.queryParams.type
+        type: this.queryParams.type,
       }
       let fileName = `${params.startDate}至${params.endDate}`
       if (params.type === '1') {
@@ -244,8 +201,8 @@ export default {
         fileName
       )
       this.exportLoading = false
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -1,11 +1,6 @@
 <template>
   <div class="ChooseRoute">
-    <el-dialog
-      title="选择路线"
-      :visible.sync="visible"
-      width="500px"
-      :before-close="onClose"
-    >
+    <el-dialog title="选择路线" :visible.sync="visible" width="500px" :before-close="onClose">
       <el-input
         class="w300"
         v-model="routeName"
@@ -16,20 +11,20 @@
       </el-input>
       <div class="wrapper">
         <div class="box" v-for="(item, index) in routeList" :key="index">
-          <el-radio
-            class="radio"
-            v-model="currentIndex"
-            :label="index"
-          ></el-radio>
+          <el-radio class="radio" v-model="currentIndex" :label="index"></el-radio>
           <div class="routeInfo" @click="onClickRadio(index)">
             <div class="name">{{ item.routeName }}</div>
             <div class="loading">
               <div class="icon">起</div>
-              <span class="alias">{{ item.loadingAddressAlias }}</span>
+              <span class="alias">{{
+                item.loadingAddressAlias || item.loadingAddressFormatted
+              }}</span>
             </div>
             <div class="unloading">
               <div class="icon">终</div>
-              <span class="alias">{{ item.unloadingAddressAlias }}</span>
+              <span class="alias">{{
+                item.unloadingAddressAlias || item.unloadingAddressFormatted
+              }}</span>
             </div>
           </div>
         </div>
@@ -52,7 +47,7 @@ export default {
       visible: false,
       routeName: '',
       currentIndex: -1,
-      routeList: []
+      routeList: [],
     }
   },
   created() {
@@ -74,8 +69,8 @@ export default {
         method: 'post',
         url_alias: 'route_all',
         data: {
-          routeName: this.routeName
-        }
+          routeName: this.routeName,
+        },
       }
       http_request(params).then((res) => {
         console.log('?????', res)
@@ -89,8 +84,8 @@ export default {
       } else {
         this.$message.error('请选择路线')
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
