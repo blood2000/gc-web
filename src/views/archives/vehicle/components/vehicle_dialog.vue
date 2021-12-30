@@ -278,7 +278,6 @@
               placeholder="请输入发证机关"
               clearable
               style="width: 256px"
-              @input="imposeInput($event, 'issuingOrganizations')"
               :disabled="disabledDeal()"
             >
             </el-input>
