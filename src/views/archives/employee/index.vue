@@ -190,6 +190,7 @@
             prop="nickName"
             :show-overflow-tooltip="true"
           />
+          
           <el-table-column
             label="手机号"
             align="center"
@@ -202,6 +203,18 @@
             prop="orgName"
             :show-overflow-tooltip="true"
           />
+           <el-table-column
+            label="成员类型"
+            align="center"
+            prop="memberTypeList"
+            :show-overflow-tooltip="true"
+          >
+             <template slot-scope="scope">
+              <div  style="font-family: PingFang SC;" v-if="scope.row.memberTypeList &&scope.row.memberTypeList.length >0">
+                {{dealMemberTypeList(scope.row.memberTypeList)}} 
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column
             label="所属角色"
             align="center"
@@ -209,10 +222,6 @@
             :show-overflow-tooltip="true"
           >
             <template slot-scope="scope">
-              <i
-                class="el-icon-time"
-                v-if="dealRoleName(scope.row.roleNameList)"
-              ></i>
               <span style="margin-left: 10px">{{
                 dealRoleName(scope.row.roleNameList)
               }}</span>
@@ -224,6 +233,8 @@
             align="center"
             prop="employeeStatus"
           >
+          <!-- memberTypeList -->
+         
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.employeeStatus"
@@ -250,6 +261,7 @@
             width="200"
             class-name="small-padding fixed-width"
           >
+          
             <template slot-scope="scope">
               <el-button
                 v-if="!scope.row.teamLeaderFlag"
@@ -387,6 +399,10 @@ export default {
     this.getList();
   },
   methods: {
+    dealMemberTypeList(arr){
+      console.log(arr.join())
+      return arr.join()
+    },
     employeeStatusChange(e) {
       // console.log(e);
       // console.log(

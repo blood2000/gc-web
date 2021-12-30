@@ -69,7 +69,7 @@
             </el-col>
             <el-col :span="24">
               <el-form-item label="选择摄像头：" prop="CHANNEL">
-                <el-select
+                <!-- <el-select
                   v-model="queryParams.CHANNEL"
                   clearable
                   filterable
@@ -82,7 +82,26 @@
                     :label="item.key"
                     :value="item.value"
                   />
-                </el-select>
+                </el-select> -->
+                <el-row style="width: 348px">
+                  <el-col
+                    :span="12"
+                    v-for="(item, index) in channelNumList"
+                    :key="item.key"
+                    class="channelNum-box"
+                   
+                    :style="{ 'margin-right': index % 2 == 0 ? '12px' : '0' }"
+                    :class="
+                      index + 1 == queryParams.CHANNEL
+                        ? 'channelNum-active'
+                        : ''
+                    "
+                    
+                  >
+                   <div   @click="channelNums(item)">
+                     {{ item.key }}</div> </el-col
+                  >
+                </el-row>
               </el-form-item>
             </el-col>
             <el-col :span="24" class="play-back-form-btn">
@@ -236,6 +255,11 @@ export default {
   },
   computed: {},
   methods: {
+    channelNums(item) {
+      console.log('fasdfa',item);
+      this.queryParams.CHANNEL = item.value
+      // this.$set( this.queryParams, key, value )
+    },
     downloadFile(url) {
       const elink = document.createElement("a");
       elink.download = "test.mp4";
@@ -814,5 +838,23 @@ export default {
   width: 100%;
   object-fit: fill;
 }
-
+.channelNum-box {
+  width: 168px;
+  height: 36px;
+  border: 1px solid #e4ecf4;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  text-align: center;
+  font-size: 14px;
+  font-family: PingFang SC;
+  font-weight: 400;
+  color: #3d4050;
+  cursor: pointer;
+}
+.channelNum-active {
+  background: rgba(70, 130, 250, 0.2);
+  border: 1px solid #4682fa;
+  font-weight: bold;
+  color: #4682fa;
+}
 </style>
