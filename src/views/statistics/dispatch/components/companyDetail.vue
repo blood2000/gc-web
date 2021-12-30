@@ -9,21 +9,11 @@
     >
       <div class="companyDetail__wrapper">
         <div class="companyDetail__date">{{ startDate }} 至 {{ endDate }}</div>
-        <el-button
-          class="mtb20"
-          type="primary"
-          :loading="exportLoading"
-          @click="onExport"
-        >
+        <el-button class="mtb20" type="primary" :loading="exportLoading" @click="onExport">
           导出
         </el-button>
         <div class="table">
-          <el-table
-            v-loading="loading"
-            highlight-current-row
-            :stripe="true"
-            :data="companyList"
-          >
+          <el-table v-loading="loading" highlight-current-row :stripe="true" :data="companyList">
             <el-table-column label="序号">
               <template slot-scope="scope">
                 <span>{{ scope.$index + 1 }}</span>
@@ -45,9 +35,7 @@
             <el-table-column label="净收入（元）" prop="netIncomeTotal" />
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button type="text" @click="onClickDetail(scope.row)">
-                  详情
-                </el-button>
+                <el-button type="text" @click="onClickDetail(scope.row)"> 详情 </el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -73,7 +61,7 @@ import OrderDetail from './orderDetail.vue'
 
 export default {
   components: {
-    OrderDetail
+    OrderDetail,
   },
   data() {
     return {
@@ -86,9 +74,9 @@ export default {
       companyList: [],
       queryParams: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
       },
-      total: 0
+      total: 0,
     }
   },
   mounted() {},
@@ -113,8 +101,8 @@ export default {
           ...this.queryParams,
           companyName: this.companyName,
           startDate: this.startDate,
-          endDate: this.endDate
-        }
+          endDate: this.endDate,
+        },
       }
       this.loading = true
       http_request(params).then((res) => {
@@ -135,16 +123,16 @@ export default {
       const params = {
         startDate: this.startDate,
         endDate: this.endDate,
-        companyName: this.companyName
+        companyName: this.companyName,
       }
       this.downloadFileName(
         '/fmsweb/basic/dispatch/v1/exportDispatchOrderByCompanyName',
         params,
-        `${params.startDate}至${params.endDate}${this.companyName}`
+        `${params.startDate}至${params.endDate}${this.companyName}运输统计报表`
       )
       this.exportLoading = false
-    }
-  }
+    },
+  },
 }
 </script>
 
