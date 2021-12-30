@@ -545,6 +545,9 @@ export default {
 .play-back-file-table .el-table--mini th, .el-table--mini td {
   padding: 1px 0;
 }
+.playback-create-time-date-picker-popper {
+  margin-right: 40px;
+}
 </style>
 <style lang="scss" scoped>
 .play-back-bottom {
