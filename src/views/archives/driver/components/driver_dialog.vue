@@ -447,6 +447,8 @@ export default {
         this.checkIdOrphone("0", this.form.telphone);
         this.oldTelphone = this.form.telphone;
       }
+      if (this.options.editType != "update")
+        this.checkIdOrphone("0", this.form.telphone);
     },
     changeBlurId(e) {
       console.log("changeBlurId", this.oldIdentificationNumber);
@@ -457,6 +459,8 @@ export default {
         this.checkIdOrphone("1", this.form.identificationNumber);
         this.oldIdentificationNumber = this.form.identificationNumber;
       }
+      if (this.options.editType != "update")
+        this.checkIdOrphone("1", this.form.identificationNumber);
     },
     //校验
     async checkIdOrphone(type, value) {
@@ -812,7 +816,7 @@ export default {
           identificationNumber: form.identificationNumber, //身份证号
         },
       };
-      obj.userCode = this.options.userCode
+      obj.userCode = this.options.userCode;
       return obj;
     },
     FormToAdd() {

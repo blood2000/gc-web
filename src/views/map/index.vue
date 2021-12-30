@@ -1525,9 +1525,11 @@ export default {
       this.clearRefreshMarkerTimer();
       this.refreshMarkerTimer = setInterval(() => {
         this.getDeviceLocationInfoByCode();
-        this.$refs.WarnListRef.activeTab = "real";
+        if (this.headerTab != 4) {
+          this.$refs.WarnListRef.activeTab = "real";
           // 刷新告警
           this.$refs.WarnListRef.getList(2);
+        }
       }, this.refreshMarkerTime * 1000); //
       // 车定位刷新读秒
       this.setReadTime();
@@ -1654,9 +1656,9 @@ export default {
     dealCurrStatus(row) {
       if (row.vehicle_status === 1) {
         return row.tip.speedText;
-      } else if(row.vehicle_status === 3){
-         return `${row.vehicle_status_name}(${row.tip.speedText})`
-        }else{
+      } else if (row.vehicle_status === 3) {
+        return `${row.vehicle_status_name}(${row.tip.speedText})`;
+      } else {
         return row.vehicle_status_name;
       }
     },
@@ -1688,7 +1690,7 @@ export default {
         value1 += coordinate.value[1];
       });
       positions[0] = value / data.length - 1;
-      positions[1] = (value1 / data.length - 1 )- 7;
+      positions[1] = value1 / data.length - 1 - 7;
     },
   },
 };

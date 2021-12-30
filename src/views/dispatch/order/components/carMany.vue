@@ -96,7 +96,11 @@
               </div>
               <!-- 车牌 -->
               <div class="carMany-list-bottom-item-body-vehicleNumber">
-                {{item.vehicleAlias?`(${item.vehicleAlias})  ${item.vehicleNumber}`: item.vehicleNumber }}
+                {{
+                  item.vehicleAlias
+                    ? `(${item.vehicleAlias})  ${item.vehicleNumber}`
+                    : item.vehicleNumber
+                }}
               </div>
               <!-- 是否外援 -->
               <div>
@@ -412,8 +416,11 @@ export default {
       }, 200);
     },
     _animMove(startPos, dom) {
-      console.log(' dom.getBoundingClientRect().top', dom.getBoundingClientRect().top)
-      console.log('startPos',startPos)
+      console.log(
+        " dom.getBoundingClientRect().top",
+        dom.getBoundingClientRect().top
+      );
+      console.log("startPos", startPos);
       let offset = startPos - dom.getBoundingClientRect().top;
       console.log("offset", offset);
       dom.style.transition = "none";
@@ -444,22 +451,34 @@ export default {
       });
       console.log(data);
     },
+    // 数组交换
+    elChangeExForArray(index1, index2, array) {
+      let temp = array[index1];
+      array[index1] = array[index2];
+      array[index2] = temp;
+       return array
+    },
     // 选择车辆向上平移
-    vehicleOffset(targetEvent) {
-      console.log("targetEvent", targetEvent);
+    vehicleOffset(targetEvent, index) {
+      console.log("选择车辆向上平移 targetEvent", targetEvent);
       // 获取平移的目标位置
       const vehicleList = this.vehicleList;
-      let sourceIndex = 0;
+      let sourceIndex = null;
       const currentNodes = Array.from(this.$refs.parentNode.childNodes);
       for (let i = vehicleList.length - 1; i >= 0; i--) {
         const item = vehicleList[i];
-        console.log("i", i);
-        if (item.checked && targetEvent !== currentNodes[i]) {
+
+        if (
+          (item.checked && targetEvent !== currentNodes[i]) ||
+          (i === 0 && !item.checked)
+        ) {
+          console.log("item.checked", item.checked);
           sourceIndex = i;
           break;
         }
       }
       console.log("sourceIndex", sourceIndex);
+      if (!sourceIndex && sourceIndex !== 0) return;
       const sourceItem1 = currentNodes[sourceIndex];
       console.log("currentNodes", currentNodes, targetEvent);
       console.log("targetEvent.parentNode", targetEvent.parentNode);
@@ -472,11 +491,16 @@ export default {
         sourceItem1.parentNode.insertBefore(targetEvent, sourceItem1);
       }
       let targetTop = sourceItem1.getBoundingClientRect().top;
-      console.log('targetTop',targetTop)
+      console.log("targetTop", targetTop);
       let dragingTop = targetEvent.getBoundingClientRect().top;
-      console.log('dragingTop',dragingTop)
+      console.log("dragingTop", dragingTop);
       this._animMove(targetTop, targetEvent);
       this._animMove(dragingTop, sourceItem1);
+      // 动画结束后 真实数据进行交换
+      this.$nextTick(() => {
+       this.vehicleList =  this.elChangeExForArray(sourceIndex, index, vehicleList);
+        console.log("交换后", this.vehicleList);
+      });
     },
     //强制限制
     imposeInput(e, value, index) {
@@ -620,7 +644,7 @@ export default {
         checked: !oldTmpCheck,
       });
       console.log("vehicleList", vehicleList);
-      this.vehicleOffset(e.target);
+      // this.vehicleOffset(e.target, index);
       if (vehicleList[index].checked) {
         this.haveAppointCarRecordHttp(
           vehicleList[index].driverCode,
@@ -810,7 +834,7 @@ export default {
   align-items: center;
   height: 44px;
 }
-.carMany-list-bottom-item-footer{
+.carMany-list-bottom-item-footer {
   margin-left: 20px;
 }
 .carMany-list-bottom-item-body {

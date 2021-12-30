@@ -467,7 +467,7 @@ export default {
       };
       console.log("所有参数列表", obj);
       const res = await http_request(obj);
-      console.log("page res", res);
+      console.log("请求分页数据 page res ===>", res.data.rows);
       if (res.code == "200") {
         this.vehicleList = res.data.rows;
         this.total = res.data.total;
