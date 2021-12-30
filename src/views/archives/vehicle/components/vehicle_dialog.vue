@@ -835,11 +835,11 @@ export default {
     },
     // 校验规则关闭
     rulesDis(isChy){
-      if(isChy){
+      // if(!isChy){
        vehicleConfig.rulesDisList.forEach((value)=>{
          this.rules[value][0].required = false
        })
-      }
+      // }
     },
     //提交表单
     submitForm() {
