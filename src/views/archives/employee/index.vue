@@ -388,17 +388,17 @@ export default {
   },
   methods: {
     employeeStatusChange(e) {
-      console.log(e);
-      console.log(
-        "this.queryParams.employeeStatus",
-        this.queryParams.employeeStatus
-      );
+      // console.log(e);
+      // console.log(
+      //   "this.queryParams.employeeStatus",
+      //   this.queryParams.employeeStatus
+      // );
     },
     dealRoleName(roleName) {
-      console.log("roleName", roleName);
+      // console.log("roleName", roleName);
       if (!roleName) return "";
       let result = roleName.join();
-      console.log(result);
+      // console.log(result);
       return result;
     },
     /** 获取组织树 */
@@ -465,8 +465,24 @@ export default {
         this.total = res.data.total;
       });
     },
+    // 检查选中符合权限
+    checkDelRoot(selection) {
+      let result = false;
+      selection.forEach((element) => {
+        if (element.adminFlag === 1 || element.currentUserFlag === 1) {
+          result = true;
+        }
+      });
+      console.log('result',result)
+      return result;
+    },
     /** 多选框选中数据 */
     handleSelectionChange(selection) {
+      if(this.checkDelRoot(selection)){
+        this.multiple =this.checkDelRoot(selection);
+        return
+      } 
+      console.log("selection", selection);
       this.ids = selection.map((item) => item.employeeCode);
       this.nickNames = selection.map((item) => item.nickName);
       this.single = selection.length !== 1;
@@ -503,6 +519,7 @@ export default {
       this.orgOpen = true;
       this.title = "调整组织";
     },
+
     /** 用户状态修改 */
     handleStatusChange(row) {
       const text = row.employeeStatus === "0" ? "启用" : "停用";
@@ -527,7 +544,7 @@ export default {
           this.msgSuccess(text + "成功");
         })
         .catch(function () {
-          row.employeeStatus = row.employeeStatus === "1" ? '0' : '1';
+          row.employeeStatus = row.employeeStatus === "1" ? "0" : "1";
         });
     },
     /** 重置密码 */
@@ -538,6 +555,15 @@ export default {
     },
     /** 删除 */
     handleDelete(row) {
+      console.log("row", row.currentUserFlag);
+      if (row.currentUserFlag) {
+        this.msgError("当前账户为不允许删除自身账号！");
+        return;
+      }
+      if (row.adminFlag) {
+        this.msgError("当前账户为不允许删除管理员！");
+        return;
+      }
       this.$confirm('是否确认删除"' + row.nickName + '"的账号?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -560,6 +586,7 @@ export default {
     /** 删除多个 */
     handleDeleteMultiple() {
       const _this = this;
+      if (_this.ids.length === 0) return;
       this.$confirm("删除操作不可恢复，确认要删除选中的账号吗?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
