@@ -235,7 +235,7 @@
           >
           <!-- memberTypeList -->
          
-            <template slot-scope="scope">
+            <template slot-scope="scope" v-if="scope.row.adminFlag !== 1">
               <el-switch
                 v-model="scope.row.employeeStatus"
                 active-value="0"
@@ -262,7 +262,7 @@
             class-name="small-padding fixed-width"
           >
           
-            <template slot-scope="scope">
+            <template slot-scope="scope" v-if="scope.row.adminFlag !== 1">
               <el-button
                 v-if="!scope.row.teamLeaderFlag"
                 v-hasPermi="['employee:edit']"
