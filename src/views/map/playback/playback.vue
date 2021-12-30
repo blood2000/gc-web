@@ -8,8 +8,6 @@
           :class="isbigger ? 'dialog-video-full' : ''"
           @click.stop=""
         >
-          <!--           src="@/assets/mp4/【2048】202104271143janv2_2021429115831.mp4"
- -->
           <div
             v-show="isbigger"
             :class="isbigger ? 'dialog-video-full-title' : ''"
