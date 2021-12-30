@@ -225,7 +225,7 @@ export default {
         moduleName: "http_vehicle",
         method: "post",
         url_alias: "device_bind",
-        data: { sn: item.sn, vehicleCode: this.options.vehicleCode,vendor_code },
+        data: { sn: item.sn, vehicleCode: this.options.vehicleCode,vendor_code:item.vendor_code },
       };
       const res = await http_request(obj);
       console.log("res===>", res);
