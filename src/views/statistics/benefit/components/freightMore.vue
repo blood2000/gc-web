@@ -58,7 +58,7 @@
               单
             </div>
             <img
-              src="@/assets/images/statistic/icon_notRevenueCount.png"
+              src="@/assets/images/statistics/icon_notRevenueCount.png"
               alt=""
             />
           </div>
@@ -68,7 +68,7 @@
               <span>{{ freight.notRevenue }}</span>
               元
             </div>
-            <img src="@/assets/images/statistic/icon_notRevenue.png" alt="" />
+            <img src="@/assets/images/statistics/icon_notRevenue.png" alt="" />
           </div>
           <div class="box">
             <div class="title">已收款单数</div>
@@ -76,7 +76,7 @@
               <span>{{ freight.revenueCount }}</span>
               单
             </div>
-            <img src="@/assets/images/statistic/icon_revenueCount.png" alt="" />
+            <img src="@/assets/images/statistics/icon_revenueCount.png" alt="" />
           </div>
           <div class="box">
             <div class="title">已收款金额</div>
@@ -84,7 +84,7 @@
               <span>{{ freight.revenue }}</span>
               元
             </div>
-            <img src="@/assets/images/statistic/icon_revenue.png" alt="" />
+            <img src="@/assets/images/statistics/icon_revenue.png" alt="" />
           </div>
         </div>
         <el-table

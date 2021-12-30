@@ -58,6 +58,7 @@
             <el-col :span="24">
               <el-form-item label="创建时间">
                 <el-date-picker
+                  popper-class="playback-create-time-date-picker-popper"
                   v-model="queryParams.dateRange"
                   unlink-panels
                   type="datetimerange"
@@ -544,6 +545,9 @@ export default {
 <style>
 .play-back-file-table .el-table--mini th, .el-table--mini td {
   padding: 1px 0;
+}
+.playback-create-time-date-picker-popper {
+  margin-right: 40px;
 }
 </style>
 <style lang="scss" scoped>

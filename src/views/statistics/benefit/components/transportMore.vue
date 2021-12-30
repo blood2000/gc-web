@@ -57,7 +57,7 @@
               <span>{{ transport.receiveCount }}</span>
               单
             </div>
-            <img src="@/assets/images/statistic/icon_revenueCount.png" alt="" />
+            <img src="@/assets/images/statistics/icon_revenueCount.png" alt="" />
           </div>
           <div class="box">
             <div class="title">已出车</div>
@@ -65,7 +65,7 @@
               <span>{{ transport.loadCount }}</span>
               车
             </div>
-            <img src="@/assets/images/statistic/icon_loadCount.png" alt="" />
+            <img src="@/assets/images/statistics/icon_loadCount.png" alt="" />
           </div>
           <div class="box">
             <div class="title">已回车</div>
@@ -73,7 +73,7 @@
               <span>{{ transport.unloadCount }}</span>
               车
             </div>
-            <img src="@/assets/images/statistic/icon_unloadCount.png" alt="" />
+            <img src="@/assets/images/statistics/icon_unloadCount.png" alt="" />
           </div>
         </div>
         <el-table
