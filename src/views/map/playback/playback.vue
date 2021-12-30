@@ -58,6 +58,7 @@
             <el-col :span="24">
               <el-form-item label="创建时间">
                 <el-date-picker
+                  popper-class="playback-create-time-date-picker-popper"
                   v-model="queryParams.dateRange"
                   unlink-panels
                   type="datetimerange"
