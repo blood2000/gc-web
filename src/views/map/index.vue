@@ -1464,19 +1464,19 @@ export default {
             row
           )}.png`)}"/>
           </div>
-          <div class='label-content'>
-            <div class='label-content-name'>
+          <div class='label-content g-single-row'>
+            <div class='label-content-name  g-single-row'>
              ${
                row.vehicle_alias
                  ? `<span>
              ${row.vehicle_alias}
-             </span> <span  class="label-content-name-right">(${plate_number})</span>`
+             </span> <span  class="label-content-name-right g-single-row">(${plate_number})</span>`
                  : `  <span>
              ${plate_number}
              </span>`
              }
             </div>
-            <div class='label-content-status'>
+            <div class='label-content-status  g-single-row'>
             ${this.dealCurrStatus(row)}
               <span class="label-content-status-line">|</span>
               ${this.dealTaskStatus(row)}
@@ -2075,12 +2075,15 @@ export default {
         height: 51px;
         border-radius: 8px;
         margin-right: 13px;
+        box-sizing: border-box;
         & > img {
           width: 100%;
           height: 100%;
         }
       }
       .label-content {
+       width: 200px;
+
         .label-content-name {
           font-size: 20px;
           font-family: PingFang SC;

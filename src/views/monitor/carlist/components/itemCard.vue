@@ -122,6 +122,7 @@ import {
   warningLevelObj,
 } from "../config";
 import { parseTime } from "../../../../utils/ddc";
+import { http_request } from '../../../../api';
 export default {
   name: "itemCard",
   data() {

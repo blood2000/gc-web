@@ -7,6 +7,8 @@
     :before-close="clearAll"
     size="45%"
     :append-to-body="true"
+        :wrapperClosable="false"
+
   >
     <el-form
       ref="form"

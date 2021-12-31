@@ -5,6 +5,8 @@
     direction="rtl"
     :before-close="handleClose"
     size="45%"
+        :wrapperClosable="false"
+
   >
     <TitleSideBlueTip title="订单信息" />
     <div class="dispatch-contents-box">
