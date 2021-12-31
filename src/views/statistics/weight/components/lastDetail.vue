@@ -28,12 +28,7 @@
           </div>
         </div>
         <div class="lastDetail__searchBar">
-          <el-button
-            class="mtb20"
-            type="primary"
-            :loading="exportLoading"
-            @click="onExport"
-          >
+          <el-button class="mtb20" type="primary" :loading="exportLoading" @click="onExport">
             导出
           </el-button>
           <div class="label" v-show="detail.type !== '3'">
@@ -150,10 +145,10 @@ export default {
       queryParams: {
         goodsCode: '',
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
       },
       goodsList: [],
-      total: 0
+      total: 0,
     }
   },
   mounted() {},
@@ -165,19 +160,19 @@ export default {
         this.detail = {
           ...data,
           companyName: data.name,
-          shipmentCode: data.code
+          shipmentCode: data.code,
         }
       } else if (data.type === '2') {
         this.detail = {
           ...data,
           routeCode: data.code,
           routeName: data.name,
-          name: data.companyName
+          name: data.companyName,
         }
       } else if (data.type === '3') {
         this.detail = {
           ...data,
-          vehicleCode: data.code
+          vehicleCode: data.code,
         }
       }
       this.drawer = true
@@ -188,7 +183,7 @@ export default {
       this.queryParams = {
         goodsCode: '',
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
       }
       this.list = []
       this.drawer = false
@@ -209,8 +204,8 @@ export default {
           vehicleCode: this.detail.vehicleCode,
           type: this.detail.type,
           startDate: this.startDate,
-          endDate: this.endDate
-        }
+          endDate: this.endDate,
+        },
       }
       this.loading = true
       http_request(params).then((res) => {
@@ -226,13 +221,13 @@ export default {
       const params = {
         moduleName: 'http_coRoute',
         method: 'get',
-        url_alias: 'coRoute_goods'
+        url_alias: 'coRoute_goods',
       }
       http_request(params).then((res) => {
         let goodsList = res.data || []
         goodsList.unshift({
           dictLabel: '全部',
-          dictValue: ''
+          dictValue: '',
         })
         this.goodsList = goodsList
       })
@@ -247,15 +242,15 @@ export default {
         shipmentCode: this.detail.shipmentCode,
         routeCode: this.detail.routeCode,
         vehicleCode: this.detail.vehicleCode,
-        goodsCode: this.queryParams.goodsCode
+        goodsCode: this.queryParams.goodsCode,
       }
       let fileName = `${params.startDate}至${params.endDate}`
       if (params.type === '1') {
-        fileName = `${fileName}${this.detail.companyName}磅单明细报表${this.detail.routeName}（${this.detail.startRoute}-${this.detail.endRoute}）`
+        fileName = `${fileName}${this.detail.companyName}（${this.detail.startRoute}-${this.detail.endRoute}）磅单明细报表`
       } else if (params.type === '2') {
-        fileName = `${fileName}${this.detail.companyName}磅单明细报表${this.detail.routeName}（${this.detail.startRoute}-${this.detail.endRoute}）`
+        fileName = `${fileName}${this.detail.companyName}（${this.detail.startRoute}-${this.detail.endRoute}）磅单明细报表`
       } else if (params.type === '3') {
-        fileName = `${fileName}${this.detail.vehicleName}磅单明细报表${this.detail.companyName}-${this.detail.routeName}（${this.detail.startRoute}-${this.detail.endRoute}）`
+        fileName = `${fileName}${this.detail.companyName}（${this.detail.startRoute}-${this.detail.endRoute}）${this.detail.vehicleName}磅单明细报表`
       }
       this.downloadFileName(
         '/fmsweb/basic/weighbridge/v1/exportLastWeighbridgeStatistics',
@@ -263,8 +258,8 @@ export default {
         fileName
       )
       this.exportLoading = false
-    }
-  }
+    },
+  },
 }
 </script>
 

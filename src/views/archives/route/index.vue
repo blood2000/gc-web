@@ -13,10 +13,10 @@
     >
       <div class="ddc-queryParams-left">
         <div class="up">
-          <el-form-item label="角色名称" prop="routeName">
+          <el-form-item label="路线名称" prop="routeName">
             <el-input
               v-model="queryParams.routeName"
-              placeholder="请输入角色名称"
+              placeholder="请输入路线名称"
               clearable
               size="small"
               style="width: 240px"
@@ -47,12 +47,7 @@
       </div>
       <div class="ddc-queryParams-right">
         <el-form-item>
-          <el-button
-            type="primary"
-            icon="el-icon-search"
-            size="mini"
-            @click="onSearch"
-          >
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="onSearch">
             搜索
           </el-button>
           <el-button
@@ -70,9 +65,7 @@
     </el-form>
     <!-- 分页查询区域 -->
     <div class="route-container">
-      <el-button type="primary" size="small" @click="openAddRoute">
-        添加路线
-      </el-button>
+      <el-button type="primary" size="small" @click="openAddRoute"> 添加路线 </el-button>
       <div class="route-wrapper">
         <div class="route-box" v-for="item in routeList" :key="item.id">
           <div class="route-box__top">
@@ -84,12 +77,8 @@
                   <i class="el-icon-more" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native="onClickChange(item.id)">
-                    修改
-                  </el-dropdown-item>
-                  <el-dropdown-item @click.native="onClickDel(item.id)">
-                    删除
-                  </el-dropdown-item>
+                  <el-dropdown-item @click.native="onClickChange(item.id)"> 修改 </el-dropdown-item>
+                  <el-dropdown-item @click.native="onClickDel(item.id)"> 删除 </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -149,19 +138,19 @@ import AddRoute from './components/AddRoute.vue'
 export default {
   name: 'Route',
   components: {
-    AddRoute
+    AddRoute,
   },
   data() {
     return {
       queryParams: {
         routeName: '', // 路线名称
         contact: '', // 联系人姓名
-        contactPhone: '' // 联系人电话
+        contactPhone: '', // 联系人电话
       },
       routeList: [], // 路线列表
       pageNum: 1,
       pageSize: 12,
-      total: 0
+      total: 0,
     }
   },
   created() {
@@ -195,8 +184,8 @@ export default {
         data: {
           ...this.queryParams,
           pageNum: this.pageNum,
-          pageSize: this.pageSize
-        }
+          pageSize: this.pageSize,
+        },
       }
       http_request(obj).then((res) => {
         if (res.data) {
@@ -211,15 +200,11 @@ export default {
     },
     // 点击删除
     onClickDel(id) {
-      this.$confirm(
-        '删除操作不可恢复，确认要删除该路线吗？',
-        '确认要删除吗？',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      )
+      this.$confirm('删除操作不可恢复，确认要删除该路线吗？', '确认要删除吗？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
         .then(() => {
           this._delRoute(id)
         })
@@ -230,14 +215,14 @@ export default {
         moduleName: 'http_route',
         method: 'delete',
         url_alias: 'route_del',
-        url_code: [id]
+        url_code: [id],
       }
       http_request(obj).then((res) => {
         this.$message.success(res.msg)
         this.getRoutePage()
       })
-    }
-  }
+    },
+  },
 }
 </script>
 
