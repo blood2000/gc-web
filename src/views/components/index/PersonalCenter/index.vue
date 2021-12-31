@@ -388,7 +388,7 @@ export default {
       margin-top: 15px;
     }
     &__detail {
-      margin: 20px 0;
+      margin: 10px 0;
       .bar {
         width: 100%;
         height: 32px;
@@ -421,7 +421,7 @@ export default {
       padding: 8px 12px;
       background: #f7f9fb;
       border-radius: 3px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
     &__title {
       font-size: 18px;
@@ -436,7 +436,6 @@ export default {
       }
     }
     &__tips {
-      margin-top: 10px;
       font-size: 12px;
       color: #3d4050;
       display: flex;

@@ -3,20 +3,10 @@
     <div class="alarmTrend__bar">
       <div class="alarmTrend__title">告警趋势图</div>
       <el-button-group>
-        <el-button
-          @click="onClickDay(1)"
-          :type="dayRadio === 1 ? '' : 'info'"
-          plain
-          size="small"
-        >
+        <el-button @click="onClickDay(1)" :type="dayRadio === 1 ? '' : 'info'" plain size="small">
           今日
         </el-button>
-        <el-button
-          @click="onClickDay(2)"
-          :type="dayRadio === 2 ? '' : 'info'"
-          plain
-          size="small"
-        >
+        <el-button @click="onClickDay(2)" :type="dayRadio === 2 ? '' : 'info'" plain size="small">
           7天
         </el-button>
       </el-button-group>
@@ -39,7 +29,7 @@ export default {
       dayRadio: 1,
       chart: null,
       pieChart: null,
-      pieData: {}
+      pieData: {},
     }
   },
   created() {
@@ -53,18 +43,16 @@ export default {
         method: 'get',
         url_alias: 'alarmTrendChart',
         data: {
-          dateType: this.dayRadio
-        }
+          dateType: this.dayRadio,
+        },
       }
       http_request(objDispatch).then((res) => {
         const data = res.data
         if (data) {
           if (!which) {
-            data.alarmTrendChartColumnChartVos &&
-              this.initChart(data.alarmTrendChartColumnChartVos)
+            data.alarmTrendChartColumnChartVos && this.initChart(data.alarmTrendChartColumnChartVos)
           }
-          data.alarmTrendChartPieChartVos &&
-            this.initPieChart(data.alarmTrendChartPieChartVos)
+          data.alarmTrendChartPieChartVos && this.initPieChart(data.alarmTrendChartPieChartVos)
         }
       })
     },
@@ -78,31 +66,31 @@ export default {
       })
       this.chart = echarts.init(this.$refs.chart, 'macarons', {
         width: 700,
-        height: 270
+        height: 270,
       })
       this.option = {
         grid: {
           top: '15%',
-          left: '8%'
+          left: '8%',
         },
         tooltip: {
           trigger: 'axis',
           axisPointer: {
-            type: 'none'
-          }
+            type: 'none',
+          },
         },
         xAxis: {
           type: 'category',
-          data: this.dateList
+          data: this.dateList,
         },
         yAxis: {
           type: 'value',
           splitLine: {
             lineStyle: {
               color: ['#ebebeb'],
-              type: 'dashed'
-            }
-          }
+              type: 'dashed',
+            },
+          },
         },
         series: [
           {
@@ -112,10 +100,10 @@ export default {
             showBackground: true,
             barWidth: 16,
             backgroundStyle: {
-              color: '#F7F7F7'
-            }
-          }
-        ]
+              color: '#F7F7F7',
+            },
+          },
+        ],
       }
       this.changeBarColor()
     },
@@ -127,14 +115,14 @@ export default {
       })
       this.pieChart = echarts.init(this.$refs.pieChart, 'macarons', {
         width: 340,
-        height: 250
+        height: 250,
       })
       this.pieOption = {
         legend: {
           top: '75%',
           left: 'center',
           itemWidth: 5,
-          itemHeight: 5
+          itemHeight: 5,
         },
         series: [
           {
@@ -146,7 +134,7 @@ export default {
                 value: that.pieData.vehicle.number,
                 name: '行车事件',
                 itemStyle: {
-                  color: '#3751FF'
+                  color: '#3751FF',
                 },
                 label: {
                   color: '#fff',
@@ -154,8 +142,8 @@ export default {
                   position: 'inside',
                   formatter: function () {
                     return `${that.pieData.vehicle.percentage}%`
-                  }
-                }
+                  },
+                },
               },
               {
                 value: that.pieData.driver.number,
@@ -166,11 +154,11 @@ export default {
                   position: 'inside',
                   formatter: function () {
                     return `${that.pieData.driver.percentage}%`
-                  }
+                  },
                 },
                 itemStyle: {
-                  color: '#7C8DFF'
-                }
+                  color: '#7C8DFF',
+                },
               },
               {
                 value: that.pieData.device.number,
@@ -181,11 +169,11 @@ export default {
                   position: 'inside',
                   formatter: function () {
                     return `${that.pieData.device.percentage}%`
-                  }
+                  },
                 },
                 itemStyle: {
-                  color: '#43B91E'
-                }
+                  color: '#43B91E',
+                },
               },
               {
                 value: that.pieData.transport.number,
@@ -196,13 +184,13 @@ export default {
                   position: 'inside',
                   formatter: function () {
                     return `${that.pieData.transport.percentage}%`
-                  }
+                  },
                 },
                 itemStyle: {
-                  color: '#9AE284'
-                }
-              }
-            ]
+                  color: '#9AE284',
+                },
+              },
+            ],
           },
           {
             type: 'pie',
@@ -213,10 +201,10 @@ export default {
                 value: that.pieData.vehicle.number,
                 name: '行车事件',
                 itemStyle: {
-                  color: '#3751FF'
+                  color: '#3751FF',
                 },
                 label: {
-                  show: false
+                  show: false,
                 },
                 emphasis: {
                   label: {
@@ -225,18 +213,18 @@ export default {
                     fontWeight: 'bold',
                     formatter: function (p) {
                       return `${p.data.name}\n${that.pieData.vehicle.percentage}%`
-                    }
-                  }
-                }
+                    },
+                  },
+                },
               },
               {
                 value: that.pieData.driver.number,
                 name: '司机行为',
                 itemStyle: {
-                  color: '#7C8DFF'
+                  color: '#7C8DFF',
                 },
                 label: {
-                  show: false
+                  show: false,
                 },
                 emphasis: {
                   label: {
@@ -245,18 +233,18 @@ export default {
                     fontWeight: 'bold',
                     formatter: function (p) {
                       return `${p.data.name}\n${that.pieData.driver.percentage}%`
-                    }
-                  }
-                }
+                    },
+                  },
+                },
               },
               {
                 value: that.pieData.device.number,
                 name: '异常事件',
                 itemStyle: {
-                  color: '#43B91E'
+                  color: '#43B91E',
                 },
                 label: {
-                  show: false
+                  show: false,
                 },
                 emphasis: {
                   label: {
@@ -265,18 +253,18 @@ export default {
                     fontWeight: 'bold',
                     formatter: function (p) {
                       return `${p.data.name}\n${that.pieData.device.percentage}%`
-                    }
-                  }
-                }
+                    },
+                  },
+                },
               },
               {
                 value: that.pieData.transport.number,
                 name: '运输事件',
                 itemStyle: {
-                  color: '#9AE284'
+                  color: '#9AE284',
                 },
                 label: {
-                  show: false
+                  show: false,
                 },
                 emphasis: {
                   label: {
@@ -285,13 +273,13 @@ export default {
                     fontWeight: 'bold',
                     formatter: function (p) {
                       return `${p.data.name}\n${that.pieData.transport.percentage}%`
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        ]
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        ],
       }
       if (this.pieChart) {
         this.pieChart.setOption(this.pieOption)
@@ -314,25 +302,25 @@ export default {
           seriesData.push({
             value: this.alarmList[i],
             itemStyle: {
-              color: '#4682FA'
+              color: '#4682FA',
             },
             emphasis: {
               itemStyle: {
-                color: '#5c90f7'
-              }
-            }
+                color: '#5c90f7',
+              },
+            },
           })
         } else {
           seriesData.push({
             value: this.alarmList[i],
             itemStyle: {
-              color: this.dayRadio === 1 ? '#EBEBEB' : '#4682FA'
+              color: this.dayRadio === 1 ? '#EBEBEB' : '#4682FA',
             },
             emphasis: {
               itemStyle: {
-                color: '#5c90f7'
-              }
-            }
+                color: '#5c90f7',
+              },
+            },
           })
         }
       }
@@ -343,15 +331,15 @@ export default {
       if (this.chart) {
         this.chart.setOption(this.option)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style lang="scss" scoped>
 .alarmTrend {
   width: 1044px;
-  height: 300px;
+  height: 380px;
   background: #fff;
   border-radius: 4px;
   padding: 20px 30px;
@@ -368,6 +356,7 @@ export default {
   &__main {
     width: 100%;
     display: flex;
+    margin-top: 40px;
     .chart-wrapper {
       width: 660px;
       height: 100%;

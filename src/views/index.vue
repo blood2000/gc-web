@@ -67,12 +67,11 @@ export default {
     background-color: #fff;
     padding: 1px 20px;
     box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
-    border-radius: 4px;
   }
   &__right {
     flex: 1 1 auto;
     width: 0;
-    padding: 16px;
+    padding: 16px 0 0 16px;
     overflow: auto;
   }
   &__right-top {

@@ -149,6 +149,7 @@ export default {
         if (res.data) {
           this.startDateNow = params.data.startDate
           this.endDateNow = params.data.endDate
+          this.companyNameNow = params.data.companyName
           this.vehicleList = res.data.rows || []
           this.total = res.data.total
         }
@@ -166,6 +167,7 @@ export default {
       }
       this.exportLoading = true
       const params = {
+        companyName: this.companyNameNow,
         startDate: this.startDateNow,
         endDate: this.endDateNow,
       }

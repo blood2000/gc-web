@@ -9,24 +9,26 @@
     >
       <div class="orderDetail__wrapper">
         <div class="orderDetail__date">{{ startDate }} 至 {{ endDate }}</div>
-        <div
-          class="orderDetail__source"
-          :class="{
-            chy: orderDetail.source === 'chy',
-            zj: orderDetail.source === 'zj'
-          }"
-        >
-          <img
-            v-show="orderDetail.source === 'chy'"
-            src="@/assets/images/statistics/icon_chy.png"
-            alt=""
-          />
-          <img
-            v-show="orderDetail.source === 'zj'"
-            src="@/assets/images/statistics/icon_zj.png"
-            alt=""
-          />
-          <span>{{ orderDetail.title }}</span>
+        <div class="orderDetail__source-wrapper">
+          <div
+            class="orderDetail__source"
+            :class="{
+              chy: orderDetail.source === 'chy',
+              zj: orderDetail.source === 'zj',
+            }"
+          >
+            <img
+              v-show="orderDetail.source === 'chy'"
+              src="@/assets/images/statistics/icon_chy.png"
+              alt=""
+            />
+            <img
+              v-show="orderDetail.source === 'zj'"
+              src="@/assets/images/statistics/icon_zj.png"
+              alt=""
+            />
+            <span>{{ orderDetail.title }}</span>
+          </div>
         </div>
         <div class="orderDetail__address">
           <div class="box">
@@ -39,21 +41,11 @@
             <div class="address">{{ orderDetail.unloadFormattedAddress }}</div>
           </div>
         </div>
-        <el-button
-          class="mtb20"
-          type="primary"
-          :loading="exportLoading"
-          @click="onExport"
-        >
+        <el-button class="mtb20" type="primary" :loading="exportLoading" @click="onExport">
           导出
         </el-button>
         <div class="table">
-          <el-table
-            v-loading="loading"
-            highlight-current-row
-            :stripe="true"
-            :data="orderList"
-          >
+          <el-table v-loading="loading" highlight-current-row :stripe="true" :data="orderList">
             <el-table-column label="序号">
               <template slot-scope="scope">
                 <span>{{ scope.$index + 1 }}</span>
@@ -63,8 +55,8 @@
             <el-table-column label="车牌号" prop="vehicleNumber" />
             <el-table-column label="趟次" prop="tripsTotal" />
             <el-table-column label="净重（吨）" prop="netWeightTotal" />
-            <el-table-column label="收入（元）" prop="incomeTotal" />
-            <el-table-column label="应付（元）" prop="payTotal" />
+            <el-table-column label="应收运费（元）" prop="incomeTotal" />
+            <el-table-column label="应付运费（元）" prop="payTotal" />
             <el-table-column label="净收入（元）" prop="netIncomeTotal" />
           </el-table>
           <pagination
@@ -97,9 +89,9 @@ export default {
       orderList: [],
       queryParams: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
       },
-      total: 0
+      total: 0,
     }
   },
   mounted() {},
@@ -123,8 +115,8 @@ export default {
           ...this.queryParams,
           dispatchOrderCode: this.orderDetail.dispatchOrderCode,
           startDate: this.startDate,
-          endDate: this.endDate
-        }
+          endDate: this.endDate,
+        },
       }
       this.loading = true
       http_request(params).then((res) => {
@@ -142,7 +134,7 @@ export default {
         startDate: this.startDate,
         endDate: this.endDate,
         companyName: this.companyName,
-        dispatchOrderCode: this.orderDetail.dispatchOrderCode
+        dispatchOrderCode: this.orderDetail.dispatchOrderCode,
       }
       this.downloadFileName(
         '/fmsweb/basic/dispatch/v1/exportDispatchOrderByDispatchOrderCode',
@@ -150,8 +142,8 @@ export default {
         `${params.startDate}至${params.endDate}${this.orderDetail.companyName}_${this.orderDetail.title}_运输明细表`
       )
       this.exportLoading = false
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -167,8 +159,11 @@ export default {
     font-size: 16px;
     color: #3d4050;
   }
+  &__source-wrapper {
+    display: flex;
+  }
   &__source {
-    width: 285px;
+    min-width: 285px;
     height: 28px;
     padding: 0 5px;
     margin: 15px 0;
@@ -176,18 +171,10 @@ export default {
     display: flex;
     align-items: center;
     &.chy {
-      background: linear-gradient(
-        90deg,
-        rgba(70, 130, 250, 0.16) 0%,
-        rgba(70, 130, 250, 0) 100%
-      );
+      background: linear-gradient(90deg, rgba(70, 130, 250, 0.16) 0%, rgba(70, 130, 250, 0) 100%);
     }
     &.zj {
-      background: linear-gradient(
-        90deg,
-        rgba(67, 185, 30, 0.16) 0%,
-        rgba(67, 185, 30, 0) 100%
-      );
+      background: linear-gradient(90deg, rgba(67, 185, 30, 0.16) 0%, rgba(67, 185, 30, 0) 100%);
     }
     img {
       width: 37px;

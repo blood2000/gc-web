@@ -65,7 +65,7 @@ export default {
         url_alias: 'alarmNotificationList',
         data: {
           pageNum: 1,
-          pageSize: 5,
+          pageSize: 4,
         },
       }
       http_request(objDispatch).then((res) => {
@@ -83,7 +83,6 @@ export default {
 <style lang="scss" scoped>
 .alarmInfo {
   width: 448px;
-  height: 500px;
   position: relative;
   &__bar {
     width: 100%;
@@ -112,7 +111,7 @@ export default {
   .alarmInfo-wrapper {
     z-index: 1;
     width: 100%;
-    min-height: 405px;
+    min-height: 320px;
     position: relative;
     top: 57px;
     background: #ffffff;
