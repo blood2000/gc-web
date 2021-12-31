@@ -291,7 +291,6 @@ export default {
       http_request(obj).then((res) => {
         if (res.data) {
           let data = res.data
-          data.authStatus = 2
           data.idDateRange =
             data.validFromDate && data.validToDate ? [data.validFromDate, data.validToDate] : []
           if (this.whichDialog === 'update') {
