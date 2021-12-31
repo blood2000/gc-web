@@ -11,30 +11,16 @@
           v-for="item in companyList"
           :key="item.id"
         >
-          <img
-            class="normal"
-            src="@/assets/images/icon/company_normal.png"
-            alt=""
-          />
-          <img
-            class="active"
-            src="@/assets/images/icon/company_active.png"
-            alt=""
-          />
+          <img class="normal" src="@/assets/images/icon/company_normal.png" alt="" />
+          <img class="active" src="@/assets/images/icon/company_active.png" alt="" />
           <span class="g-double-row">{{ item.shipmentName }}</span>
         </div>
       </div>
     </div>
     <div class="coRoute-right">
-      <el-button type="primary" size="small" @click="onAddCoRoute"
-        >添加企业路线</el-button
-      >
+      <el-button type="primary" size="small" @click="onAddCoRoute">添加企业路线</el-button>
       <div class="coRoute-right__wrapper">
-        <div
-          class="coRoute-right__box"
-          v-for="(item, index) in coRouteList"
-          :key="index"
-        >
+        <div class="coRoute-right__box" v-for="(item, index) in coRouteList" :key="index">
           <div class="coRoute-right__box-top">
             <div class="coRoute-right__box-bar">
               <img src="@/assets/images/icon/icon-route.png" alt="" />
@@ -44,15 +30,9 @@
                   <i class="el-icon-more" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native="onClickChange(item)">
-                    编辑
-                  </el-dropdown-item>
-                  <el-dropdown-item @click.native="onClickDel(item)">
-                    删除
-                  </el-dropdown-item>
-                  <el-dropdown-item @click.native="onClickDetail(item)">
-                    详情
-                  </el-dropdown-item>
+                  <el-dropdown-item @click.native="onClickChange(item)">编辑</el-dropdown-item>
+                  <el-dropdown-item @click.native="onClickDel(item)">删除</el-dropdown-item>
+                  <el-dropdown-item @click.native="onClickDetail(item)">详情</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -65,7 +45,7 @@
               </div>
               <div class="right">
                 <div class="address g-double-row">
-                  {{ item.loadingAddressAlias }}
+                  {{ item.loadingAddressAlias || item.loadingAddressFormatted }}
                 </div>
                 <div class="user">
                   <span>{{ item.loadingAddressContact }}</span>
@@ -79,7 +59,7 @@
               </div>
               <div class="right">
                 <div class="address g-double-row">
-                  {{ item.unloadingAddressAlias }}
+                  {{ item.unloadingAddressAlias || item.unloadingAddressFormatted }}
                 </div>
                 <div class="user">
                   <span>{{ item.unloadingAddressContact }}</span>
@@ -137,7 +117,7 @@ import AddCoRoute from './components/addCoRoute.vue'
 export default {
   name: 'CoRoute',
   components: {
-    AddCoRoute
+    AddCoRoute,
   },
   data() {
     return {
@@ -146,7 +126,7 @@ export default {
       coRouteList: [],
       pageNum: 1,
       pageSize: 10,
-      total: 0
+      total: 0,
     }
   },
   created() {
@@ -157,7 +137,7 @@ export default {
       const params = {
         moduleName: 'http_company',
         method: 'get',
-        url_alias: 'shipment_Alllist'
+        url_alias: 'shipment_Alllist',
       }
       http_request(params).then((res) => {
         this.companyList = res.data || []
@@ -175,8 +155,8 @@ export default {
         data: {
           shipmentCode: this.currentCompany,
           pageNum: this.pageNum,
-          pageSize: this.pageSize
-        }
+          pageSize: this.pageSize,
+        },
       }
       http_request(params).then((res) => {
         const data = res.data
@@ -192,31 +172,19 @@ export default {
     },
     // 点击了修改
     onClickChange(coRoute) {
-      this.$refs.addCoRoute.getDetailInfo(
-        coRoute.routeCode,
-        coRoute.shipmentCode,
-        'update'
-      )
+      this.$refs.addCoRoute.getDetailInfo(coRoute.routeCode, coRoute.shipmentCode, 'update')
     },
     // 点击了详情
     onClickDetail(coRoute) {
-      this.$refs.addCoRoute.getDetailInfo(
-        coRoute.routeCode,
-        coRoute.shipmentCode,
-        'detail'
-      )
+      this.$refs.addCoRoute.getDetailInfo(coRoute.routeCode, coRoute.shipmentCode, 'detail')
     },
     // 点击了删除
     onClickDel(coRoute) {
-      this.$confirm(
-        '删除操作不可恢复，确认要删除该企业路线吗？',
-        '确认要删除吗？',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      )
+      this.$confirm('删除操作不可恢复，确认要删除该企业路线吗？', '确认要删除吗？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
         .then(() => {
           this._delRoute(coRoute)
         })
@@ -230,9 +198,9 @@ export default {
         data: {
           companyCode: coRoute.companyCode,
           routeCode: coRoute.routeCode,
-          shipmentCode: coRoute.shipmentCode
+          shipmentCode: coRoute.shipmentCode,
         },
-        query: true
+        query: true,
       }
       http_request(obj).then((res) => {
         this.$message.success(res.msg)
@@ -247,8 +215,8 @@ export default {
       this.currentCompany = code
       this.pageNum = 1
       this.queryCoRoutePage()
-    }
-  }
+    },
+  },
 }
 </script>
 
