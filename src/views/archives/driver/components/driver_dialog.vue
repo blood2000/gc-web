@@ -688,7 +688,11 @@ export default {
       const res = await http_request(obj);
       console.log("ocr请求", res);
       if (res.data && res.data.error_msg) {
-        this.msgError("该照片非身份证类型，请重新上传");
+        const msgType = {
+          0:'身份证',
+          2:'驾驶证'
+        }
+        this.msgError(`该照片非${msgType[type]}类型，请重新上传`);
         if (type === 0) {
           if (side === "front") {
             this.identificationImage = null;

@@ -214,16 +214,11 @@
               <el-form-item
                 label="司机附加费："
                 :prop="'recordForms.' + index + '.driverSurchargePrice'"
-                :rules="{
-                  required: true,
-                  message: '司机附加费不能为空',
-                  trigger: 'blur',
-                }"
               >
                 <el-input
                   v-model="item.driverSurchargePrice"
                   style="width: 256px"
-                  placeholder="请输入运费单价"
+                  placeholder="请输入"
                   clearable
                 >
                   <template slot="append">元</template>
@@ -701,7 +696,7 @@ export default {
       );
 
       // 转化
-      const body = JSON.parse(JSON.stringify(this.form));
+      let body = JSON.parse(JSON.stringify(this.form));
       body.recordForms.forEach((element) => {
         console.log("element", element);
         delete element.fold;
@@ -713,6 +708,8 @@ export default {
           temp = temp.substr(0, temp.length - 1);
           console.log("temp", temp);
           element.voucherImageUrls = temp;
+        }else{
+          return body = false
         }
       });
       return body;
@@ -721,6 +718,7 @@ export default {
     submitForm() {
       const me = this;
       const bodys = this.checkForm();
+      if(!bodys) return this.msgError('请上传图片')
       me.$refs["form"].validate((valid) => {
         if (valid) {
           me.loading = true;
@@ -829,9 +827,9 @@ export default {
   border-radius: 5px;
   box-sizing: border-box;
   padding: 28px 20px 28px 19px;
-  height: 690px;
+  min-height: 690px;
   transition: all 0.5s;
-  overflow: hidden;
+  // overflow: scroll;
   position: relative;
   .info-routeLoad {
     position: relative;
@@ -843,7 +841,7 @@ export default {
   }
 }
 .fold-hidden {
-  height: 0;
+ display: none;
   padding: 0 28px 0 28px;
 }
 .route {
