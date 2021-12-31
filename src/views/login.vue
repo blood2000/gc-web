@@ -349,6 +349,8 @@ export default {
     //获取用户信息判断是否已审核
     getUserInfo() {
       this.$router.push({ path: this.redirect || "/" }).catch(() => {});
+      console.log('你过不过来')
+       this.loading = false;
       return;
       this.$store
         .dispatch("getLoginInfo")
