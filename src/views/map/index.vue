@@ -589,6 +589,7 @@ export default {
     localStorage.removeItem("_AMap_cvector");
   },
   mounted() {
+    console.log("生命周期");
     if (document.location.search.includes("trackType")) {
       console.log('document.location.search.split("=")', document.location);
       this.locationProp = this.locationQueryDeal();
@@ -1110,6 +1111,10 @@ export default {
     },
     // 定时刷新时间
     refreshTime() {
+      console.log(
+        " 定时刷新时间 this.refreshMarkerTime",
+        this.refreshMarkerTime
+      );
       this.clearTimer();
       this.timer = setInterval(() => {
         this.getCurrentTime();
@@ -1522,20 +1527,24 @@ export default {
     },
     // 定时刷新车位置
     refreshMarker() {
-      this.clearRefreshMarkerTimer();
-      this.refreshMarkerTimer = setInterval(() => {
-        this.getDeviceLocationInfoByCode();
-        if (this.headerTab != 4) {
+      console.log("定时刷新车位置", this.refreshMarkerTime);
+      // this.clearRefreshMarkerTimer();
+      // 车定位刷新读秒
+      this.setReadTime().then(() => {
+        this.refreshMarkerTimer = setInterval(() => {
+          console.log("定时刷新车位置 周期", this.refreshMarkerTime);
+          this.getDeviceLocationInfoByCode();
+          if (this.headerTab != 4) {
           this.$refs.WarnListRef.activeTab = "real";
           // 刷新告警
           this.$refs.WarnListRef.getList(2);
-        }
-      }, this.refreshMarkerTime * 1000); //
-      // 车定位刷新读秒
-      this.setReadTime();
+          }
+        }, this.refreshMarkerTime * 1000);
+      });
     },
     // 刷新程序
     getDeviceLocationInfoByCode() {
+      console.log("刷新程序");
       if (this.isShowVehicleInfo) {
         // 选中车
         this.getDeviceLocationInfo(this.orgOrVehicleInfo.orgOrlicenseNumber);
@@ -1548,6 +1557,7 @@ export default {
     },
     // 清除定时刷新车位置
     clearRefreshMarkerTimer() {
+      console.log("清除定时刷新车位置", this.refreshMarkerTimer);
       if (this.refreshMarkerTimer) clearInterval(this.refreshMarkerTimer);
     },
     // 判断如果绘制告警点 type//红蓝
@@ -1624,32 +1634,44 @@ export default {
     },
     /** 定时器读秒 */
     setReadTime() {
+      console.log("定时器读秒");
       const _this = this;
-      const obj = {
-        //appinfo
-        moduleName: "http_map",
-        method: "get",
-        url_alias: "appinfo",
-      };
-      http_request(obj).then((res) => {
-        if (res.code == 200) {
-          _this.refreshMarkerTime = parseInt(res.data.map_refresh_interval);
-        }
-        this.clearReadTime();
-        this.readTimer = setInterval(() => {
-          if (_this.refreshMarkerTime < 1) {
-            _this.clearReadTime();
-            return;
+      return new Promise((resolve) => {
+        const obj = {
+          //appinfo
+          moduleName: "http_map",
+          method: "get",
+          url_alias: "appinfo",
+        };
+        http_request(obj).then((res) => {
+          if (res.code == 200) {
+            console.log(
+              "res.data.map_refresh_interval",
+              res.data.map_refresh_interval
+            );
+            _this.refreshMarkerTime = parseInt(res.data.map_refresh_interval);
+            console.log(
+              "_this.refreshMarkerTime 设置时间",
+              _this.refreshMarkerTime
+            );
           }
-          _this.refreshMarkerTime = _this.refreshMarkerTime - 1;
-        }, 1000);
+          this.clearReadTime();
+          this.readTimer = setInterval(() => {
+            if (_this.refreshMarkerTime < 1) {
+              _this.clearReadTime();
+              return;
+            }
+            _this.refreshMarkerTime = _this.refreshMarkerTime - 1;
+          }, 1000);
+          resolve();
+        });
       });
     },
     clearReadTime() {
       if (this.readTimer) {
         clearInterval(this.readTimer);
         this.readTimer = null;
-        this.refreshMarkerTime = 45;
+        // this.refreshMarkerTime = null;
       }
     },
     // 处理车辆·标签速度
@@ -2082,7 +2104,7 @@ export default {
         }
       }
       .label-content {
-       width: 200px;
+        width: 200px;
 
         .label-content-name {
           font-size: 20px;
