@@ -316,6 +316,7 @@
       ref="employeeDialog"
       :open.sync="open"
       :title="title"
+      :options="options"
       @refresh="getList"
     />
     <!-- 重置密码 -->
@@ -343,6 +344,9 @@ export default {
       loading: false,
       // 选中数组
       ids: [],
+      options:{
+        editType: false
+      },
       nickNames: [],
       // 非单个禁用
       single: true,
@@ -508,6 +512,7 @@ export default {
     handleAdd() {
       this.$refs.employeeDialog.reset(this.queryParams.orgCode);
       this.open = true;
+      this.options.editType = false
       this.title = "添加职员";
     },
     /** 编辑职员 */
@@ -521,6 +526,7 @@ export default {
       };
       http_request(obj).then((res) => {
         this.open = true;
+        this.options.editType = true
         this.title = "编辑职员";
         this.$refs.employeeDialog.setForm(res.data);
       });

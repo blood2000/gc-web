@@ -3,7 +3,7 @@
   <el-dialog :title="title" :visible="visible" width="600px" append-to-body destroy-on-close :close-on-click-modal="false" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="90px">
       <el-form-item label="用户姓名" prop="nickName" >
-        <el-input v-model="form.nickName" placeholder="请输入用户姓名" clearable  :disabled="form.nickNameModifiable !== 1"/>
+        <el-input v-model="form.nickName" placeholder="请输入用户姓名" clearable  :disabled="options&&options.editType && form.nickNameModifiable !== 1"/>
       </el-form-item>
       <el-form-item label="手机号码" prop="phonenumber">
         <el-input v-model="form.phonenumber" placeholder="请输入手机号码" clearable :disabled="!!form.employeeCode" />
@@ -58,6 +58,10 @@ export default {
     title: {
       type: String,
       default: ''
+    },
+    options:{
+      type:Object,
+      default:{}
     },
     open: Boolean
   },
