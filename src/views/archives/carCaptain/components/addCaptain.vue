@@ -40,7 +40,7 @@
           v-show="whichDialog === 'update' && (form.authStatus === 1 || form.authStatus === 3)"
         >
           <i class="el-icon-warning" />
-          <span>已{{ form.authStatus === 1 ? '申请' : '' }}申请开通钱包，姓名不可修改</span>
+          <span>已{{ form.authStatus === 1 ? '申请' : '' }}开通钱包，姓名不可修改</span>
         </div>
         <div class="addCaptain-tips normal" v-show="whichDialog === 'openWallet'">
           <i class="el-icon-warning" />
