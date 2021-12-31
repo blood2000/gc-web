@@ -738,6 +738,7 @@ export default {
                 if (res.code != 200) {
                   return this.msgError("编辑失败");
                 } else {
+                   this.init();
                   this.$emit("closeDialog", "ok");
                 }
               })
@@ -758,6 +759,7 @@ export default {
                 if (res.code != 200) {
                   return this.msgError("添加失败");
                 } else {
+                   this.init();
                   this.$emit("closeDialog", "ok");
                 }
               })
