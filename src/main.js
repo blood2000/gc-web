@@ -80,6 +80,8 @@ Vue.prototype.selectDictLabels = selectDictLabels
 Vue.prototype.download = download
 Vue.prototype.downloadFileName = downloadFileName
 Vue.prototype.handleTree = handleTree
+
+
 Vue.prototype.formValidate = formValidate
 
 Vue.prototype.msgSuccess = function (msg) {
