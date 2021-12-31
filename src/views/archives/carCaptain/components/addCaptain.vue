@@ -40,7 +40,7 @@
           v-show="whichDialog === 'update' && (form.authStatus === 1 || form.authStatus === 3)"
         >
           <i class="el-icon-warning" />
-          <span>已{{ form.authStatus === 1 ? '申请' : '' }}申请开通钱包，姓名不可修改</span>
+          <span>已{{ form.authStatus === 1 ? '申请' : '' }}开通钱包，姓名不可修改</span>
         </div>
         <div class="addCaptain-tips normal" v-show="whichDialog === 'openWallet'">
           <i class="el-icon-warning" />
@@ -291,7 +291,6 @@ export default {
       http_request(obj).then((res) => {
         if (res.data) {
           let data = res.data
-          data.authStatus = 2
           data.idDateRange =
             data.validFromDate && data.validToDate ? [data.validFromDate, data.validToDate] : []
           if (this.whichDialog === 'update') {
