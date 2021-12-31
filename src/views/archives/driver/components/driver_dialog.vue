@@ -32,7 +32,7 @@
             <treeselect
               v-model="form.orgCode"
               :options="deptOptions"
-              :disabled="isDetail"
+              :disabled="isDisabled()"
               :normalizer="normalizer"
               :show-count="true"
               placeholder="请选择所属组织"

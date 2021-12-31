@@ -233,7 +233,11 @@ const rulesDisList=['vehicleLicenseImg','vehicleLicenseSecondImg',
 'vehicleEnergyType',
 'vehicleLicenseColorCode',
 'vehicleLoadWeight',
-'vehicleTotalWeight']
+'vehicleTotalWeight',
+'orgCode',
+'vehicleOwnership',
+'carrierType'
+]
 
 
 
