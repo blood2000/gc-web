@@ -1,6 +1,6 @@
 <template>
   <div class="itemCard">
-    <el-dropdown class="itemCard-menu-ab" trigger="click">
+    <el-dropdown v-if="!data.isDel" class="itemCard-menu-ab" trigger="click">
       <div>
         <div></div>
         <div></div>

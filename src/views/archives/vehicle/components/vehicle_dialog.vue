@@ -505,12 +505,12 @@ export default {
         vehicleAlias: null, //车辆别名
       },
       rules: {
-        vehicleLicenseImg: [
-          { required: true, message: "请上传行驶证照", trigger: "change" },
-        ],
-        vehicleLicenseSecondImg: [
-          { required: true, message: "请上传行驶证副业照", trigger: "change" },
-        ],
+        // vehicleLicenseImg: [
+        //   { required: true, message: "请上传行驶证照", trigger: "change" },
+        // ],
+        // vehicleLicenseSecondImg: [
+        //   { required: true, message: "请上传行驶证副业照", trigger: "change" },
+        // ],
         licenseNumber: [
           { required: true, message: "车牌号不能为空", trigger: "blur" },
           { validator: formValidate.plateNo, trigger: "blur" },
@@ -525,24 +525,24 @@ export default {
         chassisNumber: [
           { required: true, message: "车辆识别号码不能为空", trigger: "blur" },
         ],
-        carrierType: [
-          {
-            required: true,
-            message: "车辆承运类型不能为空",
-            trigger: "change",
-          },
-        ],
+        // carrierType: [
+        //   {
+        //     required: true,
+        //     message: "车辆承运类型不能为空",
+        //     trigger: "change",
+        //   },
+        // ],
 
-        vehicleOwnership: [
-          {
-            required: true,
-            message: "请选择车辆归属",
-            trigger: "change",
-          },
-        ],
-        issuingOrganizations: [
-          { required: true, message: "发证机关不能为空", trigger: "blur" },
-        ],
+        // vehicleOwnership: [
+        //   {
+        //     required: true,
+        //     message: "请选择车辆归属",
+        //     trigger: "change",
+        //   },
+        // ],
+        // issuingOrganizations: [
+        //   { required: true, message: "发证机关不能为空", trigger: "blur" },
+        // ],
         vehicleEnergyType: [
           {
             required: true,
@@ -551,15 +551,15 @@ export default {
           },
         ],
         vehicleLicenseColorCode: [
-          { required: true, message: "车牌类型不能为空", trigger: "change" },
+          { required: true, message: "车牌颜色不能为空", trigger: "change" },
         ],
-        orgCode: [
-          {
-            required: true,
-            message: "所属组织不能为空",
-            trigger: ["change", "blur"],
-          },
-        ],
+        // orgCode: [
+        //   {
+        //     required: true,
+        //     message: "所属组织不能为空",
+        //     trigger: ["change", "blur"],
+        //   },
+        // ],
         vehicleLoadWeight: [
           { required: true, message: "可载重量不能为空", trigger: "blur" },
         ],
@@ -826,7 +826,7 @@ export default {
       http_request(tmp)
         .then((res) => {
           console.log("是不是超好运 res", res.data.vehicleInf.isChy);
-           this.rulesDis(res.data.vehicleInf.isChy)
+          //  this.rulesDis(res.data.vehicleInf.isChy)
           this.getDetailToForm(res.data);
         })
         .catch((err) => {
