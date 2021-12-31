@@ -101,7 +101,9 @@
           :stripe="true"
         >
           <template #authStatus="{ row }">
-            <img
+            <div v-if="row.authStatus || row.authStatus === 0">
+ <img
+              
               :src="require(`../../../assets/images/dialog/${getAuthStatusListConfigOption(row.authStatus).img}.png`)"
               alt=""
             />
@@ -112,6 +114,7 @@
             >
               {{ getAuthStatusListConfigOption(row.authStatus).label }}
             </span>
+            </div>
           </template>
           <template #vehicleStatus="{ row }">
             <span
