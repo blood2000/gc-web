@@ -66,7 +66,11 @@
                 :value="sub.vehicleCode"
                 :disabled="!isZj && sub.authStatus != '3'"
               >
-                <span style="float: left">{{sub.vehicleAlias?`(${sub.vehicleAlias})    ${sub.vehicleNumber}`: sub.vehicleNumber }}</span>
+                <span style="float: left">{{
+                  sub.vehicleAlias
+                    ? `(${sub.vehicleAlias})    ${sub.vehicleNumber}`
+                    : sub.vehicleNumber
+                }}</span>
                 <span
                   v-if="isZj || sub.authStatus === '3'"
                   class="vehicle-item-sub-right"
@@ -126,7 +130,7 @@
       >
         <el-col :span="12">
           <el-form-item
-            :label="pageData.settlementWay == 1 ? '应付金额' : '应付单价'"
+            :label="pageData.settlementWay == 1 ? '应收金额' : '运费单价'"
             prop="freight"
           >
             <el-input
@@ -140,7 +144,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item
-            :label="pageData.settlementWay == 1 ? '应收金额' : '运费单价'"
+            :label="pageData.settlementWay == 1 ? '应付金额' : '应付单价'"
             prop="realFreight"
             :rules="[
               { required: true, message: '请填写应收金额', trigger: 'blur' },
@@ -256,7 +260,7 @@ export default {
       if (parseInt(this.form.realFreight) > parseInt(this.pageData.freight)) {
         const tmp1 = this.pageData.settlementWay == 1 ? "应付金额" : "应付单价";
         const tmp2 = this.pageData.settlementWay == 1 ? "应收金额" : "运费单价";
-        const msg = `${tmp2}不能高于${ tmp1}`;
+        const msg = `${tmp2}不能高于${tmp1}`;
         callback(new Error(msg));
       } else {
         callback();

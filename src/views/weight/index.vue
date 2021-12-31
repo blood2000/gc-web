@@ -85,7 +85,7 @@ export default {
         vehicleNumber: null,
         driverNameOrPhone: null,
         dateRange: [],
-        // companyName:null,
+        companyName:null,
         routeCode: null,
         goodsCode: null,
         isDel: "-1",

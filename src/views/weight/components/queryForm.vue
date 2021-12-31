@@ -43,7 +43,7 @@
           />
         </el-form-item>
         <el-form-item label="用车企业及路线：" prop="routeCode">
-          <el-select
+          <!-- <el-select
             v-model="queryParams.routeCode"
             clearable
             filterable
@@ -57,7 +57,18 @@
               :label="item.companyName"
               :value="item.shipmentCode"
             />
-          </el-select>
+          </el-select> -->
+          <el-cascader
+            style="width: 300px"
+            @change="companyRouteChange"
+            :props="companyRouteProps"
+            clearable
+          ></el-cascader>
+          <!-- <el-cascader
+          @change="companyRouteChange"
+          :options="listCompany"
+            :props="companyRouteProps"
+          ></el-cascader> -->
         </el-form-item>
 
         <el-form-item label="货品类型：" prop="goodsCode">
@@ -130,6 +141,82 @@ export default {
         dictPid: "",
         dictType: "goodsType",
       },
+      companyRouteProps: {
+        lazy: true,
+        lazyLoad(node, resolve) {
+          console.log("node", node);
+          const { level } = node;
+          setTimeout(() => {
+            // if (node && node.value) {
+
+            //             const obj = {
+            //               moduleName: "http_weight",
+            //               method: "get",
+            //               url_alias: "listCompanyRoute",
+            //               url_code: [node.value],
+            //             };
+            //             http_request(obj).then((res) => {
+            //               const nodes = res.data.map((item) => {
+            //                 console.log('item',item)
+            //                 return {
+            //                   value: item.routeCode,
+            //                   label: `${item.startRoute} -> ${item.endRoute}`,
+            //                   leaf:2
+            //                 };
+            //               });
+            //               console.log('nodes',nodes)
+            //               resolve(nodes);
+            //             });
+            //             // listCompanyRoute
+            //           } else {
+            //             console.log('你不会进来了吧')
+            //             resolve();
+            //           }
+            if (node.level == 0) {
+              const obj = {
+                moduleName: "http_weight",
+                method: "get",
+                url_alias: "listCompany",
+              };
+              http_request(obj).then((res) => {
+                const nodes0 = res.data.map((item) => ({
+                  value: item.shipmentCode,
+                  label: item.companyName,
+                  leaf: node.level >= 2,
+                }));
+                console.log("nodes 0", nodes0);
+                resolve(nodes0);
+              });
+            }
+            if (node.level == 1) {
+              console.log("node.level", node.level);
+              const obj = {
+                moduleName: "http_weight",
+                method: "get",
+                url_alias: "listCompanyRoute",
+                url_code: [node.value],
+              };
+              console.log("obj", obj);
+              http_request(obj).then((res) => {
+                console.log("res", res.data);
+                const nodes = res.data.map((item) => {
+                  console.log("item", item);
+                  return {
+                    value: item.routeCode,
+                    label: `${item.startRoute} -> ${item.endRoute}`,
+                    leaf: node.level == 1,
+                  };
+                });
+                console.log("nodes", nodes);
+                resolve(nodes);
+              });
+            }
+          }, 100);
+        },
+        // value: "shipmentCode",
+        // label: "companyName",
+        // leaf: "leaf",
+      },
     };
   },
   computed: {
@@ -150,6 +237,16 @@ export default {
     this.getListCompany();
   },
   methods: {
+    companyRouteChange(e) {
+      console.log("companyRouteChange e", e);
+      if (e.length === 0) {
+        this.queryParams.companyName = null;
+        this.queryParams.routeCode = null;
+      } else {
+        this.queryParams.companyName = e[0];
+        this.queryParams.routeCode = e[1];
+      }
+    },
     cascaderChange(e) {
       if (!e || e.length < 2) return;
       this.queryParams.goodsCode = e[1];

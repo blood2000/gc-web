@@ -210,9 +210,18 @@
           </el-form-item>
         </el-col>
       </el-row>
-
+      <!-- driverLicense -->
       <el-row>
-        <el-col :span="16" v-if="isDriverDateValid">
+        <el-col :span="10">
+          <el-form-item label="驾驶证号:" prop="driverLicense">
+            <el-input
+              v-model="form.driverLicense"
+              placeholder="支持自动识别"
+              clearable
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="18" v-if="isDriverDateValid">
           <el-form-item label="驾驶证有效期:" prop="driverDateRange">
             <el-date-picker
               v-model="form.driverDateRange"
@@ -353,6 +362,9 @@ export default {
         name: [
           { required: true, message: "姓名不能为空", trigger: "blur" },
           { validator: formValidate.name, trigger: "blur" },
+        ],
+        driverLicense: [
+          { required: true, message: "驾驶证号不能为空", trigger: "blur" },
         ],
         telphone: [
           { required: true, message: "手机不能为空", trigger: "blur" },
@@ -701,6 +713,7 @@ export default {
     },
     //ocr数据渲染页面
     ocrDataToForm(data, type) {
+      console.log('ocr数据渲染页面',data, type)
       const me = this;
       const tmp = {
         0: () => {
@@ -743,6 +756,7 @@ export default {
         },
         2: () => {
           console.log("ocrDataToForm 2");
+          me.form.driverLicense = data.number
           if (data.issuing_authority)
             me.form.issuingOrganizations = data.issuing_authority;
           me.form.driverDateRange = [data.valid_from, data.valid_to];
