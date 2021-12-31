@@ -455,6 +455,8 @@ export default {
     },
     onClose() {
       this.resetForm('form')
+      this.data.loadingCode = ''
+      this.data.unloadingCode = ''
       this.$emit('onEvent')
       this.visible = false
     },
