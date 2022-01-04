@@ -53,7 +53,9 @@ export default {
   watch: {
     list() {
       if (this.list.length > 0) {
-        this.getList = this.list;
+        this.getList = this.list.filter(item => {
+          return item.status === "未绑定"
+        })
       }
     },
   },
