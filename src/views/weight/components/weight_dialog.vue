@@ -7,13 +7,7 @@
     :close-on-click-modal="false"
     :before-close="cancel"
   >
-    <el-form
-      ref="form"
-      :rules="formRules"
-      :model="form"
-      label-width="120px"
-      label-position="top"
-    >
+    <el-form ref="form" :rules="formRules" :model="form" label-width="120px" label-position="top">
       <el-row :gutter="10">
         <el-col :span="12">
           <el-form-item label="磅单日期：" prop="recordDate">
@@ -31,15 +25,9 @@
         </el-col>
         <el-col :span="12">
           <el-button-group class="btn-date-group">
-            <el-button type="text" class="btn-date" @click="handleBtn(0)"
-              >前日</el-button
-            >
-            <el-button type="text" class="btn-date" @click="handleBtn(1)"
-              >今日</el-button
-            >
-            <el-button type="text" class="btn-date" @click="handleBtn(2)"
-              >昨日</el-button
-            >
+            <el-button type="text" class="btn-date" @click="handleBtn(0)">前日</el-button>
+            <el-button type="text" class="btn-date" @click="handleBtn(1)">今日</el-button>
+            <el-button type="text" class="btn-date" @click="handleBtn(2)">昨日</el-button>
           </el-button-group>
         </el-col>
       </el-row>
@@ -83,11 +71,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <div
-        class="weight"
-        v-for="(item, index) in form.recordForms"
-        :key="index"
-      >
+      <div class="weight" v-for="(item, index) in form.recordForms" :key="index">
         <div class="weight-header">
           <div class="weight-number">{{ index + 1 }}</div>
           <div class="weight-text">磅单信息</div>
@@ -111,11 +95,7 @@
             </div>
             <div v-else class="routeBg">
               <div>
-                <img
-                  class="address-img"
-                  src="../../../assets/images/bang/address.png"
-                  alt=""
-                />
+                <img class="address-img" src="../../../assets/images/bang/address.png" alt="" />
                 <span class="shipmentName">
                   {{ routeData && routeData.companyName }}
                 </span>
@@ -125,11 +105,7 @@
                 <div class="address-title">
                   {{ routeData && routeData.startRoute }}
                 </div>
-                <img
-                  class="to-img"
-                  src="../../../assets/images/bang/to.png"
-                  alt=""
-                />
+                <img class="to-img" src="../../../assets/images/bang/to.png" alt="" />
                 <div class="icon-base icon-base-end">终</div>
                 <div class="address-title">
                   {{ routeData && routeData.endRoute }}
@@ -183,6 +159,7 @@
                   v-model="item.goodsFreightPrice"
                   placeholder="请输入"
                   clearable
+                  @input="onCheckMoney(item, 'goodsFreightPrice')"
                 >
                   <template slot="append">元</template>
                 </el-input>
@@ -205,6 +182,7 @@
                   style="width: 256px"
                   placeholder="请输入"
                   clearable
+                  @input="onCheckMoney(item, 'driverFreightPrice')"
                 >
                   <template slot="append">元</template>
                 </el-input>
@@ -220,6 +198,7 @@
                   style="width: 256px"
                   placeholder="请输入"
                   clearable
+                  @input="onCheckMoney(item, 'driverSurchargePrice')"
                 >
                   <template slot="append">元</template>
                 </el-input>
@@ -287,14 +266,9 @@
             </el-col>
           </el-row>
           <div class="voucher-box">
-            <el-form-item
-              label="凭证信息："
-              :prop="'recordForms.' + index + '.voucherImageUrls'"
-            >
+            <el-form-item label="凭证信息：" :prop="'recordForms.' + index + '.voucherImageUrls'">
               <div class="img-box">
-                <template
-                  v-if="form.recordForms[index].voucherImageUrls.length !== 0"
-                >
+                <template v-if="form.recordForms[index].voucherImageUrls.length !== 0">
                   <div
                     class="img-list"
                     v-for="item in form.recordForms[index].voucherImageUrls"
@@ -315,10 +289,7 @@
               </div>
               <div
                 class="img-error-red"
-                v-if="
-                  form.recordForms[index].voucherImageUrls.length === 0 &&
-                  hasUpImage[index]
-                "
+                v-if="form.recordForms[index].voucherImageUrls.length === 0 && hasUpImage[index]"
               >
                 请上传图片
               </div>
@@ -327,18 +298,10 @@
         </div>
       </div>
     </el-form>
-    <div
-      slot="footer"
-      style="height: 64px"
-      class="dialog-footer flex-end-layout"
-    >
+    <div slot="footer" style="height: 64px" class="dialog-footer flex-end-layout">
       <div class="weight-edit" v-if="options && !options.editType">
-        <div
-          @click="addWeight"
-          class="weight-edit-item"
-          style="margin-right: 32px"
-        >
-        <!-- cursor: pointer; -->
+        <div @click="addWeight" class="weight-edit-item" style="margin-right: 32px">
+          <!-- cursor: pointer; -->
           <img src="../../../assets/images/bang/add.png" alt="" />
 
           <span> 新增一单</span>
@@ -351,9 +314,7 @@
       </div>
       <div class="group-btn">
         <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="submitForm" :loading="loading">
-          确 定
-        </el-button>
+        <el-button type="primary" @click="submitForm" :loading="loading"> 确 定 </el-button>
       </div>
     </div>
     <RouteDialog
@@ -365,9 +326,9 @@
 </template>
 
 <script>
-import { http_request } from "../../../api";
-import VoucherImageUpload from "../../../components/ImageUpload/voucherUpload.vue";
-import RouteDialog from "./route_dialog.vue";
+import { http_request } from '../../../api'
+import VoucherImageUpload from '../../../components/ImageUpload/voucherUpload.vue'
+import RouteDialog from './route_dialog.vue'
 export default {
   components: { VoucherImageUpload, RouteDialog },
   props: {
@@ -377,7 +338,7 @@ export default {
     },
     code: {
       type: String,
-      default: "",
+      default: '',
     },
     options: {
       type: Object,
@@ -388,9 +349,9 @@ export default {
     open: {
       handler() {
         if (this.open) {
-          console.log("ckc open", this.options);
+          console.log('ckc open', this.options)
           if (this.options.editType) {
-            this.getDetail();
+            this.getDetail()
           }
         }
       },
@@ -429,43 +390,43 @@ export default {
         recordDate: [
           {
             required: true,
-            message: "磅单日期不能为空",
-            trigger: "change",
+            message: '磅单日期不能为空',
+            trigger: 'change',
           },
         ],
         vehicleCode: [
           {
             required: true,
-            message: "车牌号不能为空",
-            trigger: "change",
+            message: '车牌号不能为空',
+            trigger: 'change',
           },
         ],
         driverCode: [
           {
             required: true,
-            message: "司机不能为空",
-            trigger: "change",
+            message: '司机不能为空',
+            trigger: 'change',
           },
         ],
       },
-    };
+    }
   },
   mounted() {
-    this.getDriverList();
-    this.getVehicleList();
+    this.getDriverList()
+    this.getVehicleList()
   },
   computed: {
     goodsList() {
-      return this.$store.state.dict.goodsTypeList;
+      return this.$store.state.dict.goodsTypeList
     },
   },
   methods: {
     init() {
-      this.loading = false;
-      this.hasUpImage = [false];
-      this.hasUpRoute = [false];
-      this.routeShow = false;
-      (this.routeData = null), (this.currIndex = null);
+      this.loading = false
+      this.hasUpImage = [false]
+      this.hasUpRoute = [false]
+      this.routeShow = false
+      ;(this.routeData = null), (this.currIndex = null)
       this.form = {
         recordDate: null, //磅单日期
         vehicleCode: null, //车辆Code
@@ -484,27 +445,27 @@ export default {
             voucherImageUrls: [], //凭证
           },
         ],
-      };
-      this.resetForm("form");
+      }
+      this.resetForm('form')
     },
     async getDetail() {
       const obj = {
-        moduleName: "http_weight",
-        method: "get",
-        url_alias: "detailWeighbridge",
+        moduleName: 'http_weight',
+        method: 'get',
+        url_alias: 'detailWeighbridge',
         url_code: [this.code],
-      };
-      const res = await http_request(obj);
-      console.log("detail res", res);
-      this.detailToForm(res.data);
+      }
+      const res = await http_request(obj)
+      console.log('detail res', res)
+      this.detailToForm(res.data)
     },
     detailToForm(data) {
-      console.log("data===", data);
+      console.log('data===', data)
       this.routeData = {
         endRoute: data.endRoute,
         startRoute: data.startRoute,
         companyName: data.companyName,
-      };
+      }
       this.form = {
         recordDate: data.recordDate, //磅单日期
         vehicleCode: data.vehicleCode, //车辆Code
@@ -523,50 +484,49 @@ export default {
             voucherImageUrls: this.getImageUrl(data.voucherImageUrls), //凭证
           },
         ],
-      };
+      }
     },
     getImageUrl(str) {
-      console.log("str", str);
-      const tmp = str.split(",");
-      console.log("tmp", tmp);
-      const result = [];
+      console.log('str', str)
+      const tmp = str.split(',')
+      console.log('tmp', tmp)
+      const result = []
       for (const item of tmp) {
         const obj = {
           url: item,
           name: item,
-        };
-        result.push(obj);
+        }
+        result.push(obj)
       }
 
-      return result;
+      return result
     },
     voucherImgList(index) {
       console.log(
-        "this.form.recordForms[index].voucherImageUrls.length",
+        'this.form.recordForms[index].voucherImageUrls.length',
         this.form.recordForms[index].voucherImageUrls.length
-      );
+      )
       if (this.form.recordForms[index].voucherImageUrls.length > 0) {
-        this.hasUpImage[index] = true;
+        this.hasUpImage[index] = true
       }
     },
     delXRouteData(index) {
-      this.routeData = null;
-      this.currIndex = null;
-      this.form.recordForms[index].routeCode = null;
-      this.form.recordForms[index].shipmentCode = null;
+      this.routeData = null
+      this.currIndex = null
+      this.form.recordForms[index].routeCode = null
+      this.form.recordForms[index].shipmentCode = null
     },
     openRoute(index) {
-      this.routeShow = true;
-      this.currIndex = index;
+      this.routeShow = true
+      this.currIndex = index
     },
     getRouteLineData(obj) {
-      console.log("obj", obj);
-      this.form.recordForms[this.currIndex].shipmentCode =
-        obj.routeData.shipmentCode;
-      this.form.recordForms[this.currIndex].routeCode = obj.lineData.routeCode;
-      this.routeData = { ...obj.routeData, ...obj.lineData };
-      this.hasUpRoute[this.currIndex] = true;
-      console.log("routeData", this.routeData);
+      console.log('obj', obj)
+      this.form.recordForms[this.currIndex].shipmentCode = obj.routeData.shipmentCode
+      this.form.recordForms[this.currIndex].routeCode = obj.lineData.routeCode
+      this.routeData = { ...obj.routeData, ...obj.lineData }
+      this.hasUpRoute[this.currIndex] = true
+      console.log('routeData', this.routeData)
     },
     addWeight() {
       this.form.recordForms.push({
@@ -580,205 +540,197 @@ export default {
         unloadingNetWeight: null, //卸货净重
         voucherImageUrls: [], //凭证
         fold: false,
-      });
-      this.hasUpImage.push(false);
-      this.hasUpRoute.push(false);
+      })
+      this.hasUpImage.push(false)
+      this.hasUpRoute.push(false)
     },
     againWeight() {
-      console.log(this.form.recordForms[this.form.recordForms.length - 1]);
-      this.hasUpImage.push(false);
-      this.hasUpRoute.push(false);
+      console.log(this.form.recordForms[this.form.recordForms.length - 1])
+      this.hasUpImage.push(false)
+      this.hasUpRoute.push(false)
       this.form.recordForms.push({
         ...this.form.recordForms[this.form.recordForms.length - 1],
-      });
+      })
     },
     handleFold(index) {
-      console.log("index", index);
-      this.form.recordForms[index].fold = !this.form.recordForms[index].fold;
-      console.log("this.form.recordForms[index].fold", this.form.recordForms);
+      console.log('index', index)
+      this.form.recordForms[index].fold = !this.form.recordForms[index].fold
+      console.log('this.form.recordForms[index].fold', this.form.recordForms)
     },
     delImage(index) {
-      const tmp = this.form.recordForms[index].voucherImageUrls.splice(
-        index,
-        1
-      );
-      console.log("index", index, tmp);
+      const tmp = this.form.recordForms[index].voucherImageUrls.splice(index, 1)
+      console.log('index', index, tmp)
     },
     dealPrice(index) {
       if (
         this.form.recordForms[index].driverSurchargePrice &&
         this.form.recordForms[index].driverFreightPrice
       ) {
-        const val1 = parseFloat(
-          this.form.recordForms[index].driverSurchargePrice
-        );
-        const val2 = parseFloat(
-          this.form.recordForms[index].driverFreightPrice
-        );
-        return (val1 + val2).toFixed(2);
+        const val1 = parseFloat(this.form.recordForms[index].driverSurchargePrice)
+        const val2 = parseFloat(this.form.recordForms[index].driverFreightPrice)
+        return (val1 + val2).toFixed(2)
       } else {
-        return "";
+        return ''
       }
     },
     cascaderChange(e, index) {
-      console.log("index", index, e, this.form.recordForms);
+      console.log('index', index, e, this.form.recordForms)
       if (!e) {
-        this.form.recordForms[index].goodsCode = null;
-        return;
+        this.form.recordForms[index].goodsCode = null
+        return
       }
-      this.form.recordForms[index].goodsCode =
-        this.form.recordForms[index].goodsCode[1];
+      this.form.recordForms[index].goodsCode = this.form.recordForms[index].goodsCode[1]
     },
     getDriverList() {
-      const me = this;
+      const me = this
       const obj1 = {
-        moduleName: "http_dispatch",
-        method: "get",
-        url_alias: "listTeamDrivers",
-      };
+        moduleName: 'http_dispatch',
+        method: 'get',
+        url_alias: 'listTeamDrivers',
+      }
       http_request(obj1).then((res) => {
-        console.log("getDriverList res", res);
-        me.driverList = res.data;
-      });
+        console.log('getDriverList res', res)
+        me.driverList = res.data
+      })
     },
     getVehicleList() {
-      const me = this;
-      me.vehicleList = [];
+      const me = this
+      me.vehicleList = []
       const obj = {
-        moduleName: "http_dispatch",
-        method: "get",
-        url_alias: "listVehicleSelect",
+        moduleName: 'http_dispatch',
+        method: 'get',
+        url_alias: 'listVehicleSelect',
         data: {},
-      };
+      }
       http_request(obj).then((res) => {
-        console.log("getVehicleList res", res);
-        me.vehicleList = res.data;
-      });
+        console.log('getVehicleList res', res)
+        me.vehicleList = res.data
+      })
     },
     change(e, key) {
-      console.log(e, key);
+      console.log(e, key)
     },
 
     changeDatePicker() {},
     handleBtn(index) {
       const obj = {
         0: () => {
-          console.log(0);
-          const start = new Date();
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 2);
-          this.form.recordDate = start;
+          console.log(0)
+          const start = new Date()
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 2)
+          this.form.recordDate = start
         },
         1: () => {
-          const start = new Date();
-          start.setTime(start.getTime());
-          this.form.recordDate = start;
+          const start = new Date()
+          start.setTime(start.getTime())
+          this.form.recordDate = start
         },
         2: () => {
-          const start = new Date();
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
-          this.form.recordDate = start;
+          const start = new Date()
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 1)
+          this.form.recordDate = start
         },
-      };
-      obj[index]();
+      }
+      obj[index]()
     },
     checkForm() {
       for (let i = 0; i < this.hasUpImage.length; i++) {
-        this.$set(this.hasUpImage, i, true);
+        this.$set(this.hasUpImage, i, true)
       }
       for (let i = 0; i < this.hasUpRoute.length; i++) {
-        this.$set(this.hasUpRoute, i, true);
+        this.$set(this.hasUpRoute, i, true)
       }
-      console.log(
-        "this.hasUpImage:",
-        this.hasUpImage,
-        "this.hasUpRoute",
-        this.hasUpRoute
-      );
+      console.log('this.hasUpImage:', this.hasUpImage, 'this.hasUpRoute', this.hasUpRoute)
 
       // 转化
-      let body = JSON.parse(JSON.stringify(this.form));
+      let body = JSON.parse(JSON.stringify(this.form))
       body.recordForms.forEach((element) => {
-        console.log("element", element);
-        delete element.fold;
+        console.log('element', element)
+        delete element.fold
         if (element.voucherImageUrls.length > 0) {
-          let temp = "";
+          let temp = ''
           element.voucherImageUrls.forEach((el) => {
-            temp += el.url + ",";
-          });
-          temp = temp.substr(0, temp.length - 1);
-          console.log("temp", temp);
-          element.voucherImageUrls = temp;
-        }else{
-          return body = false
+            temp += el.url + ','
+          })
+          temp = temp.substr(0, temp.length - 1)
+          console.log('temp', temp)
+          element.voucherImageUrls = temp
+        } else {
+          return (body = false)
         }
-      });
-      return body;
+      })
+      return body
     },
     arrToStr(body) {},
     submitForm() {
-      const me = this;
-      const bodys = this.checkForm();
-      if(!bodys) return this.msgError('请上传图片')
-      me.$refs["form"].validate((valid) => {
+      const me = this
+      const bodys = this.checkForm()
+      if (!bodys) return this.msgError('请上传图片')
+      me.$refs['form'].validate((valid) => {
         if (valid) {
-          me.loading = true;
-          console.log("bodys 参数", bodys);
+          me.loading = true
+          console.log('bodys 参数', bodys)
           if (this.options.editType) {
             bodys.code = this.code
-               const obj = {
-              moduleName: "http_weight",
-              method: "post",
-              url_alias: "updateWeighBridgeRecord",
-              data: bodys,
-            };
-             http_request(obj)
-              .then((res) => {
-              console.log("编辑返回", res);
-                me.loading = false;
-                if (res.code != 200) {
-                  return this.msgError("编辑失败");
-                } else {
-                   this.init();
-                  this.$emit("closeDialog", "ok");
-                }
-              })
-              .catch(() => {
-                me.loading = false;
-              });
-          } else {
             const obj = {
-              moduleName: "http_weight",
-              method: "post",
-              url_alias: "addWeighBridgeRecord",
+              moduleName: 'http_weight',
+              method: 'post',
+              url_alias: 'updateWeighBridgeRecord',
               data: bodys,
-            };
+            }
             http_request(obj)
               .then((res) => {
-                console.log("添加返回", res);
-                me.loading = false;
+                console.log('编辑返回', res)
+                me.loading = false
                 if (res.code != 200) {
-                  return this.msgError("添加失败");
+                  return this.msgError('编辑失败')
                 } else {
-                   this.init();
-                  this.$emit("closeDialog", "ok");
+                  this.init()
+                  this.$emit('closeDialog', 'ok')
                 }
               })
               .catch(() => {
-                me.loading = false;
-              });
+                me.loading = false
+              })
+          } else {
+            const obj = {
+              moduleName: 'http_weight',
+              method: 'post',
+              url_alias: 'addWeighBridgeRecord',
+              data: bodys,
+            }
+            http_request(obj)
+              .then((res) => {
+                console.log('添加返回', res)
+                me.loading = false
+                if (res.code != 200) {
+                  return this.msgError('添加失败')
+                } else {
+                  this.init()
+                  this.$emit('closeDialog', 'ok')
+                }
+              })
+              .catch(() => {
+                me.loading = false
+              })
           }
         }
-      });
+      })
     },
     cancel() {
-      this.init();
-      this.$emit("closeDialog", "no");
+      this.init()
+      this.$emit('closeDialog', 'no')
     },
     closeRoutersDialog() {
-      this.routeShow = false;
+      this.routeShow = false
+    },
+    // 金额保留两位小数
+    onCheckMoney(obj, key) {
+      console.log('???')
+      obj[key] = obj[key].match(/^\d*(\.?\d{0,2})/g)[0]
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -794,7 +746,6 @@ export default {
   .btn-date {
     color: rgba(70, 130, 250, 1) !important;
     margin-right: 22px;
-    
   }
 }
 .weight-header {
@@ -836,14 +787,14 @@ export default {
   .info-routeLoad {
     position: relative;
     /deep/.el-form-item__label:before {
-      content: "*";
+      content: '*';
       color: #ff4949;
       margin-right: 4px;
     }
   }
 }
 .fold-hidden {
- display: none;
+  display: none;
   padding: 0 28px 0 28px;
 }
 .route {
@@ -871,7 +822,7 @@ export default {
 .voucher-box {
   position: relative;
   /deep/.el-form-item__label:before {
-    content: "*";
+    content: '*';
     color: #ff4949;
     margin-right: 4px;
   }
@@ -978,7 +929,7 @@ export default {
 .routeBg {
   width: 348px;
   height: 68px;
-  background: url("../../../assets/images/bang/route-bg.png") no-repeat;
+  background: url('../../../assets/images/bang/route-bg.png') no-repeat;
   background-size: 100% 100%;
   padding: 8px 16px;
   position: relative;
@@ -1040,7 +991,7 @@ export default {
   bottom: 15px;
   right: 19px;
 }
-.weight-edit-item{
-cursor: pointer;
+.weight-edit-item {
+  cursor: pointer;
 }
 </style>

@@ -227,7 +227,7 @@ export default {
         },
         {
           code: "device",
-          tabName: "设备异常",
+          tabName: "异常事件",
         },
         {
           code: "driver",

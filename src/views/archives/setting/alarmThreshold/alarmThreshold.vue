@@ -34,6 +34,7 @@
 
 <script>
 import { http_request } from '@/api'
+import { deepClone } from '@/utils/index'
 
 export default {
   name: 'alarmThreshold',
@@ -57,22 +58,12 @@ export default {
       }
       http_request(params).then((res) => {
         let list = res.data || []
-        this.originAlarmList = this.deepClone(list)
+        this.originAlarmList = deepClone(list)
         this.alarmList = list
       })
     },
-    deepClone(obj) {
-      if (typeof obj !== 'object') {
-        return obj
-      }
-      var res = Array.isArray(obj) ? [] : {}
-      for (let i in obj) {
-        res[i] = this.deepClone(obj[i])
-      }
-      return res
-    },
     onCancel() {
-      this.alarmList = this.deepClone(this.originAlarmList)
+      this.alarmList = deepClone(this.originAlarmList)
     },
     onSave() {
       const params = {

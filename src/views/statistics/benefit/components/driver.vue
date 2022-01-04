@@ -2,7 +2,7 @@
   <div class="driver">
     <div class="driver-bar">
       <div class="driver-title">
-        <span class="title">车辆效益</span>
+        <span class="title">司机效益</span>
         <DriverMore :startDate="startDate" :endDate="endDate" />
       </div>
       <div class="driver-data">
@@ -59,27 +59,27 @@ import DriverMore from './driverMore.vue'
 export default {
   components: {
     NoneData,
-    DriverMore
+    DriverMore,
   },
   props: {
     driverBenefitInfo: {
       type: Object,
-      default: {}
+      default: {},
     },
     startDate: {
       type: String,
-      default: ''
+      default: '',
     },
     endDate: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   data() {
     return {}
   },
   mounted() {},
-  methods: {}
+  methods: {},
 }
 </script>
 
@@ -144,11 +144,7 @@ export default {
     &__box {
       width: 412px;
       height: 70px;
-      background: linear-gradient(
-        90deg,
-        rgba(67, 185, 30, 0.08) 0%,
-        rgba(67, 185, 30, 0) 100%
-      );
+      background: linear-gradient(90deg, rgba(67, 185, 30, 0.08) 0%, rgba(67, 185, 30, 0) 100%);
       display: flex;
       align-items: center;
       padding: 20px 20px 20px 55px;

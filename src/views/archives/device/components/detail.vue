@@ -63,7 +63,7 @@
               </el-col>
               <el-col v-if="isShow" :span="12" class="device-detail-right-row-col">
                 <span class="labels">激活时间</span>
-                <span class="title">{{ detailObj.expireFlagValue }}</span>
+                <span class="title">{{ detailObj.activationTime }}</span>
               </el-col>
             </el-row>
             <el-row v-if="isShow" class="device-detail-right-row">

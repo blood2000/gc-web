@@ -35,33 +35,33 @@ module.exports = {
       [process.env.VUE_APP_BASE_API]: {
         // target: process.env.VUE_PROTOCOL+process.env.VUE_APP_BASE_HOST, // 测试
         // target: `http://10.0.0.66:8080`, // test
-        // target: `http://192.168.30.71:8080`, //本地 
-        // target:'http://192.168.30.224:8080', //本地 
-        target: `http://192.168.30.68:8080`, //本地 -- 调度
+        // target: `http://192.168.30.71:8080`, //本地
+        // target:'http://192.168.30.224:8080', //本地
+        // target: `http://192.168.30.68:8080`, //本地 -- 调度
         // target: `http://192.168.30.71:8080`, //本地
         // target: `http://192.168.1.18:8080`, //本地--强强
         // target: `http://192.168.30.166:8080`, //本地
         // target: `http://192.168.30.10:8080`, //本地---地图
         // target:`http://192.168.30.36:8080`,
         // target:`http://192.168.1.34:8080`,
-        // target:`http://192.168.30.62:8080`,    //萌旗
-          //  target:`http://api.zjz1.net`,    //线上
+        target:`http://192.168.30.62:8080`,    //萌旗
+        //  target:`http://api.zjz1.net`,    //线上
 
         changeOrigin: true,
         pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API]: ''
-        }
-      }
+          ['^' + process.env.VUE_APP_BASE_API]: '',
+        },
+      },
     },
-    disableHostCheck: true
+    disableHostCheck: true,
   },
   configureWebpack: {
     name: name,
     resolve: {
       alias: {
-        '@': resolve('src')
-      }
-    }
+        '@': resolve('src'),
+      },
+    },
   },
   chainWebpack(config) {
     config.plugins.delete('preload') // TODO: need test
@@ -77,7 +77,7 @@ module.exports = {
       .use('svg-sprite-loader')
       .loader('svg-sprite-loader')
       .options({
-        symbolId: 'icon-[name]'
+        symbolId: 'icon-[name]',
       })
       .end()
 
@@ -88,8 +88,8 @@ module.exports = {
         .use('script-ext-html-webpack-plugin', [
           {
             // `runtime` must same as runtimeChunk name. default is `runtime`
-            inline: /runtime\..*\.js$/
-          }
+            inline: /runtime\..*\.js$/,
+          },
         ])
         .end()
       config.optimization.splitChunks({
@@ -99,27 +99,27 @@ module.exports = {
             name: 'chunk-libs',
             test: /[\\/]node_modules[\\/]/,
             priority: 10,
-            chunks: 'initial' // only package third parties that are initially dependent
+            chunks: 'initial', // only package third parties that are initially dependent
           },
           elementUI: {
             name: 'chunk-elementUI', // split elementUI into a single package
             priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
-            test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
+            test: /[\\/]node_modules[\\/]_?element-ui(.*)/, // in order to adapt to cnpm
           },
           commons: {
             name: 'chunk-commons',
             test: resolve('src/components'), // can customize your rules
             minChunks: 3, //  minimum common number
             priority: 5,
-            reuseExistingChunk: true
-          }
-        }
+            reuseExistingChunk: true,
+          },
+        },
       })
       config.optimization.runtimeChunk('single'),
         {
           from: path.resolve(__dirname, './public/robots.txt'), //防爬虫文件
-          to: './' //到根目录下
+          to: './', //到根目录下
         }
     })
-  }
+  },
 }
