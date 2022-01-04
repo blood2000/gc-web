@@ -61,7 +61,12 @@ export default {
   },
   methods: {
     handleSearch() {
-      if (!this.search) return (this.getList = this.list);
+      if (!this.search) {
+        this.getList = this.list.filter(item => {
+          return item.status === "未绑定"
+        })
+        return
+      }
       this.getList = this.getList.filter((item) => {
         return item.licenseNumber.indexOf(this.search) != -1;
       });
