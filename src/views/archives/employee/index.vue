@@ -95,6 +95,7 @@
                 filterable
                 size="small"
                 style="width: 200px"
+                @change="employeeStatusChange"
               >
                 <el-option
                   v-for="dict in employeeStatusOptions"
@@ -106,143 +107,171 @@
             </el-form-item>
           </div>
         </div>
-            <div class="ddc-queryParams-right">
-
-        <el-form-item>
-          <el-button
-            type="primary"
-            icon="el-icon-search"
-            size="mini"
-            @click="handleQuery"
-            >搜索</el-button
-          >
-          <el-button
-            type="primary"
-            plain
-            icon="el-icon-refresh"
-            size="mini"
-            class="ddc-queryParams-right-reset"
-            @click="resetQuery"
-            >重置</el-button
-          >
-        </el-form-item>
-            </div>
-
+        <div class="ddc-queryParams-right">
+          <el-form-item>
+            <el-button
+              type="primary"
+              icon="el-icon-search"
+              size="mini"
+              @click="handleQuery"
+              >搜索</el-button
+            >
+            <el-button
+              type="primary"
+              plain
+              icon="el-icon-refresh"
+              size="mini"
+              class="ddc-queryParams-right-reset"
+              @click="resetQuery"
+              >重置</el-button
+            >
+          </el-form-item>
+        </div>
       </el-form>
       <!-- 分割线 -->
       <div class="divier"></div>
-            <div class="page-table-layout-set">
-
-      <el-row :gutter="10" class="toolsbar">
-        <el-col :span="1.5">
-          <el-button
-            v-hasPermi="['employee:add']"
-            type="primary"
-            icon="el-icon-plus"
-            size="mini"
-            @click="handleAdd"
-            >新增</el-button
-          >
-        </el-col>
-        <el-col :span="1.5">
-          <el-button
-            v-hasPermi="['employee:delete']"
-            type="danger"
-            icon="el-icon-delete"
-            size="mini"
-            :disabled="multiple"
-            @click="handleDeleteMultiple"
-            >删除</el-button
-          >
-        </el-col>
-        <el-col :span="1.5">
-          <el-button
-            v-hasPermi="['employee:export']"
-            type="warning"
-            icon="el-icon-download"
-            size="mini"
-            :loading="exportLoading"
-            @click="handleExport"
-            >导出</el-button
-          >
-        </el-col>
-      </el-row>
-      <el-table
-        v-loading="loading"
-        highlight-current-row
-        :stripe="true"
-        :data="dataList"
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column
-          type="selection"
-          width="50"
-          align="center"
-          :selectable="checkboxSelectable"
-        />
-        <el-table-column label="序号" type="index" width="50" align="center" />
-        <el-table-column
-          label="姓名"
-          align="center"
-          prop="nickName"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          label="手机号"
-          align="center"
-          prop="phonenumber"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          label="所属组织"
-          align="center"
-          prop="orgName"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          label="所属角色"
-          align="center"
-          prop="roleNames"
-          :show-overflow-tooltip="true"
-        />
-        <!-- 0 启用 1 禁用 -->
-        <el-table-column label="账号状态" align="center" prop="employeeStatus">
-          <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.employeeStatus"
-              :active-value="0"
-              :inactive-value="1"
-              :disabled="scope.row.teamLeaderFlag"
-              @change="handleStatusChange(scope.row)"
-            />
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="创建时间"
-          align="center"
-          prop="createTime"
-          width="160"
-        >
-          <template slot-scope="scope">
-            <span>{{ parseTime(scope.row.createTime) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          align="center"
-          width="200"
-          class-name="small-padding fixed-width"
-        >
-          <template slot-scope="scope">
+      <div class="page-table-layout-set">
+        <el-row :gutter="10" class="toolsbar">
+          <el-col :span="1.5">
             <el-button
-              v-if="!scope.row.teamLeaderFlag"
-              v-hasPermi="['employee:edit']"
+              v-hasPermi="['employee:add']"
+              type="primary"
+              icon="el-icon-plus"
               size="mini"
-              type="text"
-              @click="handleUpdate(scope.row)"
-              >修改</el-button
+              @click="handleAdd"
+              >新增</el-button
             >
-            <!-- <el-button
+          </el-col>
+          <el-col :span="1.5">
+            <el-button
+              v-hasPermi="['employee:delete']"
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+              :disabled="multiple"
+              @click="handleDeleteMultiple"
+              >删除</el-button
+            >
+          </el-col>
+          <el-col :span="1.5">
+            <el-button
+              v-hasPermi="['employee:export']"
+              type="warning"
+              icon="el-icon-download"
+              size="mini"
+              :loading="exportLoading"
+              @click="handleExport"
+              >导出</el-button
+            >
+          </el-col>
+        </el-row>
+        <el-table
+          v-loading="loading"
+          highlight-current-row
+          :stripe="true"
+          :data="dataList"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column
+            type="selection"
+            width="50"
+            align="center"
+            :selectable="checkboxSelectable"
+          />
+          <el-table-column
+            label="序号"
+            type="index"
+            width="50"
+            align="center"
+          />
+          <el-table-column
+            label="姓名"
+            align="center"
+            prop="nickName"
+            :show-overflow-tooltip="true"
+          />
+          
+          <el-table-column
+            label="手机号"
+            align="center"
+            prop="phonenumber"
+            :show-overflow-tooltip="true"
+          />
+          <el-table-column
+            label="所属组织"
+            align="center"
+            prop="orgName"
+            :show-overflow-tooltip="true"
+          />
+           <el-table-column
+            label="成员类型"
+            align="center"
+            prop="memberTypeList"
+            :show-overflow-tooltip="true"
+          >
+             <template slot-scope="scope">
+              <div  style="font-family: PingFang SC;" v-if="scope.row.memberTypeList &&scope.row.memberTypeList.length >0">
+                {{dealMemberTypeList(scope.row.memberTypeList)}} 
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="所属角色"
+            align="center"
+            prop="roleNames"
+            :show-overflow-tooltip="true"
+          >
+            <template slot-scope="scope">
+              <span style="margin-left: 10px">{{
+                dealRoleName(scope.row.roleNameList)
+              }}</span>
+            </template>
+          </el-table-column>
+          <!-- 0 启用 1 禁用 -->
+          <el-table-column
+            label="账号状态"
+            align="center"
+            prop="employeeStatus"
+          >
+          <!-- memberTypeList -->
+         
+            <template slot-scope="scope" v-if="scope.row.adminFlag !== 1">
+              <el-switch
+                v-model="scope.row.employeeStatus"
+                active-value="0"
+                inactive-value="1"
+                :disabled="scope.row.teamLeaderFlag"
+                @change="handleStatusChange(scope.row)"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="创建时间"
+            align="center"
+            prop="createTime"
+            width="160"
+          >
+            <template slot-scope="scope">
+              <span>{{ parseTime(scope.row.createTime) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作"
+            align="center"
+            width="200"
+            class-name="small-padding fixed-width"
+          >
+          
+            <template slot-scope="scope" v-if="scope.row.adminFlag !== 1">
+              <el-button
+                v-if="!scope.row.teamLeaderFlag"
+                v-hasPermi="['employee:edit']"
+                size="mini"
+                type="text"
+                @click="handleUpdate(scope.row)"
+                >修改</el-button
+              >
+              <!-- <el-button
                   v-hasPermi="['employee:rel:role']"
                   size="mini"
                   type="text"
@@ -254,25 +283,25 @@
                   type="text"
                   @click="handleOrg(scope.row)"
                 >调整组织</el-button> -->
-            <el-button
-              v-hasPermi="['employee:reset']"
-              size="mini"
-              type="text"
-              @click="handleResetPwd(scope.row)"
-              >重置密码</el-button
-            >
-            <el-button
-              v-if="!scope.row.teamLeaderFlag"
-              v-hasPermi="['employee:delete']"
-              size="mini"
-              type="text"
-              @click="handleDelete(scope.row)"
-              >删除</el-button
-            >
-          </template>
-        </el-table-column>
-      </el-table>
-            </div>
+              <el-button
+                v-hasPermi="['employee:reset']"
+                size="mini"
+                type="text"
+                @click="handleResetPwd(scope.row)"
+                >重置密码</el-button
+              >
+              <el-button
+                v-if="!scope.row.teamLeaderFlag"
+                v-hasPermi="['employee:delete']"
+                size="mini"
+                type="text"
+                @click="handleDelete(scope.row)"
+                >删除</el-button
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
       <pagination
         v-show="total > 0"
         :total="total"
@@ -287,6 +316,7 @@
       ref="employeeDialog"
       :open.sync="open"
       :title="title"
+      :options="options"
       @refresh="getList"
     />
     <!-- 重置密码 -->
@@ -314,6 +344,9 @@ export default {
       loading: false,
       // 选中数组
       ids: [],
+      options:{
+        editType: false
+      },
       nickNames: [],
       // 非单个禁用
       single: true,
@@ -352,8 +385,8 @@ export default {
       title: "",
       // 字典
       employeeStatusOptions: [
-        { dictLabel: "启用", dictValue: 0 },
-        { dictLabel: "禁用", dictValue: 1 },
+        { dictLabel: "启用", dictValue: "0" },
+        { dictLabel: "禁用", dictValue: "1" },
       ],
       // 导出按钮
       exportLoading: false,
@@ -370,6 +403,24 @@ export default {
     this.getList();
   },
   methods: {
+    dealMemberTypeList(arr){
+      console.log(arr.join())
+      return arr.join()
+    },
+    employeeStatusChange(e) {
+      // console.log(e);
+      // console.log(
+      //   "this.queryParams.employeeStatus",
+      //   this.queryParams.employeeStatus
+      // );
+    },
+    dealRoleName(roleName) {
+      // console.log("roleName", roleName);
+      if (!roleName) return "";
+      let result = roleName.join();
+      // console.log(result);
+      return result;
+    },
     /** 获取组织树 */
     getTree() {
       const obj = {
@@ -418,6 +469,9 @@ export default {
         params.startTime = params.startTime + " 00:00:00";
       if (params.endTime && params.endTime !== "")
         params.endTime = params.endTime + " 23:59:59";
+      console.log("params", params);
+      if (!params.employeeStatus && params.employeeStatus === 0)
+        params.employeeStatus = params.employeeStatus + "";
       // 构造参数end
       const obj = {
         moduleName: "http_employee",
@@ -431,8 +485,24 @@ export default {
         this.total = res.data.total;
       });
     },
+    // 检查选中符合权限
+    checkDelRoot(selection) {
+      let result = false;
+      selection.forEach((element) => {
+        if (element.adminFlag === 1 || element.currentUserFlag === 1) {
+          result = true;
+        }
+      });
+      console.log('result',result)
+      return result;
+    },
     /** 多选框选中数据 */
     handleSelectionChange(selection) {
+      if(this.checkDelRoot(selection)){
+        this.multiple =this.checkDelRoot(selection);
+        return
+      } 
+      console.log("selection", selection);
       this.ids = selection.map((item) => item.employeeCode);
       this.nickNames = selection.map((item) => item.nickName);
       this.single = selection.length !== 1;
@@ -442,6 +512,7 @@ export default {
     handleAdd() {
       this.$refs.employeeDialog.reset(this.queryParams.orgCode);
       this.open = true;
+      this.options.editType = false
       this.title = "添加职员";
     },
     /** 编辑职员 */
@@ -455,6 +526,7 @@ export default {
       };
       http_request(obj).then((res) => {
         this.open = true;
+        this.options.editType = true
         this.title = "编辑职员";
         this.$refs.employeeDialog.setForm(res.data);
       });
@@ -469,9 +541,10 @@ export default {
       this.orgOpen = true;
       this.title = "调整组织";
     },
+
     /** 用户状态修改 */
     handleStatusChange(row) {
-      const text = row.employeeStatus === 0 ? "启用" : "停用";
+      const text = row.employeeStatus === "0" ? "启用" : "停用";
       this.$confirm("确认要" + text + '"' + row.nickName + '"用户吗?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -493,7 +566,7 @@ export default {
           this.msgSuccess(text + "成功");
         })
         .catch(function () {
-          row.employeeStatus = row.employeeStatus === 1 ? 0 : 1;
+          row.employeeStatus = row.employeeStatus === "1" ? "0" : "1";
         });
     },
     /** 重置密码 */
@@ -504,6 +577,15 @@ export default {
     },
     /** 删除 */
     handleDelete(row) {
+      console.log("row", row.currentUserFlag);
+      if (row.currentUserFlag) {
+        this.msgError("当前账户为不允许删除自身账号！");
+        return;
+      }
+      if (row.adminFlag) {
+        this.msgError("当前账户为不允许删除管理员！");
+        return;
+      }
       this.$confirm('是否确认删除"' + row.nickName + '"的账号?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -526,6 +608,7 @@ export default {
     /** 删除多个 */
     handleDeleteMultiple() {
       const _this = this;
+      if (_this.ids.length === 0) return;
       this.$confirm("删除操作不可恢复，确认要删除选中的账号吗?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -557,7 +640,7 @@ export default {
         params.startTime = params.startTime + " 00:00:00";
       if (params.endTime && params.endTime !== "")
         params.endTime = params.endTime + " 23:59:59";
-      this.download("/fmsweb/basic/teamEmployee/v1/export", params, `职员信息`);
+      this.download("/fmsweb/basic/teamEmployee/v2/export", params, `职员信息`);
       this.exportLoading = false;
     },
     /** 车队长的checkbox不可选 */

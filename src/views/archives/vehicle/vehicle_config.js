@@ -26,6 +26,33 @@ const vehicleStatusList = [
   },
 ]
 
+const authStatusList = [
+  {
+    label: "认证中",
+    color: "#B3B3B3",
+    img: 'ing',
+    value: "0"
+  },
+  {
+    label: "认证中",
+    color: "#B3B3B3",
+    img: 'ing',
+    value: "1"
+  },
+  {
+    label: "认证失败",
+    color: "#EF6969",
+    img: 'error',
+    value: "2"
+  },
+  {
+    label: "已认证",
+    color: "#43B91E",
+    img: 'success',
+    value: "3"
+  },
+]
+
 const enabledList = [
   {
     label: "启用",
@@ -64,6 +91,20 @@ const tableColumnsConfig = [
   },
   {
     isShow: true,
+    label: "认证状态",
+    prop: "authStatus",
+    sortNum: 2,
+    tooltip: true,
+  },
+  {
+    isShow: true,
+    label: "所属组织",
+    prop: "orgName",
+    sortNum: 3,
+    tooltip: true,
+  },
+  {
+    isShow: true,
     label: "分组",
     prop: "groupName",
     sortNum: 3,
@@ -76,13 +117,27 @@ const tableColumnsConfig = [
     sortNum: 4,
     tooltip: true,
   },
-  // {
-  //   isShow: true,
-  //   label: "绑定设备",
-  //   prop: "deviceInf",
-  //   sortNum: 5,
-  //   tooltip: true,
-  // },
+  {
+    isShow: true,
+    label: "司机",
+    prop: "defaultDriverName",
+    sortNum: 4,
+    tooltip: true,
+  },
+  {
+    isShow: true,
+    label: "绑定设备",
+    prop: "seriesModelName",
+    sortNum: 5,
+    tooltip: true,
+  },
+  {
+    isShow: true,
+    label: "设备编码",
+    prop: "factoryOnlyCode",
+    sortNum: 5,
+    tooltip: true,
+  },
   {
     isShow: true,
     label: "创建时间",
@@ -97,11 +152,11 @@ const tableColumnsConfig = [
     sortNum: 7,
     tooltip: true,
     width: 200,
-    fixed:'right'
+    fixed: 'right'
   },
 ]
 
-const offsetList =  {
+const offsetList = {
   ztc: [-17, -38],
   jbc: [-17, -40],
   llc: [-14, -31],
@@ -150,7 +205,7 @@ const warningInfoTableColumnsConfig = [
     tooltip: true,
     width: 100
   },
-  
+
   {
     isShow: true,
     label: "告警位置",
@@ -166,9 +221,23 @@ const warningInfoTableColumnsConfig = [
     sortNum: 7,
     tooltip: true,
     width: 80,
-    fixed:'right'
+    fixed: 'right'
   }
 ];
+
+const rulesDisList=['vehicleLicenseImg','vehicleLicenseSecondImg',
+'licenseNumber',
+'vehicleTypeCode',
+'chassisNumber',
+'issuingOrganizations',
+'vehicleEnergyType',
+'vehicleLicenseColorCode',
+'vehicleLoadWeight',
+'vehicleTotalWeight',
+'orgCode',
+'vehicleOwnership',
+'carrierType'
+]
 
 
 
@@ -178,5 +247,7 @@ export default {
   tableColumnsConfig,
   warningInfoTableColumnsConfig,
   offsetList,
-  vehicleOwnershipList
+  vehicleOwnershipList,
+  authStatusList,
+  rulesDisList
 }

@@ -89,9 +89,9 @@
         </el-button>
       </el-form-item>
       <div class="form-bottom">
-        <router-link class="link-type" :to="'/register'">
+        <!-- <router-link class="link-type" :to="'/register'">
           立即注册
-        </router-link>
+        </router-link> -->
         <router-link class="link-type" :to="'/resetPwd'" v-show="!captchaOnOff">
           忘记密码
         </router-link>
@@ -249,7 +249,7 @@ export default {
       this.verCodeSecond = 60;
       let that = this;
       this.countdownTimer = setInterval(() => {
-        (this.verCodeSecond > 0) && (this.verCodeSecond--);
+        this.verCodeSecond > 0 && this.verCodeSecond--;
         this.verCodeText = `再次发送(${this.verCodeSecond})`;
       }, 1000);
       setTimeout(() => {
@@ -297,12 +297,14 @@ export default {
         url_alias: "checkCode",
         data: data,
       };
-      http_request(obj).then((res) => {
-        this.loading = true;
-        this.smsLogin();
-      }).catch(() => {
-        this.loading = false;
-      });
+      http_request(obj)
+        .then((res) => {
+          this.loading = true;
+          this.smsLogin();
+        })
+        .catch(() => {
+          this.loading = false;
+        });
     },
     pwdLogin() {
       if (this.loginForm.rememberMe) {
@@ -346,27 +348,34 @@ export default {
     },
     //获取用户信息判断是否已审核
     getUserInfo() {
-      this.$store.dispatch("getLoginInfo").then((res) => {
-        console.log("用户信息==>", res);
-        if (res.team.authStatus !== 3) {
-          let message = ['欢迎来到至简管车，您提交的注册信息正在认证中，请耐心等待', '欢迎来到至简管车，您提交的注册信息正在认证中，请耐心等待', '欢迎来到至简管车，您提交的注册信息认证失败，请修改注册信息后重新提交。']
-          this.$store.dispatch("NoAuth").then(() => {
-            this.$message({
-              message: message[res.team.authStatus],
-              type: "warning",
-            });
-            let timer = setTimeout(() => {
-              // location.href = "/index";
-              this.$router.push("/register?registerStatus=2");
-              clearTimeout(timer);
-            }, 1000);
-          });
-          return;
-        }
-        this.$router.push({ path: this.redirect || "/" }).catch(() => {});
-      }).catch(() => {
-        this.loading = false;
-      });
+      this.$router.push({ path: this.redirect || "/" }).catch(() => {});
+      console.log('你过不过来')
+       this.loading = false;
+      return;
+      this.$store
+        .dispatch("getLoginInfo")
+        .then((res) => {
+          console.log("用户信息==>", res);
+          // if (res.team.authStatus !== 3) {
+          //   let message = ['欢迎来到至简管车，您提交的注册信息正在认证中，请耐心等待', '欢迎来到至简管车，您提交的注册信息正在认证中，请耐心等待', '欢迎来到至简管车，您提交的注册信息认证失败，请修改注册信息后重新提交。']
+          //   this.$store.dispatch("NoAuth").then(() => {
+          //     this.$message({
+          //       message: message[res.team.authStatus],
+          //       type: "warning",
+          //     });
+          //     let timer = setTimeout(() => {
+          //       // location.href = "/index";
+          //       this.$router.push("/register?registerStatus=2");
+          //       clearTimeout(timer);
+          //     }, 1000);
+          //   });
+          //   return;
+          // }
+          this.$router.push({ path: this.redirect || "/" }).catch(() => {});
+        })
+        .catch(() => {
+          this.loading = false;
+        });
     },
   },
 };

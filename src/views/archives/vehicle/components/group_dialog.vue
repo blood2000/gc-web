@@ -137,6 +137,7 @@ export default {
       groupList: [], //分组列表
       isEditing: false,
       currGroupCode: null,
+      clickTime: null,
       group_obj: {
         pageNum: 1,
         pageSize: 10,
@@ -157,6 +158,9 @@ export default {
         total: 0,
       },
     };
+  },
+  mounted() {
+    this.clickTime = new Date().getTime();
   },
   methods: {
     searchQuery() {
@@ -207,6 +211,15 @@ export default {
     },
     //查看分组
     async handleGroup(data) {
+      console.log(this.clickTime);
+      if (this.clickTime + 0.7 * 1000 > new Date().getTime()) {
+        console.log('太快了 数据背崩')
+        this.msgWarning('请勿重复点击')
+        this.clickTime = new Date().getTime();
+        return;
+      }
+      this.clickTime = new Date().getTime();
+
       this.init();
       console.log("====== 查看分组 handleGroup data =========", data);
       this.no_obj.groupCode = data.code;

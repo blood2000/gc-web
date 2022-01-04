@@ -14,7 +14,9 @@
           end-placeholder="结束时间"
           value-format="yyyy-MM-dd HH:mm:ss"
           style="width: 100%"
+          :default-time="['00:00:00', defaultEndTime]"
           @change="dateChoose"
+          :picker-options="pickerOptions"
         />
       </div>
       <div class="form-item ly-flex ly-flex-pack-justify ly-flex-align-center">
@@ -117,7 +119,7 @@
       </ul>
     </div>
 
-    <div class="tab-box ">
+    <div class="tab-box">
       <!-- tab -->
       <ul class="tab-left">
         <li
@@ -256,7 +258,7 @@ export default {
   },
   data() {
     return {
-      lockState:false,
+      lockState: false,
       // 快捷选项时间
       activeTime: 0,
       timeGroup: [
@@ -302,16 +304,31 @@ export default {
       parkingList: [],
       // 当前车牌号
       currentLicenseNumber: "",
+      pickerOptions: {
+        //结束时间过滤
+        disabledDate: (time) => {
+          const tmp = new Date().getTime();
+          return time.getTime() > tmp;
+          // if (this.rangeTime) {
+          //   return (
+          //     time.getTime() <=
+          //     new Date(this.rangeTime).getTime()
+          //   );
+          // }
+        },
+      },
     };
   },
-  computed:{
-    changeLocationProp(){
-      console.log('ddddd',this.locationProp)
-      if(this.isShowVehicleInfo&&this.locationProp&&!this.lockState){
-        this.lockState = true
-        this.getJimi()
+  computed: {
+    defaultEndTime() {
+      return this.parseTime(new Date(), "{h}:{i}:{s}");
+    },
+    changeLocationProp() {
+      if (this.isShowVehicleInfo && this.locationProp && !this.lockState) {
+        this.lockState = true;
+        this.getJimi();
       }
-    }
+    },
   },
   mounted() {
     // 时间默认选中当天
@@ -390,11 +407,7 @@ export default {
       this.currentTrackAllMileage = 0;
       this.currentTrackTime = null;
       this.currentTrackSpeed = null;
-      if (
-        !this.isShowVehicleInfo ||
-        !this.orgOrVehicleCode 
-      
-      ) {
+      if (!this.isShowVehicleInfo || !this.orgOrVehicleCode) {
         this.msgWarning("请选择车辆");
         return;
       }
@@ -425,9 +438,14 @@ export default {
           endTime: this.jimiQueryParams.endTime,
         },
       });
+      console.log("evenTrackRes", evenTrackRes);
       this.eventTrackList = [];
       this.trackList = {};
-      if (evenTrackRes.data && evenTrackRes.data.rows && evenTrackRes.data.rows.length > 0) {
+      if (
+        evenTrackRes.data &&
+        evenTrackRes.data.rows &&
+        evenTrackRes.data.rows.length > 0
+      ) {
         // 构造事件轨迹
         this.eventTrackList = evenTrackRes.data.rows.filter((el) => {
           return el.event_type !== "vehicle-run";
@@ -446,6 +464,7 @@ export default {
           eventType: "vehicle-stop",
         },
       });
+      console.log("parkEvenTrackRes", parkEvenTrackRes);
       this.currentLicenseNumber = this.orgOrVehicleInfo.orgOrlicenseNumber;
       this.parkingList = [];
       if (parkEvenTrackRes.data && parkEvenTrackRes.data.rows) {
@@ -460,6 +479,7 @@ export default {
       };
       http_request(obj)
         .then((response) => {
+          console.log("获取几米轨迹", response);
           this.buttonLoading = false;
           if (response.data) {
             this.jmTracklist = [];
@@ -610,16 +630,26 @@ export default {
       let lastTrackIndex = 0;
       for (let i = 0; i < _this.eventTrackList.length; i++) {
         const parkItem = _this.eventTrackList[i];
-        const currentParkTimestamp = new Date(parkItem.event_begin_time).getTime();
-        console.log(currentParkTimestamp, typeof currentParkTimestamp)
-        for (let j = lastTrackIndex; j < _this.jmTrackInfolist.length - 1; j++) {
+        const currentParkTimestamp = new Date(
+          parkItem.event_begin_time
+        ).getTime();
+        console.log(currentParkTimestamp, typeof currentParkTimestamp);
+        for (
+          let j = lastTrackIndex;
+          j < _this.jmTrackInfolist.length - 1;
+          j++
+        ) {
           let trackItem1 = _this.jmTrackInfolist[j];
           let trackItem2 = _this.jmTrackInfolist[j + 1];
           // 两种情况判断停车点
           // 1. 停车时间在两个轨迹时间之前，选择前一个插入停车点
           // 2. 停车时间比第一个轨迹时间还小，判断是否超过5分钟，没有则插入
-          if ((currentParkTimestamp >= trackItem1.timestamp && currentParkTimestamp <= trackItem2.timestamp) ||
-            (currentParkTimestamp < trackItem1.timestamp && currentParkTimestamp + 5 * 60 * 100 >= trackItem1.timestamp)) {
+          if (
+            (currentParkTimestamp >= trackItem1.timestamp &&
+              currentParkTimestamp <= trackItem2.timestamp) ||
+            (currentParkTimestamp < trackItem1.timestamp &&
+              currentParkTimestamp + 5 * 60 * 100 >= trackItem1.timestamp)
+          ) {
             trackItem1.event_type = parkItem.event_type;
             lastTrackIndex = j + 1;
             break;

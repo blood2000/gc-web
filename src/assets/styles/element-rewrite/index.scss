@@ -42,3 +42,9 @@
 .el-message-box__message {
   word-break: break-word;
 }
+
+.el-picker-panel .el-date-range-picker .el-popper .has-time {
+  position: absolute !important;
+  top: 188px !important;
+  left: 611px !important;
+}

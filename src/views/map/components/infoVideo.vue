@@ -39,6 +39,9 @@ export default {
             options.STREAMTYPE
           );
         }, 200);
+      }else{
+        console.log('关闭了')
+        this.colse()
       }
     },
   },

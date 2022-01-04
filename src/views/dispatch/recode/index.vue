@@ -10,55 +10,56 @@
       <!-- 分割线 -->
       <div class="divier"></div>
       <div class="page-table-layout-set">
-
-      <!-- 操作栏 -->
-      <div class="toolsbar">
-        <el-button
-          :disabled="multiple"
-          type="primary"
-          size="mini"
-          :loading="recLoading"
-          @click="handleInfo"
-          >生成调度信息</el-button
-        >
-        <!-- <right-toolbar
+        <!-- 操作栏 -->
+        <div class="toolsbar">
+          <el-button
+            :disabled="multiple"
+            type="primary"
+            size="mini"
+            :loading="recLoading"
+            @click="handleInfo"
+            >生成调度信息</el-button
+          >
+          <!-- <right-toolbar
           :show-search.sync="showSearch"
           @queryTable="searchQuery"
         /> -->
-      </div>
+        </div>
 
-      <!-- 表格 -->
-      <RefactorTable
-        is-show-index
-        :loading="loading"
-        :data="tableData"
-        row-key="id"
-        :table-columns-config="tableColumnsConfig"
-        @selection-change="handleSelectionChange"
-        :border="false"
-        :stripe="true"
-      >
-      <template #driverName ="{row}">
-        <span>{{`${row.driverName}[${row.driverPhone}]`}}</span>
-      </template>
-        <template #edit="{ row }">
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleCarlog(row)"
-            >查看派车单</el-button
-          >
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleDetail(row)"
-            >详情</el-button
-          >
-          <el-button size="mini" type="text" @click="handleDel(row)"
-            >删除</el-button
-          >
-        </template>
-      </RefactorTable>
+        <!-- 表格 -->
+        <RefactorTable
+          is-show-index
+          :loading="loading"
+          :data="tableData"
+          row-key="id"
+          :table-columns-config="tableColumnsConfig"
+          @selection-change="handleSelectionChange"
+          :border="false"
+          :stripe="true"
+        >
+        <!-- vehicleAlias vehicleNumber -->
+           <template #vehicleNumber="{ row }">
+            {{
+              row.vehicleAlias
+                ? `(${row.vehicleAlias})  ${row.vehicleNumber}`
+                : row.vehicleNumber
+            }}
+          </template>
+          <template #driverName="{ row }">
+            <span>{{ `${row.driverName}[${row.driverPhone}]` }}</span>
+          </template>
+          <template #edit="{ row }">
+            <el-button size="mini" type="text" @click="handleCarlog(row)">{{
+              `查看派车单(${row.appointCarOrderCount})`
+            }}</el-button>
+            <el-button size="mini" type="text" @click="handleDetail(row)"
+              >详情</el-button
+            >
+            <el-button size="mini" type="text" @click="handleDel(row)"
+              >删除</el-button
+            >
+          </template>
+        </RefactorTable>
       </div>
       <!-- 分页 -->
 
@@ -125,21 +126,20 @@ export default {
       total: 0,
       tableColumnsConfig,
       tableData: [],
-      goodsTypeList: [],
       shareText: "",
       currCode: null,
       detailDrawer: false, //详情抽屉
     };
   },
+  computed: {
+    goodsTypeList() {
+      console.log('state.dict.goodsTypeList',this.$store.state.dict.goodsTypeList)
+      return this.$store.state.dict.goodsTypeList;
+    },
+  },
   created() {
     const me = this;
     console.log("tableColumnsConfig", tableColumnsConfig);
-   this.getDicts('goodsType').then((res) => {
-      console.log("res", res);
-      me.$store.commit("set_goodsTypeList", res.data);
-      console.log(111, me.$store.state.dict.goodsTypeList);
-      me.goodsTypeList = me.$store.state.dict.goodsTypeList;
-    });
   },
   mounted() {
     console.log("document.location.search", document.location.search);
@@ -200,7 +200,7 @@ export default {
       this.$router.push("/dispatch/manage?code=" + code);
     },
     handleDetail(data) {
-      console.log('data.appointCarRecordCode',data.appointCarRecordCode)
+      console.log("data.appointCarRecordCode", data.appointCarRecordCode);
       this.currCode = data.appointCarRecordCode;
       this.detailDrawer = true;
       // const code = data.appointCarRecordCode;

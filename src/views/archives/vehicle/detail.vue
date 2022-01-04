@@ -17,7 +17,7 @@
         <el-col :span="8" style="padding-bottom: 16px">
           <span class="dispatch-base-label">车牌号:</span>
           <span class="dispatch-base-text">
-            {{ isPageShow("vehicleLicenseInf", "licenseNumber") }}</span
+            {{ vehicleInfo.vehicleAlias?`(${vehicleInfo.vehicleAlias})  ${isPageShow("vehicleLicenseInf", "licenseNumber")}`:isPageShow("vehicleLicenseInf", "licenseNumber")}}</span
           >
         </el-col>
         <el-col :span="8" style="padding-bottom: 16px">

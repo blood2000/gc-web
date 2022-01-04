@@ -46,8 +46,12 @@
       <!-- 分割线 -->
       <div class="divier"></div>
       <div class="page-table-layout-set">
-        <div class="page-table-layout-set-item" :key="index"  v-for="(item,index) in list">
-        <ItemCard :data='item'/>
+        <div
+          class="page-table-layout-set-item"
+          :key="index"
+          v-for="(item, index) in list"
+        >
+          <ItemCard :data="item" />
         </div>
       </div>
       <pagination
@@ -72,11 +76,11 @@
 import { http_request } from "../../../api";
 import QueryForm from "./components/queryForm.vue";
 import Detail from "../../dispatch/manage/detail.vue";
-import ItemCard from './components/itemCard.vue'
+import ItemCard from "./components/itemCard.vue";
 
 export default {
   name: "carlist",
-  components: { QueryForm, Detail,ItemCard},
+  components: { QueryForm, Detail, ItemCard },
   data() {
     return {
       loading: false,
@@ -118,7 +122,6 @@ export default {
     });
   },
   methods: {
-  
     /**
      * 通过经纬度获取详细点位信息
      * @param {Array} position 经纬度必传
@@ -140,10 +143,6 @@ export default {
       });
     },
 
-  
-
- 
-  
     //获取组织树
     async getOrgHttp() {
       const obj = {
@@ -199,7 +198,7 @@ export default {
         ) {
           this.getAddressBylnglat(el.attribute.coordinate.value).then((val) => {
             el.attribute = val;
-            console.log('获取详情地址',val);
+            console.log("获取详情地址", val);
             this.list.push(el);
           });
         } else {
@@ -279,7 +278,7 @@ export default {
       display: flex;
       flex-wrap: wrap;
       &-item {
-        margin-right:10px;
+        margin-right: 10px;
         margin-bottom: 20px;
       }
       //  &-item:nth-child(4n) {

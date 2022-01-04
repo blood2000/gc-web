@@ -15,8 +15,12 @@ import http_map from './map/map';
 import http_monitor from './monitor/carlist'
 import http_home from './home/home'
 import http_company from './archives/company'
-import http_address from './archives/address'
 import http_statistic from './statistic/statistic'
+import http_weight from './weight/weight'
+import http_route from './archives/route'
+import http_coRoute from './archives/coRoute'
+import http_setting from './archives/setting'
+import http_carCaptain from './archives/carCaptain'
 import Vue from 'vue'
 
 export const defaultH = {
@@ -51,8 +55,12 @@ const selModuleName = (name) => {
     http_monitor,
     http_home,
     http_company,
-    http_address,
-    http_statistic
+    http_statistic,
+    http_weight,
+    http_route,
+    http_coRoute,
+    http_setting,
+    http_carCaptain
   }
   return tmpObj[name]
 }

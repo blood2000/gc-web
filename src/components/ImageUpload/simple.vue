@@ -95,6 +95,12 @@ export default {
   },
   methods: {
     handleBeforeUpload(file) {
+      console.log('handleBeforeUpload',file)
+      // const arrName = file.name &&file.name.split('.')
+      // console.log('arrName',arrName)
+      // file.name = escape(arrName[0]) +'.' + arrName[1]
+      //  console.log('handleBeforeUpload  name',file.name)
+
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg';
       const isLt1M = file.size / 1024 / 1024 < 5;
       if (!isJPG) {

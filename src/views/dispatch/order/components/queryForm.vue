@@ -22,7 +22,7 @@
         <el-form-item label="出发地信息" prop="loadFormattedAddress">
           <el-input
             v-model="queryParams.loadFormattedAddress"
-            placeholder="出发地/联系人姓名/联系电话"
+            placeholder="出发地"
             clearable
             style="width: 185px"
             @keyup.enter.native="$emit('handleQuery')"
@@ -31,13 +31,13 @@
         <el-form-item label="目的地信息" prop="unloadFormattedAddress">
           <el-input
             v-model="queryParams.unloadFormattedAddress"
-            placeholder="目的地/联系人姓名/联系电话"
+            placeholder="目的地"
             clearable
             style="width: 185px"
             @keyup.enter.native="$emit('handleQuery')"
           />
         </el-form-item>
-        <el-form-item label="调度单号：" prop="dispatchOrderNo">
+        <el-form-item label="调度单号" prop="dispatchOrderNo">
           <el-input
             v-model="queryParams.dispatchOrderNo"
             placeholder="请输入调度单号"
@@ -48,7 +48,7 @@
         </el-form-item>
       </div>
       <div class="down" v-show="isShow">
-        <el-form-item label="货物类型：" prop="goodsType">
+        <el-form-item label="货物类型" prop="goodsType">
           <!-- <el-select
             
             clearable

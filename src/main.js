@@ -22,7 +22,7 @@ import './permission' // permission control
 import { getDicts } from "@/utils/request";
 import { getConfigKey } from "@/api/system/config";
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from "@/utils/ruoyi";
-import { download } from "@/utils/request";
+import { download, downloadFileName } from "@/utils/request";
 // 表单校验
 import formValidate from '@/utils/formValidate';
 // 分页组件
@@ -55,6 +55,13 @@ VueAMap.initAMapApiLoader({
   uiVersion: '1.1.1'
 });
 
+import Viewer from 'v-viewer'
+import 'viewerjs/dist/viewer.css'
+Vue.use(Viewer)
+Viewer.setDefaults({
+  Options: { 'inline': true, 'button': true, 'navbar': true, 'title': true, 'toolbar': true, 'tooltip': true, 'movable': true, 'zoomable': true, 'rotatable': true, 'scalable': true, 'transition': true, 'fullscreen': true, 'keyboard': true, 'url': 'data-source' }
+})
+
 import VideoPlayer from 'vue-video-player';
 require('video.js/dist/video-js.css');
 require('vue-video-player/src/custom-theme.css');
@@ -71,7 +78,10 @@ Vue.prototype.addDateRange = addDateRange
 Vue.prototype.selectDictLabel = selectDictLabel
 Vue.prototype.selectDictLabels = selectDictLabels
 Vue.prototype.download = download
+Vue.prototype.downloadFileName = downloadFileName
 Vue.prototype.handleTree = handleTree
+
+
 Vue.prototype.formValidate = formValidate
 
 Vue.prototype.msgSuccess = function (msg) {

@@ -210,9 +210,18 @@
           </el-form-item>
         </el-col>
       </el-row>
-
+      <!-- driverLicense -->
       <el-row>
-        <el-col :span="16" v-if="isDriverDateValid">
+        <el-col :span="10">
+          <el-form-item label="驾驶证号:" prop="driverLicense">
+            <el-input
+              v-model="form.driverLicense"
+              placeholder="支持自动识别"
+              clearable
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="18" v-if="isDriverDateValid">
           <el-form-item label="驾驶证有效期:" prop="driverDateRange">
             <el-date-picker
               v-model="form.driverDateRange"
@@ -312,6 +321,8 @@ export default {
       pickerOptions,
       isDriverDateValid: true,
       isIdDateValid: true,
+      oldIdentificationNumber: "",
+      oldTelphone: "",
       form: {
         orgCode: null, //所属组织
         // password: null, //用户密码
@@ -351,6 +362,9 @@ export default {
         name: [
           { required: true, message: "姓名不能为空", trigger: "blur" },
           { validator: formValidate.name, trigger: "blur" },
+        ],
+        driverLicense: [
+          { required: true, message: "驾驶证号不能为空", trigger: "blur" },
         ],
         telphone: [
           { required: true, message: "手机不能为空", trigger: "blur" },
@@ -408,7 +422,6 @@ export default {
     this.getTree();
   },
   methods: {
-  
     selectTipColor() {
       const objColor = {
         0: "info",
@@ -425,24 +438,41 @@ export default {
     dateChange(e) {
       console.log("日期哦", e);
     },
-      telDisabled(){
+    telDisabled() {
       if (this.isDetail) return true;
       if (this.options && this.options.editType == "update") return true;
-      return false
+      return false;
     },
     isDisabled() {
       let result = false;
       if (this.isDetail) result = true;
-      if (this.options && this.options.editType == "update"){
-      if(this.form.authStatus == 3) result = true;
-      } 
+      if (this.options && this.options.editType == "update") {
+        if (this.form.authStatus == 3) result = true;
+      }
       return result;
     },
     changeBlurTel(e) {
-      this.checkIdOrphone("0", this.form.telphone);
+      if (
+        this.options.editType == "update" &&
+        this.oldTelphone != this.form.telphone
+      ) {
+        this.checkIdOrphone("0", this.form.telphone);
+        this.oldTelphone = this.form.telphone;
+      }
+      if (this.options.editType != "update")
+        this.checkIdOrphone("0", this.form.telphone);
     },
     changeBlurId(e) {
-      this.checkIdOrphone("1", this.form.identificationNumber);
+      console.log("changeBlurId", this.oldIdentificationNumber);
+      if (
+        this.options.editType == "update" &&
+        this.oldIdentificationNumber != this.form.identificationNumber
+      ) {
+        this.checkIdOrphone("1", this.form.identificationNumber);
+        this.oldIdentificationNumber = this.form.identificationNumber;
+      }
+      if (this.options.editType != "update")
+        this.checkIdOrphone("1", this.form.identificationNumber);
     },
     //校验
     async checkIdOrphone(type, value) {
@@ -557,6 +587,7 @@ export default {
               url_alias: "driver_edit",
               data: me.FormToUpdate(),
             };
+            // userCode
             console.log("obj", obj);
             http_request(obj)
               .then((updateRes) => {
@@ -622,6 +653,8 @@ export default {
       };
       this.resetForm("form");
       this.isIdDateValid = true;
+      this.oldIdentificationNumber = "";
+      this.oldTelphone = "";
     },
     //身份证正面照/身份证反面照 上传结束后回调
     chooseImg(e) {
@@ -655,7 +688,11 @@ export default {
       const res = await http_request(obj);
       console.log("ocr请求", res);
       if (res.data && res.data.error_msg) {
-        this.msgError("该照片非身份证类型，请重新上传");
+        const msgType = {
+          0:'身份证',
+          2:'驾驶证'
+        }
+        this.msgError(`该照片非${msgType[type]}类型，请重新上传`);
         if (type === 0) {
           if (side === "front") {
             this.identificationImage = null;
@@ -680,6 +717,7 @@ export default {
     },
     //ocr数据渲染页面
     ocrDataToForm(data, type) {
+      console.log('ocr数据渲染页面',data, type)
       const me = this;
       const tmp = {
         0: () => {
@@ -722,6 +760,7 @@ export default {
         },
         2: () => {
           console.log("ocrDataToForm 2");
+          me.form.driverLicense = data.number
           if (data.issuing_authority)
             me.form.issuingOrganizations = data.issuing_authority;
           me.form.driverDateRange = [data.valid_from, data.valid_to];
@@ -762,6 +801,8 @@ export default {
       if (data.driverLicenseInf.validPeriodTo === "长期") {
         this.isDriverDateValid = false;
       }
+      this.oldIdentificationNumber = this.form.identificationNumber;
+      this.oldTelphone = this.form.telphone;
     },
     FormToUpdate() {
       const form = this.form;
@@ -793,6 +834,7 @@ export default {
           identificationNumber: form.identificationNumber, //身份证号
         },
       };
+      obj.userCode = this.options.userCode;
       return obj;
     },
     FormToAdd() {

@@ -23,6 +23,13 @@
           :border="false"
           :stripe="true"
         >
+           <template #vehicleNumber="{ row }">
+            {{
+              row.vehicleAlias
+                ? `(${row.vehicleAlias})  ${row.vehicleNumber}`
+                : row.vehicleNumber
+            }}
+          </template>
           <template #edit="{ row }">
             <el-button size="mini" type="text" @click="handleDetail(row)"
               >详情</el-button

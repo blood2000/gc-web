@@ -196,8 +196,8 @@ export default {
       open: false,
       // 地址类型字典
       addressTypeOptions: [
-        { dictLabel: "装货地址", dictValue: 1 },
-        { dictLabel: "卸货地址", dictValue: 2 },
+        { dictLabel: "出发地", dictValue: 1 },
+        { dictLabel: "目的地", dictValue: 2 },
       ],
       // 状态字典
       statusOptions: [

@@ -3,9 +3,8 @@
     max-height: 90vh;
     overflow: hidden;
     .el-dialog__header{
-      padding: 20px 20px 17px 64px;
+      padding: 20px 20px 17px 20px;
       border-bottom: 1px solid #F3F3F3;
-      background: url('~@/assets/images/dialog/header_before_default.png') no-repeat 20px 15px;
       .el-dialog__title{
         color: #262626;
         font-size: 16px;

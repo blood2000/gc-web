@@ -4,9 +4,10 @@
     :visible.sync="carDrawer"
     direction="rtl"
     :before-close="handleClose"
-    :wrapperClosable="true"
-    size="45%"
+    :wrapperClosable="false"
+    size="71.5%"
   >
+    <!--  size="61.5%" -->
     <TitleSideBlueTip title="订单信息" />
     <div class="dispatch-contents-box">
       <el-form
@@ -250,7 +251,7 @@
     </div>
     <TitleSideBlueTip title="承运车辆" />
     <CarMany
-      v-if="isMany&&closeItem"
+      v-if="isMany && closeItem"
       :pageData="pageData"
       :dispatchOrderCode="code"
       :carDrawer="carDrawer"
@@ -258,7 +259,7 @@
       @handleClose="handleClose"
     />
     <CarSingle
-      v-if="!isMany&&closeItem"
+      v-if="!isMany && closeItem"
       :pageData="pageData"
       :dispatchOrderCode="code"
       :carDrawer="carDrawer"
@@ -299,7 +300,7 @@ export default {
   },
   data() {
     return {
-      closeItem:true, //是否关闭子页面
+      closeItem: true, //是否关闭子页面
       pageData: {
         companyName: null,
         shipmentName: null,
@@ -326,7 +327,7 @@ export default {
     carDrawer() {
       console.log("我在监听", this.isMany);
       if (this.carDrawer) {
-        this.closeItem = true
+        this.closeItem = true;
         console.log("他变成true", this.code);
         this.getDetail();
       }
@@ -346,8 +347,8 @@ export default {
   methods: {
     // 关闭
     handleClose() {
-      console.log('我关闭了')
-      this.closeItem = false
+      console.log("我关闭了");
+      this.closeItem = false;
       this.$emit("colseCarDrawer");
     },
     //获取详情
@@ -382,9 +383,10 @@ export default {
         unloadAlias: data.orderAddress.unloadAlias,
         unloadLinkManName: data.orderAddress.unloadLinkManName,
         unloadLinkManPhone: data.orderAddress.unloadLinkManPhone,
-        settlementWayStr: data.expenseInfoVO&& data.expenseInfoVO.settlementWayStr,
-        freight:data.expenseInfoVO&& data.expenseInfoVO.freight,
-        settlementWay:data.expenseInfoVO&& data.expenseInfoVO.settlementWay,
+        settlementWayStr:
+          data.expenseInfoVO && data.expenseInfoVO.settlementWayStr,
+        freight: data.expenseInfoVO && data.expenseInfoVO.freight,
+        settlementWay: data.expenseInfoVO && data.expenseInfoVO.settlementWay,
       };
     },
   },

@@ -16,7 +16,7 @@ module.exports = {
   // 部署生产环境和开发环境下的URL。
   // 默认情况下，Vue CLI 会假设你的应用是被部署在一个域名的根路径上
   // 例如 https://www.ruoyi.vip/。如果应用被部署在一个子路径上，你就需要用这个选项指定这个子路径。例如，如果你的应用被部署在 https://www.ruoyi.vip/admin/，则设置 baseUrl 为 /admin/。
-  publicPath: process.env.NODE_ENV === "production" ? "/" : "/",
+  publicPath: process.env.NODE_ENV === 'production' ? '/' : '/',
   // 在npm run build 或 yarn build 时 ，生成文件的目录名称（要和baseUrl的生产环境路径一致）（默认dist）
   outputDir: 'dist',
   // 用于放置生成的静态资源 (js、css、img、fonts) 的；（项目打包之后，静态资源会放在这个文件夹下）
@@ -34,17 +34,19 @@ module.exports = {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
         // target: process.env.VUE_PROTOCOL+process.env.VUE_APP_BASE_HOST, // 测试
-        target: `http://10.0.0.66:8080`, // test
-        // target: `http://192.168.30.149:8080`, //本地 
+        // target: `http://10.0.0.66:8080`, // test
+        // target: `http://192.168.30.71:8080`, //本地 
         // target:'http://192.168.30.224:8080', //本地 
-        // target: `http://192.168.30.160:8080`, //本地 -- 调度
-        // target: `http://192.168.30.67:8080`, //本地
+        target: `http://192.168.30.68:8080`, //本地 -- 调度
+        // target: `http://192.168.30.71:8080`, //本地
         // target: `http://192.168.1.18:8080`, //本地--强强
         // target: `http://192.168.30.166:8080`, //本地
         // target: `http://192.168.30.10:8080`, //本地---地图
         // target:`http://192.168.30.36:8080`,
         // target:`http://192.168.1.34:8080`,
-        // target:`http://192.168.30.26:8080`,    //萌旗
+        // target:`http://192.168.30.62:8080`,    //萌旗
+          //  target:`http://api.zjz1.net`,    //线上
+
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
@@ -66,10 +68,7 @@ module.exports = {
     config.plugins.delete('prefetch') // TODO: need test
 
     // set svg-sprite-loader
-    config.module
-      .rule('svg')
-      .exclude.add(resolve('src/assets/icons'))
-      .end()
+    config.module.rule('svg').exclude.add(resolve('src/assets/icons')).end()
     config.module
       .rule('icons')
       .test(/\.svg$/)
@@ -82,47 +81,45 @@ module.exports = {
       })
       .end()
 
-    config
-      .when(process.env.NODE_ENV !== 'development',
-        config => {
-          config
-            .plugin('ScriptExtHtmlWebpackPlugin')
-            .after('html')
-            .use('script-ext-html-webpack-plugin', [{
-            // `runtime` must same as runtimeChunk name. default is `runtime`
-              inline: /runtime\..*\.js$/
-            }])
-            .end()
-          config
-            .optimization.splitChunks({
-              chunks: 'all',
-              cacheGroups: {
-                libs: {
-                  name: 'chunk-libs',
-                  test: /[\\/]node_modules[\\/]/,
-                  priority: 10,
-                  chunks: 'initial' // only package third parties that are initially dependent
-                },
-                elementUI: {
-                  name: 'chunk-elementUI', // split elementUI into a single package
-                  priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
-                  test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
-                },
-                commons: {
-                  name: 'chunk-commons',
-                  test: resolve('src/components'), // can customize your rules
-                  minChunks: 3, //  minimum common number
-                  priority: 5,
-                  reuseExistingChunk: true
-                }
-              }
-            })
-          config.optimization.runtimeChunk('single'),
+    config.when(process.env.NODE_ENV !== 'development', (config) => {
+      config
+        .plugin('ScriptExtHtmlWebpackPlugin')
+        .after('html')
+        .use('script-ext-html-webpack-plugin', [
           {
-             from: path.resolve(__dirname, './public/robots.txt'), //防爬虫文件
-             to: './' //到根目录下
+            // `runtime` must same as runtimeChunk name. default is `runtime`
+            inline: /runtime\..*\.js$/
+          }
+        ])
+        .end()
+      config.optimization.splitChunks({
+        chunks: 'all',
+        cacheGroups: {
+          libs: {
+            name: 'chunk-libs',
+            test: /[\\/]node_modules[\\/]/,
+            priority: 10,
+            chunks: 'initial' // only package third parties that are initially dependent
+          },
+          elementUI: {
+            name: 'chunk-elementUI', // split elementUI into a single package
+            priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
+            test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
+          },
+          commons: {
+            name: 'chunk-commons',
+            test: resolve('src/components'), // can customize your rules
+            minChunks: 3, //  minimum common number
+            priority: 5,
+            reuseExistingChunk: true
           }
         }
-      )
+      })
+      config.optimization.runtimeChunk('single'),
+        {
+          from: path.resolve(__dirname, './public/robots.txt'), //防爬虫文件
+          to: './' //到根目录下
+        }
+    })
   }
 }

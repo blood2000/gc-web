@@ -58,21 +58,14 @@
           />
         </el-form-item>
         <el-form-item label="货物类型：" prop="goodsType">
-          <el-select
-            v-model="queryParams.goodsType"
+          <el-cascader
             clearable
             filterable
-            style="width: 185px"
-            placeholder="请选择"
-            @change="$emit('handleQuery')"
-          >
-            <el-option
-              v-for="(item, index) in goodsTypeList"
-              :key="index"
-              :label="item.dictLabel"
-              :value="item.dictValue"
-            />
-          </el-select>
+            v-model="queryParams.goodsCode"
+            @change="cascaderChange"
+            :options="goodsTypeList"
+            :show-all-levels="false"
+          ></el-cascader>
         </el-form-item>
         <el-form-item label="派车日期" prop="appointCarDate">
           <el-date-picker
@@ -144,6 +137,10 @@ export default {
     console.log("goodsTypeList", this.goodsTypeList);
   },
   methods: {
+    cascaderChange(){
+        this.queryParams.goodsType = this.queryParams.goodsType[1];
+      this.$emit("handleQuery");
+    },
     reset() {
       this.queryParams.pageNum = 1;
       this.$refs["queryForm"].resetFields();

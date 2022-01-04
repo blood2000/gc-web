@@ -5,12 +5,12 @@
       <h5 class="info-box-title">车辆信息</h5>
       <div
         class="info-box-status"
-        :class="
-          selectDictColor(vehicleStatusOptions, vehicleInfo.vehicleStatus)
-        "
+        :style="{
+          color:selectDictColor(vehicleInfo.vehicleStatus)
+        }"
       >
         <strong class="mr8">·</strong>
-        {{ selectDictLabel(vehicleStatusOptions, vehicleInfo.vehicleStatus) }}
+        {{ vehicleInfo.vehicleStatusName }}
       </div>
       <!-- content -->
       <div class="car-content ly-flex ly-flex-align-center">
@@ -51,8 +51,11 @@
     </div>
 
     <!-- 调度信息 -->
-    <div class="info-box info-dispatch">
-      <h5 class="info-box-title">调度信息</h5>
+    <div
+      class="info-box info-dispatch"
+      v-if="dispatchInfo.unloadFormattedAddress"
+    >
+      <h5 class="info-box-title">运输信息</h5>
       <div
         class="info-box-status green"
         v-if="dispatchInfo.loadFormattedAddress"
@@ -84,11 +87,8 @@
       </div>
     </div>
 
-    <!-- 设备信息 -->
-    <div
-      class="info-box info-device"
-      :style="warnIsClose ? '' : 'height: calc(100% - 300px)'"
-    >
+    <!-- 设备信息   -->
+    <div class="info-box info-device" :style="warnIsClose ? 'height:620px' : 'height: 428px'">
       <h5 class="info-box-title">设备信息</h5>
       <!-- content -->
       <div class="device-content ly-flex ly-flex-align-center">
@@ -119,7 +119,7 @@
         </li>
       </ul>
       <!--  :style="warnIsClose ? '' : 'height: calc(100% - 170px)'" -->
-      <ul  class="info-list ly-flex map-scroll-panel">
+      <ul class="info-list ly-flex map-scroll-panel">
         <li
           class="ly-flex ly-flex-align-center"
           v-for="item in attributesInfo"
@@ -143,7 +143,7 @@
         </li>
       </ul>
       <!-- 视频 -->
-      <ul class="video-content" v-if="warnIsClose">
+      <ul class="video-content">
         <li
           class="video-content-item"
           :key="index"
@@ -284,7 +284,7 @@ export default {
         url_code: [this.vehicleCode, type],
       };
       http_request(obj).then((res) => {
-        console.log("res,,,,", res.data);
+        // console.log("res,,,,", res.data);
         const { vehicle, location, device, functions, attributes, fields } =
           res.data;
         this.vehicleInfo = vehicle || {};
@@ -294,6 +294,7 @@ export default {
         this.attributesInfo = attributes || [];
         this.fieldsInfo = fields || {};
         this.channelNumList = [];
+        if(!fields || !fields.channelNum)
         for (let i = 0; i < Number(fields.channelNum); i++) {
           this.channelNumList.push(i);
         }
@@ -343,15 +344,22 @@ export default {
       });
     },
     // 字典匹配颜色
-    selectDictColor(datas, value) {
-      var actions = [];
-      Object.keys(datas).some((key) => {
-        if (datas[key].dictValue == "" + value) {
-          actions.push(datas[key].color);
-          return true;
-        }
-      });
-      return actions.join("");
+    selectDictColor( value) {
+      // var actions = [];
+      // Object.keys(datas).some((key) => {
+      //   if (datas[key].dictValue == "" + value) {
+      //     actions.push(datas[key].color);
+      //     return true;
+      //   }
+      // });
+      // return actions.join("");
+      const obj ={
+        3:'rgba(229, 94, 80, 1)',
+        0:'rgba(196, 196, 196, 1)',
+        1:'rgba(29, 185, 99, 1)',
+        2:'rgba(255, 183, 57, 1)'
+      }
+      return obj[value]
     },
     colseVideoDialog() {
       this.showVideoDialog = false;
@@ -435,7 +443,7 @@ export default {
             font-weight: 400;
             line-height: 20px;
             color: #3d4050;
-            width:285px
+            width: 285px;
           }
           .car-type {
             font-size: 14px;
@@ -515,8 +523,8 @@ export default {
     // 设备信息
     &.info-device {
       padding-right: 0;
-      min-height: 280px;
-      max-height: 484px;
+      // height: ;
+      overflow: scroll;
       .device-content {
         padding: 8px 12px 0 0;
         > .img-box {
@@ -640,9 +648,7 @@ export default {
         }
       }
       .video-content {
-        height: 172px;
         display: flex;
-        overflow: auto;
         flex-wrap: wrap;
         &-item {
           margin-right: 10px;

@@ -214,7 +214,7 @@ export default {
       const obj = {
         moduleName: "http_warning",
         method: "get",
-        url_alias: "warningType_list",
+        url_alias: "selectUserAlarmTypeInfoList",
       };
       const res = await http_request(obj);
       console.log("告警类型列表", res);

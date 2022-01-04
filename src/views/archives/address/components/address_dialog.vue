@@ -291,7 +291,7 @@ export default {
     //请求详情
     requsetDetail() {
       const tmp = {
-        moduleName: "http_address",
+        moduleName: "http_common",
         method: "get",
         url_alias: "address_get_id",
         url_code: [this.options.code],
@@ -369,7 +369,7 @@ export default {
             me.form.id = me.options.code;
             const obj = {
               data: me.form,
-              moduleName: "http_address",
+              moduleName: "http_common",
               method: "put",
               url_alias: "address_update",
             };
@@ -386,7 +386,7 @@ export default {
           } else {
             const obj = {
               data: me.form,
-              moduleName: "http_address",
+              moduleName: "http_common",
               method: "post",
               url_alias: "address_add",
             };

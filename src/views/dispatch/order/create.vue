@@ -7,6 +7,8 @@
     :before-close="clearAll"
     size="45%"
     :append-to-body="true"
+        :wrapperClosable="false"
+
   >
     <el-form
       ref="form"
@@ -1051,6 +1053,7 @@ export default {
         type: "2", //1 装货  2 卸货
         locations: [], //坐标
       };
+      this.remark = null
       this.resetForm("form");
       this.resetForm("loadForm");
       this.resetForm("unloadForm");

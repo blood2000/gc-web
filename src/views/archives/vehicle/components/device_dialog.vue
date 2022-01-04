@@ -225,7 +225,7 @@ export default {
         moduleName: "http_vehicle",
         method: "post",
         url_alias: "device_bind",
-        data: { sn: item.sn, vehicleCode: this.options.vehicleCode },
+        data: { sn: item.sn, vehicleCode: this.options.vehicleCode,vendor_code:item.vendor_code },
       };
       const res = await http_request(obj);
       console.log("res===>", res);
@@ -258,6 +258,7 @@ export default {
           url_alias: "device_bind",
           data: { sn: res.data, vehicleCode: this.options.vehicleCode },
         };
+        // vendor_code
         const addres = await http_request(addObj);
         console.log("add res===>", addres);
         //刷新

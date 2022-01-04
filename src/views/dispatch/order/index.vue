@@ -308,15 +308,15 @@ export default {
           delete tmp.dispatchOrderStatus;
       }
 
-      // for (const item in tmp) {
-      //   console.log('tmp item ',item,tmp[item])
-      //   if(tmp[item] == 0){
-      //     console.log('tmp[item]',tmp[item])
-      //   }
-      //   if (!tmp[item] && tmp[item] != 0) {
-      //     delete tmp[item];
-      //   }
-      // }
+      for (const item in tmp) {
+        if(tmp[item] == 0){
+          console.log('tmp[item]',tmp[item])
+        }
+        if (!tmp[item] && tmp[item] !== 0) {
+          console.log('这个字段要被删除',item)
+          delete tmp[item];
+        }
+      }
       return tmp;
     },
     // 请求列表

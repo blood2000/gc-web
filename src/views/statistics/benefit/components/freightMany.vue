@@ -1,0 +1,185 @@
+<template>
+  <div class="freight">
+    <div class="freight-bar">
+      <div class="freight-title">运费统计（元）</div>
+      <FreightMore :startDate="startDate" :endDate="endDate" />
+    </div>
+    <div ref="chart" class="chart-wrapper"></div>
+  </div>
+</template>
+
+<script>
+import { http_request } from '@/api'
+import * as echarts from 'echarts'
+import FreightMore from './freightMore.vue'
+
+export default {
+  props: {
+    freightChart: {
+      type: Array,
+      default: []
+    },
+    startDate: {
+      type: String,
+      default: ''
+    },
+    endDate: {
+      type: String,
+      default: ''
+    }
+  },
+  components: {
+    FreightMore
+  },
+  data() {
+    return {}
+  },
+  mounted() {
+    this.initChart()
+    if (this.freightChart && this.freightChart.length > 0) {
+      this.setChart()
+    }
+  },
+  methods: {
+    initChart() {
+      this.chart = echarts.init(this.$refs.chart, 'macarons', {
+        width: 1000,
+        height: 380
+      })
+    },
+    setChart() {
+      let notRevenueAll = 0
+      let revenueAll = 0
+      let dateList = this.freightChart.map((item) => {
+        return item.date
+      })
+      let notRevenueList = this.freightChart.map((item) => {
+        notRevenueAll = notRevenueAll + item.notRevenue
+        return item.notRevenue
+      })
+      let revenueList = this.freightChart.map((item) => {
+        revenueAll = revenueAll + item.revenue
+        return item.revenue
+      })
+      this.option = {
+        grid: {
+          top: 90
+        },
+        tooltip: {
+          trigger: 'axis'
+        },
+        legend: {
+          top: 20,
+          left: 70,
+          data: ['待收款', '已收款'],
+          formatter: (name) => {
+            if (name === '待收款') {
+              return `${name}${notRevenueAll}元`
+            } else if (name === '已收款') {
+              return `${name}${revenueAll}元`
+            }
+          }
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: dateList
+        },
+        yAxis: {
+          type: 'value',
+          name: '元/天',
+          nameTextStyle: {
+            color: '#3D4050',
+            fontWeight: 'bold',
+            align: 'right'
+          }
+        },
+        series: [
+          {
+            name: '待收款',
+            type: 'line',
+            smooth: true,
+            data: notRevenueList,
+            lineStyle: {
+              color: '#4682FA'
+            },
+            itemStyle: {
+              color: '#4682FA'
+            },
+            areaStyle: {
+              opacity: 0.8,
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                {
+                  offset: 0,
+                  color: 'rgba(70, 130, 250, 0.1)'
+                },
+                {
+                  offset: 1,
+                  color: 'rgba(70, 130, 250, 0)'
+                }
+              ])
+            }
+          },
+          {
+            name: '已收款',
+            type: 'line',
+            smooth: true,
+            data: revenueList,
+            lineStyle: {
+              color: '#43B91E'
+            },
+            itemStyle: {
+              color: '#43B91E'
+            },
+            areaStyle: {
+              opacity: 0.8,
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                {
+                  offset: 0,
+                  color: 'rgba(67, 185, 30, 0.08)'
+                },
+                {
+                  offset: 1,
+                  color: 'rgba(67, 185, 30, 0)'
+                }
+              ])
+            }
+          }
+        ]
+      }
+
+      this.chart.clear()
+      this.chart.setOption(this.option)
+    }
+  },
+  watch: {
+    freightChart() {
+      if (this.freightChart && this.freightChart.length > 0) {
+        this.setChart()
+      }
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.freight {
+  height: 465px;
+  background: #fff;
+  padding: 25px 20px;
+  &-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  &-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #3d4050;
+  }
+  .chart-wrapper {
+    width: 900px;
+    height: 250px;
+  }
+}
+</style>

@@ -58,6 +58,14 @@
           :border="false"
           :stripe="true"
         >
+        <!-- licenseNumber -->
+           <template #licenseNumber="{ row }">
+            {{
+              row.vehicleAlias
+                ? `(${row.vehicleAlias})  ${row.licenseNumber}`
+                : row.licenseNumber
+            }}
+          </template>
           <template #alarmLevel="{ row }">
             <div class="warn-level-td">
               <img :src="levelDeal(row.alarmLevel).img" alt="" />

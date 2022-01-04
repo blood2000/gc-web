@@ -120,7 +120,7 @@ export default {
       }).then(() => {
         console.log("开始删了");
         const tmp = {
-          moduleName: "http_address",
+          moduleName: "http_common",
           method: "post",
           url_alias: "address_del",
           data: { ids },
@@ -134,7 +134,7 @@ export default {
     async getList() {
       this.loading = true;
       const obj = {
-        moduleName: "http_address",
+        moduleName: "http_common",
         method: "post",
         url_alias: "address_list",
         data: this.pagingToFrom(),
