@@ -15,7 +15,7 @@ export default {
   device_paging: '/fmsweb/basic/org/device/v2/paging',//获取当前组织所有设备分页列表
   device_bind: '/fmsweb/vehicle/device/v2/binding',//绑定设备
   device_unbind: '/fmsweb/vehicle/device/v2/unbinding',//解除绑定
-  qrcode_decode: (type) => `/fmsweb/basic/common/v1/qrcode/decode/${type}`,
+  qrcode_decode: (type) => `/fmsweb/basic/common/v1/content/decode/${type}`,
   checkAdd: '/fmsweb/basic/vehicle/v2/checkAdd',  //校验车辆
   confirmAdd: '/fmsweb/basic/vehicle/v2/confirmAdd', //确认添加
   checkDelete:'/fmsweb/basic/vehicle/v2/checkDelete',//校验车辆删除

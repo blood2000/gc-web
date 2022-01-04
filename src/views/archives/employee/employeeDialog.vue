@@ -20,6 +20,8 @@
           :show-count="true"
           placeholder="请选择所属组织"
           no-results-text="无匹配数据"
+          :append-to-body="true"
+          zIndex="2050"
           @select="selectOrgCode"
         />
       </el-form-item>

@@ -417,7 +417,7 @@ export default {
       if (this.whichDialog === 'add') {
         this.onSave()
       } else if (this.whichDialog === 'update') {
-        this.onUpdate
+        this.onUpdate()
       } else if (this.whichDialog === 'openWallet' || this.whichDialog === 'changeWallet') {
         this.onOpenWallet()
       }

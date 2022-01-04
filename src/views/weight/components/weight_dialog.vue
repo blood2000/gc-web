@@ -615,7 +615,7 @@ export default {
         const val2 = parseFloat(
           this.form.recordForms[index].driverFreightPrice
         );
-        return val1 + val2;
+        return (val1 + val2).toFixed(2);
       } else {
         return "";
       }

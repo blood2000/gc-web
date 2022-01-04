@@ -8,11 +8,8 @@
           :class="isbigger ? 'dialog-video-full' : ''"
           @click.stop=""
         >
-          <div
-            v-show="isbigger"
-            :class="isbigger ? 'dialog-video-full-title' : ''"
-          >
-            {{ getTypes() }}
+          <div class="dialog-video-full-title">
+            <span>{{ isbigger ? getTypes() : '' }}</span>
             <i class="el-icon-close" @click.stop="hanleScale"></i>
           </div>
           <video
@@ -508,7 +505,13 @@ export default {
     },
     // 关闭视频
     hanleScale() {
-      this.isbigger = false;
+      if (this.isbigger) {
+        this.isbigger = false;
+      } else {
+        this.colse(() => {
+          this.isShowVideo = false
+        })
+      }
     },
     //获取视频的总时长
     getDuration() {

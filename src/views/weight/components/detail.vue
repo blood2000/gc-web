@@ -238,24 +238,6 @@ export default {
       console.log("detail res", res);
       this.pageData = res.data;
       if (!this.pageData.logs) return;
-      this.pageData.logs.push({
-        updateData: [
-          {
-            afterValue: this.pageData.voucherImageUrls,
-            beforeValue: this.pageData.voucherImageUrls,
-            chFieldName: "磅单日期",
-            fieldName: "recordDate",
-          },
-          {
-            afterValue: this.pageData.voucherImageUrls,
-            beforeValue: this.pageData.voucherImageUrls,
-            chFieldName: "磅单日期1",
-            fieldName: "recordDate1",
-          },
-        ],
-        updateName: "钓鱼台1",
-        updateTime: "2021-12-13 17:11:19",
-      });
     },
   },
 };
