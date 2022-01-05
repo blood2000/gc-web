@@ -10,7 +10,7 @@
   >
   <!-- colseDetailDrawer -->
     <div class="device-box">
-      <el-tag class="tag-info" type="danger" v-if="detailObj.expireFlagValue">
+      <el-tag class="tag-info" type="danger" v-if="detailObj.expireFlag === 0">
         <img src="../../../../assets/images/dialog/icon-error.png" alt="" />
         该设备已到期，请及时续费！</el-tag
       >
