@@ -236,18 +236,22 @@
             />
           </el-form-item>
         </el-col>
-        <el-col :span="10" v-if="!isDriverDateValid">
-          <el-date-picker
-            v-model="form.driverDateRange[0]"
-            align="right"
-            type="date"
-            placeholder="选择日期"
-            :picker-options="pickerOptions"
-          >
-          </el-date-picker>
-        </el-col>
-        <el-col :span="6" v-if="!isDriverDateValid">
-          <el-input v-model="form.driverDateRange[1]" disabled />
+        <el-col :span="18" v-if="!isDriverDateValid">
+          <el-form-item label="驾驶证有效期:" prop="driverDateRange">
+            <el-col :span="10" >
+              <el-date-picker
+                v-model="form.driverDateRange[0]"
+                align="right"
+                type="date"
+                placeholder="选择日期"
+                :picker-options="pickerOptions"
+              >
+              </el-date-picker>
+            </el-col>
+            <el-col :span="10">
+              <el-input v-model="form.driverDateRange[1]" disabled />
+            </el-col>
+          </el-form-item>
         </el-col>
       </el-row>
 
@@ -806,6 +810,9 @@ export default {
     },
     FormToUpdate() {
       const form = this.form;
+      if (!form.driverDateRange) {
+        form.driverDateRange = []
+      }
       const obj = {
         telphone: form.telphone,
         // userCode: form.userCode, //????用户编码
@@ -839,6 +846,9 @@ export default {
     },
     FormToAdd() {
       const form = this.form;
+      if (!form.driverDateRange) {
+        form.driverDateRange = []
+      }
       const obj = {
         driverLicenseInf: {
           driverLicense: form.identificationNumber,

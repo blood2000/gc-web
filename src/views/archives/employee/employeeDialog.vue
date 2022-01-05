@@ -165,14 +165,15 @@ export default {
       this.$refs['form'].validate(async (valid) => {
         if (valid) {
           // 判断手机号是否存在
-          const { data } = await http_request({
-            moduleName: 'http_employee',
-            method: 'get',
-            url_alias: 'checkPhoneExist',
-            data: {
-              phonenumber: this.form.phonenumber
-            }
-          })
+          // 宇宏说先注释掉
+          // const { data } = await http_request({
+          //   moduleName: 'http_employee',
+          //   method: 'get',
+          //   url_alias: 'checkPhoneExist',
+          //   data: {
+          //     phonenumber: this.form.phonenumber
+          //   }
+          // })
           this.loading = true;
           // 密码加密
           if (this.form.password && this.form.password !== '') {

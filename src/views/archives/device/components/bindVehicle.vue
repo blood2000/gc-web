@@ -17,13 +17,10 @@
     <div class="list" v-if="getList.length > 0">
       <div
         class="list-item"
+        :class="{'list-item__active': currIndex === index, 'list-item__disabled': item.status === '已绑定'}"
         v-for="(item, index) in getList"
         :key="item.vehicleCode"
         @click="handleVehicle(index)"
-        :style="{
-          background:
-            currIndex === index ? 'rgba(70, 130, 250, 0.3)' : '#ffffff',
-        }"
       >
         <div class="licenseNumber">{{ item.licenseNumber }}</div>
         <div class="vehicleType">{{ item.vehicleType }}</div>
@@ -53,20 +50,13 @@ export default {
   watch: {
     list() {
       if (this.list.length > 0) {
-        this.getList = this.list.filter(item => {
-          return item.status === "未绑定"
-        })
+        this.getList = this.list;
       }
     },
   },
   methods: {
     handleSearch() {
-      if (!this.search) {
-        this.getList = this.list.filter(item => {
-          return item.status === "未绑定"
-        })
-        return
-      }
+      if (!this.search) return (this.getList = this.list);
       this.getList = this.getList.filter((item) => {
         return item.licenseNumber.indexOf(this.search) != -1;
       });
@@ -98,10 +88,18 @@ export default {
   border-radius: 5px;
   margin-bottom: 10px;
   padding: 16px;
+  cursor: pointer;
   .licenseNumber {
     font-family: PingFang SC;
     font-weight: bold;
     margin-right: 16px;
   }
+}
+.list-item__active {
+  background: rgba(70, 130, 250, 0.3);
+}
+.list-item__disabled {
+  background: #eaeaea;
+  pointer-events: none;
 }
 </style>

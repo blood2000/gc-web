@@ -19,10 +19,14 @@
             <div class="videoChannel-radio">
               <div
                 class="label"
-                :class="{ 'label-active': current.dictValue === channel.dictValue }"
+                :class="{
+                  'label-disabled':
+                    selectChannel.has(channel.dictValue) && item.dictValue !== channel.dictValue,
+                  'label-active': current.dictValue === channel.dictValue,
+                }"
                 v-for="channel in channelPageList"
                 :key="channel.dictValue"
-                @click="onClickChannel(channel)"
+                @click="onClickChannel(channel, item.dictValue)"
               >
                 <span>{{ channel.dictLabel }}</span>
                 <img
@@ -41,8 +45,8 @@
       </div>
     </div>
     <div class="videoChannel-btnBox" v-show="isShowBtn">
-      <el-button @click="onCancel" size="small">取 消</el-button>
-      <el-button @click="onSave" size="small" type="primary">保 存</el-button>
+      <el-button @click="onCancel" size="small" :loading="loading">取 消</el-button>
+      <el-button @click="onSave" size="small" type="primary" :loading="loading">保 存</el-button>
     </div>
   </div>
 </template>
@@ -56,8 +60,10 @@ export default {
   components: {},
   data() {
     return {
+      loading: false,
       isShowBtn: false,
       current: {},
+      selectChannel: new Map(),
       channelPageList: [],
       channelDataList: [],
       origin: {
@@ -90,7 +96,16 @@ export default {
       }
       http_request(params).then((res) => {
         if (res.data) {
+          res.data.forEach((item) => {
+            if (!item.channelAlias) {
+              item.channelAlias = ''
+            }
+            if (item.dictValue) {
+              this.selectChannel.set(item.dictValue, true)
+            }
+          })
           this.origin.channelDataList = deepClone(res.data)
+          console.log('dddd', this.selectChannel)
           this.channelDataList = res.data
         }
       })
@@ -101,7 +116,12 @@ export default {
       this.current.dictLabel = channel.channelAlias
     },
     // 点击了别名
-    onClickChannel(channel) {
+    onClickChannel(channel, dictValue) {
+      if (this.selectChannel.has(channel.dictValue) && channel.dictValue !== dictValue) {
+        this.$message.error('该别名已被其他通道选择！')
+        return
+      }
+      this.selectChannel.delete(dictValue)
       this.current = this.current.dictValue === channel.dictValue ? {} : channel
     },
     // 点击了确认
@@ -109,25 +129,42 @@ export default {
       this.isShowBtn = true
       item.channelAlias = this.current.dictLabel
       item.dictValue = this.current.dictValue
+      if (this.current.dictValue) {
+        this.selectChannel.set(this.current.dictValue, true)
+      }
       this.$message.success('修改成功，若想生效请保存')
     },
     // 点击了保存
     onSave() {
+      this.loading = true
       const params = {
         moduleName: 'http_setting',
         method: 'post',
         url_alias: 'updateChannel',
         data: {
-          param: this.channelDataList
+          param: this.channelDataList,
         },
       }
-      http_request(params).then((res) => {
-        this.$message.success('修改成功！')
-      })
+      http_request(params)
+        .then((res) => {
+          this.$message.success('修改成功！')
+          this.origin.channelDataList = deepClone(this.channelDataList)
+          this.isShowBtn = false
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     // 点击了取消
     onCancel() {
       this.channelDataList = deepClone(this.origin.channelDataList)
+      this.selectChannel.clear()
+      this.channelDataList.forEach((item) => {
+        if (item.dictValue) {
+          this.selectChannel.set(item.dictValue, true)
+        }
+      })
       this.isShowBtn = false
     },
   },
@@ -201,10 +238,15 @@ export default {
       position: relative;
       margin-bottom: 12px;
       cursor: pointer;
+      &-disabled {
+        background: #eaeaea;
+        cursor: not-allowed;
+      }
       &-active {
         color: #4682fa;
         font-weight: bold;
         border-color: #4682fa;
+        background: #fff;
       }
       img {
         width: 16px;
