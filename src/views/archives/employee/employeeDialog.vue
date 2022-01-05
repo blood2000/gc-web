@@ -174,6 +174,8 @@ export default {
           //     phonenumber: this.form.phonenumber
           //   }
           // })
+          // 因为上面注释了，先赋值空对象
+          const data = {}
           this.loading = true;
           // 密码加密
           if (this.form.password && this.form.password !== '') {
