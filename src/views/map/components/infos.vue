@@ -157,7 +157,7 @@
             alt=""
           />
           <div class="video-content-item-top">
-            <span> 通道 {{ index + 1 }}</span>
+            <span>{{ item }}</span>
           </div>
           <div class="video-content-item-middle" v-show="videoShow">
             <img src="../../../assets/images/detail/play-back-play.png" />
@@ -294,9 +294,10 @@ export default {
         this.attributesInfo = attributes || [];
         this.fieldsInfo = fields || {};
         this.channelNumList = [];
-        if(!fields || !fields.channelNum)
-        for (let i = 0; i < Number(fields.channelNum); i++) {
-          this.channelNumList.push(i);
+        if(fields && fields.channelNum) {
+          for (let i = 0; i < Number(fields.channelNum); i++) {
+            this.channelNumList.push(fields.channelAlias ? fields.channelAlias[i + 1] || `通道${i + 1}` : `通道${i + 1}`);
+          }
         }
         // 根据经纬度获取点位
         if (
