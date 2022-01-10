@@ -151,7 +151,7 @@
             未激活设备<span>{{ device.inactiveDevice }}</span>
           </div>
           <div>
-            全部设备<span class="bigger">{{ device.allDevice }}</span>
+            全部设备<span class="bigger">{{ device.deviceCount }}</span>
           </div>
         </div>
         <el-progress
@@ -163,10 +163,10 @@
         />
         <div class="date-container__tips date-container__detail">
           <div class="blue">
-            任务中<span>{{ device.taskDevice }}</span>
+            在线<span>{{ device.onlineDevice }}</span>
           </div>
           <div class="green">
-            空闲中<span class="bigger">{{ device.freeDevice }}</span>
+            离线<span class="bigger">{{ device.offlineDevice }}</span>
           </div>
         </div>
       </div>
