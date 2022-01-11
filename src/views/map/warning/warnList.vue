@@ -555,7 +555,6 @@ export default {
             position: relative;
             z-index: 1;
             img {
-              width: 30px;
               height: 30px;
             }
             strong {
