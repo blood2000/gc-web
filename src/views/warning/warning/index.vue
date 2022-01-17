@@ -23,14 +23,23 @@
           >
             <div class="warn-card-box" v-loading="loading">
               <!-- 告警卡片组件 -->
-              <warn-card
-                v-for="(item, index) in warningData"
-                :key="index"
-                :cardInfo="item"
-                :tabIndex="tabIndex"
-                :level="(index % 3) + 1"
-                @openList="openList"
-              ></warn-card>
+              <template v-if="tabIndex === '1' || tabIndex === '2'">
+                <warn-card
+                  v-for="(item, index) in warningData"
+                  :key="index"
+                  :cardInfo="item"
+                  :tabIndex="tabIndex"
+                  :level="(index % 3) + 1"
+                  @openList="openList"
+                ></warn-card>
+              </template>
+              <template v-else>
+                <stealing-coal-warn-card v-for="(item, index) in warningData"
+                                         :key="index"
+                                         :level="(index % 3) + 1"
+                                         :cardInfo="item"
+                                         @click="showStealingCoalDetail(item)"/>
+              </template>
             </div>
             <!-- 表格 -->
             <!-- <RefactorTable
@@ -68,9 +77,17 @@
       :listDrawer="listDrawer"
       :options="{ title: '告警明细'}"
       :drawerQuerys="drawerQuerys"
-      
+
       @colseListDrawer="colseListDrawer"
     />
+    <el-drawer
+      :visible.sync="isShowStealingCoalDetailDrawer"
+      :with-header="false"
+      direction="rtl"
+      style="z-index: 2000"
+      size="70%">
+      <stealing-coal-warn-detail/>
+    </el-drawer>
   </div>
 </template>
 
@@ -80,12 +97,15 @@ import QueryForm from "./components/queryForm.vue";
 import WarnCard from "./components/WarnCard.vue";
 import warningConfig from "./config";
 import WarningList from "./warningList.vue";
+import StealingCoalWarnCard from "./components/StealingCoalWarnCard";
+import StealingCoalWarnDetail from "./components/StealingCoalWarnDetail";
 // import store from "@/store";
 export default {
   name: "warning", // 告警管理
-  components: { QueryForm, WarningList, WarnCard },
+  components: {StealingCoalWarnDetail, StealingCoalWarnCard, QueryForm, WarningList, WarnCard },
   data() {
     return {
+      isShowStealingCoalDetailDrawer: false,
       orgName: "", //组织查询
       orgCode: null, // 当前选中的类型
       defaultTreeProps: {
@@ -152,6 +172,10 @@ export default {
   },
 
   methods: {
+    showStealingCoalDetail (item) {
+      console.log('showStealingCoalDetail', item)
+      this.isShowStealingCoalDetailDrawer = true
+    },
     //请求组织树数据
     async getOrgHttp() {
       const obj = {
@@ -277,7 +301,7 @@ export default {
         tmp.nickName = this.queryParams.driver; //司机姓名
         this.drawerQuerys.dimensionType = "driver";
       }
-      
+
       const obj = {
         moduleName: "http_warning",
         method: "get",
@@ -354,7 +378,7 @@ export default {
       this.listDrawer = true;
       this.drawerQuerys = {...this.drawerQuerys,...params.item};
       this.drawerQuerys.subWarningTypeList = [];
-      
+
       if (params.type === 'vehicle' || params.type === 'device' || params.type === 'driver') {
         console.log('========>>', params.type)
         this.warningTypeList.map(item => {
@@ -365,7 +389,7 @@ export default {
       } else {
         this.drawerQuerys.subWarningTypeList = this.warningTypeList;
       }
-     
+
     },
     colseListDrawer() {
       this.listDrawer = false;

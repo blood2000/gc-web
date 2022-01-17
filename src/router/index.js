@@ -179,7 +179,30 @@ export const constantRoutes = [
     path: '/things',
     component: (resolve) => require(['@/views/things/index'], resolve),
     hidden: true
-  }
+  },
+  {
+    path: '/routeplanning',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        component: (resolve) => require(['@/views/routeplanning/list'], resolve),
+        name: 'RouteplanningList',
+        meta: { title: '路径规划', icon: 'dashboard', affix: false }
+      },
+      {
+        path: 'map',
+        component: (resolve) => require(['@/views/routeplanning/PlanningMap'], resolve),
+        name: 'RouteplanningMap',
+        meta: { title: '路径规划', icon: 'dashboard', affix: false }
+      },
+      {
+        path: 'test',
+        component: (resolve) => require(['@/views/routeplanning/index'], resolve),
+        hidden: true
+      },
+    ]
+  },
 ]
 
 export default new Router({
