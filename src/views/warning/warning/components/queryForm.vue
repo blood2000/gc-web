@@ -14,7 +14,7 @@
           <el-form-item
             label="车牌号"
             prop="vehicleCode"
-            v-if="warningTab === '1'"
+            v-if="warningTab === '1' || warningTab === '3'"
           >
             <el-input
               v-model="queryParams.vehicleCode"
