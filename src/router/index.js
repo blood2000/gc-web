@@ -181,24 +181,24 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/routeplanning',
+    path: '/apps/planningroute/v1',
     component: Layout,
     children: [
       {
         path: 'list',
-        component: (resolve) => require(['@/views/routeplanning/list'], resolve),
-        name: 'RouteplanningList',
-        meta: { title: '路径规划', icon: 'dashboard', affix: false }
+        component: (resolve) => require(['@/views/apps/planningRoute/v1/list'], resolve),
+        name: 'PlanningRouteList',
+        meta: { title: '规划路线', icon: 'dashboard', affix: false }
       },
       {
         path: 'map',
-        component: (resolve) => require(['@/views/routeplanning/PlanningMap'], resolve),
-        name: 'RouteplanningMap',
-        meta: { title: '路径规划', icon: 'dashboard', affix: false }
+        component: (resolve) => require(['@/views/apps/planningRoute/v1/PlanningMap'], resolve),
+        name: 'PlanningRouteMap',
+        meta: { title: '规划路线地图', icon: 'dashboard', affix: false }
       },
       {
-        path: 'test',
-        component: (resolve) => require(['@/views/routeplanning/index'], resolve),
+        path: 'PlanningRouteTest',
+        component: (resolve) => require(['@/views/apps/planningRoute/v1/index'], resolve),
         hidden: true
       },
     ]

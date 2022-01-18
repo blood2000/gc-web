@@ -99,7 +99,7 @@ export default {
   },
   methods: {
     handleAdd () {
-      this.$router.push({path: '/routeplanning/map?type=add'})
+      this.$router.push({path: '/apps/planningroute/v1/map?type=add'})
     }
   }
 }
