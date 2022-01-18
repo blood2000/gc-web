@@ -43,8 +43,8 @@
         <el-form-item label="报警时段" required>
           <div style="display: flex; align-items: center">
             <div>
-              <div style="margin-bottom: 15px"><el-time-picker style="width: 240px;" v-model="routeInfoForm.warningStartTime" value-format="HH:mm:ss" placeholder="请输入报警开始时间"/></div>
-              <div><el-time-picker style="width: 240px;" v-model="routeInfoForm.warningEndTime" value-format="HH:mm:ss" placeholder="请输入报警结束时间"/></div>
+              <div style="margin-bottom: 15px"><el-time-picker style="width: 240px;" v-model="routeInfoForm.warningStartTime" :picker-options="{format: 'HH:mm'}" value-format="HH:mm:00" placeholder="请输入报警开始时间"/></div>
+              <div><el-time-picker style="width: 240px;" v-model="routeInfoForm.warningEndTime" :picker-options="{format: 'HH:mm'}" value-format="HH:mm:00" placeholder="请输入报警结束时间"/></div>
             </div>
             <div style="width: 40px; flex: none; margin-left: 10px;">
               <span @click="switchWarningTime" class="exchange-time-button"></span>
@@ -72,7 +72,7 @@
             <span slot="prepend">米</span>
           </el-select>
           <el-tooltip content="该值将决定车辆允许偏离路径的最大值。同时也是报警开关中的范围的取值。" placement="top" style="font-size: 18px; margin-left: 10px">
-            <img src="../../assets/images/stealingcoal/question.png"/>
+            <img src="../../../../assets/images/stealingcoal/question.png"/>
           </el-tooltip>
         </el-form-item>
         <el-form-item label="路径偏离时长上限(分钟)" prop="offPathTime" :rules="[{required: true, message: '必填'}]">
@@ -91,7 +91,7 @@
             <span slot="suffix">分钟</span>
           </el-select>
           <el-tooltip content="该值将决定车辆允许偏离路径的最大值。同时也是报警开关中的范围的取值。" placement="top" style="font-size: 18px;margin-left: 10px">
-            <img src="../../assets/images/stealingcoal/question.png"/>
+            <img src="../../../../assets/images/stealingcoal/question.png"/>
           </el-tooltip>
         </el-form-item>
         <el-form-item style="text-align: center">
@@ -419,7 +419,7 @@ export default {
       if (this.startPosition.marker) {
         this.map.remove(this.startPosition.marker)
       }
-      let pointStartImage = require('../../assets/images/stealingcoal/point-start.png')
+      let pointStartImage = require('../../../../assets/images/stealingcoal/point-start.png')
       let marker = new AMap.Marker({
         position,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
         title: name,
@@ -436,7 +436,7 @@ export default {
       if (this.endPosition.marker) {
         this.map.remove(this.endPosition.marker)
       }
-      let pointEndImage = require('../../assets/images/stealingcoal/point-end.png')
+      let pointEndImage = require('../../../../assets/images/stealingcoal/point-end.png')
       let marker = new AMap.Marker({
         position,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
         title: name,
@@ -488,7 +488,7 @@ export default {
       if (positionInfo.marker) this.map.remove(positionInfo.marker)
       let position = new AMap.LngLat(lng, lat)
       let vm = this
-      let midImg = require('../../assets/images/stealingcoal/point-mid.png')
+      let midImg = require('../../../../assets/images/stealingcoal/point-mid.png')
       const midHtmlContent = `
 <div class="amap-icon" style="position: absolute; left: 0; bottom: 0; width: 50px; height: 50px; opacity: 1;">
     <img src="${midImg}" style="width: 50px; height: 50px; top: 0px; left: 0px;">
@@ -656,7 +656,7 @@ export default {
 
 <style scoped lang="scss">
 .exchange-time-button {
-  background: url("../../assets/images/stealingcoal/exchange.png") no-repeat;
+  background: url("../../../../assets/images/stealingcoal/exchange.png") no-repeat;
   width: 30px;
   height: 30px;
   display: block;
@@ -720,7 +720,7 @@ export default {
         flex: none;
         width: 30px;
         .sf-button {
-          background: url("../../assets/images/stealingcoal/map-add.png") no-repeat;
+          background: url("../../../../assets/images/stealingcoal/map-add.png") no-repeat;
           background-size: 100%;
           width: 20px;
           height: 20px;
@@ -729,7 +729,7 @@ export default {
           vertical-align: middle;
         }
         .sf-button.remove {
-          background: url("../../assets/images/stealingcoal/map-remove.png") no-repeat;
+          background: url("../../../../assets/images/stealingcoal/map-remove.png") no-repeat;
           background-size: 100%;
         }
       }
