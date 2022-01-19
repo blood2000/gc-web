@@ -21,6 +21,8 @@ import http_route from './archives/route'
 import http_coRoute from './archives/coRoute'
 import http_setting from './archives/setting'
 import http_carCaptain from './archives/carCaptain'
+import http_planRoute from './planroute'
+import http_stealingCoal from './stealingcoal'
 import Vue from 'vue'
 
 export const defaultH = {
@@ -34,8 +36,8 @@ export const defaultH = {
 
 /**
 * 将各个对象挂上
-* @param {string} 请求包名 name 
-* @returns 
+* @param {string} 请求包名 name
+* @returns
 */
 const selModuleName = (name) => {
   const tmpObj = {
@@ -60,22 +62,24 @@ const selModuleName = (name) => {
     http_route,
     http_coRoute,
     http_setting,
-    http_carCaptain
+    http_carCaptain,
+    http_planRoute,
+    http_stealingCoal
   }
   return tmpObj[name]
 }
 
 /**
  * 请求封装
- * @param {*} obj 
+ * @param {*} obj
  * moduleName, 必填
  * method, 必填 请求类型
  * url_alias, 必填 url对象对应的key
  *  url_code = [],  参数code
- * data   param或者body  
- * header  配置头部数据 
+ * data   param或者body
+ * header  配置头部数据
  * query  true/false
- * @returns 
+ * @returns
  */
 export const http_request = async  (obj) =>  {
   const tmp = {};
@@ -105,7 +109,7 @@ export const http_request = async  (obj) =>  {
 
 /**
  * 处理请求返回结果
- * @param {any} res 
+ * @param {any} res
  * @returns 请求返回处理结果 or null
  */
 const error_respone = (res) =>{
