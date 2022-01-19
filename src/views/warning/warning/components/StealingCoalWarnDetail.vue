@@ -108,7 +108,7 @@ export default {
     setTimeout(this.initMap, 1000)
   },
   destroyed() {
-    this.close()
+    this.colse()
   },
   methods: {
     playVideo (item) {
@@ -299,6 +299,36 @@ export default {
         position: [lng, lat],
         content: markerContent,
         offset: new AMap.Pixel(-40, -80)
+      })
+      //background: #fefefe;
+      // border-radius: 6px;
+      // box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
+      function getTextWidth(str) {
+        const dom = document.createElement('span')
+        dom.style.display = 'inline-block';
+        dom.style.fontSize = '14px'
+        dom.textContent = str
+        document.body.appendChild(dom)
+        const width = dom.clientWidth
+        document.body.removeChild(dom)
+        return width
+      }
+      marker.on('mouseover', function (event) {
+        let text = '偏离距离为500'
+        let textLen = getTextWidth(text)
+        let contentLen = Math.max(textLen, 120)
+        marker.setContent(`<div style="position: relative; width: 80px; height: 80px;">
+<span style="position:absolute; left: 33px; bottom: -7px;display: block;background-color: white; border: solid #EF6969 5px; border-radius: 50%; width: 15px; height: 15px;"></span>
+<div style="position: absolute; background-color: rgba(254,254,254,0.8); border-radius: 0 6px 6px 0; padding: 10px 0; border: none; left: 72px; top: 5px; width: ${contentLen}px; height: 61px;">
+<div style="font-size: 16px; color: #333; font-weight: bold; line-height: 22px">路线偏离</div>
+<div style="font-size: 14px; color: #999;">${text}</div>
+</div>
+<img style="width: 80px; height: 80px;" src="${img}"></div>`)
+        marker.setzIndex(101)
+      })
+      marker.on('mouseout', function (event) {
+        marker.setContent(markerContent)
+        marker.setzIndex(100)
       })
       this.map.add(marker)
       return marker

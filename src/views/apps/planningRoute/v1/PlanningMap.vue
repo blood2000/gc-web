@@ -1,5 +1,5 @@
 <template>
-  <div class="pages-info">
+  <div class="pages-info" v-loading="loading">
     <div id="routeplanning-map-container" />
     <div class="left-side">
       <div class="title">路径查询</div>
@@ -43,8 +43,8 @@
         <el-form-item label="报警时段" required>
           <div style="display: flex; align-items: center">
             <div>
-              <div style="margin-bottom: 15px"><el-time-picker style="width: 240px;" v-model="routeInfoForm.warningStartTime" :picker-options="{format: 'HH:mm'}" value-format="HH:mm:00" placeholder="请输入报警开始时间"/></div>
-              <div><el-time-picker style="width: 240px;" v-model="routeInfoForm.warningEndTime" :picker-options="{format: 'HH:mm'}" value-format="HH:mm:00" placeholder="请输入报警结束时间"/></div>
+              <div style="margin-bottom: 15px"><el-time-picker style="width: 240px;" v-model="routeInfoForm.warningStartTime" :picker-options="{format: 'HH:mm'}" value-format="HH:mm" placeholder="请输入报警开始时间"/></div>
+              <div><el-time-picker style="width: 240px;" v-model="routeInfoForm.warningEndTime" :picker-options="{format: 'HH:mm'}" value-format="HH:mm" placeholder="请输入报警结束时间"/></div>
             </div>
             <div style="width: 40px; flex: none; margin-left: 10px;">
               <span @click="switchWarningTime" class="exchange-time-button"></span>
@@ -75,25 +75,25 @@
             <img src="../../../../assets/images/stealingcoal/question.png"/>
           </el-tooltip>
         </el-form-item>
-        <el-form-item label="路径偏离时长上限(分钟)" prop="offPathTime" :rules="[{required: true, message: '必填'}]">
-          <el-select style="width: 240px;" v-model="routeInfoForm.offPathTime">
-            <!--              0、1、2、3、4、5、10、20、30、60-->
-            <el-option :value="0"></el-option>
-            <el-option :value="1"></el-option>
-            <el-option :value="2"></el-option>
-            <el-option :value="3"></el-option>
-            <el-option :value="4"></el-option>
-            <el-option :value="5"></el-option>
-            <el-option :value="10"></el-option>
-            <el-option :value="20"></el-option>
-            <el-option :value="30"></el-option>
-            <el-option :value="60"></el-option>
-            <span slot="suffix">分钟</span>
-          </el-select>
-          <el-tooltip content="该值将决定车辆允许偏离路径的最大值。同时也是报警开关中的范围的取值。" placement="top" style="font-size: 18px;margin-left: 10px">
-            <img src="../../../../assets/images/stealingcoal/question.png"/>
-          </el-tooltip>
-        </el-form-item>
+<!--        <el-form-item label="路径偏离时长上限(分钟)" prop="offPathTime" :rules="[{required: true, message: '必填'}]">-->
+<!--          <el-select style="width: 240px;" v-model="routeInfoForm.offPathTime">-->
+<!--            &lt;!&ndash;              0、1、2、3、4、5、10、20、30、60&ndash;&gt;-->
+<!--            <el-option :value="0"></el-option>-->
+<!--            <el-option :value="1"></el-option>-->
+<!--            <el-option :value="2"></el-option>-->
+<!--            <el-option :value="3"></el-option>-->
+<!--            <el-option :value="4"></el-option>-->
+<!--            <el-option :value="5"></el-option>-->
+<!--            <el-option :value="10"></el-option>-->
+<!--            <el-option :value="20"></el-option>-->
+<!--            <el-option :value="30"></el-option>-->
+<!--            <el-option :value="60"></el-option>-->
+<!--            <span slot="suffix">分钟</span>-->
+<!--          </el-select>-->
+<!--          <el-tooltip content="该值将决定车辆允许偏离路径的最大值。同时也是报警开关中的范围的取值。" placement="top" style="font-size: 18px;margin-left: 10px">-->
+<!--            <img src="../../../../assets/images/stealingcoal/question.png"/>-->
+<!--          </el-tooltip>-->
+<!--        </el-form-item>-->
         <el-form-item style="text-align: center">
           <el-button type="primary" @click="save">保存</el-button>
         </el-form-item>
@@ -103,6 +103,8 @@
 </template>
 
 <script>
+import {http_request} from "../../../../api";
+
 function objectDiff(obj1, obj2) {
   for (const obj1Key in obj1) {
     if (obj1[obj1Key] !== obj2[obj1Key]) {
@@ -115,6 +117,9 @@ export default {
   name: "PlaningMap",
   data () {
     return {
+      loading: false,
+      type: null,
+      code: null,
       map: null,
       geocoder: null,
       saveData: null,
@@ -156,26 +161,62 @@ export default {
       if (!newVal) {
         this.startPosition.position = null
         if (this.startPosition.marker) this.map.remove(this.startPosition.marker)
-        this.driving.clear()
-        if (this.truckDriving) this.truckDriving.clear()
+        this.driving && this.driving.clear()
+        this.truckDriving && this.truckDriving.clear()
       }
     },
     'endPosition.name': function (newVal) {
       if (!newVal) {
         this.endPosition.position = null
         if (this.endPosition.marker) this.map.remove(this.endPosition.marker)
-        this.driving.clear()
-        if (this.truckDriving) this.truckDriving.clear()
+        this.driving && this.driving.clear()
+        this.truckDriving && this.truckDriving.clear()
       }
     }
   },
   mounted() {
+    let {type, code} = this.$route.query
+    this.type = type
+    this.code = code
     this.clearMap()
     setTimeout(() => {
       this.initMap()
     }, 1000)
   },
   methods: {
+    async loadRouteDetail (code) {
+      this.loading = true
+      let res = await http_request({
+        moduleName: "http_planRoute",
+        method: "get",
+        url_alias: "planRouteDetail",
+        url_code: [code],
+      })
+      this.clearPath()
+      let detail = res.data
+      // let saveJson = JSON.parse(this.saveData)
+      this.routeInfoForm.name = detail.route_name
+      this.routeInfoForm.warningStartTime = detail.effective_time
+      this.routeInfoForm.warningEndTime = detail.expires_time
+      this.routeInfoForm.offPathDistance = detail.route_deviate_radius
+      this.loading = false
+
+      let start = detail.points[0]
+      this.startPosition.name = start.point_name
+      this.makeFromPosition(start.lng, start.lat, start.point_name)
+
+      let end = detail.points[detail.points.length - 1]
+      this.endPosition.name = end.point_name
+      this.makeEndPosition(end.lng, end.lat, end.point_name)
+
+      detail.points.splice(0, 1)
+      detail.points.splice(detail.points.length - 1, 1)
+      this.midPositionList = []
+      detail.points.forEach(point => {
+        this.createMidMarkerPosition(point.lng, point.lat, point.point_name)
+      })
+      this.searchPath()
+    },
     switchWarningTime () {
       let _endTime = this.routeInfoForm.warningStartTime
       this.routeInfoForm.warningStartTime = this.routeInfoForm.warningEndTime
@@ -239,8 +280,8 @@ export default {
       })
       this.midPositionList.forEach(item => item.marker && this.map.remove(item.marker))
       this.midPositionList = []
-      this.driving.clear()
-      if (this.truckDriving) this.truckDriving.clear()
+      this.driving && this.driving.clear()
+      this.truckDriving && this.truckDriving.clear()
     },
     addMidPosition () {
       let id = `addMidPosition${new Date().getTime()}`
@@ -308,33 +349,55 @@ export default {
         this.msgError('请输入报警结束时间')
         return
       }
-      let waypoints = this.midPositionList.map(item => {
-        return {'lng':item.position.lng, 'lat':item.position.lat, name: item.name}
+      let waypoints = []
+      let pointIndex = 0
+      waypoints.push({
+        pointName: this.startPosition.name,
+        lng: this.drivingPathResult.start.location.lng,
+        lat: this.drivingPathResult.start.location.lat,
+        pointSort: pointIndex++,
+      })
+      let midWayPoints = this.midPositionList.map(item => {
+        return {'lng':item.position.lng, 'lat':item.position.lat, pointName: item.name, pointSort: pointIndex++}
+      })
+      waypoints.push(...midWayPoints)
+      waypoints.push({
+        lng: this.drivingPathResult.end.location.lng,
+        lat: this.drivingPathResult.end.location.lat,
+        pointName: this.endPosition.name,
+        pointSort: pointIndex++,
       })
       let path = []
       this.drivingPathResult.routes[0].steps.forEach(step => {
         step.path.forEach(p => {
-          path.push({lat: p.lat, lng: p.lng})
+          path.push(`${p.lng},${p.lat}`)
         })
       })
-      let result = {
-        start: {
-          lng: this.drivingPathResult.start.location.lng,
-          lat: this.drivingPathResult.start.location.lat,
-          name: this.startPosition.name
-        },
-        end: {
-          lng: this.drivingPathResult.end.location.lng,
-          lat: this.drivingPathResult.end.location.lat,
-          name: this.endPosition.name
-        },
-        waypoints,
-        path,
-        truckInfo: this.truckDrivingInfoForm,
-        ...this.routeInfoForm
+      let postData = {
+        routeCode: this.code,
+        routeName: this.routeInfoForm.name,
+        routeCoordinates: path.join(';'),
+        routeDeviateRadius: this.routeInfoForm.offPathDistance,
+        effectiveTime: this.routeInfoForm.warningStartTime,
+        expiresTime: this.routeInfoForm.warningEndTime,
+        points: waypoints
       }
-      this.saveData = JSON.stringify(result)
-      console.log(result)
+      // this.saveData = JSON.stringify(result)
+      let res = await http_request({
+        moduleName: "http_planRoute",
+        method: this.type === 'edit' ? "put" : "post",
+        url_alias: this.type === 'edit' ? "planRouteUpdate" : "planRouteAdd",
+        data: postData,
+      })
+      console.log(res)
+      this.msgSuccess('保存成功')
+      await this.$store.dispatch('tagsView/delVisitedView', {path: '/apps/planningroute/v1/map'})
+      const latestView = this.$store.state.tagsView.visitedViews.slice(-1)[0];
+      if (latestView) {
+        this.$router.push(latestView.fullPath);
+      } else {
+        this.$router.push('/')
+      }
     },
     searchPath () {
       if (!this.startPosition.position) {
@@ -585,6 +648,9 @@ export default {
           vm.makeEndPosition(event.poi.location.lng, event.poi.location.lat, event.poi.name)
           vm.trySearchDriving()
         })
+        if (vm.type === 'edit') {
+          vm.loadRouteDetail(vm.code)
+        }
         //lat: 26.015427
         // lng: 119.340706
         // vm.createMidMarker(119.340706, 26.015427, {name: 'test'})
