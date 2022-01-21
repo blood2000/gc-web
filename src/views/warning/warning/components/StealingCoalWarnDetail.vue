@@ -698,6 +698,8 @@ export default {
       .video-list {
         flex: none;
         width: 190px;
+        max-height: 450px;
+        overflow-y: auto;
         margin-left: 15px;
         //line-height: 30px;
         font-size: 16px;

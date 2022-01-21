@@ -409,6 +409,10 @@ export default {
         this.msgError('请输入终点位置')
         return;
       }
+      if (!this.checkMidPosition()) {
+        this.msgError('途径点位置未选择')
+        return;
+      }
       this.driving.clear()
       if (this.truckDriving) this.truckDriving.clear()
       this.isSearchDriving = true
@@ -426,6 +430,15 @@ export default {
           vm.msgError(`线路规划失败:${error2}`)
         })
       })
+    },
+    checkMidPosition () {
+      for (let i = 0; i < this.midPositionList.length; i++) {
+        let midInfo = this.midPositionList[i]
+        if (!midInfo.position) {
+          return false
+        }
+      }
+      return true
     },
     drivingSearch () {
       return new Promise((resolve, reject) => {
@@ -517,6 +530,9 @@ export default {
         return
       }
       if (!this.endPosition.position) {
+        return;
+      }
+      if (!this.checkMidPosition()) {
         return;
       }
       this.searchPath()
@@ -812,6 +828,7 @@ export default {
   right: 50px;
   top: 40px;
   width: 320px;
+  opacity: .8;
   .title {
     font-size: 16px;
     font-weight: bold;
