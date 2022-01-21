@@ -269,7 +269,7 @@ const warningTabs = [
     value: "2"
   },
   {
-    label: "偷换煤预警",
+    label: "偷换货",
     value: "3"
   }
 ];
