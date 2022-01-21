@@ -140,6 +140,7 @@ export default {
       startMarker: null,
       endMarker: null,
       warnMarkerList: [],
+      driverPaths: [],
     }
   },
   mounted() {
@@ -163,6 +164,7 @@ export default {
         this.warnMarkerList.forEach(marker => {
           this.map.remove(marker)
         })
+        this.driverPaths = []
         newVal.triggerEvents.forEach(item => {
           const showTime = parseTime(item.triggerTime, '{h}:{i}:{s}')
           if (item.deviceNo) {
@@ -198,10 +200,7 @@ export default {
         }).then(res => {
           this.showPlanPath(res.data.route_coordinates)
         })
-        // this.setPathData()
       }
-      // newVal.triggerEvents[newVal.triggerEvents.length - 1].isView = true
-      // newVal.triggerEvents[newVal.triggerEvents.length - 1].id = 1657
     },
     showDriverPath (event) {
       http_request({
@@ -215,12 +214,16 @@ export default {
         }
       }).then(res => {
         console.log('res', res)
+        if (!res.data || res.data.length === 0) {
+          return
+        }
         let path = []
         res.data.forEach(item => {
           let ary = item.split('|')
           path.push([ary[0], ary[1]])
         })
-        this.pathSimplifierIns2.setData([{name: '行驶路径', path: path}])
+        this.driverPaths.push({name: '偏离轨迹', path: path})
+        this.pathSimplifierIns2.setData(this.driverPaths)
       })
     },
     showPlanPath (route_coordinates) {
