@@ -41,7 +41,7 @@
                                          @click="showStealingCoalDetail(item)"/>
               </template>
             </div>
-            <el-empty v-show="!warningData || warningData.length === 0"></el-empty>
+            <el-empty v-show="!loading && (!warningData || warningData.length === 0)"></el-empty>
             <!-- 表格 -->
             <!-- <RefactorTable
               :loading="loading"
@@ -317,7 +317,7 @@ export default {
         typeId: 8001,
         pageNum: this.queryParams.pageNum,
         pageSize: this.queryParams.pageSize,
-        vehicleCode: this.queryParams.vehicleCode
+        vehicleNumber: this.queryParams.vehicleCode
       }
       if (this.queryParams.dateRange && this.queryParams.dateRange[0]) {
         params.startAlarmDate =  this.queryParams.dateRange[0] + ' 00:00:00'
