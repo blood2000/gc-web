@@ -89,6 +89,8 @@
 </template>
 
 <script>
+import {http_request} from "../../../../api";
+
 export default {
   name: "index",
   data () {
@@ -98,7 +100,17 @@ export default {
       loading: false,
     }
   },
+  mounted() {
+    this.loadConfig()
+  },
   methods: {
+    async loadConfig () {
+      let res = await http_request({
+        moduleName: "http_stealingCoal",
+        method: "get",
+        url_alias: "getCommandType",
+      })
+    },
     cancel () {
 
     },

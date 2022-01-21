@@ -4,6 +4,7 @@ export default {
   'planRouteAdd': '/fmsweb/basic/plan-route/v1/add',
   'planRouteUpdate': '/fmsweb/basic/plan-route/v1/update',
   'planRouteDelete': code => `/fmsweb/basic/plan-route/v1/delete/${code}`,
+  'planRouteGet': id => `/fmsweb/basic/plan-route/v1/getById/${id}`,
 
   'routeRelVehicle': '/fmsweb/basic/plan-route/v1/routeRelVehicle',
   'removeRouteVehicle': '/fmsweb/basic/plan-route/v1/RemoveRouteVehicle',

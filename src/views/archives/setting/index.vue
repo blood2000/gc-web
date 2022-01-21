@@ -15,7 +15,6 @@
       <AlarmTypes v-show="current === tabsList[0].key" />
       <AlarmThreshold v-show="current === tabsList[1].key" />
       <VideoChannel v-show="current === tabsList[2].key" />
-      <StealingCoalSetting v-show="current === tabsList[3].key"/>
     </div>
   </div>
 </template>
@@ -25,15 +24,13 @@ import { http_request } from '@/api'
 import AlarmTypes from './alarmTypes/alarmTypes.vue'
 import AlarmThreshold from './alarmThreshold/alarmThreshold.vue'
 import VideoChannel from './videoChannel/videoChannel.vue'
-import StealingCoalSetting from './stealingCoalSetting'
 
 export default {
   name: 'setting',
   components: {
     AlarmTypes,
     AlarmThreshold,
-    VideoChannel,
-    StealingCoalSetting
+    VideoChannel
   },
   data() {
     return {
@@ -49,10 +46,6 @@ export default {
         {
           name: '视频通道别名设置',
           key: '3',
-        },
-        {
-          name: '偷换煤预警设置',
-          key: '4'
         }
       ],
       tabs: {

@@ -368,11 +368,13 @@ export default {
         pointSort: pointIndex++,
       })
       let path = []
+      path.push(`${this.drivingPathResult.start.location.lng},${this.drivingPathResult.start.location.lat}`)
       this.drivingPathResult.routes[0].steps.forEach(step => {
         step.path.forEach(p => {
           path.push(`${p.lng},${p.lat}`)
         })
       })
+      path.push(`${this.drivingPathResult.end.location.lng},${this.drivingPathResult.end.location.lat}`)
       let postData = {
         routeCode: this.code,
         routeName: this.routeInfoForm.name,
@@ -382,7 +384,6 @@ export default {
         expiresTime: this.routeInfoForm.warningEndTime,
         points: waypoints
       }
-      // this.saveData = JSON.stringify(result)
       let res = await http_request({
         moduleName: "http_planRoute",
         method: this.type === 'edit' ? "put" : "post",

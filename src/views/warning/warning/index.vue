@@ -41,6 +41,7 @@
                                          @click="showStealingCoalDetail(item)"/>
               </template>
             </div>
+            <el-empty v-show="!warningData || warningData.length === 0"></el-empty>
             <!-- 表格 -->
             <!-- <RefactorTable
               :loading="loading"
@@ -81,12 +82,16 @@
       @colseListDrawer="colseListDrawer"
     />
     <el-drawer
+      v-loading="isLoadingStealingWarnDetail"
       :visible.sync="isShowStealingCoalDetailDrawer"
       :with-header="false"
       direction="rtl"
       style="z-index: 2000"
       size="70%">
-      <stealing-coal-warn-detail/>
+      <stealing-coal-warn-detail
+        v-if="stealingGoodsWarnDetail"
+        @showWarnDetail="showStealingCoalDetail"
+        :warn-detail="stealingGoodsWarnDetail"/>
     </el-drawer>
   </div>
 </template>
@@ -100,11 +105,21 @@ import WarningList from "./warningList.vue";
 import StealingCoalWarnCard from "./components/StealingCoalWarnCard";
 import StealingCoalWarnDetail from "./components/StealingCoalWarnDetail";
 // import store from "@/store";
+
+function sleep(time) {
+  return new Promise(resolve => {
+    setTimeout(resolve, time)
+  })
+}
+
 export default {
   name: "warning", // 告警管理
   components: {StealingCoalWarnDetail, StealingCoalWarnCard, QueryForm, WarningList, WarnCard },
   data() {
     return {
+      stealingGoodsWarnDetail: null,
+      isLoadingStealingWarnDetail: false,
+      stealingGoodsWarnList: null,
       isShowStealingCoalDetailDrawer: false,
       orgName: "", //组织查询
       orgCode: null, // 当前选中的类型
@@ -175,6 +190,19 @@ export default {
     showStealingCoalDetail (item) {
       console.log('showStealingCoalDetail', item)
       this.isShowStealingCoalDetailDrawer = true
+      this.isLoadingStealingWarnDetail = true
+      http_request({
+        moduleName: "http_stealingCoal",
+        method: "get",
+        url_alias: "detailStealGoodsAlarm",
+        url_code: [item.id]
+      }).then(res => {
+        this.stealingGoodsWarnDetail = res.data
+        this.isLoadingStealingWarnDetail = false
+      }).catch(error => {
+        this.isShowStealingCoalDetailDrawer = false
+        this.isLoadingStealingWarnDetail = false
+      })
     },
     //请求组织树数据
     async getOrgHttp() {
@@ -270,14 +298,53 @@ export default {
       // this.queryParams.deviceType = this.queryParams.deviceType ? this.queryParams.deviceType : 0;
       if (this.tabIndex === "1") {
         this.queryParams.driver = "";
-      } else {
+      } else if (this.tabIndex === '2') {
         this.queryParams.vehicleCode = "";
       }
-
-      this.warningDataReq();
+      if (this.tabIndex === '1' || this.tabIndex === '2') {
+        this.warningDataReq();
+      } else {
+        this.stealingGoodsReq()
+      }
       // this.vehicleHttpReq();
     },
+    async stealingGoodsReq () {
+      this.loading = true
+      if (this.queryParams.pageNum === 1) {
+        this.warningData = []
+      }
+      const params = {
+        typeId: 8001,
+        pageNum: this.queryParams.pageNum,
+        pageSize: this.queryParams.pageSize,
+        vehicleCode: this.queryParams.vehicleCode
+      }
+      if (this.queryParams.dateRange && this.queryParams.dateRange[0]) {
+        params.startAlarmDate =  this.queryParams.dateRange[0] + ' 00:00:00'
+      }
+      if (this.queryParams.dateRange && this.queryParams.dateRange[1]) {
+        params.endAlarmDate = this.queryParams.dateRange[1] + ' 23:59:59'
+      }
+      const obj = {
+        moduleName: "http_stealingCoal",
+        method: "post",
+        url_alias: "pagingStealGoodsAlarm",
+        data: params,
+      };
+      console.log("告警参数", obj);
+      const res = await http_request(obj);
+      this.warningData = res.data.rows
+      this.total = res.data.total
+      this.loading = false
+    },
     async warningDataReq() {
+      if (this.queryParams.pageNum === 1) {
+        this.warningData = []
+      }
+      if (this.tabIndex === '3') {
+        this.stealingGoodsReq()
+        return
+      }
       this.loading = true;
       const tmp = {
         pageNum: this.queryParams.pageNum,
@@ -448,6 +515,6 @@ export default {
   align-items: center;
   flex-wrap: wrap;
   padding: 10px 4px 0 0;
-  min-height: 200px;
+  //min-height: 200px;
 }
 </style>

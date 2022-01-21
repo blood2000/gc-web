@@ -1,13 +1,13 @@
 <template>
-  <div class="stealing-coal-card" :class="['level-' + level]" @click="$emit('click')">
+  <div class="stealing-coal-card" @click="$emit('click')">
     <div class="stealing-coal-card-title"></div>
-    <div class="stealing-coal-card-time">2021-03-04 22:23:12</div>
+    <div class="stealing-coal-card-time">{{cardInfo.alarmTime}}</div>
     <div class="stealing-coal-card-content">
       <div class="stealing-coal-card-content-car">
-        <span class="stealing-coal-card-content-car-id">0001</span>
-        闽A54772
+        <span v-if="cardInfo.vehicleAlias" class="stealing-coal-card-content-car-id">{{cardInfo.vehicleAlias}}</span>
+        {{cardInfo.vehicleNumber}}
       </div>
-      <div class="stealing-coal-card-address">福州市台江区东滨路1号富邦总部大楼起点告警地址</div>
+      <div class="stealing-coal-card-address">{{cardInfo.addressName}}</div>
     </div>
   </div>
 </template>
@@ -36,13 +36,17 @@ export default {
   position: relative;
   width: 23%;
   height: 130px;
-  background: url("../../../../assets/images/stealingcoal/card-warning-1-bg.png") no-repeat;
+  color: #4682FA;
+  background: url("../../../../assets/images/stealingcoal/card-warning-3-bg.png") no-repeat;
   background-size: 100% 100%;
-  color: #EF6969;
+  //background: url("../../../../assets/images/stealingcoal/card-warning-1-bg.png") no-repeat;
+  //background-size: 100% 100%;
+  //color: #EF6969;
   margin: 0 1% 20px 1%;
   cursor: pointer;
   &-title {
-    background: url("../../../../assets/images/stealingcoal/card-title-warning-1.png") no-repeat;
+    //background: url("../../../../assets/images/stealingcoal/card-title-warning-1.png") no-repeat;
+    background: url("../../../../assets/images/stealingcoal/stealing-goods-text.png") no-repeat;
     height: 28px;
     width: 226px;
     margin-top: 15px;

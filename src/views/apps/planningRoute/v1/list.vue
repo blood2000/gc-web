@@ -3,7 +3,7 @@
     <div class="pages-info-right">
       <div style="padding: 0 20px 10px 20px;">
         <div style="font-weight: bold; font-size: 14px;">提示</div>
-        <ul style="font-size: 12px; text-indent: 20px;">
+        <ul style="font-size: 12px;">
           <li style="margin-bottom: 3px;">1、新建路径时，先输入起点、终点，添加途经点，点击地图路线可以细调路线。点保存后，路径生成成功，算法根据录入值自动生成路径围栏。然后回到列表页，点击编辑车辆按钮，将需要监控的车辆添加到路径中即可。</li>
           <li>2、未安装定位器的车辆，也可以添加进路径中，等车载智能设备安装好之后，会自动生效。</li>
         </ul>
@@ -71,8 +71,7 @@
         :data="bindableVehicles"
         row-key="vehicle_code"
         :table-columns-config="[
-          {isShow: true, label: '车牌号', prop: 'plate_number'},
-          {isShow: true, label: '车辆别名', prop: 'vehicle_alias'}
+          {isShow: true, label: '车牌号', prop: 'plate_number'}
         ]"
         :border="false"
         :stripe="false">
