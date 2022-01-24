@@ -95,7 +95,7 @@
 <!--          </el-tooltip>-->
 <!--        </el-form-item>-->
         <el-form-item style="text-align: center">
-          <el-button type="primary" @click="save">保存</el-button>
+          <el-button :loading="isSaving" :disabled="isSaving" type="primary" @click="saveAction">保存</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -120,6 +120,7 @@ export default {
   components: {PlaceAutoCompleteInput},
   data () {
     return {
+      isSaving: false,
       loading: false,
       type: null,
       code: null,
@@ -377,6 +378,12 @@ export default {
       this.makeFromPosition(saveJson.start.lng, saveJson.start.lat, saveJson.start.name)
       this.makeEndPosition(saveJson.end.lng, saveJson.end.lat, saveJson.end.name)
       this.searchPath()
+    },
+    saveAction () {
+      this.isSaving = true
+      this.save().finally(() => {
+        this.isSaving = false
+      })
     },
     async save() {
       if (!this.drivingPathResult) {
