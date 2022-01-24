@@ -104,7 +104,6 @@
 
 <script>
 import {http_request} from "../../../../api";
-import {debounce} from "../../../../utils";
 import PlaceAutoCompleteInput from "./PlaceAutoCompleteInput";
 
 function objectDiff(obj1, obj2) {
@@ -335,18 +334,6 @@ export default {
         name: null,
         id,
       }
-      let vm = this
-      setTimeout(() => {
-        let autocomplete = new AMap.Autocomplete({
-          input: id
-        })
-        autocomplete.on('select', function (event) {
-          if (!event.poi.location) return
-          midPosInfo.name = event.poi.name
-          vm.createMidMarker(event.poi.location.lng, event.poi.location.lat, midPosInfo)
-          vm.trySearchDriving()
-        })
-      }, 1000)
       this.midPositionList.push(midPosInfo)
     },
     removeMidPosition (midPosition) {
