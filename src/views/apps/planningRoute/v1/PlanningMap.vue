@@ -218,7 +218,7 @@ export default {
           const list = res.tips.filter(item => !!item.location).map(item => {
             return {
               value: item.name,
-              address: typeof item.address === 'string' ? item.address : item.district,
+              address: item.district + (typeof item.address === 'string' ? item.address : ''),
               location: item.location
             }
           })
