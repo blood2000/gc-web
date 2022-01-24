@@ -462,7 +462,7 @@ export default {
       }
       if (title && desc) {
         marker.on('mouseover', function (event) {
-          let textLen = getTextWidth(desc)
+          let textLen = getTextWidth(desc) + 10
           let contentLen = Math.max(textLen, 120)
           marker.setContent(`<div style="position: relative; width: 80px; height: 80px;">
 <span style="position:absolute; left: 33px; bottom: -7px;display: block;background-color: white; border: solid #EF6969 5px; border-radius: 50%; width: 15px; height: 15px;"></span>
