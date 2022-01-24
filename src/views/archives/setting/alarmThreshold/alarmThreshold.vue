@@ -75,7 +75,7 @@ export default {
             if (item.type === '1') { // 时间范围格式
               this.rangeValue = item.value ? item.value.split(',') : item.defaultValue.split(',')
             } else {
-              this.value = item.value || item.defaultValue
+              item.value = item.value || item.defaultValue
             }
           })
         })

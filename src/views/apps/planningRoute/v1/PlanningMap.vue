@@ -6,25 +6,25 @@
       <div class="form-container routeplanning">
         <div class="form-item">
           <span class="item-prefix start"></span>
-          <el-input id="fromPositionInput" v-model="startPosition.name" class="item-input" clearable>
+          <place-auto-complete-input :place-info="startPosition" :search-place="searchPlace" @select-place="startPositionSelect">
             <span slot="prepend" style="color: #FFBC00; font-weight: bold">起</span>
-          </el-input>
+          </place-auto-complete-input>
           <span class="item-suffix"></span>
         </div>
         <div class="form-item" v-for="item in midPositionList">
           <span class="item-prefix line"></span>
-          <el-input :id="item.id" class="item-input" v-model="item.name" clearable>
+          <place-auto-complete-input :place-info="item" :search-place="searchPlace" @select-place="midPositionSelect">
             <span slot="prepend" style="color: #3D4050; font-weight: bold">经</span>
-          </el-input>
+          </place-auto-complete-input>
           <span class="item-suffix">
             <span @click="removeMidPosition(item)" class="sf-button remove"></span>
           </span>
         </div>
         <div class="form-item">
           <span class="item-prefix line end"></span>
-          <el-input id="toPositionInput" v-model="endPosition.name" class="item-input" clearable>
+          <place-auto-complete-input :place-info="endPosition" :search-place="searchPlace" @select-place="endPositionSelect">
             <span slot="prepend" style="color: #4682FA; font-weight: bold">终</span>
-          </el-input>
+          </place-auto-complete-input>
           <span class="item-suffix">
             <span @click="addMidPosition" class="sf-button add"></span>
           </span>
@@ -72,7 +72,7 @@
             <span slot="prepend">米</span>
           </el-select>
           <el-tooltip content="该值将决定车辆允许偏离路径的最大值。同时也是报警开关中的范围的取值。" placement="top" style="font-size: 18px; margin-left: 10px">
-            <img src="../../../../assets/images/stealingcoal/question.png"/>
+            <img src="../../../../assets/images/stealingcoal/question.png" alt="question"/>
           </el-tooltip>
         </el-form-item>
 <!--        <el-form-item label="路径偏离时长上限(分钟)" prop="offPathTime" :rules="[{required: true, message: '必填'}]">-->
@@ -104,6 +104,8 @@
 
 <script>
 import {http_request} from "../../../../api";
+import {debounce} from "../../../../utils";
+import PlaceAutoCompleteInput from "./PlaceAutoCompleteInput";
 
 function objectDiff(obj1, obj2) {
   for (const obj1Key in obj1) {
@@ -115,6 +117,7 @@ function objectDiff(obj1, obj2) {
 }
 export default {
   name: "PlaningMap",
+  components: {PlaceAutoCompleteInput},
   data () {
     return {
       loading: false,
@@ -153,7 +156,8 @@ export default {
       driving: null,
       truckDriving: null,
       drivingPathResult: null,
-      isSearchDriving: false
+      isSearchDriving: false,
+      mapAutoComplete: null,
     }
   },
   watch: {
@@ -171,6 +175,8 @@ export default {
         if (this.endPosition.marker) this.map.remove(this.endPosition.marker)
         this.driving && this.driving.clear()
         this.truckDriving && this.truckDriving.clear()
+      } else {
+        // this.searchPlace(newVal, this.endPosition)
       }
     }
   },
@@ -184,6 +190,43 @@ export default {
     }, 1000)
   },
   methods: {
+    midPositionSelect (info, item) {
+      if (!item.location) return
+      this.createMidMarker(item.location.lng, item.location.lat, info)
+      this.trySearchDriving()
+    },
+    startPositionSelect (info, item) {
+      if (!item.location) return
+      this.makeFromPosition(item.location.lng, item.location.lat, item.value)
+      this.trySearchDriving()
+      console.log(arguments)
+    },
+    endPositionSelect (info, item) {
+      if (!item.location) return
+      this.makeEndPosition(item.location.lng, item.location.lat, item.value)
+      this.trySearchDriving()
+    },
+    searchPlace (keyword, cb) {
+      if (!keyword) {
+        cb([])
+        return
+      }
+      this.mapAutoComplete.search(keyword, function (status, res) {
+        console.log('search', status, res)
+        if (status === 'complete') {
+          const list = res.tips.filter(item => !!item.location).map(item => {
+            return {
+              value: item.name,
+              address: typeof item.address === 'string' ? item.address : item.district,
+              location: item.location
+            }
+          })
+          cb(list)
+        } else {
+          cb([])
+        }
+      })
+    },
     async loadRouteDetail (code) {
       this.loading = true
       let res = await http_request({
@@ -550,18 +593,6 @@ export default {
           midPositionInfo.name = res.regeocode.formattedAddress
         })
       }
-      let vm = this
-      setTimeout(() => {
-        let autocomplete = new AMap.Autocomplete({
-          input: midPositionInfo.id
-        })
-        autocomplete.on('select', function (event) {
-          if (!event.poi.location) return
-          midPositionInfo.name = event.poi.name
-          vm.createMidMarker(event.poi.location.lng, event.poi.location.lat, midPositionInfo)
-          vm.trySearchDriving()
-        })
-      }, 1000)
       this.createMidMarker(lng, lat, midPositionInfo)
     },
     createMidMarker (lng, lat, positionInfo) {
@@ -646,31 +677,12 @@ export default {
           hideMarkers: true,
           outlineColor: '#4682FA'
         })
-        //strokeStyle: "#4682FA",
-        // lineWidth: 6,
-        //   dirArrowStyle: false,
-        vm.mapFromAutocomplete = new AMap.Autocomplete({
-          input: 'fromPositionInput'
-        })
-        vm.mapToAutocomplete = new AMap.Autocomplete({
-          input: 'toPositionInput'
-        })
-        vm.mapFromAutocomplete.on('select', function (event) {
-          if (!event.poi.location) return
-          vm.makeFromPosition(event.poi.location.lng, event.poi.location.lat, event.poi.name)
-          vm.trySearchDriving()
-        })
-        vm.mapToAutocomplete.on('select', function (event) {
-          if (!event.poi.location) return
-          vm.makeEndPosition(event.poi.location.lng, event.poi.location.lat, event.poi.name)
-          vm.trySearchDriving()
+        vm.mapAutoComplete = new AMap.Autocomplete({
+          city: '全国'
         })
         if (vm.type === 'edit') {
           vm.loadRouteDetail(vm.code)
         }
-        //lat: 26.015427
-        // lng: 119.340706
-        // vm.createMidMarker(119.340706, 26.015427, {name: 'test'})
       })
       this.map.on('click', function (event) {
         if (!vm.startPosition.position) {
@@ -733,6 +745,22 @@ export default {
         padding: 0 10px;
       }
     }
+  }
+}
+.route-planning-address-popper.el-autocomplete-suggestion li {
+  padding: 5px 10px;
+  .name {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: normal;
+    line-height: 15px;
+  }
+  .address {
+    font-size: 12px;
+    color: #b4b4b4;
+    line-height: 20px;
+    min-height: 20px;
   }
 }
 </style>
