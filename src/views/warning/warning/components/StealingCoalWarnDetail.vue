@@ -29,7 +29,7 @@
           <div class="warn-item-content">
             <div class="warn-item-content-title">{{item.eventName}} <span v-if="item.isView" @click="showWarnDetail(item)" class="view">查看</span></div>
             <div v-if="item.addressName" class="warn-item-content-address">{{item.addressName}}</div>
-            <div v-if="item.describe" class="warn-item-content-desc">{{item.describe}}</div>
+            <div v-if="item.describe" v-html="item.describe" class="warn-item-content-desc"></div>
             <div v-if="item.type === 7014 || item.type === 7013 || item.type === 8001" class="warn-item-content-video" @click="playVideo(item)"></div>
           </div>
         </div>
@@ -416,11 +416,6 @@ export default {
               //返回轨迹数据中的节点坐标信息，[AMap.LngLat, AMap.LngLat...] 或者 [[lng|number,lat|number],...]
               return pathData.path;
             },
-            getHoverTitle: function(pathData, pathIndex, pointIndex) {
-              let point = pathData.path[pointIndex]
-              if (!point) return
-              return `point=${point[0]},${point[1]}`
-            },
             renderOptions: {
               // 轨迹线的样式
               pathLineStyle: {
@@ -459,7 +454,7 @@ export default {
         const dom = document.createElement('span')
         dom.style.display = 'inline-block';
         dom.style.fontSize = '14px'
-        dom.textContent = str
+        dom.innerHTML = str
         document.body.appendChild(dom)
         const width = dom.clientWidth
         document.body.removeChild(dom)
