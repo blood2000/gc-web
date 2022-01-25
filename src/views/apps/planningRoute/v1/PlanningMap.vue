@@ -656,7 +656,6 @@ export default {
           panToLocation: true,     //定位成功后将定位到的位置作为地图中心点，默认：true
         })
         vm.map.addControl(geolocation);
-        geolocation.getCurrentPosition()
         vm.geocoder = new AMap.Geocoder({
           radius: 1000,
           extensions: "all",
@@ -675,6 +674,8 @@ export default {
         })
         if (vm.type === 'edit') {
           vm.loadRouteDetail(vm.code)
+        } else {
+          geolocation.getCurrentPosition()
         }
       })
       this.map.on('click', function (event) {
