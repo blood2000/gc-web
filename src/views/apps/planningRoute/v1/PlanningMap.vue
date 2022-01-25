@@ -69,31 +69,28 @@
             <el-option :value="800"></el-option>
             <el-option :value="900"></el-option>
             <el-option :value="1000"></el-option>
-            <span slot="prepend">米</span>
           </el-select>
           <el-tooltip content="该值将决定车辆允许偏离路径的最大值。同时也是报警开关中的范围的取值。" placement="top" style="font-size: 18px; margin-left: 10px">
             <img src="../../../../assets/images/stealingcoal/question.png" alt="question"/>
           </el-tooltip>
         </el-form-item>
-<!--        <el-form-item label="路径偏离时长上限(分钟)" prop="offPathTime" :rules="[{required: true, message: '必填'}]">-->
-<!--          <el-select style="width: 240px;" v-model="routeInfoForm.offPathTime">-->
-<!--            &lt;!&ndash;              0、1、2、3、4、5、10、20、30、60&ndash;&gt;-->
-<!--            <el-option :value="0"></el-option>-->
-<!--            <el-option :value="1"></el-option>-->
-<!--            <el-option :value="2"></el-option>-->
-<!--            <el-option :value="3"></el-option>-->
-<!--            <el-option :value="4"></el-option>-->
-<!--            <el-option :value="5"></el-option>-->
-<!--            <el-option :value="10"></el-option>-->
-<!--            <el-option :value="20"></el-option>-->
-<!--            <el-option :value="30"></el-option>-->
-<!--            <el-option :value="60"></el-option>-->
-<!--            <span slot="suffix">分钟</span>-->
-<!--          </el-select>-->
-<!--          <el-tooltip content="该值将决定车辆允许偏离路径的最大值。同时也是报警开关中的范围的取值。" placement="top" style="font-size: 18px;margin-left: 10px">-->
-<!--            <img src="../../../../assets/images/stealingcoal/question.png"/>-->
-<!--          </el-tooltip>-->
-<!--        </el-form-item>-->
+        <el-form-item label="路径偏离时长上限(分钟)" prop="offPathTime" :rules="[{required: true, message: '必填'}]">
+          <el-select style="width: 240px;" v-model="routeInfoForm.offPathTime">
+            <el-option :value="0"></el-option>
+            <el-option :value="1"></el-option>
+            <el-option :value="2"></el-option>
+            <el-option :value="3"></el-option>
+            <el-option :value="4"></el-option>
+            <el-option :value="5"></el-option>
+            <el-option :value="10"></el-option>
+            <el-option :value="20"></el-option>
+            <el-option :value="30"></el-option>
+            <el-option :value="60"></el-option>
+          </el-select>
+          <el-tooltip content="该值将决定车辆允许偏离路径的最大值。同时也是报警开关中的范围的取值。" placement="top" style="font-size: 18px;margin-left: 10px">
+            <img src="../../../../assets/images/stealingcoal/question.png"/>
+          </el-tooltip>
+        </el-form-item>
         <el-form-item style="text-align: center">
           <el-button :loading="isSaving" :disabled="isSaving" type="primary" @click="saveAction">保存</el-button>
         </el-form-item>
@@ -242,6 +239,7 @@ export default {
       this.routeInfoForm.warningStartTime = detail.effective_time
       this.routeInfoForm.warningEndTime = detail.expires_time
       this.routeInfoForm.offPathDistance = detail.route_deviate_radius
+      this.routeInfoForm.offPathTime = detail.route_deviate_time
       this.loading = false
 
       let start = detail.points[0]
@@ -417,6 +415,7 @@ export default {
         routeName: this.routeInfoForm.name,
         routeCoordinates: path.join(';'),
         routeDeviateRadius: this.routeInfoForm.offPathDistance,
+        routeDeviateTime: this.routeInfoForm.offPathTime,
         effectiveTime: this.routeInfoForm.warningStartTime,
         expiresTime: this.routeInfoForm.warningEndTime,
         points: waypoints
