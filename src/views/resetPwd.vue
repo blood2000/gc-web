@@ -4,46 +4,70 @@
       ref="resetForm"
       :model="resetForm"
       :rules="resetRules"
-      class="reset-form"
+      class="login-form"
     >
-      <h3 class="title">忘记密码</h3>
+      <div class="login-title">Welcome to you</div>
+      <div class="login-label">欢迎您来到至简管车</div>
+      <div class="login-type">
+        <div> 忘记密码</div>
+         <div class="line"></div>
+        </div>
       <el-form-item prop="telephone">
+        <div class="input-box">
+          <div class="input-box-img">
+            <img
+              style="width: 100%; height: 100%"
+              src="../assets/images/login/user.png"
+              alt=""
+            />
+          </div>
+          <div class="input-box-line"></div>
         <el-input
           v-model="resetForm.telephone"
           type="text"
           auto-complete="off"
-          placeholder="手机号"
+          placeholder="请输入账号/手机号登录"
           clearable
         >
-          <svg-icon
-            slot="prefix"
-            icon-class="user"
-            class="el-input__icon input-icon"
-          />
         </el-input>
+        </div>
       </el-form-item>
       <el-form-item prop="captcha">
+        <div class="input-box">
+          <div class="input-box-img">
+            <img
+              style="width: 100%; height: 100%"
+              src="../assets/images/login/yanzhengma.png"
+              alt=""
+            />
+          </div>
+          <div class="input-box-line"></div>
         <el-input
           v-model="resetForm.captcha"
           auto-complete="off"
-          placeholder="验证码"
+          placeholder="请输入验证码"
           clearable
         >
-          <svg-icon
-            slot="prefix"
-            icon-class="validCode"
-            class="el-input__icon input-icon"
-          />
         </el-input>
         <div
-          class="register-code"
+          class="login-code"
           :class="sendCode ? 'no-send' : ''"
           @click="checkPhone"
         >
           {{ verCodeText }}
         </div>
+        </div>
       </el-form-item>
       <el-form-item prop="password">
+        <div class="input-box">
+          <div class="input-box-img">
+            <img
+              style="width: 100%; height: 100%"
+              src="../assets/images/login/password.png"
+              alt=""
+            />
+          </div>
+          <div class="input-box-line"></div>
         <el-input
           v-model="resetForm.password"
           type="password"
@@ -52,12 +76,9 @@
           clearable
           @keyup.enter.native="handleReset"
         >
-          <svg-icon
-            slot="prefix"
-            icon-class="password"
-            class="el-input__icon input-icon"
-          />
+          
         </el-input>
+        </div>
       </el-form-item>
       <el-form-item style="width: 100%">
         <el-button
@@ -77,12 +98,19 @@
         <div class="link-type" @click="toLogin">返回登录</div>
       </div>
     </el-form>
-
-    <!--  底部  -->
-    <div class="el-register-footer">
-      <div>福建至简至一信息科技有限公司 版权所有</div>
-      <span>CopyRight@ 2021 All Rights Reserved 闽ICP备19023755号-2</span>
-    </div>
+       <img
+      class="login-title-bg"
+      src="../assets/images/login/logo.png"
+      style="width: 238px; height: 56px"
+      alt=""
+    />
+    <video
+      autoplay
+      muted
+      loop
+      class="login-bg"
+      src="../assets/images/login/login-bg.mp4"
+    ></video>
   </div>
 </template>
 
@@ -243,7 +271,7 @@ export default {
       this.verCodeSecond = Math.ceil((endMsRes - new Date().getTime()) / 1000);
       this.countdownTimer = setTimeout(() => {
         this.verCodeSecond--;
-        this.verCodeText = `再次发送(${this.verCodeSecond})`;
+        this.verCodeText = `已获取(${this.verCodeSecond})`;
         if (this.verCodeSecond < 1) {
           this.sendCode = true;
           this.verCodeSecond = this.countdownSeconds;
@@ -302,138 +330,205 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.reset {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  height: 100%;
-  background-image: url("../assets/images/login-background.gif");
-  background-size: 100% 100%;
+.login-title-bg {
+  position: absolute;
+  top: 37px;
+  left: 46px;
+  z-index: 300;
 }
-.title {
-  margin: 0px auto 30px auto;
-  text-align: center;
-  color: #121212;
+.login-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+.reset {
+   height: 100%;
+
+}
+.login-title {
+  color: #fff;
+  font-size: 36px;
   font-weight: bold;
+  font-family: PingFang SC;
+  margin-bottom: 10px;
+  background: url("../assets/images/login/login-title-bg.png") no-repeat;
+  background-position: 0px 33px;
+}
+.login-title-bg {
+  position: absolute;
+  top: 37px;
+  left: 46px;
+  z-index: 300;
+}
+.login-label {
+  font-size: 21px;
+  font-family: PingFang SC;
+  font-weight: 400;
+  color: #e0e0e0;
+  opacity: 0.89;
+  margin-bottom: 40px;
 }
 
-.reset-form {
-  border-radius: 6px;
-  background: #ffffff;
-  width: 400px;
-  padding: 25px 25px 5px 25px;
-  margin-right: 100px;
+.login-type {
+  position: relative;
+  width: 200px;
+  // height: 50px;
+  margin: 0 0 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  color: #ffffff;
+  .line {
+    border-bottom: 1px solid rgba($color: #fff, $alpha: 0.18);
+    position: absolute;
+    width: 392px;
+    height: 1px;
+    top: 40px;
+  }
+}
+.login-type > div {
+  font-size: 19px;
+  font-weight: 400;
+  font-family: PingFang SC;
+  color: rgba($color: #ffffff, $alpha: 0.8);
+}
+
+.login-form {
+  -webkit-animation: loginformanimation 1s ease-in-out; /* Safari 与 Chrome */
+  position: fixed;
+  z-index: 110;
+  top: calc(50% - 292.5px);
+  right: 0;
+  width: 454px;
+  height: 585px;
+  // border: 2px solid #ffffff;
+  background: #04132f;
+  border-radius: 10px 0px 0px 10px;
+  padding: 53px 19px 35px 27px;
   .el-input {
-    height: 38px;
+    height: 43px;
     input {
-      height: 38px;
+      height: 43px;
     }
   }
   .input-icon {
-    height: 39px;
+    height: 43px;
     width: 14px;
     margin-left: 2px;
   }
+  .input-icon::after {
+    content: "|";
+    width: 1px;
+    height: 43px;
+    margin-left: 20px;
+  }
 }
-.register-tip {
-  font-size: 13px;
-  text-align: center;
-  color: #bfbfbf;
+@keyframes loginformanimation {
+  from {
+    right: -454px;
+  }
+  to {
+    right: 0;
+  }
 }
 
-.register-type {
-  height: 40px;
-  text-align: center;
+.input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: url("../assets/images/login/login-input.png") no-repeat;
+  padding-left: 20px;
+  &-img {
+    width: 24px;
+    height: 24px;
+  }
+  &-line {
+    width: 1px;
+    height: 28px;
+    border-right: 1px solid rgba($color: #fff, $alpha: 0.22);
+    margin-left: 7px;
+  }
 }
 
-.register-code {
+::v-deep .el-input--medium .el-input__inner {
+  height: 43px !important;
+  line-height: 43px !important;
+  background: transparent;
+  border: none;
+  // padding-left: 64px;
+  color: #fff;
+  font-size: 15px;
+  font-family: PingFang SC;
+  font-weight: 400;
+}
+::v-deep .el-input--medium .el-input__inner::-webkit-input-placeholder {
+  color: #d4dbe8;
+}
+::v-deep .el-input--medium .el-input__inner::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: #d4dbe8;
+}
+::v-deep .el-input--medium .el-input__inner:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: #d4dbe8;
+}
+::v-deep .el-input--medium .el-input__inner:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: #d4dbe8;
+}
+::v-deep .el-button--medium {
+  border-radius: 8px;
+  font-size: 19px;
+}
+::v-deep .el-button--primary {
+  background: #0b5599;
+  border-color: #0b5599;
+}
+::v-deep .el-button--primary:hover,
+.el-button--primary:focus {
+  background: #46a6ff;
+  border-color: #46a6ff;
+}
+
+.login-code {
   width: 33%;
-  height: 34px;
+  height: 41px;
   float: right;
   position: absolute;
   top: 1px;
   right: 1px;
+  line-height: 41px;
   text-align: center;
   background: #eee;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
   border-left: 1px solid #dcdfe6;
   cursor: pointer;
-  color: #999;
+  color: #fff;
+  background: #263651;
+  border-left: 1px solid #263651;
+  font-size: 16px;
+  font-family: PingFang SC;
+  font-weight: 400;
 }
 
 .no-send {
   color: #fff;
-  background: #1890ff;
-  border-left: 1px solid #1890ff;
+  background: #263651;
+  border-left: 1px solid #263651;
 }
-// .register-code {
-//   width: 33%;
-//   height: 38px;
-//   float: right;
-//   img {
-//     cursor: pointer;
-//     vertical-align: middle;
-//   }
-// }
-.el-register-footer {
-  position: fixed;
-  padding: 10px 0;
-  bottom: 0;
-  width: 100%;
+
+.link-type {
+  font-size: 14px;
+  font-family: PingFang SC;
+  font-weight: 400;
+  color: rgba($color: #c2c2c2, $alpha: 0.9);
   text-align: center;
-  color: #fff;
-  font-family: Arial;
-  font-size: 12px;
-  letter-spacing: 1px;
 }
-.register-code-img {
-  height: 38px;
+.link-type:focus {
+  color: #0b5599;
 }
 
-.img-box,
-.img-title {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-}
-
-.img-title {
-  margin-bottom: 10px;
-  span {
-    width: 45%;
-    text-align: center;
-  }
-}
-
-.img {
-  width: 45%;
-  height: 100px;
-  background: #ddd;
-  img {
-    width: 100%;
-    height: 100%;
-  }
-}
-
-.input-title {
-  height: 30px;
-}
-
-.input-box {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  .el-form-item {
-    width: 180px;
-    margin-bottom: 0;
-  }
-  .el-date-editor.el-input,
-  .el-date-editor.el-input__inner {
-    width: 100%;
-  }
-}
 </style>

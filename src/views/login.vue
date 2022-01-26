@@ -72,7 +72,7 @@
           <div class="input-box-img">
             <img
               style="width: 100%; height: 100%"
-              src="../assets/images/login/password.png"
+              src="../assets/images/login/yanzhengma.png"
               alt=""
             />
           </div>
@@ -206,10 +206,9 @@ export default {
       } else {
         this.captchaOnOff = false;
       }
-      this.$nextTick(()=>{
-              this.$refs.loginForm.clearValidate();
-
-      })
+      this.$nextTick(() => {
+        this.$refs.loginForm.clearValidate();
+      });
     },
     // 验证手机号
     //验证手机号是否已注册
@@ -560,18 +559,7 @@ export default {
     right: 0;
   }
 }
-::v-deep .el-input__prefix {
-  left: 20px;
-}
-::v-deep .el-input__prefix:after {
-  content: " ";
-  width: 1px;
-  height: 28px;
-  border-right: 1px solid rgba($color: #fff, $alpha: 0.22);
-  margin-left: 7px;
-  position: absolute;
-  top: 9px;
-}
+
 .input-box {
   position: relative;
   display: flex;
