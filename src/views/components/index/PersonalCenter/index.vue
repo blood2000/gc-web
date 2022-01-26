@@ -278,7 +278,7 @@ export default {
           )
           this.device = data.device
           this.device.percent = parseInt(
-            (this.device.taskDevice / (this.device.taskDevice + this.device.freeDevice)) * 100
+            (this.device.onlineDevice / (this.device.onlineDevice + this.device.offlineDevice)) * 100
           )
         }
       })
