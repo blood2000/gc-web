@@ -40,44 +40,43 @@
         :limit.sync="queryParams.pageSize"
         @pagination="getList"/>
     </div>
-    <el-dialog :visible.sync="isShowViewVehicleDialog" title="查看车辆" width="500px" :close-on-click-modal="false">
-      <RefactorTable
-        :is-show-index="true"
-        :loading="isLoadingRouteVehicles"
-        :data="routeVehicles"
-        height="400"
-        row-key="vehicle_code"
-        :table-columns-config="[
-          {isShow: true, label: '车牌号', prop: 'plate_number'},
-          {isShow: true, label: '绑定时间', prop: 'create_time'},
-          {isShow: true, label: '操作', prop: 'edit'}
-        ]"
-        :border="false"
-        :stripe="false">
-        <template #edit="{ row }">
-          <el-button size="mini" type="text" @click="removeBindVehicle(row)">删除</el-button>
-        </template>
-      </RefactorTable>
-      <div slot="footer" style="text-align: center">
-        <el-button type="primary" @click="saveRemoveVehicle">保存</el-button>
+    <el-drawer
+      v-loading="isLoadingRouteVehicles"
+      :visible.sync="isShowViewVehicleDialog"
+      title="查看车辆"
+      direction="rtl"
+      style="z-index: 2000"
+      size="40%">
+      <div style="padding: 20px 15px">
+        <RefactorTable
+          :is-show-index="true"
+          :loading="isLoadingRouteVehicles"
+          :data="routeVehicles"
+          height="700"
+          row-key="vehicle_code"
+          :table-columns-config="[
+            {isShow: true, label: '车牌号码', prop: 'plate_number'},
+            {isShow: true, label: '车辆别名', prop: 'plate_number2'},
+            {isShow: true, label: '上次路线偏离告警时间', prop: 'create_time2'}
+          ]"
+          :border="false">
+        </RefactorTable>
       </div>
-    </el-dialog>
-    <el-dialog :visible.sync="isShowEditVehicleDialog" title="编辑车辆" width="500px" :close-on-click-modal="false">
-      <RefactorTable
-        is-show-index
-        height="400"
-        @selection-change="editVehicleSelectionChange"
-        :loading="isLoadingBindableVehicles"
-        :data="bindableVehicles"
-        row-key="vehicle_code"
-        :table-columns-config="[
-          {isShow: true, label: '车牌号', prop: 'plate_number'}
-        ]"
-        :border="false"
-        :stripe="false">
-      </RefactorTable>
+    </el-drawer>
+    <el-dialog :visible.sync="isShowEditVehicleDialog" title="编辑车辆" width="635px" :close-on-click-modal="false">
+      <el-transfer
+        v-loading="isLoadingBindableVehicles"
+        filterable
+        :filter-method="filterMethod"
+        :titles="['可选车辆', '已绑定车辆']"
+        filter-placeholder="请输入车牌号"
+        :props="{key: 'vehicle_code', label: 'plate_number'}"
+        v-model="routeVehicles"
+        :data="bindableVehicles">
+      </el-transfer>
       <div slot="footer" style="text-align: center">
         <el-button type="primary" @click="saveEditVehicle">保存</el-button>
+        <el-button @click="isShowEditVehicleDialog=false">取消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -92,15 +91,12 @@ export default {
     return {
       isLoadingRouteVehicles: false,
       routeVehicles: [],
+      apiRouteVehicles: [],
       removeRouteVehicles: [],
       isShowViewVehicleDialog: false,
-      viewVehicleForm: {
-        routeCode: null,
-      },
       isLoadingBindableVehicles: false,
       bindableVehicles: [],
       isShowEditVehicleDialog: false,
-      editVehicleSelection: null,
       editVehicleForm: {
         routeCode: null,
       },
@@ -159,61 +155,9 @@ export default {
     this.getList()
   },
   methods: {
-    async saveRemoveVehicle() {
-      if (this.removeRouteVehicles && this.removeRouteVehicles.length > 0) {
-        let vehicles = this.removeRouteVehicles.map(item => item.vehicle_code)
-        let res = await http_request({
-          moduleName: "http_planRoute",
-          method: "post",
-          url_alias: "removeRouteVehicle",
-          data: {...this.viewVehicleForm, vehicles},
-        })
-        this.msgSuccess('保存成功')
-      }
-      this.isShowViewVehicleDialog = false
-    },
-    async saveEditVehicle () {
-      if (this.editVehicleSelection && this.editVehicleSelection.length > 0) {
-        let vehicles = this.editVehicleSelection.map(item => item.vehicle_code)
-        let res = await http_request({
-          moduleName: "http_planRoute",
-          method: "post",
-          url_alias: "routeRelVehicle",
-          data: {...this.editVehicleForm, vehicles},
-        })
-        this.msgSuccess('保存成功')
-      }
-      this.isShowEditVehicleDialog = false
-    },
-    editVehicleSelectionChange (selection) {
-      this.editVehicleSelection = selection
-    },
-    editRoute(row) {
-      this.$router.push({path: '/apps/planningroute/v1/map?type=edit&code=' + row.route_code})
-    },
-    editVehicle (row) {
-      this.editVehicleSelection = []
-      this.editVehicleForm.routeCode = row.route_code
-      this.isLoadingBindableVehicles = true
-      this.isShowEditVehicleDialog = true
-      http_request({
-        moduleName: "http_planRoute",
-        method: "get",
-        url_alias: "getBindableVehicles",
-        data: {code: row.route_code}
-      }).then(res => {
-        this.bindableVehicles = res.data
-        this.isLoadingBindableVehicles = false
-      })
-    },
-    removeBindVehicle (row) {
-      let idx = this.routeVehicles.indexOf(row)
-      this.routeVehicles.splice(idx, 1)
-      this.removeRouteVehicles.push(row)
-    },
     viewVehicle (row) {
       this.removeRouteVehicles = []
-      this.viewVehicleForm.routeCode = row.route_code
+      // this.viewVehicleForm.routeCode = row.route_code
       this.isLoadingRouteVehicles = true
       this.isShowViewVehicleDialog = true
       http_request({
@@ -225,6 +169,81 @@ export default {
         this.routeVehicles = res.data.rows
         this.isLoadingRouteVehicles = false
       })
+    },
+    filterMethod (query, item) {
+      return item.plate_number.indexOf(query) > -1
+    },
+    async saveEditVehicle () {
+      let removeVehicles = []
+      let addVehicles = []
+
+      this.apiRouteVehicles.forEach(item => {
+        if (this.routeVehicles.indexOf(item) === -1) {
+          removeVehicles.push(item)
+        }
+      })
+      this.routeVehicles.forEach(item => {
+        if (this.apiRouteVehicles.indexOf(item) === -1) {
+          addVehicles.push(item)
+        }
+      })
+      console.log('add', addVehicles, 'remove', removeVehicles)
+      if (addVehicles.length > 0) {
+        await http_request({
+          moduleName: "http_planRoute",
+          method: "post",
+          url_alias: "routeRelVehicle",
+          data: {...this.editVehicleForm, vehicles: addVehicles},
+        })
+      }
+      if (removeVehicles.length > 0) {
+        await http_request({
+          moduleName: "http_planRoute",
+          method: "post",
+          url_alias: "removeRouteVehicle",
+          data: {...this.editVehicleForm, vehicles: removeVehicles},
+        })
+      }
+      this.msgSuccess('保存成功')
+      this.isShowEditVehicleDialog = false
+    },
+    editRoute(row) {
+      this.$router.push({path: '/apps/planningroute/v1/map?type=edit&code=' + row.route_code})
+    },
+    editVehicle (row) {
+      this.editVehicleForm.routeCode = row.route_code
+      this.isLoadingBindableVehicles = true
+      this.isShowEditVehicleDialog = true
+      Promise.all([
+        http_request({
+          moduleName: "http_planRoute",
+          method: "get",
+          url_alias: "getBindableVehicles",
+          data: {code: row.route_code}
+        }),
+        http_request({
+          moduleName: "http_planRoute",
+          method: "get",
+          url_alias: "routeBindableVehicles",
+          url_code: [row.route_code]
+        })
+      ]).then(res => {
+        let bindableVehicles = res[0].data
+        let routeVehicles = res[1].data.rows.map(item => {
+          return {plate_number: item.plate_number, vehicle_code: item.vehicle_code}
+        })
+        bindableVehicles.push(...routeVehicles)
+        this.bindableVehicles = bindableVehicles
+        this.routeVehicles = res[1].data.rows.map(item => item.vehicle_code)
+        this.apiRouteVehicles = []
+        this.apiRouteVehicles.push(...this.routeVehicles)
+        this.isLoadingBindableVehicles = false
+      })
+    },
+    removeBindVehicle (row) {
+      let idx = this.routeVehicles.indexOf(row)
+      this.routeVehicles.splice(idx, 1)
+      this.removeRouteVehicles.push(row)
     },
     async delRoute(row) {
       await this.$confirm(`确认删除 "${row.route_name}" 路径？`,'系统提示',{
