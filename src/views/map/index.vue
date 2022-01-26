@@ -493,11 +493,11 @@ export default {
       readTimer: null,
       // 不同承运类型车辆图片大小不同所以点位偏移不同
       offsetList: {
-        ztc: [-17, -38],
-        jbc: [-17, -40],
-        llc: [-14, -31],
-        phc: [-15, -39],
-        qt: [-15, -39],
+        ztc: [-17, -39.5],
+        jbc: [-17, -39.5],
+        llc: [-14, -39.5],
+        phc: [-15, -39.5],
+        qt: [-15, -39.5],
       },
       // showVehicleDetail: false,  //车辆详情组件显示
       locationProp: null, //路由上有参数时
@@ -1453,9 +1453,11 @@ export default {
       ></div>`;
       const styleObj = {
         content: vehicleContent,
-        offset: this.offsetList[carrier_type || "qt"],
+        // offset: this.offsetList[carrier_type || "qt"],
+         offset:[-21.5,-39.5],
         angle: 0,
       };
+      console.log('绘制车辆定位marker position',position)
       const marker = this.drawMarker(position, styleObj);
       console.log("ckc ", vehicle_code, marker);
       this.markerList[vehicle_code] = marker;
@@ -1614,7 +1616,8 @@ export default {
       }"></div></div>`;
       const styleObj = {
         content: contents,
-        offset: this.offsetList[tmp.carrier_type || "qt"],
+        // offset: this.offsetList[tmp.carrier_type || "qt"],
+        offset:[-21.5,-39.5],
         angle: 0,
       };
       // this.realWarnMarker.setContent(contents);
