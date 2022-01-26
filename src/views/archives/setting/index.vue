@@ -30,7 +30,7 @@ export default {
   components: {
     AlarmTypes,
     AlarmThreshold,
-    VideoChannel,
+    VideoChannel
   },
   data() {
     return {
@@ -46,7 +46,7 @@ export default {
         {
           name: '视频通道别名设置',
           key: '3',
-        },
+        }
       ],
       tabs: {
         alarmTypes: '1', // 告警类型设置

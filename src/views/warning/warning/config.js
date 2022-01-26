@@ -206,7 +206,7 @@ const tableColumnsConfig = [
     headerSlot: true,
     width: 80
   },
-  
+
   {
     isShow: true,
     label: "告警级别",
@@ -223,7 +223,7 @@ const tableColumnsConfig = [
     tooltip: true,
     width: 140
   },
- 
+
   // {
   //   isShow: true,
   //   label: "设备类型",
@@ -267,6 +267,10 @@ const warningTabs = [
   {
     label: "按司机",
     value: "2"
+  },
+  {
+    label: "偷换货",
+    value: "3"
   }
 ];
 

@@ -53,7 +53,7 @@ export default {
       defaultExpandedKeys: [],
       defaultProps: {
         children: "children",
-        label: "cnName"
+        label: "name"
       },
       form: {}
     };

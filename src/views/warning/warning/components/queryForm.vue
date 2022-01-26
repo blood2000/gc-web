@@ -14,7 +14,7 @@
           <el-form-item
             label="车牌号"
             prop="vehicleCode"
-            v-if="warningTab === '1'"
+            v-if="warningTab === '1' || warningTab === '3'"
           >
             <el-input
               v-model="queryParams.vehicleCode"
@@ -47,7 +47,7 @@
               end-placeholder="结束日期"
             />
           </el-form-item>
-          <el-form-item label="告警类型" prop="warningTypes">
+          <el-form-item v-if="warningTab !== '3'" label="告警类型" prop="warningTypes">
             <el-input
               v-model="warningNames"
               clearable
