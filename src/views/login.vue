@@ -14,7 +14,7 @@
         :class="captchaOnOff ? 'captcha-login' : 'acct-login'"
       >
         <div class="line"></div>
-        <div :class="captchaOnOff ? 'cur-login' : ''" @click="login(0)">
+        <div style="margin-right:35px" :class="captchaOnOff ? 'cur-login' : ''" @click="login(0)">
           账号登录
         </div>
         <div :class="!captchaOnOff ? 'cur-login' : ''" @click="login(1)">
@@ -309,13 +309,18 @@ export default {
       };
     },
     handleLogin() {
+                console.log('!this.captchaOnOff',this.captchaOnOff)
+
       this.$refs.loginForm.validate((valid) => {
+        console.log('valid',valid)
         if (valid) {
           if (!this.captchaOnOff) {
-            this.loading = true;
-            this.pwdLogin();
+           
+             this.checkCode();
           } else {
-            this.checkCode();
+             this.loading = true;
+            this.pwdLogin();
+           
           }
         }
       });
@@ -501,7 +506,7 @@ export default {
   width: 51px;
   height: 3px;
   background: #ffffff;
-  left: 115px;
+      left: 130px;
   bottom: -13px;
   border-radius: 2px;
 }
