@@ -28,7 +28,7 @@
         <template #edit="{ row }" width="200">
           <el-button size="mini" type="text" @click="editRoute(row)">编辑路径</el-button>
           <el-button size="mini" type="text" @click="editVehicle(row)">编辑车辆</el-button>
-          <el-button size="mini" type="text" @click="viewVehicle(row)">查看车辆</el-button>
+<!--          <el-button size="mini" type="text" @click="viewVehicle(row)">查看车辆</el-button>-->
           <el-button size="mini" type="text" @click="delRoute(row)">删除路径</el-button>
         </template>
       </RefactorTable>
