@@ -1443,18 +1443,20 @@ export default {
       const direction = attribute.direction || {};
       const speed = attribute.speed || {};
       const position = attribute.coordinate.value;
+      console.log('direction.value',direction.value)
       // 绘制车辆标记
       const vehicleContent = `<div
       style="transform:rotate(${direction.value || -30}deg);
       background:url('${require(`../../assets/images/map/${this.dealVheicleType(
         row
-      )}.png`)}') no-repeat; background-size:43px 79px"
+      )}.png`)}') no-repeat;"
       class="own-device-marker-car "
       ></div>`;
+      console.log('vehicleContent',vehicleContent)
       const styleObj = {
         content: vehicleContent,
         // offset: this.offsetList[carrier_type || "qt"],
-         offset:[-21.5,-39.5],
+         offset:[-15,-32],
         angle: 0,
       };
       console.log('绘制车辆定位marker position',position)
@@ -1609,7 +1611,7 @@ export default {
       style="transform:rotate(${direction.value || -30}deg);
       background:url('${require(`../../assets/images/map/${this.dealVheicleType(
         tmp
-      )}.png`)}') no-repeat;  background-size:43px 79px"
+      )}.png`)}') no-repeat;"
       class="own-device-marker-warn "
       ><div class="warn-car "></div><div class="${
         type != 0 ? "warn-cirle" : "warn-cirle-blue"
@@ -1617,7 +1619,7 @@ export default {
       const styleObj = {
         content: contents,
         // offset: this.offsetList[tmp.carrier_type || "qt"],
-        offset:[-21.5,-39.5],
+        offset:[-15,-32],
         angle: 0,
       };
       // this.realWarnMarker.setContent(contents);
@@ -2216,8 +2218,8 @@ export default {
     // 标记物车样式
     ::v-deep.own-device-marker-car {
       transform-origin: center center;
-      width: 43px;
-      height: 79px;
+      width: 30px;
+      height: 64px;
       background-size: 100% 100%;
       // &.ztc {
       //   width: 34px;
@@ -2283,8 +2285,8 @@ export default {
     ::v-deep.own-device-marker-warn {
       position: relative;
       transform-origin: center center;
-      width: 43px;
-      height: 79px;
+      width: 30px;
+      height: 64px;
       background-size: 100% 100%;
       z-index: 100;
 
