@@ -30,7 +30,7 @@
           </span>
         </div>
         <div style="margin-top: 20px; text-align: center">
-          <el-button :loading="isSearchDriving" type="primary" @click="searchPath">查询</el-button>
+          <el-button :loading="isSearchDriving" :disabled="isSearchDriving" type="primary" @click="searchPath">查询</el-button>
         </div>
       </div>
     </div>
@@ -39,6 +39,12 @@
       <el-form ref="routeInfoElForm" label-position="top" size="small" :model="routeInfoForm">
         <el-form-item label="路径名称" :rules="[{required: true, message: '必填'}]" prop="name">
           <el-input style="width: 240px;" v-model="routeInfoForm.name" placeholder="请输入路径名称" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="车辆类型" :rules="[{required: true, message: '必填'}]" prop="routeType">
+          <el-radio-group v-model="routeInfoForm.routeType">
+            <el-radio :label="1">汽车</el-radio>
+            <el-radio :label="2">货车</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="报警时段" required>
           <div style="display: flex; align-items: center">
@@ -140,6 +146,7 @@ export default {
         warningEndTime: null,
         offPathDistance: 0,
         offPathTime: 0,
+        routeType: 1,
       },
       truckDrivingInfoForm: {
         size: 4,
@@ -175,6 +182,9 @@ export default {
       } else {
         // this.searchPlace(newVal, this.endPosition)
       }
+    },
+    'routeInfoForm.routeType': function (newVal) {
+      this.trySearchDriving()
     }
   },
   mounted() {
@@ -239,7 +249,8 @@ export default {
       this.routeInfoForm.warningStartTime = detail.effective_time
       this.routeInfoForm.warningEndTime = detail.expires_time
       this.routeInfoForm.offPathDistance = detail.route_deviate_radius
-      this.routeInfoForm.offPathTime = detail.route_deviate_time
+      this.routeInfoForm.offPathTime = detail.route_deviate_time || 0
+      this.routeInfoForm.routeType = detail.route_type || 1
       this.loading = false
 
       let start = detail.points[0]
@@ -418,6 +429,7 @@ export default {
         routeDeviateTime: this.routeInfoForm.offPathTime,
         effectiveTime: this.routeInfoForm.warningStartTime,
         expiresTime: this.routeInfoForm.warningEndTime,
+        routeType: this.routeInfoForm.routeType,
         points: waypoints
       }
       let res = await http_request({
@@ -437,6 +449,7 @@ export default {
       }
     },
     searchPath () {
+      console.log('searchPath')
       if (!this.startPosition.position) {
         this.msgError('请输入起始位置')
         return
@@ -453,19 +466,29 @@ export default {
       if (this.truckDriving) this.truckDriving.clear()
       this.isSearchDriving = true
       let vm = this
-      this.truckDrivingSearch().then(result => {
-        vm.drivingPathResult = result
-        vm.isSearchDriving = false
-      }, error => {
-        vm.msgError(`货车路线规划失败`)
+      if (this.routeInfoForm.routeType === 1) {
         vm.drivingSearch().then(result => {
           vm.drivingPathResult = result
           vm.isSearchDriving = false
-        }, error2 => {
+        }, error => {
           vm.isSearchDriving = false
-          vm.msgError(`线路规划失败:${error2}`)
+          vm.msgError(`线路规划失败:${error}`)
         })
-      })
+      } else {
+        this.truckDrivingSearch().then(result => {
+          vm.drivingPathResult = result
+          vm.isSearchDriving = false
+        }, error => {
+          vm.msgError(`货车路线规划失败`)
+          vm.drivingSearch().then(result => {
+            vm.drivingPathResult = result
+            vm.isSearchDriving = false
+          }, error2 => {
+            vm.isSearchDriving = false
+            vm.msgError(`线路规划失败:${error2}`)
+          })
+        })
+      }
     },
     checkMidPosition () {
       for (let i = 0; i < this.midPositionList.length; i++) {
@@ -562,6 +585,7 @@ export default {
       this.endPosition.marker = marker
     },
     trySearchDriving() {
+      console.log('trySearchDriving')
       if (!this.startPosition.position) {
         return
       }
