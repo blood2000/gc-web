@@ -1,12 +1,13 @@
 <template>
   <div :class="{'has-logo':showLogo}" :style="{ backgroundColor: settings.sideTheme === 'theme-dark' ? variables.menuBg : variables.menuLightBg }">
-    <logo v-if="showLogo" :collapse="isCollapse" />
+    <!-- <logo v-if="showLogo" :collapse="isCollapse" /> -->
+    <img src="../../../assets/logo/collapsed.png" @click="handleCollapsed" class="collapsed-image" :style="{transform:isCollapse?'rotate(-180deg)':'rotate(0deg)'}">
     <el-scrollbar :class="settings.sideTheme" wrap-class="scrollbar-wrapper">
       <el-menu
         :default-active="activeMenu"
         :collapse="isCollapse"
         :background-color="settings.sideTheme === 'theme-dark' ? variables.menuBg : variables.menuLightBg"
-        :text-color="settings.sideTheme === 'theme-dark' ? variables.menuText : 'rgba(0,0,0,.65)'"
+        :text-color="settings.sideTheme === 'theme-dark' ? variables.menuText : variables.menuLightText"
         :unique-opened="true"
         :active-text-color="settings.theme"
         :collapse-transition="false"
@@ -17,6 +18,7 @@
           :key="route.path + index"
           :item="route"
           :base-path="route.path"
+          :isCollapse="isCollapse"
         />
       </el-menu>
     </el-scrollbar>
@@ -55,6 +57,7 @@ export default {
       return variables;
     },
     isCollapse() {
+      console.log('isCollapse',this.sidebar.opened)
       return !this.sidebar.opened;
     }
   },
@@ -62,6 +65,9 @@ export default {
     this.setNewMenu();
   },
   methods: {
+    handleCollapsed(){
+    this.$store.commit('app/TOGGLE_SIDEBAR')
+    },
     // 重新构造菜单结构
     setNewMenu() {
       this.sidebarMenu = JSON.parse(JSON.stringify(this.sidebarRouters));

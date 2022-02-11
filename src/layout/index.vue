@@ -5,17 +5,19 @@
     :style="{ '--current-color': theme }"
   >
     <!-- <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" /> -->
-    <sidebar
-      class="sidebar-container"
-      :style="{
-        backgroundColor:
-          sideTheme === 'theme-dark' ? variables.menuBg : variables.menuLightBg,
-      }"
-    />
+    <!-- 头部标题 -->
+    <navbar />
     <div class="app-wrapper__container">
-      <!-- 头部标题 -->
-      <navbar />
       <!-- 侧边导航栏 -->
+      <sidebar
+        class="sidebar-container"
+        :style="{
+          backgroundColor:
+            sideTheme === 'theme-dark'
+              ? variables.menuBg
+              : variables.menuLightBg,
+        }"
+      />
       <!-- <side-panel v-if="device !== 'mobile'" /> -->
       <!-- 内容 -->
       <div :class="{ hasTagsView: needTagsView }" class="main-container">
@@ -142,7 +144,6 @@ export default {
   height: 100%;
   width: 100%;
   overflow: hidden;
-  display: flex;
   &.mobile.openSidebar {
     position: fixed;
     top: 0;
@@ -152,6 +153,7 @@ export default {
     // 70: headerHeight
     flex: 1;
     height: 100%;
+    display: flex;
   }
 }
 
@@ -168,6 +170,8 @@ export default {
 .fixed-header {
   position: relative;
   z-index: 9;
+  margin: 0 20px;
+  height: 36px;
 }
 
 .mobile .fixed-header {

@@ -38,7 +38,6 @@ export default {
   width: 100%;
   position: relative;
   // overflow: hidden;
-  padding-top: 20px;
   background: #F0F2F5;
 }
 

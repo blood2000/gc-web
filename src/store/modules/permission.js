@@ -36,28 +36,10 @@ const permission = {
     },
   },
   actions: {
-    //mock demo
-    // async GetDemoList({ commit }) {
-    //   const obj = {
-    //     moduleName: 'http_login',
-    //     method: 'get',
-    //     url_alias: 'mock_test'
-    //   }
-    //   console.log("demolist start===>")
-    //   const res = await http_request(obj)
-    //   console.log("demolist res===>", res)
-    //   const sdata = JSON.parse(JSON.stringify(res.data));
-    //   const rdata = JSON.parse(JSON.stringify(res.data));
-    //   const sidebarRoutes = filterAsyncRouter(sdata);
-    //   const rewriteRoutes = filterAsyncRouter(rdata, true);
-    //   rewriteRoutes.push({ path: '*', redirect: '/404', hidden: true });
-    //   commit('SET_ROUTES', rewriteRoutes);
-    //   commit('SET_SIDEBAR_ROUTERS', sidebarRoutes);
-    //   return rewriteRoutes
-    // },
     // 生成路由
     GenerateRoutes({ commit }) {
       const menus = store.getters.menus;
+      console.log('menus',menus)
       const sdata = JSON.parse(JSON.stringify(menus));
       const rdata = JSON.parse(JSON.stringify(menus));
       // 需要更改
@@ -73,13 +55,13 @@ const permission = {
       })
       const sidebarRoutes = filterAsyncRouter(sdata);
       const rewriteRoutes = filterAsyncRouter(rdata, false, true);
-      changeSingleTitle(rewriteRoutes)
+      changeSingleTitle(rewriteRoutes) //标签栏 只有一个子组件时显示夫名称
       rewriteRoutes.push({ path: '*', redirect: '/404', hidden: true });
       commit('SET_ROUTES', rewriteRoutes);
       // test
       commit('SET_SIDEBAR_ROUTERS', sidebarRoutes);
-      commit('SET_DEFAULT_ROUTES', sidebarRoutes);
-      commit('SET_TOPBAR_ROUTES', sidebarRoutes);
+      // commit('SET_DEFAULT_ROUTES', sidebarRoutes);
+      // commit('SET_TOPBAR_ROUTES', sidebarRoutes);
       return rewriteRoutes;
     },
   },

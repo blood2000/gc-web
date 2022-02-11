@@ -1,5 +1,6 @@
 <template>
   <div v-if="!item.hidden">
+    <!-- 这块没做 记得继续做 -->
     <template
       v-if="
         hasOneShowingChild(item.children, item) &&
@@ -10,8 +11,8 @@
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
         <el-menu-item
           :index="resolvePath(onlyOneChild.path)"
-          :class="{ 'submenu-title-noDropdown': !isNest }"
-          class="el-menu-item-reset"
+          :class="{ 'submenu-title-noDropdown': !isNest ,'el-menu-item-reset':isCollapse}"
+         
         >
           <!-- {{ onlyOneChild.meta.title }} -->
             <item
@@ -73,6 +74,10 @@ export default {
       type: String,
       default: "",
     },
+    isCollapse:{
+      type: Boolean,
+      default:false
+    }
   },
   data() {
     this.onlyOneChild = null;

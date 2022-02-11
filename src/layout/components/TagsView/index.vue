@@ -4,7 +4,7 @@
     ref="TagsViewContainer"
     class="tags-view-container"
   >
-    <div class="tags-view-wrapper">
+    <div class="tags-view-wrapper" ref="tagsViewWrapper">
       <!--         :style="activeStyle(tag)"
  -->
       <router-link
@@ -15,10 +15,11 @@
         :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
         tag="span"
         class="tags-view-item"
+        :style="{ 'min-width': setItemWidth }"
         @click.middle.native="!isAffix(tag) ? closeSelectedTag(tag) : ''"
         @contextmenu.prevent.native="openMenu(tag, $event)"
       >
-        <span class="label" >{{ tag.title }}</span>
+        <span class="label">{{ tag.title }}</span>
         <span
           v-if="!isAffix(tag)"
           class="tag-icon-close"
@@ -27,7 +28,12 @@
       </router-link>
     </div>
 
-    <el-dropdown ref="TagsDerpDown" class="btn-arrow-container" trigger="click">
+    <el-dropdown
+      ref="TagsDerpDown"
+      v-show="overflowTagsList.length > 0"
+      class="btn-arrow-container"
+      trigger="click"
+    >
       <div class="btn-arrow" />
       <el-dropdown-menu
         slot="dropdown"
@@ -88,6 +94,7 @@ export default {
       affixTags: [],
       overflowTagsList: [],
       currIndex: null,
+      setItemWidth:0,
     };
   },
   computed: {
@@ -115,6 +122,12 @@ export default {
       } else {
         document.body.removeEventListener("click", this.closeMenu);
       }
+    },
+    overflowTagsList() {
+      // console.log('111')
+      const parentClientWidth = this.$refs.tagsViewWrapper.clientWidth;
+      let tt = parentClientWidth / 11 - 4;
+      this.setItemWidth = tt + "px";
     },
   },
   mounted() {
@@ -310,9 +323,9 @@ export default {
 
 <style lang="scss" scoped>
 .tags-view-container {
-  height: 44px;
+  height: 36px;
   width: 100%;
-  background: #fff;
+  background: transparent;
   position: relative;
   box-sizing: border-box;
   .tags-view-wrapper {
@@ -320,20 +333,21 @@ export default {
     height: 100%;
     overflow: hidden;
     position: relative;
-    padding-top: 8px;
+
     .tags-view-item {
-      border-right:1px solid #F2F2F2;
-      min-width: 150px;
+      border-right: 1px solid #f2f2f2;
+      margin-right: 4px;
+      // min-width: 147px;
       display: inline-block;
       position: relative;
       cursor: pointer;
-      height: 28px;
-      line-height: 28px;
+      height: 100%;
+      line-height: 36px;
       // color: #262626;
       background: #fff;
       padding: 0 10px 0 14px;
       font-size: 14px;
-      // border-radius: 8px 8px 0px 0px;
+      border-radius: 10px 10px 0px 0px;
       > .label {
         display: inline-block;
         vertical-align: middle;
@@ -363,7 +377,7 @@ export default {
       }
       &.active {
         > .label {
-          color: #3D4050;
+          color: #3d4050;
           font-weight: bold;
           padding-left: 14px;
           position: relative;
@@ -372,7 +386,7 @@ export default {
             width: 6px;
             height: 6px;
             border-radius: 50%;
-            background-color: #4682FA;
+            background-color: #4682fa;
             position: absolute;
             left: 0;
             top: 50%;
@@ -389,17 +403,19 @@ export default {
           }
         }
       }
-            &.unactive {
+      &.unactive {
+        background: #f7f8fa;
         > .label {
-          color:#CCCCCC ;
+          color: #cccccc;
           padding-left: 14px;
           position: relative;
+
           &::before {
             content: "";
             width: 6px;
             height: 6px;
             border-radius: 50%;
-            background-color: #CCCCCC;
+            background-color: #cccccc;
             position: absolute;
             left: 0;
             top: 50%;
@@ -422,6 +438,9 @@ export default {
     position: absolute;
     top: 0;
     right: 0;
+    background: #fff;
+    border-radius: 10px 10px 0 0;
+
     .btn-arrow-container-item {
       min-width: 160px;
     }
@@ -431,10 +450,10 @@ export default {
     }
   }
   .btn-arrow {
-    height: 44px;
+    height: 36px;
     width: 36px;
     color: #666;
-    line-height: 40px;
+    line-height: 32px;
     text-align: center;
     cursor: pointer;
     background: url("~@/assets/images/navBar/tag_icon.png") 12px 17px no-repeat;
@@ -492,7 +511,6 @@ export default {
     .tag-icon-close {
       @include tag-icon-close;
     }
-
   }
 }
 .tags-dropdown {
@@ -518,8 +536,8 @@ export default {
   .tag-icon-close {
     @include tag-icon-close;
   }
-  .gray{
-    color:gray
+  .gray {
+    color: gray;
   }
 }
 </style>

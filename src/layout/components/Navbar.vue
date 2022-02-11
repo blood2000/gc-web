@@ -1,32 +1,17 @@
 <template>
   <div class="navbar">
     <div class="left-menu">
-      <div class="left-menu-img">
-        <img
-          src="~@/assets/images/navBar/text_logo.png"
-          style="width: 100%; height: 100%"
-          alt=""
-        />
+      <img src="../../assets/logo/logo.png" style="" />
+      <div class="company-name">
+        <img src="" alt="" /> <span>{{ company_name }}</span>
       </div>
-      <div class="left-menu-driver"></div>
-      <div class="company-name">{{ company_name }}</div>
+    </div>
+    <div>
+
     </div>
     <div class="right-menu">
-      <template v-if="device !== 'mobile'">
-        <!-- <search id="header-search" class="right-menu-item" /> -->
-
-        <!-- <el-tooltip content="官网地址" effect="dark" placement="bottom">
-          <ddc-yi-doc id="ddc-doc" class="right-menu-item hover-effect" />
-        </el-tooltip> -->
-
-        <!-- <screenfull id="screenfull" class="right-menu-item hover-effect" /> -->
-
-        <!-- <el-tooltip content="布局大小" effect="dark" placement="bottom">
-          <size-select id="size-select" class="right-menu-item hover-effect" />
-        </el-tooltip> -->
-      </template>
-
-      <div class="avatar-wrapper">
+      <div>
+  <div class="avatar-wrapper">
         <img
           v-real-img="avatar"
           src="@/assets/images/workbench/icon_noavator.png"
@@ -39,8 +24,11 @@
         trigger="click"
       >
         <div class="avatar-wrapper">
-          <span class="avatar-wrapper__user">{{ nickName || name }}</span>
-          <i class="el-icon-caret-right avatar-wrapper__icon" />
+          <div class="dropdown-userinfo">
+            <span class="avatar-wrapper__user">{{ nickName || name }}</span>
+            <span class="avatar-wrapper__phone">{{ phoneNumber }}</span>
+          </div>
+          <i class="el-icon-caret-bottom avatar-wrapper__icon" />
         </div>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/user/profile">
@@ -54,6 +42,8 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
+      </div>
+      <div class="main-menu"></div>
     </div>
   </div>
 </template>
@@ -68,6 +58,7 @@ export default {
       "avatar",
       "device",
       "nickName",
+      "phoneNumber",
       "name",
       "roleName",
       "isShipment",
@@ -85,8 +76,7 @@ export default {
       },
     },
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
     toggleSideBar() {
       this.$store.dispatch("app/toggleSideBar");
@@ -160,47 +150,34 @@ export default {
   }
   .left-menu {
     height: 100%;
-    padding: 15px 12px;
+    // padding: 15px 12px;
     display: flex;
     align-items: center;
-    &-img {
-      width: 96px;
-      height: 20px;
-      margin-right: 8px;
-      line-height: 33px;
-    }
-    &-driver {
-      width: 1px;
-      height: 16px;
-      background: #cccccc;
-      margin-right: 8px;
-    }
-    &-team {
-      height: 22px;
-      font-size: 16px;
-      font-family: PingFang SC;
-      font-weight: bold;
-      line-height: 22px;
-      color: #3d4050;
-      opacity: 1;
+    & > img {
+      margin-right: 16px;
     }
     .company-name {
-      height: 22px;
       font-size: 16px;
       font-family: PingFang SC;
-      font-weight: bold;
-      line-height: 22px;
+      font-weight: 400;
       color: #3d4050;
-      opacity: 1;
     }
   }
-
+ 
   .right-menu {
-    float: right;
+    // float: right;
+    flex: 1;
+     display: flex;
+    flex-direction: row-reverse;
     height: 100%;
     // 70: headerHeight
     line-height: 70px;
+ .main-menu {
 
+    height: 60px;
+    min-width: 300px;
+    background: chartreuse;
+  }
     &:focus {
       outline: none;
     }
@@ -221,10 +198,27 @@ export default {
           background: rgba(0, 0, 0, 0.025);
         }
       }
+      .dropdown-userinfo {
+        display: flex;
+        flex-direction: column;
+        margin-right: 19px;
+        .avatar-wrapper__user {
+          font-size: 14px;
+          font-family: PingFang SC;
+          font-weight: bold;
+          color: #3d4050;
+        }
+        .avatar-wrapper__phone {
+          font-size: 14px;
+          font-family: PingFang SC;
+          font-weight: 400;
+          color: #3d4050;
+        }
+      }
     }
 
     .avatar-container {
-      margin-right: 20px;
+      margin-right: 16px;
       cursor: default;
       background: transparent !important;
     }
@@ -233,7 +227,9 @@ export default {
       position: relative;
       height: 100%;
       float: left;
-      line-height: 60px;
+      line-height: 20px;
+      display: flex;
+      align-items: center;
       &__image {
         width: 34px;
         height: 34px;

@@ -25,7 +25,8 @@ const user = {
     menus: [],
     nickName: "",
     test: '',
-    company_name: ''
+    company_name: '',
+    phoneNumber: ''
   },
 
   mutations: {
@@ -56,6 +57,9 @@ const user = {
     },
     SET_ONCETOKEN: (state, onceToken) => {
       state.onceToken = onceToken;
+    },
+    SET_PHONENUMBER: (state, phoneNumber) => {
+      state.phoneNumber = phoneNumber;
     }
   },
 
@@ -135,12 +139,13 @@ const user = {
               user.avatar == ""
                 ? require("@/assets/images/profile.png")
                 : process.env.VUE_APP_BASE_API + user.avatar;
-              commit('SET_MENUS',res.data.menus)
-              commit("SET_PERMISSIONS", res.data.permissions);
+            commit('SET_MENUS', res.data.menus)
+            commit("SET_PERMISSIONS", res.data.permissions);
             commit("SET_NAME", user.userName);
             commit("SET_NICKNAME", user.nickName);
             commit("SET_AVATAR", avatar);
             commit("SET_COMPANY_NAME", res.data.company.name);
+            commit("SET_PHONENUMBER", user.phoneNumber);
             resolve(res.data);
           })
           .catch(error => {
@@ -162,7 +167,7 @@ const user = {
         http_request(obj)
           .then(res => {
             console.log('res logininfo', res.data)
-           
+
             resolve(res.data);
           })
           .catch(error => {
@@ -183,12 +188,12 @@ const user = {
           url_alias: "logout"
         };
         http_request(state).then(() => {
-            commit("SET_TOKEN", "");
-            // commit("SET_ROLES", []);
-            commit("SET_PERMISSIONS", []);
-            removeToken();
-            resolve();
-          })
+          commit("SET_TOKEN", "");
+          // commit("SET_ROLES", []);
+          commit("SET_PERMISSIONS", []);
+          removeToken();
+          resolve();
+        })
           .catch(error => {
             reject(error);
           });
@@ -206,14 +211,14 @@ const user = {
       });
     },
     //无登录权限处理
-    NoAuth({commit}) {
-      return new Promise( resolve => {
+    NoAuth({ commit }) {
+      return new Promise(resolve => {
         //清楚缓存token,但是保留vuex中的token用户身份认证信息获取
         removeToken();
         resolve();
       })
     },
-    
+
   }
 };
 
