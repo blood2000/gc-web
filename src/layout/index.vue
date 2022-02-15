@@ -1,16 +1,13 @@
 <template>
-  <div
-    :class="classObj"
-    class="app-wrapper"
-    :style="{ '--current-color': theme }"
-  >
+  <div class="app-wrapper" :style="{ '--current-color': theme }">
     <!-- <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" /> -->
     <!-- 头部标题 -->
     <navbar />
-    <div class="app-wrapper__container">
+    <div class="app-wrapper__container" :class="classObj">
       <!-- 侧边导航栏 -->
       <sidebar
         class="sidebar-container"
+        v-show="sideSecondRouters && sideSecondRouters.length > 1"
         :style="{
           backgroundColor:
             sideTheme === 'theme-dark'
@@ -22,7 +19,10 @@
       <!-- 内容 -->
       <div :class="{ hasTagsView: needTagsView }" class="main-container">
         <!-- 标签栏 -->
-        <div :class="{ 'fixed-header': fixedHeader }">
+        <div
+          v-show="sideSecondRouters && sideSecondRouters.length > 1"
+          :class="{ 'fixed-header': fixedHeader }"
+        >
           <tags-view v-if="needTagsView" />
         </div>
         <!-- 内容 -->
@@ -42,7 +42,7 @@ import { AppMain, Navbar, Settings, TagsView } from "./components";
 import { Sidebar } from "./components";
 import SidePanel from "./components/SidePanel/index";
 import ResizeMixin from "./mixin/ResizeHandler";
-import { mapState } from "vuex";
+import { mapGetters, mapState } from "vuex";
 import variables from "@/assets/styles/variables.scss";
 
 export default {
@@ -72,6 +72,8 @@ export default {
   },
   mixins: [ResizeMixin],
   computed: {
+    ...mapGetters(["sideSecondRouters"]),
+
     ...mapState({
       theme: (state) => state.settings.theme,
       sideTheme: (state) => state.settings.sideTheme,

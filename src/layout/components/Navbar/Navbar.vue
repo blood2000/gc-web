@@ -1,0 +1,375 @@
+<template>
+  <div class="navbar">
+    <div class="left-menu">
+      <img src="@/assets/logo/logo.png" style="" />
+      <div class="company-name">
+        <img src="" alt="" /> <span>{{ company_name }}</span>
+      </div>
+    </div>
+    <div></div>
+    <div class="right-menu">
+      <div>
+        <div class="avatar-wrapper">
+          <img
+            v-real-img="avatar"
+            src="@/assets/images/workbench/icon_noavator.png"
+            class="avatar-wrapper__image"
+          />
+          <!-- <span v-if="roleName !== ''" class="avatar-wrapper__role">{{ roleName }}</span> -->
+        </div>
+        <el-dropdown
+          class="avatar-container right-menu-item hover-effect"
+          trigger="click"
+        >
+          <div class="avatar-wrapper">
+            <div class="dropdown-userinfo">
+              <span class="avatar-wrapper__user">{{ nickName || name }}</span>
+              <span class="avatar-wrapper__phone">{{ phoneNumber }}</span>
+            </div>
+            <i class="el-icon-caret-bottom avatar-wrapper__icon" />
+          </div>
+          <el-dropdown-menu slot="dropdown">
+            <router-link to="/user/profile">
+              <el-dropdown-item>个人中心</el-dropdown-item>
+            </router-link>
+            <!-- <el-dropdown-item @click.native="setting = true">
+            <span>布局设置</span>
+          </el-dropdown-item> -->
+            <el-dropdown-item divided @click.native="logout">
+              <span>退出登录</span>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
+      <div class="main-menu">
+        <el-menu
+          :default-active="activeMenu"
+          :background-color="
+            settings.sideTheme === 'theme-dark'
+              ? variables.menuBg
+              : variables.menuLightBg
+          "
+          :text-color="
+            settings.sideTheme === 'theme-dark'
+              ? variables.menuText
+              : variables.menuLightText
+          "
+          :active-text-color="settings.theme"
+          mode="horizontal"
+          class="main-menu-horizontal"
+        >
+          <NavbarBar
+            v-for="(route, index) in sidebarMenu"
+            :key="route.path + index"
+            :item="route"
+            :base-path="route.path"
+          />
+        </el-menu>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapGetters, mapState } from "vuex";
+import variables from "@/assets/styles/variables.scss";
+import NavbarBar from "./NavbarBar.vue";
+
+export default {
+  components: { NavbarBar },
+  data() {
+    return {
+      sidebarMenu: [],
+    };
+  },
+  computed: {
+    ...mapState(["settings"]),
+    ...mapGetters([
+      "sidebar",
+      "avatar",
+      "device",
+      "nickName",
+      "phoneNumber",
+      "name",
+      "roleName",
+      "isShipment",
+      "company_name",
+      "sidebarRouters",
+      "sideSecondRouters",
+    ]),
+
+    variables() {
+      return variables;
+    },
+    activeMenu() {
+      const route = this.$route;
+      const { meta, path } = route;
+      if (meta.activeMenu) {
+        return meta.activeMenu;
+      }
+      return path;
+    },
+  },
+  mounted() {
+    this.setNewMenu();
+    console.log("sidebarMenu", this.sidebarMenu);
+    this.initSideSecondRouters();
+  },
+  methods: {
+    // f5刷新页面侧边栏重新赋值
+    initSideSecondRouters() {
+      // console.log('window.location',window.location.pathname)
+      if (!window.location.pathname) return;
+      let strTemp = window.location.pathname.split("/");
+      // console.log('strTemp',strTemp)
+      strTemp.forEach((val) => {
+        if (val) {
+          // console.log('-=========->',val)
+          this.sidebarMenu.forEach((el) => {
+            if (
+              `/${val}` === el.path &&
+              el.children &&
+              el.children.length > 1
+            ) {
+              const result = [];
+              el.children.forEach((item) => {
+                if (item.hidden) {
+                  result.push("1");
+                }
+              });
+              if (result.length > 1) {
+                this.$store.commit("SET_SIDE_SECOND_ROUTERS", el.children);
+              }
+            }
+          });
+        }
+      });
+    },
+    menuForEach() {},
+    toggleSideBar() {
+      this.$store.dispatch("app/toggleSideBar");
+    },
+    async logout() {
+      this.$confirm("确定注销并退出系统吗？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        this.$store.dispatch("LogOut").then(() => {
+          location.href = "/index";
+        });
+      });
+    },
+    goToStatistic() {
+      if (this.isShipment) return;
+      const routeData = this.$router.resolve({
+        // path: '/statistic',
+        path: "/statisticSecond",
+        query: {
+          isScale: true,
+        },
+      });
+      window.open(routeData.href, "_blank");
+    },
+    // 重新构造菜单结构
+    setNewMenu() {
+      this.sidebarMenu = JSON.parse(JSON.stringify(this.sidebarRouters));
+      this.sidebarMenu.forEach((firstMenu) => {
+        if (firstMenu.children && firstMenu.children.length > 0) {
+          const child = JSON.parse(JSON.stringify(firstMenu.children));
+          firstMenu.children = [];
+          this.eachMenu(firstMenu, child, firstMenu.path);
+        }
+      });
+      console.log("this.sidebarMenu", this.sidebarMenu);
+    },
+    eachMenu(firstMenu, children, path) {
+      children.forEach((el) => {
+        if (path && !el.path.includes("app")) {
+          el.path = path + "/" + el.path;
+        }
+        firstMenu.children.push(el);
+        if (el.children && el.children.length > 0) {
+          const child = JSON.parse(JSON.stringify(el.children));
+          el.children = [];
+          this.eachMenu(firstMenu, child, el.path);
+        }
+      });
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.navbar {
+  // 70: headerHeight
+  height: 60px;
+  overflow: hidden;
+  position: relative;
+  background: #ffffff;
+  border-bottom: 1px solid #f2f2f2;
+  display: flex;
+  justify-content: space-between;
+  &__logo {
+    float: left;
+    width: 134px;
+    height: 36px;
+    margin: 18px 10px 18px 24px;
+    cursor: pointer;
+  }
+
+  .hamburger-container {
+    // 70: headerHeight
+    line-height: 70px;
+    height: 100%;
+    float: left;
+    cursor: pointer;
+    transition: background 0.3s;
+    -webkit-tap-highlight-color: transparent;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.025);
+    }
+  }
+
+  .breadcrumb-container {
+    float: left;
+    padding-top: 7px;
+  }
+
+  .errLog-container {
+    display: inline-block;
+    vertical-align: top;
+  }
+  .left-menu {
+    height: 100%;
+    // padding: 15px 12px;
+    display: flex;
+    align-items: center;
+    & > img {
+      margin-right: 16px;
+    }
+    .company-name {
+      font-size: 16px;
+      font-family: PingFang SC;
+      font-weight: 400;
+      color: #3d4050;
+    }
+  }
+
+  .right-menu {
+    // float: right;
+    flex: 1;
+    display: flex;
+    flex-direction: row-reverse;
+    height: 100%;
+    // 70: headerHeight
+    line-height: 70px;
+    .main-menu {
+      height: 60px;
+      margin-right: 55px;
+      .el-menu.el-menu--horizontal {
+        border-bottom: none;
+      }
+      // min-width: 300px;
+      // background: chartreuse;
+    }
+    &:focus {
+      outline: none;
+    }
+
+    .right-menu-item {
+      display: inline-block;
+      padding: 0 8px;
+      height: 100%;
+      font-size: 18px;
+      color: #5a5e66;
+      vertical-align: text-bottom;
+
+      &.hover-effect {
+        cursor: pointer;
+        transition: background 0.3s;
+
+        &:hover {
+          background: rgba(0, 0, 0, 0.025);
+        }
+      }
+      .dropdown-userinfo {
+        display: flex;
+        flex-direction: column;
+        margin-right: 19px;
+        .avatar-wrapper__user {
+          font-size: 14px;
+          font-family: PingFang SC;
+          font-weight: bold;
+          color: #3d4050;
+        }
+        .avatar-wrapper__phone {
+          font-size: 14px;
+          font-family: PingFang SC;
+          font-weight: 400;
+          color: #3d4050;
+        }
+      }
+    }
+
+    .avatar-container {
+      margin-right: 16px;
+      cursor: default;
+      background: transparent !important;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      height: 100%;
+      float: left;
+      line-height: 20px;
+      display: flex;
+      align-items: center;
+      &__image {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        vertical-align: middle;
+      }
+
+      &__role {
+        padding: 0 12px 0 10px;
+        font-size: 14px;
+        font-family: PingFang SC;
+        color: #3d4050;
+        vertical-align: middle;
+        position: relative;
+        &::after {
+          content: "";
+          width: 1px;
+          height: 12px;
+          position: absolute;
+          top: 50%;
+          margin-top: -6px;
+          right: 0;
+          background: #fff;
+          font-size: 14px;
+          opacity: 0.4;
+        }
+      }
+
+      &__user {
+        margin: 0 6px 0 2px;
+        font-size: 14px;
+        font-family: PingFang SC;
+        color: #3d4050;
+        font-weight: bold;
+      }
+
+      &__icon {
+        position: relative;
+        top: 3px;
+      }
+    }
+  }
+}
+.main-menu-horizontal {
+  display: flex;
+}
+</style>

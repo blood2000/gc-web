@@ -77,7 +77,7 @@ export default {
     isCollapse:{
       type: Boolean,
       default:false
-    }
+    },
   },
   data() {
     this.onlyOneChild = null;

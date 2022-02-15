@@ -12,6 +12,7 @@ const permission = {
     defaultRoutes: [],
     topbarRouters: [],
     sidebarRouters: [],
+    sideSecondRouters:[]
   },
   mutations: {
     SET_ROUTES: (state, routes) => {
@@ -23,16 +24,21 @@ const permission = {
     },
     SET_TOPBAR_ROUTES: (state, routes) => {
       // 顶部导航菜单默认添加统计报表栏指向首页
-      const index = [
-        {
-          path: 'index',
-          meta: { title: '统计报表', icon: 'dashboard' },
-        },
-      ];
-      state.topbarRouters = routes.concat(index);
+      // const index = [
+      //   {
+      //     path: 'index',
+      //     meta: { title: '统计报表', icon: 'dashboard' },
+      //   },
+      // ];
+      state.topbarRouters = routes;
     },
     SET_SIDEBAR_ROUTERS: (state, routes) => {
       state.sidebarRouters = routes;
+    },
+    //sideSecondRouters
+    SET_SIDE_SECOND_ROUTERS:(state, routes)=> {
+      console.log('routes',routes)
+      state.sideSecondRouters = routes;
     },
   },
   actions: {

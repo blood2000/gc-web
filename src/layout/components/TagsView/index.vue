@@ -99,9 +99,11 @@ export default {
   },
   computed: {
     visitedViews() {
+      console.log('this.$store.state.tagsView.visitedViews',this.$store.state.tagsView.visitedViews)
       return this.$store.state.tagsView.visitedViews;
     },
     routes() {
+      console.log('this.$store.state.permission.routes',this.$store.state.permission.routes)
       return this.$store.state.permission.routes;
     },
     theme() {
@@ -148,6 +150,7 @@ export default {
       throttle();
     },
     isActive(route) {
+      console.log('route.path',route.path)
       return route.path === this.$route.path;
     },
     activeStyle(tag) {
@@ -182,6 +185,7 @@ export default {
       return tags;
     },
     initTags() {
+      console.log('this.routes',this.routes)
       const affixTags = (this.affixTags = this.filterAffixTags(this.routes));
       for (const tag of affixTags) {
         // Must have tag name
