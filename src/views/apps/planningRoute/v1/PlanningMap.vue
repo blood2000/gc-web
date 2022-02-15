@@ -559,8 +559,18 @@ export default {
       let marker = new AMap.Marker({
         position,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
         title: name,
+        draggable: true,
         icon: pointStartImage,
         offset: new AMap.Pixel(-45, -45)
+      })
+      let vm = this
+      marker.on('dragend', function (event) {
+        let position = marker.getPosition()
+        vm.startPosition.position = position
+        vm.getAddressByPosition(position.lng, position.lat).then(res => {
+          vm.startPosition.name = res.regeocode.formattedAddress
+        })
+        vm.trySearchDriving()
       })
       this.map.setCenter(position)
       this.map.add(marker)
@@ -577,7 +587,17 @@ export default {
         position,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
         title: name,
         icon: pointEndImage,
+        draggable: true,
         offset: new AMap.Pixel(-45, -45)
+      })
+      let vm = this
+      marker.on('dragend', function (event) {
+        let position = marker.getPosition()
+        vm.endPosition.position = position
+        vm.getAddressByPosition(position.lng, position.lat).then(res => {
+          vm.endPosition.name = res.regeocode.formattedAddress
+        })
+        vm.trySearchDriving()
       })
       this.map.setCenter(position)
       this.map.add(marker)
