@@ -1,9 +1,12 @@
 <template>
   <div class="navbar">
     <div class="left-menu">
-      <img src="@/assets/logo/logo.png" style="" />
+      <router-link to="/index" @click.native="handlelogo">
+        <img src="@/assets/logo/logo.png" style="" />
+      </router-link>
       <div class="company-name">
-        <img src="" alt="" /> <span>{{ company_name }}</span>
+        <img src="../../../assets/images/home/team-icon.png" alt="" />
+        <span>{{ company_name }}</span>
       </div>
     </div>
     <div></div>
@@ -29,7 +32,7 @@
             <i class="el-icon-caret-bottom avatar-wrapper__icon" />
           </div>
           <el-dropdown-menu slot="dropdown">
-            <router-link to="/user/profile">
+            <router-link to="/user/profile" @click.native="handleProfile">
               <el-dropdown-item>个人中心</el-dropdown-item>
             </router-link>
             <!-- <el-dropdown-item @click.native="setting = true">
@@ -44,17 +47,12 @@
       <div class="main-menu">
         <el-menu
           :default-active="activeMenu"
-          :background-color="
-            settings.sideTheme === 'theme-dark'
-              ? variables.menuBg
-              : variables.menuLightBg
-          "
           :text-color="
             settings.sideTheme === 'theme-dark'
               ? variables.menuText
-              : variables.menuLightText
+              : variables.topMenuText
           "
-          :active-text-color="settings.theme"
+          :active-text-color="variables.topMenuActiveText"
           mode="horizontal"
           class="main-menu-horizontal"
         >
@@ -63,6 +61,8 @@
             :key="route.path + index"
             :item="route"
             :base-path="route.path"
+            :recordModuleName="recordModuleName"
+            @setRecordModuleName="setRecordModuleName"
           />
         </el-menu>
       </div>
@@ -80,6 +80,7 @@ export default {
   data() {
     return {
       sidebarMenu: [],
+      recordModuleName: "",
     };
   },
   computed: {
@@ -115,40 +116,55 @@ export default {
     console.log("sidebarMenu", this.sidebarMenu);
     this.initSideSecondRouters();
   },
+
   methods: {
+    // logo
+    handlelogo() {
+      this.$store.commit("tagsView/DEL_ALL_VISITED_VIEWS");
+      this.recordModuleName = "index";
+      this.$store.commit("SET_SIDE_SECOND_ROUTERS", []);
+    },
+    // 跳转个人中心
+    handleProfile() {
+      console.log("跳转个人中心");
+      this.$store.commit("tagsView/DEL_ALL_VISITED_VIEWS");
+      this.recordModuleName = "profile";
+      this.$store.commit("SET_SIDE_SECOND_ROUTERS", []);
+    },
+    //设置默认模块名
+    setRecordModuleName(path) {
+      console.log("ckc 设置默认模块名", path);
+      this.recordModuleName = path;
+    },
     // f5刷新页面侧边栏重新赋值
     initSideSecondRouters() {
-      // console.log('window.location',window.location.pathname)
       if (!window.location.pathname) return;
       let strTemp = window.location.pathname.split("/");
-      // console.log('strTemp',strTemp)
-      strTemp.forEach((val) => {
-        if (val) {
-          // console.log('-=========->',val)
-          this.sidebarMenu.forEach((el) => {
-            if (
-              `/${val}` === el.path &&
-              el.children &&
-              el.children.length > 1
-            ) {
-              const result = [];
-              el.children.forEach((item) => {
-                if (item.hidden) {
-                  result.push("1");
-                }
-              });
-              if (result.length > 1) {
-                this.$store.commit("SET_SIDE_SECOND_ROUTERS", el.children);
-              }
+      // 路径上一级菜单值
+      this.recordModuleName = strTemp[1];
+      console.log("ckc f5刷新页面", this.recordModuleName);
+      this.sidebarMenu.forEach((el) => {
+        console.log("el.path", el.path, el);
+        if (
+          `/${this.recordModuleName}` === el.path &&
+          el.children &&
+          el.children.length > 1
+        ) {
+          // 有效二级菜单
+          const result = [];
+          el.children.forEach((item) => {
+            if (!item.hidden) {
+              result.push(item);
             }
           });
+          console.log("ckc  el.children", result, result.length);
+          this.$store.commit("SET_SIDE_SECOND_ROUTERS", result);
         }
       });
     },
-    menuForEach() {},
-    toggleSideBar() {
-      this.$store.dispatch("app/toggleSideBar");
-    },
+    // toggleSideBar() {
+    //   this.$store.dispatch("app/toggleSideBar");
+    // },
     async logout() {
       this.$confirm("确定注销并退出系统吗？", "提示", {
         confirmButtonText: "确定",
@@ -185,9 +201,9 @@ export default {
     },
     eachMenu(firstMenu, children, path) {
       children.forEach((el) => {
-        if (path && !el.path.includes("app")) {
-          el.path = path + "/" + el.path;
-        }
+        // if (path && !el.path.includes("app")) {
+        el.path = path + "/" + el.path;
+        // }
         firstMenu.children.push(el);
         if (el.children && el.children.length > 0) {
           const child = JSON.parse(JSON.stringify(el.children));
@@ -246,7 +262,7 @@ export default {
     // padding: 15px 12px;
     display: flex;
     align-items: center;
-    & > img {
+    & > a {
       margin-right: 16px;
     }
     .company-name {
@@ -254,6 +270,11 @@ export default {
       font-family: PingFang SC;
       font-weight: 400;
       color: #3d4050;
+      display: flex;
+      align-items: center;
+      & > img {
+        padding-right: 6px;
+      }
     }
   }
 

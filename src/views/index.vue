@@ -28,14 +28,14 @@
 </template>
 
 <script>
-import PersonalCenter from './components/index/PersonalCenter'
-import Transport from './components/index/Transport'
-import List from './components/index/List'
-import AlarmTrend from './components/index/Alarm/AlarmTrend'
-import AlarmInfo from './components/index/Alarm/AlarmInfo'
+import PersonalCenter from "./components/index/PersonalCenter";
+import Transport from "./components/index/Transport";
+import List from "./components/index/List";
+import AlarmTrend from "./components/index/Alarm/AlarmTrend";
+import AlarmInfo from "./components/index/Alarm/AlarmInfo";
 
 export default {
-  name: 'Index',
+  name: "Index",
   components: {
     PersonalCenter,
     Transport,
@@ -44,13 +44,14 @@ export default {
     AlarmInfo,
   },
   data() {
-    return {}
+    return {};
   },
   created() {
-    console.log('登录之后进来了')
+    console.log("登录之后进来了");
   },
+
   methods: {},
-}
+};
 </script>
 
 <style scoped lang="scss">

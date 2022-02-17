@@ -172,10 +172,7 @@
 import { http_request } from "../../../../api";
 import formValidate from "../../../../utils/formValidate";
 import { addressTypeList } from "../config";
-const geocoder = new AMap.Geocoder({
-  radius: 1000,
-  extensions: "all",
-});
+
 export default {
   props: {
     open: {
@@ -193,6 +190,7 @@ export default {
   },
   data() {
     return {
+      geocoder:null,
       loading: false,
       detailLoading: false,
       provinceList: [],
@@ -287,7 +285,18 @@ export default {
       }
     },
   },
+  mounted(){
+    this.initMap()
+  },
   methods: {
+      initMap(){
+       setTimeout(() => {
+      this.geocoder = new AMap.Geocoder({
+        radius: 1000,
+        extensions: "all",
+      });
+    }, 1000);
+    },
     //请求详情
     requsetDetail() {
       const tmp = {
@@ -530,7 +539,7 @@ export default {
     // 逆解码函数
     getaddress(lnglat) {
       const _this = this;
-      geocoder.getAddress(lnglat, function (status, result) {
+      this.geocoder.getAddress(lnglat, function (status, result) {
         if (status === "complete" && result.info === "OK") {
           // 通过经纬度找出详细的地址
           const {

@@ -27,9 +27,20 @@ $subMenuHover: #FAFAFA;
 $subMenuText:#6A6F81;
 $sideBarWidth: 220px;
 
+
+// topbar
+$topMenuActiveBg:#4682FA;
+$topMenuActiveText:#ffffff;
+$topMenuBg:#ffffff;
+$topMenuText:#6A6F81;
+// $topMenuHoverBg:
 // the :export directive is the magic sauce for webpack
 // https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass
 :export {
+  topMenuActiveBg:$topMenuActiveBg;
+  topMenuActiveText:$topMenuActiveText;
+  topMenuBg:$topMenuBg;
+  topMenuText:$topMenuText;
   menuLightText:$menuLightText;
   menuText: $menuText;
   menuActiveText: $menuActiveText;

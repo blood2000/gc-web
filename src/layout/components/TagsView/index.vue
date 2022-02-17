@@ -103,7 +103,6 @@ export default {
       return this.$store.state.tagsView.visitedViews;
     },
     routes() {
-      console.log('this.$store.state.permission.routes',this.$store.state.permission.routes)
       return this.$store.state.permission.routes;
     },
     theme() {
@@ -185,7 +184,6 @@ export default {
       return tags;
     },
     initTags() {
-      console.log('this.routes',this.routes)
       const affixTags = (this.affixTags = this.filterAffixTags(this.routes));
       for (const tag of affixTags) {
         // Must have tag name

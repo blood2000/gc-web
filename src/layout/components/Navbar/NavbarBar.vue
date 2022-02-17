@@ -34,6 +34,10 @@ export default {
       type: String,
       default: "",
     },
+    recordModuleName: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {};
@@ -41,8 +45,16 @@ export default {
   mounted() {},
   methods: {
     handleJump(item) {
-      console.log("11", item);
+      console.log("ckc 11", item, this.recordModuleName, item.path);
+      // 和记录不同就清空tagview
+      if (this.recordModuleName && this.recordModuleName != item.path) {
+        console.log("该清楚了");
+        this.$store.commit("tagsView/DEL_ALL_VISITED_VIEWS");
+      }
+      this.$emit('setRecordModuleName',item.path)
+      console.log("ckc this.recordModuleName", this.recordModuleName);
       let result = [];
+      // 有效二级菜单
       if (!item.hidden) {
         if (item.children && item.children.length > 1) {
           item.children.forEach((element) => {
@@ -52,6 +64,7 @@ export default {
           });
         }
       }
+     console.log('ckc shaqingk1')
       this.$store.commit("SET_SIDE_SECOND_ROUTERS", result);
     },
     // 非一级默认算最后一个
@@ -62,7 +75,6 @@ export default {
       } else {
         result.result = item.path;
       }
-      console.log();
       return result.result;
     },
     dealPath(child, result) {

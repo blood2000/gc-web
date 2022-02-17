@@ -7,6 +7,11 @@
 <script>
 export default  {
   name:  'App',
+    watch: {
+    "$route.path"() {
+      console.log("路由变化", this.$route.path);
+    },
+  },
     metaInfo() {
       console.log('this.$store.state.settings.title',this.$store.state.settings.title)
         return {

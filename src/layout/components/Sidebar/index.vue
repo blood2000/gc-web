@@ -57,7 +57,7 @@ export default {
       return variables;
     },
     isCollapse() {
-      console.log('isCollapse',this.sidebar)
+      console.log('isCollapse',!this.sidebar.opened)
       return !this.sidebar.opened;
     }
   },

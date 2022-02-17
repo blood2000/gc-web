@@ -18,7 +18,7 @@
             <item
               v-if="item.meta"
               :icon="item.meta && item.meta.icon"
-              :title="item.meta.title"
+              :title="showTitle(item)"
             />
         </el-menu-item>
       </app-link>
@@ -34,7 +34,7 @@
         <item
           v-if="item.meta"
           :icon="item.meta && item.meta.icon"
-          :title="item.meta.title"
+          :title="showTitle(item)"
         />
       </template>
       <sidebar-item
@@ -84,6 +84,10 @@ export default {
     return {};
   },
   methods: {
+    showTitle(item){
+      console.log('item',item,this.isCollapse)
+      return this.isCollapse?item.menuAlias:item.meta.title
+    },
     hasOneShowingChild(children = [], parent) {
       const showingChildren = children.filter((item) => {
         if (item.hidden) {

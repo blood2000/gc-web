@@ -61,7 +61,7 @@ const permission = {
       })
       const sidebarRoutes = filterAsyncRouter(sdata);
       const rewriteRoutes = filterAsyncRouter(rdata, false, true);
-      changeSingleTitle(rewriteRoutes) //标签栏 只有一个子组件时显示夫名称
+      // changeSingleTitle(rewriteRoutes) //标签栏 只有一个子组件时显示夫名称
       rewriteRoutes.push({ path: '*', redirect: '/404', hidden: true });
       commit('SET_ROUTES', rewriteRoutes);
       // test

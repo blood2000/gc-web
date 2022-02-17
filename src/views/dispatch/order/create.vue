@@ -7,8 +7,7 @@
     :before-close="clearAll"
     size="45%"
     :append-to-body="true"
-        :wrapperClosable="false"
-
+    :wrapperClosable="false"
   >
     <el-form
       ref="form"
@@ -479,11 +478,6 @@ import { http_request } from "../../../api";
 import AddressDialog from "./components/address_dialog.vue";
 import formValidate from "../../../utils/formValidate";
 import CompanyItem from "./components/companyItem.vue";
-
-const geocoder = new AMap.Geocoder({
-  radius: 1000,
-  extensions: "all",
-});
 import { settlementWayConfig } from "./order_config";
 export default {
   name: "detail",
@@ -500,6 +494,7 @@ export default {
   },
   data() {
     return {
+      geocoder: null,
       pageData: {},
       innerDrawer: false,
       searchOption: {
@@ -640,7 +635,9 @@ export default {
       currAddressType: 0,
     };
   },
-  created() {},
+  mounted() {
+   this.initMap()
+  },
   watch: {
     createDrawer() {
       if (this.createDrawer) {
@@ -663,6 +660,14 @@ export default {
     },
   },
   methods: {
+    initMap(){
+       setTimeout(() => {
+      this.geocoder = new AMap.Geocoder({
+        radius: 1000,
+        extensions: "all",
+      });
+    }, 1000);
+    },
     // 选择常用企业
     hanleCompanyOpen() {
       console.log("选择常用企业");
@@ -789,7 +794,7 @@ export default {
       } else {
         this.addressReset(type);
       }
-      this.getDistrictFun(e, type,()=>{});
+      this.getDistrictFun(e, type, () => {});
     },
     // 区更变
     districtChange(e, type) {
@@ -951,7 +956,7 @@ export default {
     // 逆解码函数
     getaddress(lnglat, type) {
       const _this = this;
-      geocoder.getAddress(lnglat, function (status, result) {
+      this.geocoder.getAddress(lnglat, function (status, result) {
         if (status === "complete" && result.info === "OK") {
           // 通过经纬度找出详细的地址
           const {
@@ -989,7 +994,7 @@ export default {
       if (type == "1") {
         this.getCityListFun(provinceCode, "1", () => {
           this.getDistrictFun(cityCode, "1", () => {
-                      console.log("loadAddressParams 出发地", this.loadList.cityList);
+            console.log("loadAddressParams 出发地", this.loadList.cityList);
             this.loadAddressParams.provinceCode = provinceCode;
             this.loadAddressParams.cityCode = cityCode;
             this.loadAddressParams.districtCode = districtCode;
@@ -1053,7 +1058,7 @@ export default {
         type: "2", //1 装货  2 卸货
         locations: [], //坐标
       };
-      this.remark = null
+      this.remark = null;
       this.resetForm("form");
       this.resetForm("loadForm");
       this.resetForm("unloadForm");
