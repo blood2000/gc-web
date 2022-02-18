@@ -1443,7 +1443,7 @@ export default {
       const direction = attribute.direction || {};
       const speed = attribute.speed || {};
       const position = attribute.coordinate.value;
-      console.log('direction.value',direction.value)
+      console.log("direction.value", direction.value);
       // 绘制车辆标记
       const vehicleContent = `<div
       style="transform:rotate(${direction.value || -30}deg);
@@ -1452,14 +1452,14 @@ export default {
       )}.png`)}') no-repeat;"
       class="own-device-marker-car "
       ></div>`;
-      console.log('vehicleContent',vehicleContent)
+      console.log("vehicleContent", vehicleContent);
       const styleObj = {
         content: vehicleContent,
         // offset: this.offsetList[carrier_type || "qt"],
-         offset:[-15,-32],
+        offset: [-15, -32],
         angle: 0,
       };
-      console.log('绘制车辆定位marker position',position)
+      console.log("绘制车辆定位marker position", position);
       const marker = this.drawMarker(position, styleObj);
       console.log("ckc ", vehicle_code, marker);
       this.markerList[vehicle_code] = marker;
@@ -1539,9 +1539,9 @@ export default {
           console.log("定时刷新车位置 周期", this.refreshMarkerTime);
           this.getDeviceLocationInfoByCode();
           if (this.headerTab != 4) {
-          this.$refs.WarnListRef.activeTab = "real";
-          // 刷新告警
-          this.$refs.WarnListRef.getList(2);
+            this.$refs.WarnListRef.activeTab = "real";
+            // 刷新告警
+            this.$refs.WarnListRef.getList(2);
           }
         }, this.refreshMarkerTime * 1000);
       });
@@ -1619,7 +1619,7 @@ export default {
       const styleObj = {
         content: contents,
         // offset: this.offsetList[tmp.carrier_type || "qt"],
-        offset:[-15,-32],
+        offset: [-15, -32],
         angle: 0,
       };
       // this.realWarnMarker.setContent(contents);
@@ -2089,8 +2089,8 @@ export default {
     }
     // 车标记的信息样式
     ::v-deep.own-map-vehicle-marker-label {
-      width: 269px;
-      height: 70px;
+      width: 200px;
+      height: 52px;
       background: rgba(255, 255, 255, 0.7);
       box-shadow: 0px 3px 5px rgba(206, 206, 206, 0.7);
       border-radius: 4px;
@@ -2098,10 +2098,10 @@ export default {
       box-sizing: border-box;
       display: flex;
       .label-img {
-        width: 51px;
-        height: 51px;
+        width: 36px;
+        height: 36px;
         border-radius: 8px;
-        margin-right: 13px;
+        margin-right: 8px;
         box-sizing: border-box;
         & > img {
           width: 100%;
@@ -2109,27 +2109,27 @@ export default {
         }
       }
       .label-content {
-        width: 200px;
+        width: 142px;
 
         .label-content-name {
-          font-size: 20px;
+          font-size: 16px;
           font-family: PingFang SC;
           font-weight: bold;
-          line-height: 24px;
+          line-height: 18px;
           color: #3d4050;
-          margin-bottom: 3px;
+          margin-bottom: 2px;
           &-right {
-            margin-left: 10px;
+            margin-left: 6px;
           }
         }
         .label-content-status {
-          font-size: 16px;
+          font-size: 14px;
           font-family: PingFang SC;
           font-weight: 400;
-          line-height: 22px;
+          line-height: 16px;
           color: #999999;
           &-line {
-            margin: 0 10px;
+            margin: 0 6px;
           }
         }
       }
