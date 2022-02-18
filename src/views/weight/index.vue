@@ -188,8 +188,6 @@ export default {
 .monitor-pages-info {
   margin: 0 24px;
   display: flex;
-  height: calc(100vh - 146px);
-  margin: 0 20px 0 20px;
   &-tab {
     margin: 0 21px;
   }

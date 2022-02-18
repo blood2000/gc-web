@@ -294,7 +294,6 @@ export default {
   },
   methods: {
     async requsetGroupHttp() {
-      console.log("我被请求了");
       const obj = {
         moduleName: "http_group",
         method: "post",

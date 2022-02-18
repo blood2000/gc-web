@@ -37,7 +37,7 @@ export default {
   methods:{
     handleIndex(){
        this.$store.commit("tagsView/DEL_ALL_VISITED_VIEWS");
-      // this.recordModuleName = "404";
+      this.$store.commit("app/SET_RECORDMODULENAME", "index");
       this.$store.commit("SET_SIDE_SECOND_ROUTERS", []);
     }
   }

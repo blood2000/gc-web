@@ -4,22 +4,34 @@
     <div class="user-container">
       <div class="avatar">
         <img v-if="user.avatar" :src="user.avatar" />
-        <img v-else src="../../../../assets/images/profile.png" alt="默认头像" />
+        <img
+          v-else
+          src="../../../../assets/images/profile.png"
+          alt="默认头像"
+        />
       </div>
       <div class="info">
         <div class="top g-single-row">HI, {{ user.nickName }}</div>
-        <div class="mid g-single-row">{{ user.isAdmin === 1 ? companyName : dept.deptName }}</div>
+        <div class="mid g-single-row">
+          {{ user.isAdmin === 1 ? companyName : dept.deptName }}
+        </div>
         <div class="bottom" v-if="roleNames.length > 0">
-          <el-tag class="mr5" size="mini">{{ roleNames[0] }}</el-tag>
-          <el-dropdown v-if="roleNames.length > 1">
+          <div
+            class="bottom-item"
+            v-for="item in getShowRoleNames(roleNames).showList"
+            :key="item"
+          >
+            <el-tag class="mr5" size="mini">{{ item }}</el-tag>
+          </div>
+          <el-dropdown v-if="getShowRoleNames(roleNames).hiddenList.length > 0">
             <span class="el-dropdown-link">
               <el-tag size="mini"><i class="el-icon-more"></i></el-tag>
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item
-                v-for="(item, index) in roleNames"
+                v-for="(item, index) in getShowRoleNames(roleNames).hiddenList"
                 :key="index"
-                v-show="index !== 0"
+                v-show="index > 0"
               >
                 <el-tag size="mini">{{ item }}</el-tag>
               </el-dropdown-item>
@@ -42,23 +54,34 @@
       <div class="calendar-container__main">
         <el-calendar ref="monChild" v-model="value" :first-day-of-week="7">
           <template slot="dateCell" slot-scope="{ date, data }">
-            <div @click="onClickDay(data)" :class="data.isSelected ? 'is-selected' : ''">
+            <div
+              @click="onClickDay(data)"
+              :class="data.isSelected ? 'is-selected' : ''"
+            >
               <div style="line-height: 17px">
-                {{ parseTime(data.day, '{d}') }}
+                {{ parseTime(data.day, "{d}") }}
               </div>
               <div class="g-flexcenter">
                 <div
                   v-if="
-                    warnDateList.findIndex((res) => res.alarmTime === data.day) !== -1 &&
-                    new Date() > new Date(data.day).getTime()
+                    warnDateList.findIndex(
+                      (res) => res.alarmTime === data.day
+                    ) !== -1 && new Date() > new Date(data.day).getTime()
                   "
-                  :class="data.isSelected ? 'schedule' : 'schedule g-color-error'"
+                  :class="
+                    data.isSelected ? 'schedule' : 'schedule g-color-error'
+                  "
                 >
                   ·
                 </div>
                 <div
-                  v-if="transList.findIndex((res) => res.datetime === data.day) !== -1"
-                  :class="data.isSelected ? 'schedule' : 'schedule g-color-blue'"
+                  v-if="
+                    transList.findIndex((res) => res.datetime === data.day) !==
+                    -1
+                  "
+                  :class="
+                    data.isSelected ? 'schedule' : 'schedule g-color-blue'
+                  "
                 >
                   ·
                 </div>
@@ -87,7 +110,11 @@
     <div class="date-container">
       <div class="date-container__box">
         <div class="date-container__title">
-          <img class="icon" src="../../../../assets/images/home/vehicle.png" alt="" />
+          <img
+            class="icon"
+            src="../../../../assets/images/home/vehicle.png"
+            alt=""
+          />
           <span>车辆</span>
         </div>
         <div class="date-container__tips">
@@ -116,7 +143,11 @@
       </div>
       <div class="date-container__box">
         <div class="date-container__title">
-          <img class="icon" src="../../../../assets/images/home/driver.png" alt="" />
+          <img
+            class="icon"
+            src="../../../../assets/images/home/driver.png"
+            alt=""
+          />
           <span>司机</span>
         </div>
         <div class="date-container__tips">
@@ -143,7 +174,11 @@
       </div>
       <div class="date-container__box">
         <div class="date-container__title">
-          <img class="icon" src="../../../../assets/images/home/device.png" alt="" />
+          <img
+            class="icon"
+            src="../../../../assets/images/home/device.png"
+            alt=""
+          />
           <span>设备</span>
         </div>
         <div class="date-container__tips">
@@ -175,149 +210,203 @@
 </template>
 
 <script>
-import { http_request } from '@/api'
+import { http_request } from "@/api";
 export default {
-  name: 'PersonalCenter',
+  name: "PersonalCenter",
   data() {
     return {
       user: {},
       dept: {},
-      companyName: '',
+      companyName: "",
       roleNames: [],
       value: new Date(),
       warnDateCount: 0,
       warnDateList: [],
       transCount: 0,
       transList: [],
-      title: '',
+      title: "",
       openSchedule: false,
       vehicle: {}, // 车辆
       driver: {}, // 司机
       device: {}, // 设备
-    }
+    };
   },
   computed: {
     currentTM() {
-      return this.parseTime(this.value, '{y}年{m}月')
+      return this.parseTime(this.value, "{y}年{m}月");
     },
   },
   created() {
-    this.getUser()
-    this.getList()
-    this.queryDriverVehicleEquipment()
+    this.getUser();
+    this.getList();
+    this.queryDriverVehicleEquipment();
   },
+  mounted() {},
   methods: {
+    getShowRoleNames(list) {
+      let oneWidthLen = 0;
+      let twoWidthlen = 0;
+      const showList = [];
+      const hiddenList = [];
+      for (let i = 0; i < list.length; i++) {
+        const item = list[i];
+        const itemWidth = this.getFontWidth(item.length);
+
+        if (oneWidthLen + itemWidth < 205) {
+          // 先算第一行数值
+          oneWidthLen += itemWidth;
+          showList.push(item);
+        } else if (twoWidthlen + itemWidth < 180) {
+          // 算第二行数值
+          twoWidthlen += itemWidth;
+          showList.push(item);
+        } else {
+          // 放不下的第三行
+          hiddenList.push(item);
+        }
+        console.log("item ==> ", item.length, itemWidth);
+      }
+      return { showList, hiddenList };
+    },
+    //单个字宽度
+    getFontWidth(len) {
+      const result = len * 12 + 17;
+      return result;
+    },
     // 获取用户信息
     getUser() {
-      this.$store.dispatch('GetInfo').then((res) => {
-        console.log('用户信息==>', res)
-        this.user = res.user
-        this.dept = res.dept
-        this.companyName = res.company.name
-        this.roleNames = res.roleNames || []
-      })
+      this.$store.dispatch("GetInfo").then((res) => {
+        console.log("用户信息==>", res);
+        this.user = res.user;
+        this.dept = res.dept;
+        this.companyName = res.company.name;
+        // this.roleNames =
+        //   [
+        //     "我",
+        //     "厉害",
+        //     "跑龙套",
+        //     "跑龙套哈",
+        //     "嘿嘿",
+        //     "唉哟黑",
+        //     "跑龙套哈",
+        //     "嘿嘿",
+        //     "跑龙套哈",
+        //     "嘿嘿",
+        //   ] || [];
+        this.roleNames = res.roleNames || [];
+      });
     },
     getList() {
-      this.getDispatch()
-      this.getWarn()
+      this.getDispatch();
+      this.getWarn();
     },
     // 日历告警
     getWarn() {
       const obj = {
-        moduleName: 'http_home',
-        method: 'get',
-        url_alias: 'schedule_warn',
+        moduleName: "http_home",
+        method: "get",
+        url_alias: "schedule_warn",
         data: {
-          alarmTime: this.parseTime(this.value, '{y}-{m}'),
+          alarmTime: this.parseTime(this.value, "{y}-{m}"),
         },
-      }
+      };
       http_request(obj).then((res) => {
-        console.log('日历告警--->', res)
-        this.warnDateList = res.data
+        console.log("日历告警--->", res);
+        this.warnDateList = res.data;
         this.onClickDay({
-          day: this.parseTime(this.value, '{y}-{m}-{d}'),
-        })
-      })
+          day: this.parseTime(this.value, "{y}-{m}-{d}"),
+        });
+      });
     },
     // 日历运输
     getDispatch() {
       const objDispatch = {
-        moduleName: 'http_home',
-        method: 'get',
-        url_alias: 'schedule_dispatch',
+        moduleName: "http_home",
+        method: "get",
+        url_alias: "schedule_dispatch",
         data: {
-          date: this.parseTime(this.value, '{y}-{m}'),
+          date: this.parseTime(this.value, "{y}-{m}"),
         },
-      }
+      };
       http_request(objDispatch).then((res) => {
-        console.log('日历运输--->', res)
-        this.transList = res.data
+        console.log("日历运输--->", res);
+        this.transList = res.data;
         this.onClickDay({
-          day: this.parseTime(this.value, '{y}-{m}-{d}'),
-        })
-      })
+          day: this.parseTime(this.value, "{y}-{m}-{d}"),
+        });
+      });
     },
     // 获取司机设备车辆信息
     queryDriverVehicleEquipment() {
       const obj = {
-        moduleName: 'http_home',
-        method: 'get',
-        url_alias: 'driverVehicleEquipment',
-      }
+        moduleName: "http_home",
+        method: "get",
+        url_alias: "driverVehicleEquipment",
+      };
       http_request(obj).then((res) => {
-        console.log('qewqwwe--->', res)
-        const data = res.data
+        console.log("qewqwwe--->", res);
+        const data = res.data;
         if (data) {
-          this.vehicle = data.vehicle
+          this.vehicle = data.vehicle;
           this.vehicle.percent = parseInt(
-            (this.vehicle.taskVehicle / (this.vehicle.taskVehicle + this.vehicle.freeVehicle)) * 100
-          )
-          this.driver = data.driver
+            (this.vehicle.taskVehicle /
+              (this.vehicle.taskVehicle + this.vehicle.freeVehicle)) *
+              100
+          );
+          this.driver = data.driver;
           this.driver.percent = parseInt(
-            (this.driver.taskDriver / (this.driver.taskDriver + this.driver.freeDriver)) * 100
-          )
-          this.device = data.device
+            (this.driver.taskDriver /
+              (this.driver.taskDriver + this.driver.freeDriver)) *
+              100
+          );
+          this.device = data.device;
           this.device.percent = parseInt(
-            (this.device.onlineDevice / (this.device.onlineDevice + this.device.offlineDevice)) * 100
-          )
+            (this.device.onlineDevice /
+              (this.device.onlineDevice + this.device.offlineDevice)) *
+              100
+          );
         }
-      })
+      });
     },
     // 周切换
     skip(val) {
-      if (val === 'preMon') {
-        this.value = new Date(this.value.setMonth(this.value.getMonth() - 1))
-      } else if (val === 'nextMon') {
-        this.value = new Date(this.value.setMonth(this.value.getMonth() + 1))
-      } else if (val === 'today') {
-        this.value = new Date()
-      } else if (val === 'preYear') {
-        this.value = new Date(this.value.setFullYear(this.value.getFullYear() - 1))
-      } else if (val === 'nextYear') {
-        this.value = new Date(this.value.setFullYear(this.value.getFullYear() + 1))
+      if (val === "preMon") {
+        this.value = new Date(this.value.setMonth(this.value.getMonth() - 1));
+      } else if (val === "nextMon") {
+        this.value = new Date(this.value.setMonth(this.value.getMonth() + 1));
+      } else if (val === "today") {
+        this.value = new Date();
+      } else if (val === "preYear") {
+        this.value = new Date(
+          this.value.setFullYear(this.value.getFullYear() - 1)
+        );
+      } else if (val === "nextYear") {
+        this.value = new Date(
+          this.value.setFullYear(this.value.getFullYear() + 1)
+        );
       }
-      this.getList()
+      this.getList();
     },
     // 点击了日子
     onClickDay(data) {
-      let warnDateCount = 0
+      let warnDateCount = 0;
       this.warnDateList.forEach((item) => {
         if (item.alarmTime === data.day) {
-          warnDateCount = item.number
+          warnDateCount = item.number;
         }
-      })
-      this.warnDateCount = warnDateCount
+      });
+      this.warnDateCount = warnDateCount;
 
-      let transCount = 0
+      let transCount = 0;
       this.transList.forEach((item) => {
         if (item.datetime === data.day) {
-          transCount = item.number
+          transCount = item.number;
         }
-      })
-      this.transCount = transCount
+      });
+      this.transCount = transCount;
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -345,6 +434,8 @@ export default {
         color: #3d4050;
       }
       .bottom {
+        display: flex;
+        width: 205px;
         font-size: 14px;
         color: #3d4050;
         .mr5 {

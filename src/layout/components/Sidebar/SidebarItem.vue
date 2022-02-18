@@ -85,7 +85,6 @@ export default {
   },
   methods: {
     showTitle(item){
-      console.log('item',item,this.isCollapse)
       return this.isCollapse?item.menuAlias:item.meta.title
     },
     hasOneShowingChild(children = [], parent) {

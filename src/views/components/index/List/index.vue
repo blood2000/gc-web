@@ -233,11 +233,10 @@ export default {
   height: 408px;
   background: #fff;
   border-radius: 4px;
-  padding: 15px;
   display: flex;
   .list-left {
-    width: 395px;
-    margin-right: 15px;
+     width: 440px;
+    padding-right: 32px;
     &__bar {
       display: flex;
       justify-content: space-between;

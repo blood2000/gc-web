@@ -42,7 +42,6 @@ export default {
       vnodes.push(node);
     }
     if (title) {
-      // console.log("ckc title", title);
       vnodes.push(
         <span  class="label" >
           {title}

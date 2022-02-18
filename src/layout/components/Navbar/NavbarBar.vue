@@ -19,6 +19,7 @@
 import Item from "../Sidebar/Item.vue";
 import AppLink from "../Sidebar/Link";
 import FixiOSBug from "../Sidebar/FixiOSBug";
+import { mapGetters } from "vuex";
 
 export default {
   name: "SidebarItem",
@@ -34,10 +35,9 @@ export default {
       type: String,
       default: "",
     },
-    recordModuleName: {
-      type: String,
-      default: "",
-    },
+  },
+  computed: {
+    ...mapGetters(["recordModuleName"]),
   },
   data() {
     return {};
@@ -45,14 +45,11 @@ export default {
   mounted() {},
   methods: {
     handleJump(item) {
-      console.log("ckc 11", item, this.recordModuleName, item.path);
       // 和记录不同就清空tagview
       if (this.recordModuleName && this.recordModuleName != item.path) {
-        console.log("该清楚了");
         this.$store.commit("tagsView/DEL_ALL_VISITED_VIEWS");
       }
-      this.$emit('setRecordModuleName',item.path)
-      console.log("ckc this.recordModuleName", this.recordModuleName);
+      this.$store.commit("app/SET_RECORDMODULENAME", item.path.split("/")[1]);
       let result = [];
       // 有效二级菜单
       if (!item.hidden) {
@@ -64,7 +61,7 @@ export default {
           });
         }
       }
-     console.log('ckc shaqingk1')
+      console.log('result',result)
       this.$store.commit("SET_SIDE_SECOND_ROUTERS", result);
     },
     // 非一级默认算最后一个

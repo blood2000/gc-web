@@ -7,7 +7,7 @@
       <!-- 侧边导航栏 -->
       <sidebar
         class="sidebar-container"
-        v-show="sideSecondRouters && sideSecondRouters.length > 1"
+        v-show="isShowSecondCom"
         :style="{
           backgroundColor:
             sideTheme === 'theme-dark'
@@ -17,16 +17,16 @@
       />
       <!-- <side-panel v-if="device !== 'mobile'" /> -->
       <!-- 内容 -->
-      <div :class="{ hasTagsView: needTagsView }" class="main-container">
+      <div :class="{ hasTagsView: needTagsView,isShowSide:!isShowSecondCom }" class="main-container">
         <!-- 标签栏 -->
         <div
-          v-show="sideSecondRouters && sideSecondRouters.length > 1"
+          v-show="isShowSecondCom"
           :class="{ 'fixed-header': fixedHeader }"
         >
           <tags-view v-if="needTagsView" />
         </div>
         <!-- 内容 -->
-        <app-main />
+        <app-main :style="{height:isShowSecondCom?'calc(100% - 36px)':'100%'}" />
         <!-- 工具栏 -->
         <right-panel v-if="showSettings">
           <settings />
@@ -71,6 +71,11 @@ export default {
     TagsView,
   },
   mixins: [ResizeMixin],
+  watch:{
+    sideSecondRouters(){
+     console.log('this.sideSecondRouters',this.sideSecondRouters) 
+    }
+  },
   computed: {
     ...mapGetters(["sideSecondRouters"]),
 
@@ -83,6 +88,12 @@ export default {
       needTagsView: (state) => state.settings.tagsView,
       fixedHeader: (state) => state.settings.fixedHeader,
     }),
+    isShowSecondCom(){
+   if(this.sideSecondRouters && this.sideSecondRouters.length > 1){
+     return true
+   } 
+   return false
+    },
     classObj() {
       return {
         hideSidebar: !this.sidebar.opened,
@@ -96,7 +107,6 @@ export default {
     },
   },
   mounted() {
-    console.log("我是layout");
     this.getGoodsTypeList();
   },
   methods: {
@@ -153,12 +163,15 @@ export default {
 
   &__container {
     // 70: headerHeight
-    flex: 1;
-    height: 100%;
-    display: flex;
+    width: 100%;
+    height: calc(100% - 60px);
+    position: relative;
   }
 }
 
+.isShowSide{
+  margin-left: 0px !important;
+}
 .drawer-bg {
   background: #000;
   opacity: 0.3;
@@ -172,7 +185,6 @@ export default {
 .fixed-header {
   position: relative;
   z-index: 9;
-  margin: 0 20px;
   height: 36px;
 }
 

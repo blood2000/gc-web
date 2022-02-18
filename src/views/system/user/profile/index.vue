@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div >
     <el-row :gutter="20">
       <el-col :span="3" :xs="24">
         <div class="box-card">
@@ -214,10 +214,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.app-container {
-  height: calc(100vh - 149px);
-  background: #f2f5f8;
-}
+
 .box-card {
   height: calc(100vh - 180px);
   background: #fff;
@@ -252,7 +249,7 @@ export default {
 }
 
 .profile-card {
-  padding: 15px 20px 20px;
+  // padding: 15px 20px 20px;
   // border-radius: 4px;
   // box-shadow: 0 2px 10px 0 rgba(0,0,0,.1);
 }

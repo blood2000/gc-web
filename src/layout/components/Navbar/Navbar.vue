@@ -1,7 +1,7 @@
 <template>
   <div class="navbar">
     <div class="left-menu">
-      <router-link to="/index" @click.native="handlelogo">
+      <router-link to="/index" style="height:100%" @click.native="handlelogo">
         <img src="@/assets/logo/logo.png" style="" />
       </router-link>
       <div class="company-name">
@@ -61,8 +61,6 @@
             :key="route.path + index"
             :item="route"
             :base-path="route.path"
-            :recordModuleName="recordModuleName"
-            @setRecordModuleName="setRecordModuleName"
           />
         </el-menu>
       </div>
@@ -80,7 +78,6 @@ export default {
   data() {
     return {
       sidebarMenu: [],
-      recordModuleName: "",
     };
   },
   computed: {
@@ -97,6 +94,7 @@ export default {
       "company_name",
       "sidebarRouters",
       "sideSecondRouters",
+      "recordModuleName",
     ]),
 
     variables() {
@@ -113,7 +111,6 @@ export default {
   },
   mounted() {
     this.setNewMenu();
-    console.log("sidebarMenu", this.sidebarMenu);
     this.initSideSecondRouters();
   },
 
@@ -121,30 +118,22 @@ export default {
     // logo
     handlelogo() {
       this.$store.commit("tagsView/DEL_ALL_VISITED_VIEWS");
-      this.recordModuleName = "index";
+      this.$store.commit("app/SET_RECORDMODULENAME", "index");
       this.$store.commit("SET_SIDE_SECOND_ROUTERS", []);
     },
     // 跳转个人中心
     handleProfile() {
-      console.log("跳转个人中心");
       this.$store.commit("tagsView/DEL_ALL_VISITED_VIEWS");
-      this.recordModuleName = "profile";
+      this.$store.commit("app/SET_RECORDMODULENAME", "profile");
       this.$store.commit("SET_SIDE_SECOND_ROUTERS", []);
-    },
-    //设置默认模块名
-    setRecordModuleName(path) {
-      console.log("ckc 设置默认模块名", path);
-      this.recordModuleName = path;
     },
     // f5刷新页面侧边栏重新赋值
     initSideSecondRouters() {
       if (!window.location.pathname) return;
       let strTemp = window.location.pathname.split("/");
       // 路径上一级菜单值
-      this.recordModuleName = strTemp[1];
-      console.log("ckc f5刷新页面", this.recordModuleName);
+       this.$store.commit("app/SET_RECORDMODULENAME",  strTemp[1]);
       this.sidebarMenu.forEach((el) => {
-        console.log("el.path", el.path, el);
         if (
           `/${this.recordModuleName}` === el.path &&
           el.children &&
@@ -157,7 +146,6 @@ export default {
               result.push(item);
             }
           });
-          console.log("ckc  el.children", result, result.length);
           this.$store.commit("SET_SIDE_SECOND_ROUTERS", result);
         }
       });
@@ -197,7 +185,6 @@ export default {
           this.eachMenu(firstMenu, child, firstMenu.path);
         }
       });
-      console.log("this.sidebarMenu", this.sidebarMenu);
     },
     eachMenu(firstMenu, children, path) {
       children.forEach((el) => {
@@ -223,7 +210,7 @@ export default {
   overflow: hidden;
   position: relative;
   background: #ffffff;
-  border-bottom: 1px solid #f2f2f2;
+  // border-bottom: 1px solid #f2f2f2;
   display: flex;
   justify-content: space-between;
   &__logo {
