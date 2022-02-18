@@ -98,8 +98,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .companyItem {
-  width: 100%;
-  height: 100%;
   padding: 23px 22px 28px 28px;
 }
 .search {
@@ -157,7 +155,7 @@ export default {
   }
 }
 .btn-group {
-  margin-top: 20px;
+  margin:20px 0;
   float: right;
 }
 ::v-deep .el-radio__input {

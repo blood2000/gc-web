@@ -223,7 +223,6 @@ export default {
 <style lang="scss" scoped>
 .coRoute {
   height: 100%;
-  margin-top: -20px;
   display: flex;
   .coRoute-left {
     width: 240px;

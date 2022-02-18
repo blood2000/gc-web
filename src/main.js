@@ -11,6 +11,7 @@ import '@/assets/styles/page-layout.scss'// ddc css
 import '@/assets/iconfont/iconfont.css'; // 字体图标
 // import '@/assets/gIconfont/iconfont.css'; // 字体图标
 // import '@/assets/menu_iconfont/style.css'; // 字体图标
+import '@/assets/pingFang/PingFang.css'
 import '@/assets/styles/queryForm.scss'; // 搜索表单组件 css
 import App from './App'
 import store from './store'

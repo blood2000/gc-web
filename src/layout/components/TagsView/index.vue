@@ -94,7 +94,7 @@ export default {
       affixTags: [],
       overflowTagsList: [],
       currIndex: null,
-      setItemWidth:0,
+      setItemWidth: 0,
     };
   },
   computed: {
@@ -234,7 +234,9 @@ export default {
         });
       this.$nextTick(() => {
         this.tagsOverflow();
+        console.log("this.overflowTagsList", this.overflowTagsList);
         if (this.overflowTagsList.length === 0) {
+          console.log("不会是我吧");
           this.$refs.TagsDerpDown.hide();
         }
       });
@@ -266,10 +268,18 @@ export default {
         // now the default is to redirect to the home page if there is no tags-view,
         // you can adjust it according to your needs.
         if (view.name === "Dashboard") {
+          console.log("redirect");
           // to reload home page
           this.$router.replace({ path: "/redirect" + view.fullPath });
+          this.$store.commit("tagsView/DEL_ALL_VISITED_VIEWS");
+          this.$store.commit("app/SET_RECORDMODULENAME", "index");
+          this.$store.commit("SET_SIDE_SECOND_ROUTERS", []);
         } else {
+          console.log("/");
           this.$router.push("/");
+          this.$store.commit("tagsView/DEL_ALL_VISITED_VIEWS");
+          this.$store.commit("app/SET_RECORDMODULENAME", "index");
+          this.$store.commit("SET_SIDE_SECOND_ROUTERS", []);
         }
       }
     },

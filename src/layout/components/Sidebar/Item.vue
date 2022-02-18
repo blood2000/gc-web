@@ -15,9 +15,7 @@ export default {
   render(h, context) {
     const { icon, title } = context.props;
     const vnodes = [];
-
     if (icon) {
-      console.log("icon=======",icon)
       const node = (
         <span class="svg-icon-box" >
           <span class={"svg-icon iconfont icon-nav-system icon-" +'zjcd_home'} />

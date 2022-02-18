@@ -97,7 +97,7 @@
         </div>
       </div>
     </div>
-    <div class="footers">
+    <div slot="footer" class="dialog-footer">
       <el-button @click="cancel">取 消</el-button>
       <el-button type="primary" @click="submitForm" :loading="loading">
         确 定
@@ -292,10 +292,10 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.footers {
-  margin-top: 30px;
-  float: right;
-}
+// .footers {
+//   margin-top: 30px;
+//   float: right;
+// }
 .input-with-select {
   margin-bottom: 16px;
   padding: 12px;

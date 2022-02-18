@@ -385,6 +385,7 @@ export default {
     return {
       // 地图
       map: null,
+      showVehicleLabel: false,
       geocoder: null,
       // 视频回放组件刷新
       resetPalyback: false,
@@ -676,12 +677,54 @@ export default {
         center: [119.358267, 26.04577],
         zoom: 11,
       });
+      this.map.on("zoomchange", function (e) {
+        //获取当前最新的地图层级
+        let Zoom = _this.map.getZoom();
+        console.log("Zoom", Zoom, e);
+        console.log("markerList", _this.markerList);
+        console.log("markerData", _this.markerData);
+
+        if (Zoom < 12) {
+          if (_this.showVehicleLabel == true) {
+            _this.clearMarkerList();
+            console.log("Zoom 隐藏");
+            _this.showVehicleLabel = false;
+            _this.drawVehicle();
+          }
+        } else {
+          if (_this.showVehicleLabel == false) {
+            _this.clearMarkerList();
+            console.log("Zoom  显示");
+            _this.showVehicleLabel = true;
+            _this.drawVehicle();
+          }
+        }
+      });
       console.log("ckc init");
       this.map.plugin(["AMap.Geocoder"], function () {
         _this.geocoder = new AMap.Geocoder({
           radius: 1000,
           extensions: "all",
         });
+      });
+    },
+    /**
+     * 数据绘制车辆
+     *
+     */
+    drawVehicle() {
+      this.markerData.forEach((el) => {
+        const { attribute } = el;
+        if (
+          attribute &&
+          attribute.coordinate &&
+          attribute.coordinate.value &&
+          attribute.coordinate.value.length === 2 &&
+          attribute.coordinate.value[0] &&
+          attribute.coordinate.value[1]
+        ) {
+          this.drawVehicleMarker(el);
+        }
       });
     },
     /** 绘制标记
@@ -1111,14 +1154,11 @@ export default {
     },
     // 定时刷新时间
     refreshTime() {
-      console.log(
-        " 定时刷新时间 this.refreshMarkerTime",
-        this.refreshMarkerTime
-      );
+      //this.refreshMarkerTime
       this.clearTimer();
       this.timer = setInterval(() => {
         this.getCurrentTime();
-      }, this.refreshMarkerTime * 1000);
+      }, 60 * 1000);
     },
     // 清除定时器
     clearTimer() {
@@ -1352,6 +1392,7 @@ export default {
         this.clearMarkerList();
         if (res.data.rows && res.data.rows.length > 0) {
           this.markerData = res.data.rows;
+          console.log("Zoom", res.data.rows);
           // 绘制全部车辆点位
           const realData = [];
           res.data.rows.forEach((el) => {
@@ -1368,6 +1409,7 @@ export default {
               this.drawVehicleMarker(el);
             }
           });
+
           // 标记点聚合
           // console.log(this.clusterMarkerList)
           // this.cluster = new AMap.MarkerClusterer(this.map, this.clusterMarkerList, {
@@ -1449,14 +1491,14 @@ export default {
       style="transform:rotate(${direction.value || -30}deg);
       background:url('${require(`../../assets/images/map/${this.dealVheicleType(
         row
-      )}.png`)}') no-repeat;"
+      )}.png`)}') no-repeat ;background-size:100% 100%"
       class="own-device-marker-car "
       ></div>`;
       console.log("vehicleContent", vehicleContent);
       const styleObj = {
         content: vehicleContent,
         // offset: this.offsetList[carrier_type || "qt"],
-        offset: [-15, -32],
+        offset: [-10, -21.3],
         angle: 0,
       };
       console.log("绘制车辆定位marker position", position);
@@ -1466,13 +1508,10 @@ export default {
       this.clusterMarkerList.push(marker);
       // 绘制文本框
       const info = [];
-      info.push(
-        `<div class='own-map-vehicle-marker-label'>
-          <div class='label-img'>
-          <img src="${require(`../../assets/images/map/${this.dealCurrStatusImage(
-            row
-          )}.png`)}"/>
-          </div>
+      if (this.showVehicleLabel) {
+        info.push(
+          `<div class='own-map-vehicle-marker-label'>
+        <div class='own-map-vehicle-marker-label-triangle'></div>
           <div class='label-content g-single-row'>
             <div class='label-content-name  g-single-row'>
              ${
@@ -1485,14 +1524,9 @@ export default {
              </span>`
              }
             </div>
-            <div class='label-content-status  g-single-row'>
-            ${this.dealCurrStatus(row)}
-              <span class="label-content-status-line">|</span>
-              ${this.dealTaskStatus(row)}
-              </div>
-          </div>
         </div>`
-      );
+        );
+      }
       const content = this.setLabelContent(info, { offset: [0, -10] });
       this.setLabel(marker, content);
       // 双击定位
@@ -1543,7 +1577,7 @@ export default {
             // 刷新告警
             this.$refs.WarnListRef.getList(2);
           }
-        }, this.refreshMarkerTime * 1000);
+        }, 60 * 1000);
       });
     },
     // 刷新程序
@@ -1611,7 +1645,7 @@ export default {
       style="transform:rotate(${direction.value || -30}deg);
       background:url('${require(`../../assets/images/map/${this.dealVheicleType(
         tmp
-      )}.png`)}') no-repeat;"
+      )}.png`)}') no-repeat;background-size:100% 100%"
       class="own-device-marker-warn "
       ><div class="warn-car "></div><div class="${
         type != 0 ? "warn-cirle" : "warn-cirle-blue"
@@ -1619,7 +1653,7 @@ export default {
       const styleObj = {
         content: contents,
         // offset: this.offsetList[tmp.carrier_type || "qt"],
-        offset: [-15, -32],
+        offset: [-10, -21.3],
         angle: 0,
       };
       // this.realWarnMarker.setContent(contents);
@@ -2089,38 +2123,51 @@ export default {
     }
     // 车标记的信息样式
     ::v-deep.own-map-vehicle-marker-label {
-      width: 200px;
-      height: 52px;
+      position: relative;
+      height: 36px;
       background: rgba(255, 255, 255, 0.7);
       box-shadow: 0px 3px 5px rgba(206, 206, 206, 0.7);
       border-radius: 4px;
-      padding: 8px;
+      padding: 0 12px;
       box-sizing: border-box;
       display: flex;
-      .label-img {
-        width: 36px;
-        height: 36px;
-        border-radius: 8px;
-        margin-right: 8px;
-        box-sizing: border-box;
-        & > img {
-          width: 100%;
-          height: 100%;
-        }
+      // .label-img {
+      //   width: 36px;
+      //   height: 36px;
+      //   border-radius: 8px;
+      //   margin-right: 8px;
+      //   box-sizing: border-box;
+      //   & > img {
+      //     width: 100%;
+      //     height: 100%;
+      //   }
+      // }
+      justify-content: center;
+      align-items: center;
+      &-triangle {
+        position: absolute;
+        bottom: -6px;
+        left: 50%;
+        transform: translate(-50%, 0);
+        margin: 0 auto;
+        border-top: 8px solid #ffffff;
+        width: 0;
+        height: 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
       }
       .label-content {
-        width: 142px;
-
         .label-content-name {
           font-size: 16px;
-          font-family: PingFang SC;
-          font-weight: bold;
-          line-height: 18px;
+          // font-family: PingFang SC;
+          //  font-weight: bold;
+          font-family: PingFang BOLD;
           color: #3d4050;
-          margin-bottom: 2px;
-          &-right {
-            margin-left: 6px;
-          }
+          line-height: 16px;
+          // margin-bottom: 2px;
+          // &-right {
+          //   margin-left: 4px;
+          // }
         }
         .label-content-status {
           font-size: 14px;
@@ -2218,9 +2265,8 @@ export default {
     // 标记物车样式
     ::v-deep.own-device-marker-car {
       transform-origin: center center;
-      width: 30px;
-      height: 64px;
-      background-size: 100% 100%;
+      width: 20px;
+      height: 42.6px;
       // &.ztc {
       //   width: 34px;
       //   height: 76px;

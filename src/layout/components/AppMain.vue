@@ -51,7 +51,6 @@ export default {
 
 .fixed-header+.app-main{
   // height: calc(100vh - 119px);
-  overflow-y: auto;
   &.hidden-x{
     overflow-x: hidden;
   }

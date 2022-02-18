@@ -56,8 +56,9 @@ export default {
 <style scoped lang="scss">
 .app-container-index {
   height: 100%;
-  background: #f0f2f5;
+  background: #fff;
   box-shadow: none;
+  overflow: auto;
   // margin: -19px 0 0 0;
   padding: 0px;
   border-radius: 4px;
@@ -68,7 +69,6 @@ export default {
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
     position: relative;
-    background-color: #fff;
     padding: 1px 20px;
     border-right: 1px solid #f2f2f2;
     box-sizing: border-box;
@@ -78,9 +78,7 @@ export default {
     border-bottom-right-radius: 4px;
     flex: 1 1 auto;
     width: 0;
-    overflow: auto;
     padding: 16px;
-    background: #ffffff;
   }
   &__right-top {
     display: flex;
