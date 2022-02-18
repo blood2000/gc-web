@@ -53,7 +53,7 @@
       <!-- 日历表 -->
       <div class="calendar-container__main">
         <el-calendar ref="monChild" v-model="value" :first-day-of-week="7">
-          <template slot="dateCell" slot-scope="{ date, data }">
+          <template slot="dateCell" slot-scope="{ data }">
             <div
               @click="onClickDay(data)"
               :class="data.isSelected ? 'is-selected' : ''"
@@ -264,7 +264,6 @@ export default {
           // 放不下的第三行
           hiddenList.push(item);
         }
-        console.log("item ==> ", item.length, itemWidth);
       }
       return { showList, hiddenList };
     },
@@ -344,7 +343,6 @@ export default {
         url_alias: "driverVehicleEquipment",
       };
       http_request(obj).then((res) => {
-        console.log("qewqwwe--->", res);
         const data = res.data;
         if (data) {
           this.vehicle = data.vehicle;

@@ -12,7 +12,6 @@ const state = {
 
 const mutations = {
   SET_RECORDMODULENAME:(state,path) => {
-    console.log('ckc SET_RECORDMODULENAME',path)
     state.recordModuleName = path
   },
   TOGGLE_SIDEBAR: state => {

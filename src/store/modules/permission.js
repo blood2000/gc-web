@@ -45,7 +45,6 @@ const permission = {
     // 生成路由
     GenerateRoutes({ commit }) {
       const menus = store.getters.menus;
-      console.log('menus',menus)
       const sdata = JSON.parse(JSON.stringify(menus));
       const rdata = JSON.parse(JSON.stringify(menus));
       // 需要更改

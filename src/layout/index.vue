@@ -137,7 +137,6 @@ export default {
         }
       }
       this.$store.commit("set_goodsTypeList", result);
-      console.log("set_goodsTypeList", result);
     },
     handleClickOutside() {
       this.$store.dispatch("app/closeSideBar", { withoutAnimation: false });
