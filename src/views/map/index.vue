@@ -881,7 +881,6 @@ export default {
     },
     /** 清除指定的地图点位集合 */
     clearMarkerList() {
-      console.log("清除指定的地图点位集合 this.markerList", this.markerList);
       for (const key in this.markerList) {
         this.markerList[key].setMap(null);
         this.markerList[key] = null;
@@ -911,6 +910,7 @@ export default {
     initPathSimplifier() {
       const that = this;
       AMapUI.load(["ui/misc/PathSimplifier"], (PathSimplifier) => {
+        console.log("绘制巡航轨迹", PathSimplifier);
         if (!PathSimplifier.supportCanvas) {
           alert("当前环境不支持 Canvas！");
           return;
@@ -1158,7 +1158,7 @@ export default {
       this.clearTimer();
       this.timer = setInterval(() => {
         this.getCurrentTime();
-      }, 60 * 1000);
+      }, this.refreshMarkerTime * 1000);
     },
     // 清除定时器
     clearTimer() {
@@ -1379,6 +1379,7 @@ export default {
     driverNodeClick(data) {},
     // 获取车辆定位列表
     getVehicleLoLocations(orgCode, isFresh) {
+      console.log('isFresh',isFresh)
       const params = orgCode ? { orgCode } : {};
       const obj = {
         moduleName: "http_map",
@@ -1392,7 +1393,6 @@ export default {
         this.clearMarkerList();
         if (res.data.rows && res.data.rows.length > 0) {
           this.markerData = res.data.rows;
-          console.log("Zoom", res.data.rows);
           // 绘制全部车辆点位
           const realData = [];
           res.data.rows.forEach((el) => {
@@ -1417,20 +1417,67 @@ export default {
           // })
           // 刷新点位后不重新设置视野
           if (isFresh && this.headerTab !== 3) {
-            // console.log("realData", realData);
-            const positions = [];
-            this.postCenter(realData, positions);
-            console.log("positions", positions);
-            this.$nextTick(() => {
-              // this.map.setFitView();
-              this.map.setZoomAndCenter(4.1, positions);
-            });
+            // const positions = [];
+            // this.postCenter(realData, positions);
+            // console.log("positions", positions);
+            // this.$nextTick(() => {
+            //   this.map.setZoomAndCenter(6, positions);
+            // });
+            const sw = this.getSW(realData); // 循环所有的点标记，返回最西南的一个经纬度
+            const ne = this.getNE(realData); // 循环所有的点标记，返回最东北的一个经纬度
+            const mybounds = new AMap.Bounds(sw, ne);
+            this.map.setBounds(mybounds);
           }
         } else {
           this.msgWarning("该组织下暂无车辆定位信息");
         }
       });
     },
+    getSW(list) {
+      let south = null;
+      let west = null;
+      for (let item of list) {
+        const { coordinate } = item.attribute;
+        const lng = coordinate.value[0];
+        const lat = coordinate.value[1];
+        if ((west && lng < west) || !west) {
+          west = lng - 0.7;
+        }
+        if ((south && lat < south) || !south) {
+          south = lat - 0.7;
+        }
+      }
+      return [west, south];
+    },
+    getNE(list) {
+      let north = null;
+      let east = null;
+      for (let item of list) {
+        const { coordinate } = item.attribute;
+        const lng = coordinate.value[0];
+        const lat = coordinate.value[1];
+        if ((east && lng > east) || !east) {
+          east = lng + 0.7;
+        }
+        if ((north && lat > north) || !north) {
+          north = lat + 0.7;
+        }
+      }
+
+      return [east, north];
+    },
+    // postCenter(data, positions) {
+    //   let value = 0;
+    //   let value1 = 0;
+    //   data.forEach((el) => {
+    //     const { coordinate } = el.attribute;
+    //     value += coordinate.value[0];
+    //     value1 += coordinate.value[1];
+    //   });
+    //   console.log("x轴", value, data.length - 1);
+    //   positions[0] = value / (data.length - 1);
+    //   positions[1] = value1 / (data.length - 1) - 2;
+    // },
     // 获取设备定位信息
     getDeviceLocationInfo(plateNumber, isFresh) {
       const obj = {
@@ -1461,6 +1508,7 @@ export default {
             //   gridSize: 80
             // })
             // 刷新点位后不重新设置视野
+
             if (isFresh && this.headerTab !== 3) {
               this.$nextTick(() => {
                 console.log(
@@ -1479,13 +1527,11 @@ export default {
     },
     // 绘制车辆定位marker
     drawVehicleMarker(row) {
-      console.log("绘制车辆定位marker", row);
       const _this = this;
       const { vehicle_code, carrier_type, plate_number, attribute } = row;
       const direction = attribute.direction || {};
       const speed = attribute.speed || {};
       const position = attribute.coordinate.value;
-      console.log("direction.value", direction.value);
       // 绘制车辆标记
       const vehicleContent = `<div
       style="transform:rotate(${direction.value || -30}deg);
@@ -1494,16 +1540,13 @@ export default {
       )}.png`)}') no-repeat ;background-size:100% 100%"
       class="own-device-marker-car "
       ></div>`;
-      console.log("vehicleContent", vehicleContent);
       const styleObj = {
         content: vehicleContent,
         // offset: this.offsetList[carrier_type || "qt"],
         offset: [-10, -21.3],
         angle: 0,
       };
-      console.log("绘制车辆定位marker position", position);
       const marker = this.drawMarker(position, styleObj);
-      console.log("ckc ", vehicle_code, marker);
       this.markerList[vehicle_code] = marker;
       this.clusterMarkerList.push(marker);
       // 绘制文本框
@@ -1565,24 +1608,22 @@ export default {
     },
     // 定时刷新车位置
     refreshMarker() {
-      console.log("定时刷新车位置", this.refreshMarkerTime);
       // this.clearRefreshMarkerTimer();
       // 车定位刷新读秒
       this.setReadTime().then(() => {
         this.refreshMarkerTimer = setInterval(() => {
-          console.log("定时刷新车位置 周期", this.refreshMarkerTime);
           this.getDeviceLocationInfoByCode();
           if (this.headerTab != 4) {
             this.$refs.WarnListRef.activeTab = "real";
             // 刷新告警
             this.$refs.WarnListRef.getList(2);
           }
-        }, 60 * 1000);
+        }, this.refreshMarkerTime * 1000);
       });
     },
     // 刷新程序
     getDeviceLocationInfoByCode() {
-      console.log("刷新程序");
+      console.log("刷新程序",this.isShowVehicleInfo);
       if (this.isShowVehicleInfo) {
         // 选中车
         this.getDeviceLocationInfo(this.orgOrVehicleInfo.orgOrlicenseNumber);
@@ -1595,7 +1636,6 @@ export default {
     },
     // 清除定时刷新车位置
     clearRefreshMarkerTimer() {
-      console.log("清除定时刷新车位置", this.refreshMarkerTimer);
       if (this.refreshMarkerTimer) clearInterval(this.refreshMarkerTimer);
     },
     // 判断如果绘制告警点 type//红蓝
@@ -1673,7 +1713,6 @@ export default {
     },
     /** 定时器读秒 */
     setReadTime() {
-      console.log("定时器读秒");
       const _this = this;
       return new Promise((resolve) => {
         const obj = {
@@ -1684,15 +1723,7 @@ export default {
         };
         http_request(obj).then((res) => {
           if (res.code == 200) {
-            console.log(
-              "res.data.map_refresh_interval",
-              res.data.map_refresh_interval
-            );
             _this.refreshMarkerTime = parseInt(res.data.map_refresh_interval);
-            console.log(
-              "_this.refreshMarkerTime 设置时间",
-              _this.refreshMarkerTime
-            );
           }
           this.clearReadTime();
           this.readTimer = setInterval(() => {
@@ -1741,17 +1772,6 @@ export default {
       return row.carrier_type
         ? row.carrier_type + "_" + row.vehicle_status
         : row.carrierType + "_" + 0;
-    },
-    postCenter(data, positions) {
-      let value = 0;
-      let value1 = 0;
-      data.forEach((el) => {
-        const { coordinate } = el.attribute;
-        value += coordinate.value[0];
-        value1 += coordinate.value[1];
-      });
-      positions[0] = value / data.length - 1;
-      positions[1] = value1 / data.length - 1 - 7;
     },
   },
 };
