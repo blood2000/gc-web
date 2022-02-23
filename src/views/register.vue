@@ -316,7 +316,7 @@
     <!--  底部  -->
     <div class="el-register-footer">
       <div>福建至简至一信息科技有限公司 版权所有</div>
-      <span>CopyRight@ 2021 All Rights Reserved 闽ICP备19023755号-2</span>
+      <span>CopyRight@ 2021 All Rights Reserved 闽ICP备2021009502号-4</span>
     </div>
   </div>
 </template>

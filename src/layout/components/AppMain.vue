@@ -7,7 +7,7 @@
     </transition>
     <!-- <div v-show="showRecord" class="foot-record-number">
       <p>福建至简至一信息科技有限公司 版权所有</p>
-      <p>CopyRight@ 2021 All Rights Reserved <a href="https://beian.miit.gov.cn/" target="_blank">闽ICP备19023755号-2</a></p>
+      <p>CopyRight@ 2021 All Rights Reserved <a href="https://beian.miit.gov.cn/" target="_blank">闽ICP备2021009502号-4</a></p>
     </div> -->
   </section>
 </template>
