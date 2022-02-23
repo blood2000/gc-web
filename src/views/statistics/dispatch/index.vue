@@ -67,8 +67,10 @@
         <el-table-column label="用车企业" prop="companyName" />
         <el-table-column label="调度单数" prop="dispatchOrderTotal" />
         <el-table-column label="承运趟次" prop="tripsTotal" />
-        <el-table-column label="共计收入（元）" prop="incomeTotal" />
         <el-table-column label="承运净重（吨）" prop="netWeightTotal" />
+        <el-table-column label="总收入（元）" prop="sumIncomeTotal" />
+        <el-table-column label="已收（元）" prop="incomeTotal" />
+        <el-table-column label="待收（元）" prop="stayIncomeTotal" />
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="text" @click="onClickDetail(scope.row)"> 详情 </el-button>
