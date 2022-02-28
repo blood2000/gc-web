@@ -23,6 +23,7 @@ import http_setting from './archives/setting'
 import http_carCaptain from './archives/carCaptain'
 import http_planRoute from './planroute'
 import http_stealingCoal from './stealingcoal'
+import http_app from './app'
 import Vue from 'vue'
 
 export const defaultH = {
@@ -64,7 +65,8 @@ const selModuleName = (name) => {
     http_setting,
     http_carCaptain,
     http_planRoute,
-    http_stealingCoal
+    http_stealingCoal,
+    http_app
   }
   return tmpObj[name]
 }

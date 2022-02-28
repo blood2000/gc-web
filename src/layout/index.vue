@@ -89,6 +89,7 @@ export default {
       fixedHeader: (state) => state.settings.fixedHeader,
     }),
     isShowSecondCom(){
+      console.log('(this.sideSecondRouters',this.sideSecondRouters)
    if(this.sideSecondRouters && this.sideSecondRouters.length > 1){
      return true
    } 
