@@ -51,7 +51,19 @@ export default {
   
   methods:{
     handleClick(item){
-      console.log('item',item)
+      console.log('item11',item,item.clickType)
+      const me = this
+      const obj  = {
+        'view':()=>{
+          console.log('view')
+           me.$router.push(item.clickTypeData.path)
+        },
+        'url':()=>{
+          console.log('url')
+           window.open(item.clickTypeData.path,'_blank'); 
+        }
+      }
+      obj[item.clickType]()
     }
   }
 };

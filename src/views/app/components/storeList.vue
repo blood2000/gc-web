@@ -30,7 +30,13 @@
       </div>
       <div class="list-footer">
         <div class="list-footer-open">已被开通{{ sub.usingCompanyNum }}次</div>
-        <div class="list-footer-open-btn" v-if="!sub.openFlag"  @click="handleClick(sub.code)">立即开通</div>
+        <div
+          class="list-footer-open-btn"
+          v-if="!sub.openFlag"
+          @click="handleClick(sub.code)"
+        >
+          立即开通
+        </div>
         <div class="list-footer-colose-btn" v-else>已开通</div>
       </div>
     </div>
@@ -46,12 +52,12 @@ export default {
       },
     },
   },
-  methods:{
-    handleClick(code){
-      console.log('code',code)
-      this.$router.push('detail?code='+code)
-    }
-  }
+  methods: {
+    handleClick(code) {
+      console.log("code", code);
+      this.$router.push("detail?code=" + code);
+    },
+  },
 };
 </script>
 
@@ -92,8 +98,7 @@ export default {
         align-items: center;
         &-left {
           font-size: 16px;
-          font-family: PingFang SC;
-          font-weight: bold;
+          font-family: PingFang BOLD;
           color: #3d4050;
           margin-right: 8px;
         }
@@ -103,8 +108,7 @@ export default {
           background: #fff5e2;
           border-radius: 0px 20px 20px 20px;
           font-size: 12px;
-          font-family: PingFang SC;
-          font-weight: bold;
+          font-family: PingFang BOLD;
           color: #faad14;
           text-align: center;
         }
@@ -119,8 +123,7 @@ export default {
           color: rgba(239, 105, 105, 0.87);
           border-radius: 2px;
           font-size: 12px;
-          font-family: PingFang SC;
-          font-weight: bold;
+          font-family: PingFang BOLD;
           text-align: center;
           padding-top: 3px;
           margin-right: 8px;
@@ -132,8 +135,7 @@ export default {
           border: 1px solid #d6d6da;
           border-radius: 2px;
           font-size: 12px;
-          font-family: PingFang SC;
-          font-weight: bold;
+          font-family: PingFang BOLD;
           color: rgba(61, 64, 80, 0.87);
           text-align: center;
           padding-top: 3px;
@@ -171,8 +173,7 @@ export default {
       border-radius: 2px;
       text-align: center;
       font-size: 12px;
-      font-family: PingFang SC;
-      font-weight: bold;
+      font-family: PingFang BOLD;
       color: #1271fc;
       padding-top: 4px;
       cursor: pointer;
@@ -184,12 +185,10 @@ export default {
       border-radius: 2px;
       text-align: center;
       font-size: 12px;
-      font-family: PingFang SC;
-      font-weight: bold;
+      font-family: PingFang BOLD;
       color: #959aa4;
       padding-top: 4px;
     }
   }
 }
-
 </style>

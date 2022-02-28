@@ -1,6 +1,7 @@
 .pages-info {
   display: flex;
   height: 100%;
+  font-family: PingFang SC;
 
   .pages-info-left {
     padding: 20px;
@@ -8,16 +9,16 @@
     box-sizing: border-box;
     border-right: 1px solid #f2f2f2;
     // box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
-   border-bottom-left-radius: 4px;
+    border-bottom-left-radius: 4px;
     width: 220px !important;
     border-top-left-radius: 0;
-    .el-tree > .el-tree-node{
+    .el-tree > .el-tree-node {
       width: 100% !important;
     }
-   .el-tree-node__content>span{
+    .el-tree-node__content > span {
       text-overflow: ellipsis;
-overflow: hidden;
-white-space: nowrap;
+      overflow: hidden;
+      white-space: nowrap;
     }
   }
 
@@ -39,8 +40,8 @@ white-space: nowrap;
       height: 1px;
       border-bottom: 1px solid #e4ecf4;
     }
-    .page-table-layout-set{
-      padding:28px 24px 0 24px;
+    .page-table-layout-set {
+      padding: 28px 24px 0 24px;
     }
     .toolsbar {
       display: flex;
@@ -50,10 +51,9 @@ white-space: nowrap;
   }
 }
 // 没有组织树
-.none-org-tree{
+.none-org-tree {
   .pages-info-right {
     border-bottom-left-radius: 4px;
-
   }
 }
 
@@ -62,7 +62,7 @@ white-space: nowrap;
   padding: 0 28px;
   .ddc-queryParams-left {
     flex: 1;
-    .down{
+    .down {
       margin-bottom: 16px;
     }
     // background: brown;
@@ -70,32 +70,30 @@ white-space: nowrap;
   .ddc-queryParams-right {
     width: 310px;
     box-sizing: border-box;
-    padding-top:30px;
-    padding-bottom:16px ;
+    padding-top: 30px;
+    padding-bottom: 16px;
     display: flex;
     justify-content: flex-end;
     & > div {
       cursor: pointer;
       color: #409eff;
       font-size: 14px;
-      margin-right:12px;
+      margin-right: 12px;
       line-height: 30px;
       -moz-user-select: none;
       -webkit-user-select: none;
       user-select: none;
     }
-    &-reset{
+    &-reset {
       background-color: transparent !important;
     }
-    &-reset:hover{
+    &-reset:hover {
       background-color: #409eff !important;
-      
     }
-    &-reset:focus , &-reset:active{
+    &-reset:focus,
+    &-reset:active {
       background-color: transparent !important;
       color: #1890ff;
     }
   }
- 
 }
-

@@ -65,7 +65,7 @@
               <div
                 class="right-content-btn"
                 v-if="!detailData.openFlag"
-                @click="handleDredge(detailData.code)"
+                @click="handleDredge(detailData.code,detailData.chargeType)"
               >
                 立即开通
               </div>
@@ -133,7 +133,7 @@ export default {
 
   methods: {
       carouselChange(e){
-          console.log('carouselChange',e)
+          // console.log('carouselChange',e)
           this.currIndex = e
       },
     async getList() {
@@ -182,6 +182,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
+        if(chargeType) return
         http_request(obj).then((res) => {
           console.log("res", res);
           if (res.data) {
@@ -189,11 +190,14 @@ export default {
               "应用开通成功！请进入角色管理，对使用该应用的角色进行授权！",
               "系统提示",
               {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
+                showCancelButton:false,
+                confirmButtonText: "知道了",
+                // cancelButtonText: "取消",
                 type: "warning",
               }
-            );
+            ).then(()=>{
+              this.getList()
+            });
           }
         });
       });
