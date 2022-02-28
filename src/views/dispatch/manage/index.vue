@@ -1,5 +1,5 @@
 <template>
-  <div class="pages-info">
+  <div class="pages-info none-org-tree">
     <div class="pages-info-right">
       <!-- 上：搜索 -->
       <QueryForm

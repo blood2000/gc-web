@@ -5,11 +5,15 @@ const state = {
     opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : false,
     withoutAnimation: false
   },
+  recordModuleName:'',
   device: 'desktop',
   size: Cookies.get('size') || 'medium'
 }
 
 const mutations = {
+  SET_RECORDMODULENAME:(state,path) => {
+    state.recordModuleName = path
+  },
   TOGGLE_SIDEBAR: state => {
     state.sidebar.opened = !state.sidebar.opened
     state.sidebar.withoutAnimation = false

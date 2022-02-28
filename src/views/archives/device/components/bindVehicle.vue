@@ -17,13 +17,10 @@
     <div class="list" v-if="getList.length > 0">
       <div
         class="list-item"
+        :class="{'list-item__active': currIndex === index, 'list-item__disabled': item.status === '已绑定'}"
         v-for="(item, index) in getList"
         :key="item.vehicleCode"
         @click="handleVehicle(index)"
-        :style="{
-          background:
-            currIndex === index ? 'rgba(70, 130, 250, 0.3)' : '#ffffff',
-        }"
       >
         <div class="licenseNumber">{{ item.licenseNumber }}</div>
         <div class="vehicleType">{{ item.vehicleType }}</div>
@@ -91,10 +88,18 @@ export default {
   border-radius: 5px;
   margin-bottom: 10px;
   padding: 16px;
+  cursor: pointer;
   .licenseNumber {
     font-family: PingFang SC;
     font-weight: bold;
     margin-right: 16px;
   }
+}
+.list-item__active {
+  background: rgba(70, 130, 250, 0.3);
+}
+.list-item__disabled {
+  background: #eaeaea;
+  pointer-events: none;
 }
 </style>

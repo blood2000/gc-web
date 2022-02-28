@@ -3,22 +3,18 @@
     <div class="setting-left">
       <div
         class="setting-left__box"
-        :class="{ 'setting-left__box-show': current === tabs.alarmTypes }"
-        @click="onClickTabs(tabs.alarmTypes)"
+        :class="{ 'setting-left__box-show': current === item.key }"
+        @click="onClickTabs(item.key)"
+        v-for="item in tabsList"
+        :key="item.key"
       >
-        <span class="g-double-row">告警类型设置</span>
-      </div>
-      <div
-        class="setting-left__box"
-        :class="{ 'setting-left__box-show': current === tabs.alarmThreshold }"
-        @click="onClickTabs(tabs.alarmThreshold)"
-      >
-        <span class="g-double-row">告警阈值设置</span>
+        <span class="g-double-row">{{ item.name }}</span>
       </div>
     </div>
     <div class="setting-right">
-      <AlarmTypes v-show="current === tabs.alarmTypes" />
-      <AlarmThreshold v-show="current === tabs.alarmThreshold" />
+      <AlarmTypes v-show="current === tabsList[0].key" />
+      <AlarmThreshold v-show="current === tabsList[1].key" />
+      <VideoChannel v-show="current === tabsList[2].key" />
     </div>
   </div>
 </template>
@@ -27,20 +23,36 @@
 import { http_request } from '@/api'
 import AlarmTypes from './alarmTypes/alarmTypes.vue'
 import AlarmThreshold from './alarmThreshold/alarmThreshold.vue'
+import VideoChannel from './videoChannel/videoChannel.vue'
 
 export default {
   name: 'setting',
   components: {
     AlarmTypes,
-    AlarmThreshold
+    AlarmThreshold,
+    VideoChannel
   },
   data() {
     return {
+      tabsList: [
+        {
+          name: '告警类型设置',
+          key: '1',
+        },
+        {
+          name: '告警阈值设置',
+          key: '2',
+        },
+        {
+          name: '视频通道别名设置',
+          key: '3',
+        }
+      ],
       tabs: {
         alarmTypes: '1', // 告警类型设置
-        alarmThreshold: '2' // 告警阈值设置
+        alarmThreshold: '2', // 告警阈值设置
       },
-      current: '1' // 1:告警类型设置；2:告警阀值设置
+      current: '1', // 1:告警类型设置；2:告警阀值设置
     }
   },
   created() {},
@@ -52,7 +64,7 @@ export default {
       const params = {
         moduleName: 'http_company',
         method: 'get',
-        url_alias: 'shipment_Alllist'
+        url_alias: 'shipment_Alllist',
       }
       http_request(params).then((res) => {
         this.companyList = res.data || []
@@ -61,8 +73,8 @@ export default {
           this.querysettingPage()
         }
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

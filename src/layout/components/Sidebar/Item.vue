@@ -1,17 +1,4 @@
 <script>
-
-const imgObj = {
-  "地图":'',
-  "监控":"",
-  "告警":"",
-  "调度":"",
-  "车务":"",
-  "财务":"",
-  "统计":"",
-  "系统":"",
-  
-}
-
 export default {
   name: "MenuItem",
   functional: true,
@@ -28,12 +15,10 @@ export default {
   render(h, context) {
     const { icon, title } = context.props;
     const vnodes = [];
-
     if (icon) {
-      // console.log("icon=======",title)
       const node = (
-        <span class="svg-icon-box">
-          <span class={"svg-icon iconfont icon-nav-system icon-" + icon} />
+        <span class="svg-icon-box" >
+          <span class={"svg-icon iconfont icon-nav-system icon-" +'zjcd_home'} />
         </span>
         // <div>
         //   <img src= />
@@ -42,9 +27,8 @@ export default {
       vnodes.push(node);
     }
     if (title) {
-      // console.log("ckc title", title);
       vnodes.push(
-        <span  class="label">
+        <span  class="label" >
           {title}
         </span>
       );
@@ -53,3 +37,5 @@ export default {
   },
 };
 </script>
+
+

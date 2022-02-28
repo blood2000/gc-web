@@ -60,6 +60,7 @@
           </el-select> -->
           <el-cascader
             style="width: 300px"
+            v-model="cascaderVal"
             @change="companyRouteChange"
             :props="companyRouteProps"
             clearable
@@ -141,6 +142,7 @@ export default {
         dictPid: "",
         dictType: "goodsType",
       },
+      cascaderVal: null,
       companyRouteProps: {
         lazy: true,
         lazyLoad(node, resolve) {
@@ -265,6 +267,10 @@ export default {
     },
     reset() {
       this.queryParams.pageNum = 1;
+      this.queryParams.dateRange = []
+      this.queryParams.companyName = null
+      this.queryParams.routeCode = null
+      this.cascaderVal = null
       // this.resetForm('queryForm');
       console.log("qqq", this.$refs["queryForm"]);
       this.$refs["queryForm"].resetFields();

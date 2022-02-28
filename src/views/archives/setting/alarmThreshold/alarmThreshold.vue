@@ -12,13 +12,22 @@
               :key="'alarm' + index"
             >
               <el-form-item :label="alarm.key">
-                <el-input
-                  class="w256 numInput"
-                  type="number"
-                  v-model="alarm.value"
+                <el-time-picker
+                  v-if="alarm.type === '1'"
+                  is-range
+                  class="w256"
+                  v-model="rangeValue"
+                  unlinkPanels
+                  range-separator="至"
+                  start-placeholder="开始时间"
+                  end-placeholder="结束时间"
+                  value-format="HH:mm:ss"
                   :placeholder="alarm.tips"
-                  :disabled="alarm.isEdit === '1'"
-                />
+                  :disabled="alarm.isEdit === '1'">
+                </el-time-picker>
+                <el-select v-if="alarm.type === '2'" class="w256" v-model="alarm.value" :placeholder="alarm.tips" :disabled="alarm.isEdit === '1'">
+                  <el-option v-for="optVal in alarm.options.split('、')" :key="optVal" :label="optVal" :value="optVal"></el-option>
+                </el-select>
               </el-form-item>
             </el-col>
           </div>
@@ -34,12 +43,14 @@
 
 <script>
 import { http_request } from '@/api'
+import { deepClone } from '@/utils/index'
 
 export default {
   name: 'alarmThreshold',
   components: {},
   data() {
     return {
+      rangeValue: ['00:00:00', '23:59:59'],
       loading: false,
       alarmList: [],
       originAlarmList: [],
@@ -57,24 +68,30 @@ export default {
       }
       http_request(params).then((res) => {
         let list = res.data || []
-        this.originAlarmList = this.deepClone(list)
+        this.originAlarmList = deepClone(list)
         this.alarmList = list
+        this.alarmList.forEach(row => {
+          row.alarmCommandCompanyVos.forEach(item => {
+            if (item.type === '1') { // 时间范围格式
+              this.rangeValue = item.value ? item.value.split(',') : item.defaultValue.split(',')
+            } else {
+              item.value = item.value || item.defaultValue
+            }
+          })
+        })
       })
     },
-    deepClone(obj) {
-      if (typeof obj !== 'object') {
-        return obj
-      }
-      var res = Array.isArray(obj) ? [] : {}
-      for (let i in obj) {
-        res[i] = this.deepClone(obj[i])
-      }
-      return res
-    },
     onCancel() {
-      this.alarmList = this.deepClone(this.originAlarmList)
+      this.alarmList = deepClone(this.originAlarmList)
     },
     onSave() {
+      this.alarmList.forEach(row => {
+        row.alarmCommandCompanyVos.forEach(item => {
+          if (item.type === '1') { // 时间范围格式
+            item.value = this.rangeValue.join(',')
+          }
+        })
+      })
       const params = {
         moduleName: 'http_setting',
         method: 'post',

@@ -385,6 +385,7 @@ export default {
     return {
       // 地图
       map: null,
+      showVehicleLabel: false,
       geocoder: null,
       // 视频回放组件刷新
       resetPalyback: false,
@@ -493,11 +494,11 @@ export default {
       readTimer: null,
       // 不同承运类型车辆图片大小不同所以点位偏移不同
       offsetList: {
-        ztc: [-17, -38],
-        jbc: [-17, -40],
-        llc: [-14, -31],
-        phc: [-15, -39],
-        qt: [-15, -39],
+        ztc: [-17, -39.5],
+        jbc: [-17, -39.5],
+        llc: [-14, -39.5],
+        phc: [-15, -39.5],
+        qt: [-15, -39.5],
       },
       // showVehicleDetail: false,  //车辆详情组件显示
       locationProp: null, //路由上有参数时
@@ -676,12 +677,54 @@ export default {
         center: [119.358267, 26.04577],
         zoom: 11,
       });
+      this.map.on("zoomchange", function (e) {
+        //获取当前最新的地图层级
+        let Zoom = _this.map.getZoom();
+        console.log("Zoom", Zoom, e);
+        console.log("markerList", _this.markerList);
+        console.log("markerData", _this.markerData);
+
+        if (Zoom < 12) {
+          if (_this.showVehicleLabel == true) {
+            _this.clearMarkerList();
+            console.log("Zoom 隐藏");
+            _this.showVehicleLabel = false;
+            _this.drawVehicle();
+          }
+        } else {
+          if (_this.showVehicleLabel == false) {
+            _this.clearMarkerList();
+            console.log("Zoom  显示");
+            _this.showVehicleLabel = true;
+            _this.drawVehicle();
+          }
+        }
+      });
       console.log("ckc init");
       this.map.plugin(["AMap.Geocoder"], function () {
         _this.geocoder = new AMap.Geocoder({
           radius: 1000,
           extensions: "all",
         });
+      });
+    },
+    /**
+     * 数据绘制车辆
+     *
+     */
+    drawVehicle() {
+      this.markerData.forEach((el) => {
+        const { attribute } = el;
+        if (
+          attribute &&
+          attribute.coordinate &&
+          attribute.coordinate.value &&
+          attribute.coordinate.value.length === 2 &&
+          attribute.coordinate.value[0] &&
+          attribute.coordinate.value[1]
+        ) {
+          this.drawVehicleMarker(el);
+        }
       });
     },
     /** 绘制标记
@@ -838,7 +881,6 @@ export default {
     },
     /** 清除指定的地图点位集合 */
     clearMarkerList() {
-      console.log("清除指定的地图点位集合 this.markerList", this.markerList);
       for (const key in this.markerList) {
         this.markerList[key].setMap(null);
         this.markerList[key] = null;
@@ -868,6 +910,7 @@ export default {
     initPathSimplifier() {
       const that = this;
       AMapUI.load(["ui/misc/PathSimplifier"], (PathSimplifier) => {
+        console.log("绘制巡航轨迹", PathSimplifier);
         if (!PathSimplifier.supportCanvas) {
           alert("当前环境不支持 Canvas！");
           return;
@@ -1111,10 +1154,7 @@ export default {
     },
     // 定时刷新时间
     refreshTime() {
-      console.log(
-        " 定时刷新时间 this.refreshMarkerTime",
-        this.refreshMarkerTime
-      );
+      //this.refreshMarkerTime
       this.clearTimer();
       this.timer = setInterval(() => {
         this.getCurrentTime();
@@ -1339,6 +1379,7 @@ export default {
     driverNodeClick(data) {},
     // 获取车辆定位列表
     getVehicleLoLocations(orgCode, isFresh) {
+      console.log('isFresh',isFresh)
       const params = orgCode ? { orgCode } : {};
       const obj = {
         moduleName: "http_map",
@@ -1368,6 +1409,7 @@ export default {
               this.drawVehicleMarker(el);
             }
           });
+
           // 标记点聚合
           // console.log(this.clusterMarkerList)
           // this.cluster = new AMap.MarkerClusterer(this.map, this.clusterMarkerList, {
@@ -1375,20 +1417,67 @@ export default {
           // })
           // 刷新点位后不重新设置视野
           if (isFresh && this.headerTab !== 3) {
-            // console.log("realData", realData);
-            const positions = [];
-            this.postCenter(realData, positions);
-            console.log("positions", positions);
-            this.$nextTick(() => {
-              // this.map.setFitView();
-              this.map.setZoomAndCenter(4.1, positions);
-            });
+            // const positions = [];
+            // this.postCenter(realData, positions);
+            // console.log("positions", positions);
+            // this.$nextTick(() => {
+            //   this.map.setZoomAndCenter(6, positions);
+            // });
+            const sw = this.getSW(realData); // 循环所有的点标记，返回最西南的一个经纬度
+            const ne = this.getNE(realData); // 循环所有的点标记，返回最东北的一个经纬度
+            const mybounds = new AMap.Bounds(sw, ne);
+            this.map.setBounds(mybounds);
           }
         } else {
           this.msgWarning("该组织下暂无车辆定位信息");
         }
       });
     },
+    getSW(list) {
+      let south = null;
+      let west = null;
+      for (let item of list) {
+        const { coordinate } = item.attribute;
+        const lng = coordinate.value[0];
+        const lat = coordinate.value[1];
+        if ((west && lng < west) || !west) {
+          west = lng - 0.7;
+        }
+        if ((south && lat < south) || !south) {
+          south = lat - 0.7;
+        }
+      }
+      return [west, south];
+    },
+    getNE(list) {
+      let north = null;
+      let east = null;
+      for (let item of list) {
+        const { coordinate } = item.attribute;
+        const lng = coordinate.value[0];
+        const lat = coordinate.value[1];
+        if ((east && lng > east) || !east) {
+          east = lng + 0.7;
+        }
+        if ((north && lat > north) || !north) {
+          north = lat + 0.7;
+        }
+      }
+
+      return [east, north];
+    },
+    // postCenter(data, positions) {
+    //   let value = 0;
+    //   let value1 = 0;
+    //   data.forEach((el) => {
+    //     const { coordinate } = el.attribute;
+    //     value += coordinate.value[0];
+    //     value1 += coordinate.value[1];
+    //   });
+    //   console.log("x轴", value, data.length - 1);
+    //   positions[0] = value / (data.length - 1);
+    //   positions[1] = value1 / (data.length - 1) - 2;
+    // },
     // 获取设备定位信息
     getDeviceLocationInfo(plateNumber, isFresh) {
       const obj = {
@@ -1419,6 +1508,7 @@ export default {
             //   gridSize: 80
             // })
             // 刷新点位后不重新设置视野
+
             if (isFresh && this.headerTab !== 3) {
               this.$nextTick(() => {
                 console.log(
@@ -1437,7 +1527,6 @@ export default {
     },
     // 绘制车辆定位marker
     drawVehicleMarker(row) {
-      console.log("绘制车辆定位marker", row);
       const _this = this;
       const { vehicle_code, carrier_type, plate_number, attribute } = row;
       const direction = attribute.direction || {};
@@ -1448,27 +1537,24 @@ export default {
       style="transform:rotate(${direction.value || -30}deg);
       background:url('${require(`../../assets/images/map/${this.dealVheicleType(
         row
-      )}.png`)}') no-repeat; background-size:43px 79px"
+      )}.png`)}') no-repeat ;background-size:100% 100%"
       class="own-device-marker-car "
       ></div>`;
       const styleObj = {
         content: vehicleContent,
-        offset: this.offsetList[carrier_type || "qt"],
+        // offset: this.offsetList[carrier_type || "qt"],
+        offset: [-10, -21.3],
         angle: 0,
       };
       const marker = this.drawMarker(position, styleObj);
-      console.log("ckc ", vehicle_code, marker);
       this.markerList[vehicle_code] = marker;
       this.clusterMarkerList.push(marker);
       // 绘制文本框
       const info = [];
-      info.push(
-        `<div class='own-map-vehicle-marker-label'>
-          <div class='label-img'>
-          <img src="${require(`../../assets/images/map/${this.dealCurrStatusImage(
-            row
-          )}.png`)}"/>
-          </div>
+      if (this.showVehicleLabel) {
+        info.push(
+          `<div class='own-map-vehicle-marker-label'>
+        <div class='own-map-vehicle-marker-label-triangle'></div>
           <div class='label-content g-single-row'>
             <div class='label-content-name  g-single-row'>
              ${
@@ -1481,14 +1567,9 @@ export default {
              </span>`
              }
             </div>
-            <div class='label-content-status  g-single-row'>
-            ${this.dealCurrStatus(row)}
-              <span class="label-content-status-line">|</span>
-              ${this.dealTaskStatus(row)}
-              </div>
-          </div>
         </div>`
-      );
+        );
+      }
       const content = this.setLabelContent(info, { offset: [0, -10] });
       this.setLabel(marker, content);
       // 双击定位
@@ -1527,24 +1608,22 @@ export default {
     },
     // 定时刷新车位置
     refreshMarker() {
-      console.log("定时刷新车位置", this.refreshMarkerTime);
       // this.clearRefreshMarkerTimer();
       // 车定位刷新读秒
       this.setReadTime().then(() => {
         this.refreshMarkerTimer = setInterval(() => {
-          console.log("定时刷新车位置 周期", this.refreshMarkerTime);
           this.getDeviceLocationInfoByCode();
           if (this.headerTab != 4) {
-          this.$refs.WarnListRef.activeTab = "real";
-          // 刷新告警
-          this.$refs.WarnListRef.getList(2);
+            this.$refs.WarnListRef.activeTab = "real";
+            // 刷新告警
+            this.$refs.WarnListRef.getList(2);
           }
         }, this.refreshMarkerTime * 1000);
       });
     },
     // 刷新程序
     getDeviceLocationInfoByCode() {
-      console.log("刷新程序");
+      console.log("刷新程序",this.isShowVehicleInfo);
       if (this.isShowVehicleInfo) {
         // 选中车
         this.getDeviceLocationInfo(this.orgOrVehicleInfo.orgOrlicenseNumber);
@@ -1557,7 +1636,6 @@ export default {
     },
     // 清除定时刷新车位置
     clearRefreshMarkerTimer() {
-      console.log("清除定时刷新车位置", this.refreshMarkerTimer);
       if (this.refreshMarkerTimer) clearInterval(this.refreshMarkerTimer);
     },
     // 判断如果绘制告警点 type//红蓝
@@ -1607,14 +1685,15 @@ export default {
       style="transform:rotate(${direction.value || -30}deg);
       background:url('${require(`../../assets/images/map/${this.dealVheicleType(
         tmp
-      )}.png`)}') no-repeat;  background-size:43px 79px"
+      )}.png`)}') no-repeat;background-size:100% 100%"
       class="own-device-marker-warn "
       ><div class="warn-car "></div><div class="${
         type != 0 ? "warn-cirle" : "warn-cirle-blue"
       }"></div></div>`;
       const styleObj = {
         content: contents,
-        offset: this.offsetList[tmp.carrier_type || "qt"],
+        // offset: this.offsetList[tmp.carrier_type || "qt"],
+        offset: [-10, -21.3],
         angle: 0,
       };
       // this.realWarnMarker.setContent(contents);
@@ -1634,7 +1713,6 @@ export default {
     },
     /** 定时器读秒 */
     setReadTime() {
-      console.log("定时器读秒");
       const _this = this;
       return new Promise((resolve) => {
         const obj = {
@@ -1645,15 +1723,7 @@ export default {
         };
         http_request(obj).then((res) => {
           if (res.code == 200) {
-            console.log(
-              "res.data.map_refresh_interval",
-              res.data.map_refresh_interval
-            );
             _this.refreshMarkerTime = parseInt(res.data.map_refresh_interval);
-            console.log(
-              "_this.refreshMarkerTime 设置时间",
-              _this.refreshMarkerTime
-            );
           }
           this.clearReadTime();
           this.readTimer = setInterval(() => {
@@ -1702,17 +1772,6 @@ export default {
       return row.carrier_type
         ? row.carrier_type + "_" + row.vehicle_status
         : row.carrierType + "_" + 0;
-    },
-    postCenter(data, positions) {
-      let value = 0;
-      let value1 = 0;
-      data.forEach((el) => {
-        const { coordinate } = el.attribute;
-        value += coordinate.value[0];
-        value1 += coordinate.value[1];
-      });
-      positions[0] = value / data.length - 1;
-      positions[1] = value1 / data.length - 1 - 7;
     },
   },
 };
@@ -2084,47 +2143,60 @@ export default {
     }
     // 车标记的信息样式
     ::v-deep.own-map-vehicle-marker-label {
-      width: 269px;
-      height: 70px;
+      position: relative;
+      height: 36px;
       background: rgba(255, 255, 255, 0.7);
       box-shadow: 0px 3px 5px rgba(206, 206, 206, 0.7);
       border-radius: 4px;
-      padding: 8px;
+      padding: 0 12px;
       box-sizing: border-box;
       display: flex;
-      .label-img {
-        width: 51px;
-        height: 51px;
-        border-radius: 8px;
-        margin-right: 13px;
-        box-sizing: border-box;
-        & > img {
-          width: 100%;
-          height: 100%;
-        }
+      // .label-img {
+      //   width: 36px;
+      //   height: 36px;
+      //   border-radius: 8px;
+      //   margin-right: 8px;
+      //   box-sizing: border-box;
+      //   & > img {
+      //     width: 100%;
+      //     height: 100%;
+      //   }
+      // }
+      justify-content: center;
+      align-items: center;
+      &-triangle {
+        position: absolute;
+        bottom: -6px;
+        left: 50%;
+        transform: translate(-50%, 0);
+        margin: 0 auto;
+        border-top: 8px solid #ffffff;
+        width: 0;
+        height: 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
       }
       .label-content {
-        width: 200px;
-
         .label-content-name {
-          font-size: 20px;
-          font-family: PingFang SC;
-          font-weight: bold;
-          line-height: 24px;
+          font-size: 16px;
+          // font-family: PingFang SC;
+          //  font-weight: bold;
+          font-family: PingFang BOLD;
           color: #3d4050;
-          margin-bottom: 3px;
-          &-right {
-            margin-left: 10px;
-          }
+          line-height: 16px;
+          // margin-bottom: 2px;
+          // &-right {
+          //   margin-left: 4px;
+          // }
         }
         .label-content-status {
-          font-size: 16px;
+          font-size: 14px;
           font-family: PingFang SC;
           font-weight: 400;
-          line-height: 22px;
+          line-height: 16px;
           color: #999999;
           &-line {
-            margin: 0 10px;
+            margin: 0 6px;
           }
         }
       }
@@ -2213,9 +2285,8 @@ export default {
     // 标记物车样式
     ::v-deep.own-device-marker-car {
       transform-origin: center center;
-      width: 43px;
-      height: 79px;
-      background-size: 100% 100%;
+      width: 20px;
+      height: 42.6px;
       // &.ztc {
       //   width: 34px;
       //   height: 76px;
@@ -2280,8 +2351,8 @@ export default {
     ::v-deep.own-device-marker-warn {
       position: relative;
       transform-origin: center center;
-      width: 43px;
-      height: 79px;
+      width: 30px;
+      height: 64px;
       background-size: 100% 100%;
       z-index: 100;
 

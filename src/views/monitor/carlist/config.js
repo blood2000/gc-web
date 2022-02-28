@@ -109,7 +109,7 @@ export const vehicleStatusList = [
 
 export const warningLevelObj =
 {
-  '0': { text: "一级告警", img: require('@/assets/images/detail/warn_level_1.png') },
-  '1': { text: "二级告警", img: require('@/assets/images/detail/warn_level_2.png') },
-  '2': { text: "三级告警", img: require('@/assets/images/detail/warn_level_3.png') }
+  '1': { text: "一级告警", img: require('@/assets/images/detail/warn_level_1.png') },
+  '2': { text: "二级告警", img: require('@/assets/images/detail/warn_level_2.png') },
+  '3': { text: "三级告警", img: require('@/assets/images/detail/warn_level_3.png') }
 };

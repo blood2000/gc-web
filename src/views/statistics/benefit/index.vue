@@ -22,12 +22,8 @@
           <span v-show="endDateText">-{{ endDateText }}</span>
         </div>
         <div class="benefit-date__btn">
-          <el-button @click="onSearch" type="primary" size="small">
-            搜 索
-          </el-button>
-          <el-button @click="onReset" class="ml16" size="small" plain>
-            重 置
-          </el-button>
+          <el-button @click="onSearch" type="primary" size="small"> 搜 索 </el-button>
+          <el-button @click="onReset" class="ml16" size="small" plain> 重 置 </el-button>
         </div>
       </div>
       <div class="benefit-info">
@@ -115,12 +111,12 @@ export default {
     Freight,
     FreightMany,
     Vehicle,
-    Driver
+    Driver,
   },
   data() {
     return {
       value: new Date(),
-      startDate: this.parseTime(new Date(), '{y}-{m}-{d}'),
+      startDate: this.parseTime(new Date(), '{y}-{m}') + '-01',
       endDate: this.parseTime(new Date(), '{y}-{m}-{d}'),
       isMany: false,
       statistic: {
@@ -134,14 +130,14 @@ export default {
           // 车辆效益
           revenueCount: 0, // 已收款派车单
           revenue: 0, // 已收款
-          vehicleBenefitRanking: [] // 车辆排行
+          vehicleBenefitRanking: [], // 车辆排行
         },
         driverBenefitInfo: {
           driverCount: 0, // 任务司机
           revenue: 0, // 已收款
-          driverBenefitRanking: [] // 司机排行
-        }
-      }
+          driverBenefitRanking: [], // 司机排行
+        },
+      },
     }
   },
   computed: {
@@ -149,13 +145,11 @@ export default {
       return this.parseTime(this.value, '{y}年{m}月')
     },
     startDateText() {
-      return this.startDate
-        ? this.parseTime(this.startDate, '{y}年{m}月{d}日')
-        : ''
+      return this.startDate ? this.parseTime(this.startDate, '{y}年{m}月{d}日') : ''
     },
     endDateText() {
       return this.endDate ? this.parseTime(this.endDate, '{y}年{m}月{d}日') : ''
-    }
+    },
   },
   created() {
     this.onSearch()
@@ -176,15 +170,11 @@ export default {
         url_alias: 'wholeStatistics',
         data: {
           startDate: this.startDate,
-          endDate: this.endDate
-        }
+          endDate: this.endDate,
+        },
       }
       http_request(params).then((res) => {
-        this.isMany = !(
-          this.startDate &&
-          this.endDate &&
-          this.startDate === this.endDate
-        )
+        this.isMany = !(this.startDate && this.endDate && this.startDate === this.endDate)
         this.statistic = res.data
       })
     },
@@ -197,13 +187,9 @@ export default {
       } else if (val === 'today') {
         this.value = new Date()
       } else if (val === 'preYear') {
-        this.value = new Date(
-          this.value.setFullYear(this.value.getFullYear() - 1)
-        )
+        this.value = new Date(this.value.setFullYear(this.value.getFullYear() - 1))
       } else if (val === 'nextYear') {
-        this.value = new Date(
-          this.value.setFullYear(this.value.getFullYear() + 1)
-        )
+        this.value = new Date(this.value.setFullYear(this.value.getFullYear() + 1))
       }
     },
     // 点击了天数
@@ -238,11 +224,11 @@ export default {
       return ''
     },
     onReset() {
-      this.startDate = this.parseTime(new Date(), '{y}-{m}-{d}')
+      this.startDate = this.parseTime(new Date(), '{y}-{m}') + '-01'
       this.endDate = this.parseTime(new Date(), '{y}-{m}-{d}')
       this.onSearch()
-    }
-  }
+    },
+  },
 }
 </script>
 

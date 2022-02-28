@@ -13,11 +13,11 @@
     <div class="map-warning-detail">
       <ul class="block-list ly-flex ly-flex-pack-start">
         <li v-if="alarmDetail.alarmTypeName" class="ly-flex-v ly-flex-align-center ly-flex-pack-center">
-          <img src="~@/assets/images/device/warn_icon_1.png">
+          <img :src="alarmDetail.icon">
           <p class="g-single-row text">{{ alarmDetail.alarmTypeName }}</p>
         </li>
         <li v-if="alarmDetail.alarmLevel" class="ly-flex-v ly-flex-align-center ly-flex-pack-center">
-          <img src="~@/assets/images/device/warn_label_3.png">
+          <img :src="require('@/assets/images/device/warn_label_' + alarmDetail.alarmLevel + '.png')">
           <p class="g-single-row text">{{ alarmDetail.alarmLevel }}</p>
         </li>
         <li v-if="alarmDetail.number" class="ly-flex-v ly-flex-align-center ly-flex-pack-center">
@@ -216,6 +216,9 @@ export default {
       border: 1px solid rgba(112, 112, 112, 0.15);
       border-radius: 6px;
       margin-right: 30px;
+      img {
+        height: 30px;
+      }
       .text{
         font-size: 12px;
         font-family: PingFang SC;

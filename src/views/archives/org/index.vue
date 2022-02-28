@@ -1,6 +1,6 @@
 <template>
   <!-- 组织管理 -->
-  <div class="pages-info">
+  <div class="pages-info none-org-tree">
     <div class="pages-info-right">
       <el-form
         ref="queryForm"

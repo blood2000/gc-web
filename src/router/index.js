@@ -82,7 +82,9 @@ export const constantRoutes = [
         path: 'index',
         component: (resolve) => require(['@/views/index'], resolve),
         name: 'Index',
-        meta: { title: '首页', icon: 'dashboard', affix: true }
+        meta: { title: '首页', icon: 'dashboard',
+        //  affix: true
+         }
       }
     ]
   },
@@ -179,7 +181,30 @@ export const constantRoutes = [
     path: '/things',
     component: (resolve) => require(['@/views/things/index'], resolve),
     hidden: true
-  }
+  },
+  {
+    path: '/apps/planningroute/v1',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        component: (resolve) => require(['@/views/apps/planningRoute/v1/list'], resolve),
+        name: 'PlanningRouteList',
+        meta: { title: '规划路线', icon: 'dashboard', affix: false }
+      },
+      {
+        path: 'map',
+        component: (resolve) => require(['@/views/apps/planningRoute/v1/PlanningMap'], resolve),
+        name: 'PlanningRouteMap',
+        meta: { title: '规划路线地图', icon: 'dashboard', affix: false }
+      },
+      {
+        path: 'PlanningRouteTest',
+        component: (resolve) => require(['@/views/apps/planningRoute/v1/index'], resolve),
+        hidden: true
+      },
+    ]
+  },
 ]
 
 export default new Router({

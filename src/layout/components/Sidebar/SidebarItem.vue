@@ -1,5 +1,6 @@
 <template>
   <div v-if="!item.hidden">
+    <!-- 这块没做 记得继续做 -->
     <template
       v-if="
         hasOneShowingChild(item.children, item) &&
@@ -10,14 +11,14 @@
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
         <el-menu-item
           :index="resolvePath(onlyOneChild.path)"
-          :class="{ 'submenu-title-noDropdown': !isNest }"
-          class="el-menu-item-reset"
+          :class="{ 'submenu-title-noDropdown': !isNest ,'el-menu-item-reset':isCollapse}"
+         
         >
           <!-- {{ onlyOneChild.meta.title }} -->
             <item
               v-if="item.meta"
               :icon="item.meta && item.meta.icon"
-              :title="item.meta.title"
+              :title="showTitle(item)"
             />
         </el-menu-item>
       </app-link>
@@ -33,7 +34,7 @@
         <item
           v-if="item.meta"
           :icon="item.meta && item.meta.icon"
-          :title="item.meta.title"
+          :title="showTitle(item)"
         />
       </template>
       <sidebar-item
@@ -73,12 +74,19 @@ export default {
       type: String,
       default: "",
     },
+    isCollapse:{
+      type: Boolean,
+      default:false
+    },
   },
   data() {
     this.onlyOneChild = null;
     return {};
   },
   methods: {
+    showTitle(item){
+      return this.isCollapse?item.menuAlias:item.meta.title
+    },
     hasOneShowingChild(children = [], parent) {
       const showingChildren = children.filter((item) => {
         if (item.hidden) {

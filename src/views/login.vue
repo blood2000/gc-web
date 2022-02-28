@@ -6,75 +6,97 @@
       :rules="loginRules"
       class="login-form"
     >
+      <div class="login-title">Welcome to you</div>
+      <div class="login-label">欢迎您来到至简管车</div>
       <!-- <h3 class="title">智慧车队后台管理系统</h3> -->
       <div
         class="login-type"
         :class="captchaOnOff ? 'captcha-login' : 'acct-login'"
       >
-        <div :class="captchaOnOff ? 'cur-login' : ''" @click="login(0)">
-          短信登录
+        <div class="line"></div>
+        <div style="margin-right:35px" :class="captchaOnOff ? 'cur-login' : ''" @click="login(0)">
+          账号登录
         </div>
         <div :class="!captchaOnOff ? 'cur-login' : ''" @click="login(1)">
-          账号登录
+          短信登录
         </div>
       </div>
       <el-form-item prop="telephone">
-        <el-input
-          v-model="loginForm.telephone"
-          type="text"
-          auto-complete="off"
-          placeholder="账号"
-          clearable
-        >
-          <svg-icon
-            slot="prefix"
-            icon-class="user"
-            class="el-input__icon input-icon"
-          />
-        </el-input>
+        <div class="input-box">
+          <div class="input-box-img">
+            <img
+              style="width: 100%; height: 100%"
+              src="../assets/images/login/user.png"
+              alt=""
+            />
+          </div>
+          <div class="input-box-line"></div>
+          <el-input
+            v-model="loginForm.telephone"
+            type="text"
+            auto-complete="off"
+            placeholder="请输入账号/手机号登录"
+            clearable
+          >
+          </el-input>
+        </div>
       </el-form-item>
-      <el-form-item prop="password" v-if="!captchaOnOff">
-        <el-input
-          v-model="loginForm.password"
-          type="password"
-          auto-complete="off"
-          placeholder="密码"
-          clearable
-          @keyup.enter.native="handleLogin"
-        >
-          <svg-icon
+      <el-form-item prop="password" v-if="captchaOnOff">
+        <div class="input-box">
+          <div class="input-box-img">
+            <img
+              style="width: 100%; height: 100%"
+              src="../assets/images/login/password.png"
+              alt=""
+            />
+          </div>
+          <div class="input-box-line"></div>
+          <el-input
+            v-model="loginForm.password"
+            type="password"
+            auto-complete="off"
+            placeholder="请输入密码"
+            clearable
+            @keyup.enter.native="handleLogin"
+          >
+            <!-- <svg-icon
             slot="prefix"
             icon-class="password"
             class="el-input__icon input-icon"
-          />
-        </el-input>
+          /> -->
+          </el-input>
+        </div>
       </el-form-item>
-      <el-form-item prop="captcha" v-if="captchaOnOff">
-        <el-input
-          v-model="loginForm.captcha"
-          auto-complete="off"
-          placeholder="验证码"
-          clearable
-          @keyup.enter.native="handleLogin"
-        >
-          <svg-icon
-            slot="prefix"
-            icon-class="validCode"
-            class="el-input__icon input-icon"
-          />
-        </el-input>
-        <div
-          class="login-code"
-          :class="sendCode ? 'no-send' : ''"
-          @click="getCode"
-        >
-          {{ verCodeText }}
+      <el-form-item prop="captcha" v-if="!captchaOnOff">
+        <div class="input-box">
+          <div class="input-box-img">
+            <img
+              style="width: 100%; height: 100%"
+              src="../assets/images/login/yanzhengma.png"
+              alt=""
+            />
+          </div>
+          <div class="input-box-line"></div>
+          <el-input
+            v-model="loginForm.captcha"
+            auto-complete="off"
+            placeholder="请输入验证码"
+            clearable
+            @keyup.enter.native="handleLogin"
+          >
+          </el-input>
+          <div class="login-code" @click="getCode">
+            {{ verCodeText }}
+          </div>
         </div>
       </el-form-item>
       <div class="check-box">
-        <el-checkbox v-if="!captchaOnOff" v-model="loginForm.rememberMe">
+        <el-checkbox v-if="captchaOnOff" v-model="loginForm.rememberMe">
           记住密码
         </el-checkbox>
+        <router-link class="link-type" :to="'/resetPwd'" v-show="captchaOnOff">
+          忘记密码
+        </router-link>
       </div>
       <el-form-item style="width: 100%">
         <el-button
@@ -88,20 +110,31 @@
           <span v-else>登 录 中...</span>
         </el-button>
       </el-form-item>
-      <div class="form-bottom">
-        <!-- <router-link class="link-type" :to="'/register'">
-          立即注册
-        </router-link> -->
-        <router-link class="link-type" :to="'/resetPwd'" v-show="!captchaOnOff">
-          忘记密码
+      <!-- <div class="form-bottom">
+        还没有账号？
+        <router-link class="link-type2" :to="'/register'">
+          立即去注册
         </router-link>
-      </div>
+      </div> -->
     </el-form>
+    <img
+      class="login-title-bg"
+      src="../assets/images/login/logo.png"
+      style="width: 238px; height: 56px"
+      alt=""
+    />
+    <video
+      autoplay
+      muted
+      loop
+      class="login-bg"
+      src="../assets/images/login/login-bg.mp4"
+    ></video>
     <!--  底部  -->
-    <div class="el-login-footer">
+    <!-- <div class="el-login-footer">
       <div>福建至简至一信息科技有限公司 版权所有</div>
-      <span>CopyRight@ 2021 All Rights Reserved 闽ICP备19023755号-2</span>
-    </div>
+      <span>CopyRight@ 2021 All Rights Reserved 闽ICP备2021009502号-4</span>
+    </div> -->
   </div>
 </template>
 
@@ -173,7 +206,9 @@ export default {
       } else {
         this.captchaOnOff = false;
       }
-      this.$refs.loginForm.clearValidate();
+      this.$nextTick(() => {
+        this.$refs.loginForm.clearValidate();
+      });
     },
     // 验证手机号
     //验证手机号是否已注册
@@ -250,7 +285,7 @@ export default {
       let that = this;
       this.countdownTimer = setInterval(() => {
         this.verCodeSecond > 0 && this.verCodeSecond--;
-        this.verCodeText = `再次发送(${this.verCodeSecond})`;
+        this.verCodeText = `已获取(${this.verCodeSecond})`;
       }, 1000);
       setTimeout(() => {
         this.sendCode = true;
@@ -274,13 +309,18 @@ export default {
       };
     },
     handleLogin() {
+                console.log('!this.captchaOnOff',this.captchaOnOff)
+
       this.$refs.loginForm.validate((valid) => {
+        console.log('valid',valid)
         if (valid) {
           if (!this.captchaOnOff) {
-            this.loading = true;
-            this.pwdLogin();
+           
+             this.checkCode();
           } else {
-            this.checkCode();
+             this.loading = true;
+            this.pwdLogin();
+           
           }
         }
       });
@@ -349,8 +389,8 @@ export default {
     //获取用户信息判断是否已审核
     getUserInfo() {
       this.$router.push({ path: this.redirect || "/" }).catch(() => {});
-      console.log('你过不过来')
-       this.loading = false;
+      console.log("你过不过来");
+      this.loading = false;
       return;
       this.$store
         .dispatch("getLoginInfo")
@@ -383,12 +423,40 @@ export default {
 
 <style lang="scss" scoped>
 .login {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
+  // display: flex;
+  // justify-content: flex-end;
+  // align-items: center;
   height: 100%;
-  background-image: url("../assets/images/login-background.gif");
-  background-size: 100% 100%;
+  // background-image: url("../assets/images/login-background.gif");
+  // background-size: 100% 100%;
+}
+.login-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+.login-title {
+  color: #fff;
+  font-size: 36px;
+  font-weight: bold;
+  font-family: PingFang SC;
+  margin-bottom: 10px;
+  background: url("../assets/images/login/login-title-bg.png") no-repeat;
+  background-position: 0px 33px;
+}
+.login-title-bg {
+  position: absolute;
+  top: 37px;
+  left: 46px;
+  z-index: 300;
+}
+.login-label {
+  font-size: 21px;
+  font-family: PingFang SC;
+  font-weight: 400;
+  color: #e0e0e0;
+  opacity: 0.89;
+  margin-bottom: 40px;
 }
 .title {
   margin: 0px auto 10px auto;
@@ -401,12 +469,19 @@ export default {
   position: relative;
   width: 200px;
   // height: 50px;
-  margin: 0 auto 30px;
+  margin: 0 0 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 16px;
-  color: #5f5f5f;
+  color: #ffffff;
+  .line {
+    border-bottom: 1px solid rgba($color: #fff, $alpha: 0.18);
+    position: absolute;
+    width: 392px;
+    height: 1px;
+    top: 40px;
+  }
 }
 
 .login-type::before {
@@ -417,52 +492,135 @@ export default {
 .captcha-login::before {
   position: absolute;
   content: "";
-  width: 40px;
-  height: 2px;
-  background: #4682fa;
-  left: 30px;
-  bottom: -10px;
+  width: 51px;
+  height: 3px;
+  background: #ffffff;
+  left: 15px;
+  bottom: -13px;
+  border-radius: 2px;
 }
 
 .acct-login::before {
   position: absolute;
   content: "";
-  width: 40px;
-  height: 2px;
-  background: #4682fa;
-  left: 130px;
-  bottom: -10px;
+  width: 51px;
+  height: 3px;
+  background: #ffffff;
+      left: 130px;
+  bottom: -13px;
+  border-radius: 2px;
 }
 
 .cur-login {
-  font-weight: bold;
-  color: #121212;
+  font-weight: bold !important;
+  color: #ffffff !important;
 }
 
 .login-type > div {
   cursor: pointer;
   width: 100px;
-  text-align: center;
+  font-size: 19px;
+  font-weight: 400;
+  font-family: PingFang SC;
+  color: rgba($color: #ffffff, $alpha: 0.8);
 }
 
 .login-form {
-  border-radius: 6px;
-  background: #ffffff;
-  width: 400px;
-  // height: 380px;
-  margin-right: 100px;
-  padding: 25px 25px 5px 25px;
+  -webkit-animation: loginformanimation 1s ease-in-out; /* Safari 与 Chrome */
+  position: fixed;
+  z-index: 110;
+  top: calc(50% - 292.5px);
+  right: 0;
+  width: 454px;
+  height: 585px;
+  // border: 2px solid #ffffff;
+  background: #04132f;
+  border-radius: 10px 0px 0px 10px;
+  padding: 53px 19px 35px 27px;
   .el-input {
-    height: 38px;
+    height: 43px;
     input {
-      height: 38px;
+      height: 43px;
     }
   }
   .input-icon {
-    height: 39px;
+    height: 43px;
     width: 14px;
     margin-left: 2px;
   }
+  .input-icon::after {
+    content: "|";
+    width: 1px;
+    height: 43px;
+    margin-left: 20px;
+  }
+}
+
+@keyframes loginformanimation {
+  from {
+    right: -454px;
+  }
+  to {
+    right: 0;
+  }
+}
+
+.input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: url("../assets/images/login/login-input.png") no-repeat;
+  padding-left: 20px;
+  &-img {
+    width: 24px;
+    height: 24px;
+  }
+  &-line {
+    width: 1px;
+    height: 28px;
+    border-right: 1px solid rgba($color: #fff, $alpha: 0.22);
+    margin-left: 7px;
+  }
+}
+::v-deep .el-input--medium .el-input__inner {
+  height: 43px !important;
+  line-height: 43px !important;
+  background: transparent;
+  border: none;
+  // padding-left: 64px;
+  color: #fff;
+  font-size: 15px;
+  font-family: PingFang SC;
+  font-weight: 400;
+}
+::v-deep .el-input--medium .el-input__inner::-webkit-input-placeholder {
+  color: #d4dbe8;
+}
+::v-deep .el-input--medium .el-input__inner::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: #d4dbe8;
+}
+::v-deep .el-input--medium .el-input__inner:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: #d4dbe8;
+}
+::v-deep .el-input--medium .el-input__inner:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: #d4dbe8;
+}
+::v-deep .el-button--medium {
+  border-radius: 8px;
+  font-size: 19px;
+}
+::v-deep .el-button--primary {
+  background: #0b5599;
+  border-color: #0b5599;
+}
+::v-deep .el-button--primary:hover,
+.el-button--primary:focus {
+  background: #46a6ff;
+  border-color: #46a6ff;
 }
 .login-tip {
   font-size: 13px;
@@ -471,30 +629,53 @@ export default {
 }
 .login-code {
   width: 33%;
-  height: 34px;
+  height: 41px;
   float: right;
   position: absolute;
   top: 1px;
   right: 1px;
+  line-height: 41px;
   text-align: center;
   background: #eee;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
   border-left: 1px solid #dcdfe6;
   cursor: pointer;
-  color: #999;
+  color: #fff;
+  background: #263651;
+  border-left: 1px solid #263651;
+  font-size: 16px;
+  font-family: PingFang SC;
+  font-weight: 400;
 }
 
 .no-send {
   color: #fff;
-  background: #1890ff;
-  border-left: 1px solid #1890ff;
+  background: #263651;
+  border-left: 1px solid #263651;
 }
 
 .form-bottom {
-  height: 40px;
+  margin-top: 36px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+  font-family: PingFang SC;
+  font-weight: 400;
+  color: #ffffff;
+  opacity: 0.8;
+  position: relative;
+  background: url("../assets/images/login/goTo.png") no-repeat;
+  padding-bottom: 2px;
+  background-position: 212px 21px;
+  .link-type2 {
+    font-size: 15px;
+    font-family: PingFang SC;
+    font-weight: bold;
+    color: #ffffff;
+    opacity: 0.8;
+  }
 }
 
 .el-login-footer {
@@ -516,6 +697,30 @@ export default {
 
 .check-box {
   height: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: space-between;
+}
+// #0B5599
+::v-deep .el-checkbox__inner {
+  background: transparent;
+  border: 1px solid #acacac;
+  border-radius: 4px;
+}
+::v-deep .el-checkbox__input.is-checked .el-checkbox__inner {
+  background-color: #0b5599;
+  border-color: #0b5599;
+}
+::v-deep .el-checkbox__input.is-checked + .el-checkbox__label {
+  color: #0b5599;
+}
+.link-type {
+  font-size: 14px;
+  font-family: PingFang SC;
+  font-weight: 400;
+  color: rgba($color: #c2c2c2, $alpha: 0.9);
+}
+.link-type:focus {
+  color: #0b5599;
 }
 </style>

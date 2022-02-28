@@ -138,6 +138,7 @@
                     class="w256"
                     v-model="item.goodsCode"
                     filterable
+                     clearable
                     placeholder="请选择"
                     :disabled="whichType === 'detail'"
                   >
@@ -157,6 +158,7 @@
                         class="w256"
                         v-model="item.goodsFreightPrice"
                         placeholder="请输入"
+                         clearable
                         :disabled="whichType === 'detail'"
                       >
                         <template slot="append">元</template>
@@ -167,6 +169,7 @@
                     <el-form-item label="司机运费" prop="driverFreightPrice">
                       <el-input
                         class="w256"
+                         clearable
                         v-model="item.driverFreightPrice"
                         placeholder="请输入"
                         :disabled="whichType === 'detail'"
@@ -263,27 +266,27 @@ export default {
       ],
       delCode: [],
       rules: {
-        goodsCode: [
-          {
-            required: true,
-            message: '请选择货品类型',
-            trigger: ['blur', 'change']
-          }
-        ],
-        goodsFreightPrice: [
-          {
-            required: true,
-            message: '运费单价不能为空',
-            trigger: ['blur', 'change']
-          }
-        ],
-        driverFreightPrice: [
-          {
-            required: true,
-            message: '司机运费不能为空',
-            trigger: ['blur', 'change']
-          }
-        ]
+        // goodsCode: [
+        //   {
+        //     required: true,
+        //     message: '请选择货品类型',
+        //     trigger: ['blur', 'change']
+        //   }
+        // ],
+        // goodsFreightPrice: [
+        //   {
+        //     required: true,
+        //     message: '运费单价不能为空',
+        //     trigger: ['blur', 'change']
+        //   }
+        // ],
+        // driverFreightPrice: [
+        //   {
+        //     required: true,
+        //     message: '司机运费不能为空',
+        //     trigger: ['blur', 'change']
+        //   }
+        // ]
       }
     }
   },

@@ -169,7 +169,6 @@ export default {
     },
     //获取分组列表
     async requsetGroupHttp() {
-      console.log("我被请求了");
       const obj = {
         moduleName: "http_group",
         method: "post",

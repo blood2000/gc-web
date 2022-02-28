@@ -291,11 +291,8 @@ export default {
       const tmp = { ...this.queryParams };
       if (tmp.dispatchOrderStatus != null) {
         const statusList = [];
-        console.log("tmp.dispatchOrderStatus", tmp.dispatchOrderStatus);
         statusList.push(tmp.dispatchOrderStatus);
-        console.log("statusList", statusList);
         tmp.dispatchOrderStatus = statusList;
-        console.log(";tmp.dispatchOrderStatus", tmp.dispatchOrderStatus);
       }
       if (tmp.dateRange) {
         tmp.startDate = tmp.dateRange[0];
@@ -303,7 +300,6 @@ export default {
         delete tmp.dateRange;
       }
       if (tmp.dispatchOrderStatus && tmp.dispatchOrderStatus.length == 1) {
-        console.log("tmp.dispatchOrderStatus[0]", tmp.dispatchOrderStatus[0]);
         if (!tmp.dispatchOrderStatus[0] && tmp.dispatchOrderStatus[0] !== 0)
           delete tmp.dispatchOrderStatus;
       }
@@ -313,7 +309,6 @@ export default {
           console.log('tmp[item]',tmp[item])
         }
         if (!tmp[item] && tmp[item] !== 0) {
-          console.log('这个字段要被删除',item)
           delete tmp[item];
         }
       }

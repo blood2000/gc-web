@@ -10,7 +10,7 @@
   >
   <!-- colseDetailDrawer -->
     <div class="device-box">
-      <el-tag class="tag-info" type="danger" v-if="detailObj.expireFlagValue">
+      <el-tag class="tag-info" type="danger" v-if="detailObj.expireFlag === 0">
         <img src="../../../../assets/images/dialog/icon-error.png" alt="" />
         该设备已到期，请及时续费！</el-tag
       >
@@ -63,7 +63,7 @@
               </el-col>
               <el-col v-if="isShow" :span="12" class="device-detail-right-row-col">
                 <span class="labels">激活时间</span>
-                <span class="title">{{ detailObj.expireFlagValue }}</span>
+                <span class="title">{{ detailObj.activationTime }}</span>
               </el-col>
             </el-row>
             <el-row v-if="isShow" class="device-detail-right-row">

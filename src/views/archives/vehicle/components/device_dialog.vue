@@ -37,8 +37,8 @@
       </el-row>
       <div v-else class="device-content-header unbind-to-bind">
         <span class="unbind-to-bind-text"> 暂未绑定</span>
-        <!-- chooseImg -->
-        <input
+        <!-- 因没有上次图片识别接口，暂时注释 -->
+        <!-- <input
           type="file"
           class="upload-to-bind"
           name="file"
@@ -49,12 +49,12 @@
           class="unbind-to-bind-img"
           src="@/assets/images/uploadImage/upload_icon.png"
           alt=""
-        />
+        /> -->
       </div>
       <div class="device-content-content" :style="{ height: '465px' }">
         <div>剩余{{ total }}台未绑定设备</div>
         <el-input
-          style="margin-bottom: 10px"
+          class="mtb10"
           placeholder="请输入设备的序列号"
           @input="flterDevice"
           v-model="searchValue"
@@ -63,7 +63,7 @@
         </el-input>
         <div class="device-content-content-box">
           <el-row
-          v-show="unList.length > 0"
+            v-show="unList.length > 0"
             class="device-content-header"
             v-for="item in unList"
             :key="item.sn + item.device_code"
@@ -277,6 +277,10 @@ export default {
   //   display: flex;
 }
 
+.mtb10 {
+  margin: 5px 0 10px 0;
+}
+
 .device-content-header {
   // margin: 20px;
   border-radius: 5px;
@@ -313,7 +317,7 @@ export default {
   display: flex;
   flex-direction: column;
   &-box {
-    overflow: scroll;
+    overflow: auto;
     flex: 1;
   }
 }

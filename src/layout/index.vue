@@ -1,30 +1,32 @@
 <template>
-  <div
-    :class="classObj"
-    class="app-wrapper"
-    :style="{ '--current-color': theme }"
-  >
+  <div class="app-wrapper" :style="{ '--current-color': theme }">
     <!-- <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" /> -->
-    <sidebar
-      class="sidebar-container"
-      :style="{
-        backgroundColor:
-          sideTheme === 'theme-dark' ? variables.menuBg : variables.menuLightBg,
-      }"
-    />
-    <div class="app-wrapper__container">
-      <!-- 头部标题 -->
-      <navbar />
+    <!-- 头部标题 -->
+    <navbar />
+    <div class="app-wrapper__container" :class="classObj">
       <!-- 侧边导航栏 -->
+      <sidebar
+        class="sidebar-container"
+        v-show="isShowSecondCom"
+        :style="{
+          backgroundColor:
+            sideTheme === 'theme-dark'
+              ? variables.menuBg
+              : variables.menuLightBg,
+        }"
+      />
       <!-- <side-panel v-if="device !== 'mobile'" /> -->
       <!-- 内容 -->
-      <div :class="{ hasTagsView: needTagsView }" class="main-container">
+      <div :class="{ hasTagsView: needTagsView,isShowSide:!isShowSecondCom }" class="main-container">
         <!-- 标签栏 -->
-        <div :class="{ 'fixed-header': fixedHeader }">
+        <div
+          v-show="isShowSecondCom"
+          :class="{ 'fixed-header': fixedHeader }"
+        >
           <tags-view v-if="needTagsView" />
         </div>
         <!-- 内容 -->
-        <app-main />
+        <app-main :style="{height:isShowSecondCom?'calc(100% - 36px)':'100%'}" />
         <!-- 工具栏 -->
         <right-panel v-if="showSettings">
           <settings />
@@ -40,7 +42,7 @@ import { AppMain, Navbar, Settings, TagsView } from "./components";
 import { Sidebar } from "./components";
 import SidePanel from "./components/SidePanel/index";
 import ResizeMixin from "./mixin/ResizeHandler";
-import { mapState } from "vuex";
+import { mapGetters, mapState } from "vuex";
 import variables from "@/assets/styles/variables.scss";
 
 export default {
@@ -69,7 +71,14 @@ export default {
     TagsView,
   },
   mixins: [ResizeMixin],
+  watch:{
+    sideSecondRouters(){
+     console.log('this.sideSecondRouters',this.sideSecondRouters) 
+    }
+  },
   computed: {
+    ...mapGetters(["sideSecondRouters"]),
+
     ...mapState({
       theme: (state) => state.settings.theme,
       sideTheme: (state) => state.settings.sideTheme,
@@ -79,6 +88,12 @@ export default {
       needTagsView: (state) => state.settings.tagsView,
       fixedHeader: (state) => state.settings.fixedHeader,
     }),
+    isShowSecondCom(){
+   if(this.sideSecondRouters && this.sideSecondRouters.length > 1){
+     return true
+   } 
+   return false
+    },
     classObj() {
       return {
         hideSidebar: !this.sidebar.opened,
@@ -92,7 +107,6 @@ export default {
     },
   },
   mounted() {
-    console.log("我是layout");
     this.getGoodsTypeList();
   },
   methods: {
@@ -123,7 +137,6 @@ export default {
         }
       }
       this.$store.commit("set_goodsTypeList", result);
-      console.log("set_goodsTypeList", result);
     },
     handleClickOutside() {
       this.$store.dispatch("app/closeSideBar", { withoutAnimation: false });
@@ -142,7 +155,6 @@ export default {
   height: 100%;
   width: 100%;
   overflow: hidden;
-  display: flex;
   &.mobile.openSidebar {
     position: fixed;
     top: 0;
@@ -150,11 +162,15 @@ export default {
 
   &__container {
     // 70: headerHeight
-    flex: 1;
-    height: 100%;
+    width: 100%;
+    height: calc(100% - 60px);
+    position: relative;
   }
 }
 
+.isShowSide{
+  margin-left: 0px !important;
+}
 .drawer-bg {
   background: #000;
   opacity: 0.3;
@@ -168,6 +184,7 @@ export default {
 .fixed-header {
   position: relative;
   z-index: 9;
+  height: 36px;
 }
 
 .mobile .fixed-header {

@@ -227,7 +227,7 @@ export default {
         },
         {
           code: "device",
-          tabName: "设备异常",
+          tabName: "异常事件",
         },
         {
           code: "driver",
@@ -259,7 +259,6 @@ export default {
   watch: {
     vehicleCode: {
       handler(val) {
-        console.log("vehicleCode watch0", val);
         if (val) {
           this.getList(0);
         }
@@ -268,14 +267,12 @@ export default {
   },
   mounted() {
     setTimeout(() => {
-      console.log("mounted0");
       this.getList(2);
     });
   },
   computed: {},
   methods: {
     loading_chuan(index) {
-      console.log("123", ttt1 + "?+" + new Date().getTime());
       return ttt1 + "?+" + new Date().getTime() + index;
     },
     // 那个动画
@@ -296,12 +293,10 @@ export default {
               : "",
         };
       }
-      console.log("ckc  result ===========", result);
       return result;
     },
     /** 切换tab */
     handleTab(code) {
-      console.log("handleTab0");
       if (this.activeTab === code) return;
       this.activeTab = code;
       this.getList(2);
@@ -335,7 +330,6 @@ export default {
     },
     /** 获取实时告警列表 */
     getRealList(type) {
-      console.log("获取实时告警列表");
       const params = {
         start: 1,
         limit: 5,
@@ -555,7 +549,6 @@ export default {
             position: relative;
             z-index: 1;
             img {
-              width: 30px;
               height: 30px;
             }
             strong {
