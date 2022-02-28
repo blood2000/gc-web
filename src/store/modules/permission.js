@@ -37,7 +37,7 @@ const permission = {
     },
     //sideSecondRouters
     SET_SIDE_SECOND_ROUTERS:(state, routes)=> {
-      console.log('routes',routes)
+      console.log('设置二级路由',routes)
       state.sideSecondRouters = routes;
     },
   },

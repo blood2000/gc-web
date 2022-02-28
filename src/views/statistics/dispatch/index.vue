@@ -185,7 +185,6 @@ export default {
 <style lang="scss" scoped>
 .dispatch {
   background: #fff;
-  margin: 0 20px;
   .mb20 {
     margin-bottom: 20px;
   }

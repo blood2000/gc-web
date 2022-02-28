@@ -472,6 +472,8 @@ export default {
         { code: 3, label: "轨迹回放" },
         { code: 4, label: "视频回放" },
       ],
+      // 动态地图轨迹
+      pathSimplifierDynamic: null,
       // 巡航器轨迹
       pathSimplifierIns: null,
       // 巡航器
@@ -682,7 +684,6 @@ export default {
         let Zoom = _this.map.getZoom();
         console.log("Zoom", Zoom, e);
         console.log("markerList", _this.markerList);
-        console.log("markerData", _this.markerData);
 
         if (Zoom < 12) {
           if (_this.showVehicleLabel == true) {
@@ -708,9 +709,7 @@ export default {
         });
       });
     },
-    /**
-     * 数据绘制车辆
-     *
+    /**数据绘制车辆
      */
     drawVehicle() {
       this.markerData.forEach((el) => {
@@ -803,8 +802,8 @@ export default {
     closeInfoWindow() {
       this.map.clearInfoWindow();
     },
-    /**
-     * 通过经纬度获取详细点位信息
+    /**通过经纬度获取详细点位信息
+     *
      * @param {Array} position 经纬度必传
      *  */
     getAddressBylnglat(position) {
@@ -842,8 +841,7 @@ export default {
       });
       return polyline;
     },
-    /**
-     * 绘制圆
+    /**绘制圆
      * @param {LngLat} center 中心点经纬度必传
      * @param {Number} radius 半径必传
      * @param {string} strokeColor 边框线颜色
@@ -1379,7 +1377,7 @@ export default {
     driverNodeClick(data) {},
     // 获取车辆定位列表
     getVehicleLoLocations(orgCode, isFresh) {
-      console.log('isFresh',isFresh)
+      console.log("isFresh", isFresh);
       const params = orgCode ? { orgCode } : {};
       const obj = {
         moduleName: "http_map",
@@ -1433,6 +1431,7 @@ export default {
         }
       });
     },
+    // 最西南角
     getSW(list) {
       let south = null;
       let west = null;
@@ -1449,6 +1448,7 @@ export default {
       }
       return [west, south];
     },
+    //最东北角
     getNE(list) {
       let north = null;
       let east = null;
@@ -1466,18 +1466,220 @@ export default {
 
       return [east, north];
     },
-    // postCenter(data, positions) {
-    //   let value = 0;
-    //   let value1 = 0;
-    //   data.forEach((el) => {
-    //     const { coordinate } = el.attribute;
-    //     value += coordinate.value[0];
-    //     value1 += coordinate.value[1];
-    //   });
-    //   console.log("x轴", value, data.length - 1);
-    //   positions[0] = value / (data.length - 1);
-    //   positions[1] = value1 / (data.length - 1) - 2;
-    // },
+    // 动态地图
+    dynamicVehicleMove(data, callback) {
+      if (this.markerData.length === 0 || data.attribute.speed.value === 0) {
+        callback(true);
+        return;
+      }
+      const me = this;
+      const { attribute } = data;
+      // 两点之间数据
+      let tracklist = [];
+      const trackInfoList = [];
+      for (let item of this.markerData) {
+        if (item.plate_number === data.plate_number) {
+          tracklist.push([
+            item.attribute.coordinate.value[0],
+            item.attribute.coordinate.value[1],
+          ]);
+          trackInfoList.push({
+            x: item.attribute.coordinate.value[0],
+            y: item.attribute.coordinate.value[1],
+            sp: item.attribute.speed.value,
+            ag: item.attribute.direction.value,
+            tm: parseInt(new Date().getTime() / 1000),
+          });
+        }
+      }
+      trackInfoList.push({
+        x: attribute.coordinate.value[0],
+        y: attribute.coordinate.value[1],
+        sp: attribute.speed.value,
+        ag: attribute.direction.value,
+        tm: 10,
+      });
+      tracklist.push([
+        attribute.coordinate.value[0],
+        attribute.coordinate.value[1],
+      ]);
+      console.log("trackInfoList", trackInfoList);
+      console.log("tracklist", tracklist);
+      // 进行道路数据纠偏
+      this.map.plugin(["AMap.GraspRoad"], function () {
+        const graspRoad = new AMap.GraspRoad();
+        graspRoad.driving(trackInfoList, function (error, result) {
+          console.log("结果", error, result);
+          if (!error) {
+            const points = result.data.points;
+            if (points.length > 1) {
+              tracklist = [];
+              points.forEach((el) => {
+                tracklist.push([el.x, el.y]);
+              });
+              console.log("处理后", tracklist);
+            }
+            const distance = result.data.distance;
+            const currSp = distance / 5;
+            AMapUI.load(["ui/misc/PathSimplifier"], (PathSimplifier) => {
+              if (!PathSimplifier.supportCanvas) {
+                alert("当前环境不支持 Canvas！");
+                return;
+              }
+              const emptyLineStyle = {
+                lineWidth: 0,
+                fillStyle: null,
+                strokeStyle: null,
+                borderStyle: null,
+              };
+              me.pathSimplifierDynamic = new PathSimplifier({
+                zIndex: 100, // 地图层级，
+                autoSetFitView: true,
+                map: me.map, // 所属的地图实例
+                // 巡航路线轨迹列表
+                getPath: (pathData, pathIndex) => {
+                  return pathData.path;
+                },
+                getHoverTitle: function (pathData, pathIndex, pointIndex) {
+                  return null;
+                },
+                // 绘制路线节点
+                renderOptions: {
+                  // 轨迹线的样式
+                  pathLineStyle: {
+                    pathLineStyle: emptyLineStyle,
+                    pathLineSelectedStyle: emptyLineStyle,
+                    pathLineHoverStyle: emptyLineStyle,
+                    keyPointStyle: emptyLineStyle,
+                    startPointStyle: emptyLineStyle,
+                    endPointStyle: emptyLineStyle,
+                    keyPointHoverStyle: emptyLineStyle,
+                    keyPointOnSelectedPathLineStyle: emptyLineStyle,
+                  },
+                  renderAllPointsIfNumberBelow: -1, // 绘制路线节点，如不需要可设置为-1
+                },
+              });
+              console.log("当前 tracklist", tracklist);
+              me.pathSimplifierDynamic.setData([{ path: tracklist }]);
+              const contentImg = require(`../../assets/images/map/${me.dealVheicleType(
+                data
+              )}.png`);
+
+              //对第一条线路（即索引 0）创建一个巡航器
+              const navg1 = me.pathSimplifierDynamic.createPathNavigator(0, {
+                loop: false, //循环播放
+                speed: currSp * 2, //巡航速度，单位千米/小时
+                pathNavigatorStyle: {
+                  width: 20,
+                  height: 42.6,
+                  content: PathSimplifier.Render.Canvas.getImageContent(
+                    contentImg,
+                    function onload() {
+                      // 图片加载成功，重新绘制一次
+                      me.pathSimplifierDynamic.renderLater();
+                    },
+                    function onerror(e) {
+                      me.msgError("图片加载失败！");
+                    }
+                  ),
+                  strokeStyle: null,
+                  fillStyle: null,
+                },
+              });
+
+              // 创建信息窗
+              const info = [];
+              info.push(
+                `<div class='own-map-vehicle-marker-label'>
+        <div class='own-map-vehicle-marker-label-triangle'></div>
+          <div class='label-content g-single-row'>
+            <div class='label-content-name  g-single-row'>
+             ${
+               data.vehicle_alias
+                 ? `<span>
+             ${data.vehicle_alias}
+             </span> <span  class="label-content-name-right g-single-row">(${data.plate_number})</span>`
+                 : `  <span>
+             ${data.plate_number}
+             </span>`
+             }
+            </div>
+        </div>`
+              );
+              const infoWindow = me.markerInfoInit(tracklist[0], {
+                info,
+                offset: [0, -20],
+              });
+              // 移动监听
+              navg1.on("move", (datas, position) => {
+                const path = position.dataItem.pathData.path;
+                const idx = position.dataItem.pointIndex; // 走到了第几个点
+                const tail = position.tail; // 至下一个节点的比例位置
+                const totalIdx = idx + tail;
+                const len = path.length;
+                // console.log("move", tail, position);
+                // 移动的时候,信息窗体保持打开
+                if (!infoWindow.getIsOpen()) {
+                  infoWindow.open(me.map, path[idx]);
+                }
+                // const offsetX = (path[1][0] - path[0][0]) * tail;
+                // const offsetY = (path[1][1] - path[0][1]) * tail;
+                // infoWindow.setPosition(
+                //   new AMap.LngLat(path[0][0] + offsetX, path[0][1] + offsetY)
+                // );
+                // 重新设置信息窗口位置
+                infoWindow.setPosition(path[idx]);
+                // 重新设置信息窗体内容
+                const nweInfo = [];
+                nweInfo.push(
+                  `<div class='own-map-vehicle-marker-label'>
+        <div class='own-map-vehicle-marker-label-triangle'></div>
+          <div class='label-content g-single-row'>
+            <div class='label-content-name  g-single-row'>
+             ${
+               data.vehicle_alias
+                 ? `<span>
+             ${data.vehicle_alias}
+             </span> <span  class="label-content-name-right g-single-row">(${data.plate_number})</span>`
+                 : `  <span>
+             ${data.plate_number}
+             </span>`
+             }
+            </div>
+        </div>`
+                );
+                infoWindow.setContent(nweInfo.join(""));
+                // 车超出视野范围后重新定位
+                if (!me.isPointInRing(path[idx])) {
+                  me.map.setCenter(path[idx]);
+                }
+                if (navg1.isCursorAtPathEnd()) {
+                  infoWindow.setPosition(path[idx]);
+                  callback();
+                }
+              });
+
+              navg1.start();
+            });
+          } else {
+            callback(true);
+          }
+        });
+      });
+      // 轨迹
+    },
+    // 清除动态地图数据
+    clearDynamicVehicleMove() {
+      this.pathSimplifierDynamic && this.pathSimplifierDynamic.setData([]);
+    },
+    // 更新updateMarkerData
+    updateMarkerData(data) {
+      this.markerData.forEach((el, index) => {
+        if (el.plate_number === data.plate_number) {
+          this.$set(this.markerData, index, data);
+        }
+      });
+    },
     // 获取设备定位信息
     getDeviceLocationInfo(plateNumber, isFresh) {
       const obj = {
@@ -1488,12 +1690,12 @@ export default {
       };
       http_request(obj).then((res) => {
         const { data } = res;
+        console.log("获取设备定位信息 data", data);
         // 绘制前先清空之前的绘制, 避免重复绘制
         this.clearMarkerList();
         if (data) {
           // 绘制全部车辆点位
           const { attribute } = data;
-          // console.log("attribute", attribute);
           if (
             attribute &&
             attribute.coordinate &&
@@ -1502,23 +1704,25 @@ export default {
             attribute.coordinate.value[0] &&
             attribute.coordinate.value[1]
           ) {
-            this.drawVehicleMarker(data);
-            // 标记点聚合
-            // this.cluster = new AMap.MarkerClusterer(this.map, this.clusterMarkerList, {
-            //   gridSize: 80
-            // })
-            // 刷新点位后不重新设置视野
+            this.clearDynamicVehicleMove();
+            this.dynamicVehicleMove(data, (error) => {
+              console.log('11111',error)
+              this.updateMarkerData(data);
+              if (error) {
+                this.drawVehicleMarker(data);
+                if (isFresh && this.headerTab !== 3) {
+                  this.$nextTick(() => {
+                    console.log(
+                      " attribute.coordinate.value",
+                      attribute.coordinate.value
+                    );
+                    console.log("ckc 获取设备定位信息");
+                    this.map.setZoomAndCenter(13, attribute.coordinate.value);
+                  });
+                }
+              }
+            });
 
-            if (isFresh && this.headerTab !== 3) {
-              this.$nextTick(() => {
-                console.log(
-                  " attribute.coordinate.value",
-                  attribute.coordinate.value
-                );
-                console.log("ckc 获取设备定位信息");
-                this.map.setZoomAndCenter(13, attribute.coordinate.value);
-              });
-            }
             return;
           }
         }
@@ -1623,7 +1827,7 @@ export default {
     },
     // 刷新程序
     getDeviceLocationInfoByCode() {
-      console.log("刷新程序",this.isShowVehicleInfo);
+      console.log("刷新程序", this.isShowVehicleInfo);
       if (this.isShowVehicleInfo) {
         // 选中车
         this.getDeviceLocationInfo(this.orgOrVehicleInfo.orgOrlicenseNumber);
@@ -1642,7 +1846,6 @@ export default {
     // isNew 是否最新刷新的告警红
     dealDarwRealWarn(row, type) {
       console.log("绘制告警点位：", row, this.markerList);
-      console.log("markerData", this.markerData);
       clearTimeout(this.timerWarn);
       const tmp = this.markerData.filter(
         (el) => el.vehicle_code == row.vehicleCode
@@ -1724,6 +1927,7 @@ export default {
         http_request(obj).then((res) => {
           if (res.code == 200) {
             _this.refreshMarkerTime = parseInt(res.data.map_refresh_interval);
+            // _this.refreshMarkerTime = 60;
           }
           this.clearReadTime();
           this.readTimer = setInterval(() => {
@@ -2116,7 +2320,9 @@ export default {
       background: transparent;
       box-shadow: 0px 3px 5px rgba(206, 206, 206, 0.7);
       padding: 0;
+      overflow: inherit;
       .amap-info-close {
+        display: none;
         top: 6px;
         right: 6px !important;
       }
@@ -2151,6 +2357,7 @@ export default {
       padding: 0 12px;
       box-sizing: border-box;
       display: flex;
+
       // .label-img {
       //   width: 36px;
       //   height: 36px;
@@ -2175,6 +2382,7 @@ export default {
         height: 0;
         border-left: 8px solid transparent;
         border-right: 8px solid transparent;
+        opacity: 0.7;
       }
       .label-content {
         .label-content-name {

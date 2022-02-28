@@ -234,7 +234,7 @@ export default {
 
 <style lang="scss" scoped>
 .benefit {
-  padding: 0 0 0 20px;
+  padding: 0 0 0 0;
   display: flex;
   &-left {
     width: 300px;

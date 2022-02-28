@@ -1,0 +1,155 @@
+<template>
+  <div>
+    <div v-for="item in list" :key="item.categoryCode">
+      <div class="title">{{ item.categoryName }}（{{ item.appCount }}）</div>
+      <div class="store-list">
+        <div
+          class="list-box1"
+          v-for="sub in item.appList"
+          :key="sub.code"
+          :class="!sub.permissionFlag ? 'disable' : 'list-box'"
+          @click="handleClick(sub)"
+        >
+          <div class="list">
+            <div class="list-content">
+              <div class="list-content-img">
+                <img :src="sub.iconUrl" alt="" />
+              </div>
+              <div class="list-content-info">
+                <div class="list-content-info-title">
+                  <div class="list-content-info-title-left">{{ sub.appName }}</div>
+                  <div
+                    class="list-content-info-title-right"
+                    v-show="sub.allowTrialFlag"
+                  >
+                    试用
+                  </div>
+                </div>
+                <div class="list-text g-double-row">
+                  {{ sub.overview }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+export default {
+  data() {
+    return {};
+  },
+  props: {
+    list: {
+      type: Array,
+      default: () => {
+        return [];
+      },
+    },
+  },
+   methods:{
+    handleClick(item){
+      console.log('item',item)
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.title {
+  font-size: 16px;
+  font-family: PingFang BOLD;
+  color: #3d4050;
+  margin-bottom: 11px;
+}
+.store-list{
+  display: flex;
+  flex-wrap: wrap;
+}
+.list-box1 {
+   width: 25%;
+  height: 104px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.list-box:hover {
+  background: #ffffff;
+  border: 1px solid rgba(70, 130, 250, 0.2784313725490196);
+  box-shadow: 0px 3px 13px rgba(70, 130, 250, 0.21);
+  opacity: 1;
+}
+.list {
+  width: 80%;
+  height: 69px;
+  box-sizing: border-box;
+  .list-content {
+    height: 69px;
+    width: 100%;
+    display: flex;
+    &-img {
+      height: 55px;
+      width: 55px;
+      background: #4682fa;
+      border-radius: 7px;
+      margin-right: 17px;
+      & > img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    &-info {
+      flex: 1;
+      &-title {
+        display: flex;
+        margin-bottom: 5px;
+        align-items: center;
+        &-left {
+          font-size: 16px;
+          font-family: PingFang SC;
+          font-weight: bold;
+          color: #3d4050;
+          margin-right: 8px;
+        }
+        &-right {
+          width: 38px;
+          height: 18px;
+          background: #fff5e2;
+          border-radius: 0px 20px 20px 20px;
+          font-size: 12px;
+          font-family: PingFang SC;
+          font-weight: bold;
+          color: #faad14;
+          text-align: center;
+        }
+      }
+    }
+  }
+  &-text {
+    width: 100%;
+    height: 42px;
+    font-size: 14px;
+    font-family: PingFang SC;
+    font-weight: 400;
+    color: #3d4050;
+  }
+}
+.disable {
+  .list-content-img {
+    background: #c2c5cb;
+  }
+  .list-content-info-title-left {
+    color: #959aa4;
+  }
+  .list-text {
+    color: #959aa4;
+  }
+  .list-content-info-title-right {
+    display: none;
+  }
+}
+</style>
