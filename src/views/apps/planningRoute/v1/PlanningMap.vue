@@ -113,18 +113,16 @@
                   </div>
                   <div class="form-item">
                     <span class="item-prefix line end"></span>
-                    <div class="form-item-input-wrap" style="flex: 1; display: flex;">
-                      <place-auto-complete-input style="width: 249px;" class="path-end-input" :place-info="endPosition" :search-place="searchPlace" @select-place="endPositionSelect">
-                        <span slot="prepend" style="color: #4682FA; font-weight: bold">终</span>
-                      </place-auto-complete-input>
-                      <el-input v-model="endPosition.radius" class="pointer-radius-input">
-                        <template slot="suffix">
-                          <el-tooltip content="终点范围。单位米" placement="top" style="padding: 8px 3px 0 0;">
-                            <img src="../../../../assets/images/stealingcoal/question.png" alt="question"/>
-                          </el-tooltip>
-                        </template>
-                      </el-input>
-                    </div>
+                    <place-auto-complete-input style="width: 249px;" class="path-end-input" :place-info="endPosition" :search-place="searchPlace" @select-place="endPositionSelect">
+                      <span slot="prepend" style="color: #4682FA; font-weight: bold">终</span>
+                    </place-auto-complete-input>
+                    <el-input v-model="endPosition.radius" class="pointer-radius-input">
+                      <template slot="suffix">
+                        <el-tooltip content="终点范围。单位米" placement="top" style="padding: 8px 3px 0 0;">
+                          <img src="../../../../assets/images/stealingcoal/question.png" alt="question"/>
+                        </el-tooltip>
+                      </template>
+                    </el-input>
                     <span class="item-suffix">
                       <span @click="addMidPosition" class="sf-button add"></span>
                     </span>

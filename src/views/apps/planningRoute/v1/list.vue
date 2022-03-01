@@ -19,14 +19,14 @@
       <!-- 分割线 -->
       <el-table :loading="loading" stripe :data="listData">
         <el-table-column type="index" label="序号" align="center"></el-table-column>
-        <el-table-column label="路径名称" width="300" prop="route_name"></el-table-column>
+        <el-table-column label="路径名称" width="200" prop="route_name"></el-table-column>
         <el-table-column label="起点（含半径）" width="400" prop="start"></el-table-column>
         <el-table-column label="终点（含半径）" width="400" prop="end"></el-table-column>
         <el-table-column label="偏离半径上限（米）" width="150" prop="route_deviate_radius"></el-table-column>
         <el-table-column label="偏离时长上限（分钟）" width="150" prop="route_deviate_time"></el-table-column>
         <el-table-column label="监控时段" width="150" prop="monitorTime"></el-table-column>
-        <el-table-column label="添加时间" width="150" prop="create_time"></el-table-column>
-        <el-table-column label="编辑时间" width="150" prop="update_time"></el-table-column>
+        <el-table-column label="添加时间" width="180" prop="create_time"></el-table-column>
+        <el-table-column label="编辑时间" width="180" prop="update_time"></el-table-column>
         <el-table-column label="状态" width="80" fixed="right" align="center">
           <template slot-scope="scope">
             <el-switch @change="changeRoutePathStatus(scope.row)" v-model="scope.row.status" :active-value="1" :inactive-value="0"/>
