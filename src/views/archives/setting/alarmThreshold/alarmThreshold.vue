@@ -112,7 +112,7 @@ export default {
 
 <style lang="scss" scoped>
 .alarmThreshold {
-  width: 730px;
+  // width: 730px;
   height: 100%;
   background: #fff;
   padding: 25px 30px 50px 30px;

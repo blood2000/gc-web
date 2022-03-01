@@ -262,7 +262,7 @@ export default {
 <style lang="scss" scoped>
 .alarmTypes {
   background: #fff;
-  width: 730px;
+  // width: 730px;
   height: 100%;
   position: relative;
   padding-bottom: 40px;

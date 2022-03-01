@@ -286,7 +286,8 @@ export default {
 <style lang="scss" scoped>
 .ddc-monitor-queryParams {
   display: flex;
-  background: #f0f2f5;
+  padding: 0 24px;
+  // background: #f0f2f5;
   .ddc-monitor-queryParams-left {
     flex: 1;
     .down {

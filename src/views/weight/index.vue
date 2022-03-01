@@ -1,18 +1,18 @@
 <template>
-  <div class="monitor-pages-info">
-    <div class="monitor-pages-info-right">
+  <div class="pages-info none-org-tree">
+    <div class="pages-info-right">
       <!-- 上：搜索 -->
       <QueryForm v-model="queryParams" @handleQuery="searchQuery" />
       <el-tabs
-        class="monitor-pages-info-right-tab"
+        class="pages-info-right-tab"
         v-model="queryParams.isDel"
         @tab-click="handleTab"
       >
         <el-tab-pane label="全部" name="-1"></el-tab-pane>
         <el-tab-pane label="删除" name="1"></el-tab-pane>
       </el-tabs>
-      <div class="monitor-pages-info-right-content">
-        <div>
+      <div class="pages-info-right-content">
+        <div class="pages-info-right-content-btn">
           <el-button type="primary" @click="handleAdd">添加磅单</el-button>
         </div>
         <div class="page-table-layout-set">
@@ -85,7 +85,7 @@ export default {
         vehicleNumber: null,
         driverNameOrPhone: null,
         dateRange: [],
-        companyName:null,
+        companyName: null,
         routeCode: null,
         goodsCode: null,
         isDel: "-1",
@@ -185,20 +185,31 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.monitor-pages-info {
-  margin: 0 24px;
-  display: flex;
-  &-tab {
-    margin: 0 21px;
-  }
-  &-right {
-    flex: 1 !important;
-    overflow: auto;
-    width: 0;
-    background: #f0f2f5;
-    box-sizing: border-box !important;
-    ::v-deep .el-tabs__header {
-      margin: 0 0 16px;
+// .monitor-pages-info {
+//   // margin: 0 24px;
+//   display: flex;
+//   &-tab {
+//     margin: 0 21px;
+//   }
+//   &-right {
+//     flex: 1 !important;
+//     overflow: auto;
+//     width: 0;
+//     background: #f0f2f5;
+//     box-sizing: border-box !important;
+
+//   }
+// }
+
+::v-deep .el-tabs__nav-scroll{
+  margin-left: 24px;
+}
+.pages-info {
+  .pages-info-right {
+    &-content {
+      &-btn{
+        margin-left: 24px;
+      }
     }
   }
 }
@@ -207,8 +218,9 @@ export default {
   flex-wrap: wrap;
   margin-top: 12px;
   &-item {
-    margin-right: 20px;
+    margin-right: 1%;
     margin-bottom: 20px;
+    width: 24%;
   }
   //  &-item:nth-child(4n) {
   //   margin-right:0px;

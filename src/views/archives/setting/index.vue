@@ -117,9 +117,10 @@ export default {
     }
   }
   .setting-right {
-    flex: 1 1 auto;
-    width: 0;
-    padding: 20px 20px 0 20px;
+    // flex: 1 1 auto;
+    // width: 0;
+    flex: 1;
+    padding: 20px 20px 0 0;
     min-height: 100%;
   }
 }

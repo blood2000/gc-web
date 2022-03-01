@@ -140,10 +140,13 @@ export default {
 </script>
 <style lang="scss" scoped>
 .itemCard {
-  width: 432px;
+  width: 100%;
   height: 348px;
   background: #ffffff;
   border-radius: 6px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
+    border-radius: 3px;
+
   position: relative;
   &-menu-ab {
     width: 32px;

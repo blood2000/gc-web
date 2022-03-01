@@ -1,7 +1,7 @@
 <template>
   <!-- 企业路线 -->
-  <div class="coRoute">
-    <div class="coRoute-left">
+  <div class="pages-info">
+    <div class="pages-info-left">
       <div class="coRoute-left__title">用车企业</div>
       <div class="coRoute-left__wrapper">
         <div
@@ -17,7 +17,7 @@
         </div>
       </div>
     </div>
-    <div class="coRoute-right">
+    <div class="pages-info-right">
       <el-button type="primary" size="small" @click="onAddCoRoute">添加企业路线</el-button>
       <div class="coRoute-right__wrapper">
         <div class="coRoute-right__box" v-for="(item, index) in coRouteList" :key="index">
@@ -99,6 +99,7 @@
       <!-- 分页 -->
       <pagination
         :total="total"
+      v-show="total>0"
         layout="prev, pager, next,jumper, total"
         :page.sync="pageNum"
         :limit.sync="pageSize"
@@ -221,17 +222,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.coRoute {
-  height: 100%;
-  display: flex;
-  .coRoute-left {
-    width: 240px;
-    min-height: 100%;
-    background: #fff;
-    &__wrapper {
+    .coRoute-left__wrapper {
       background: #fff;
     }
-    &__title {
+    .coRoute-left__title {
       height: 55px;
       line-height: 55px;
       padding-left: 16px;
@@ -239,11 +233,13 @@ export default {
       font-weight: bold;
       color: #3d4050;
     }
-    &__box {
+    .coRoute-left__box {
       margin: 10px 0;
       padding: 10px 16px;
       display: flex;
       cursor: pointer;
+
+
       img {
         width: 14px;
         height: 14px;
@@ -275,7 +271,7 @@ export default {
         }
       }
     }
-    &__box-show {
+    .coRoute-left__box-show {
       border-right: 2px solid #4682fa;
       background: rgba(70, 130, 250, 0.08);
       span {
@@ -289,23 +285,20 @@ export default {
         display: block;
       }
     }
-  }
-  .coRoute-right {
-    flex: 1 1 auto;
-    width: 0;
-    padding: 20px;
-    &__wrapper {
+
+    .coRoute-right__wrapper {
       margin-left: -10px;
       padding-top: 20px;
       display: flex;
       flex-wrap: wrap;
     }
-    &__box {
-      width: 504px;
+    .coRoute-right__box {
+      width: 32%;
       height: 296px;
       background: #ffffff;
       border-radius: 6px;
-      margin: 0 10px 20px 10px;
+      margin: 0 1.3% 20px 0;
+              box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
       &-top {
         height: 56px;
         padding: 0 5px;
@@ -459,9 +452,13 @@ export default {
         }
       }
     }
+  .pages-info-right{
+    padding: 20px;
+  }
+  .pages-info-left{
+    padding: 0;
   }
   .pagination-container {
     background: none;
   }
-}
 </style>
