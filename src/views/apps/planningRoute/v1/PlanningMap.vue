@@ -248,9 +248,16 @@ export default {
     }
   },
   mounted() {
-    let {type, code} = this.$route.query
-    this.type = type
-    this.code = code
+    if (this.$parent.routeCode) {
+      this.code = this.$parent.routeCode
+      this.type = 'edit'
+    } else {
+      this.type = 'add'
+    }
+    console.log('code', this.code)
+    // let {type, code} = this.$route.query
+    // this.type = type
+    // this.code = code
     this.clearMap()
     setTimeout(() => {
       this.initMap()
@@ -458,13 +465,14 @@ export default {
       })
     },
     async goBack() {
-      await this.$store.dispatch('tagsView/delVisitedView', {path: '/apps/planningroute/v1/map'})
-      const latestView = this.$store.state.tagsView.visitedViews.slice(-1)[0];
-      if (latestView) {
-        this.$router.push(latestView.fullPath);
-      } else {
-        this.$router.push('/')
-      }
+      this.$parent.goBack()
+      // await this.$store.dispatch('tagsView/delVisitedView', {path: '/apps/planningroute/v1/map'})
+      // const latestView = this.$store.state.tagsView.visitedViews.slice(-1)[0];
+      // if (latestView) {
+      //   this.$router.push(latestView.fullPath);
+      // } else {
+      //   this.$router.push('/')
+      // }
     },
     async save() {
       if (!this.drivingPathResult) {
@@ -535,13 +543,14 @@ export default {
       })
       console.log(res)
       this.msgSuccess('保存成功')
-      await this.$store.dispatch('tagsView/delVisitedView', {path: '/apps/planningroute/v1/map'})
-      const latestView = this.$store.state.tagsView.visitedViews.slice(-1)[0];
-      if (latestView) {
-        this.$router.push(latestView.fullPath);
-      } else {
-        this.$router.push('/')
-      }
+      this.goBack()
+      // await this.$store.dispatch('tagsView/delVisitedView', {path: '/apps/planningroute/v1/map'})
+      // const latestView = this.$store.state.tagsView.visitedViews.slice(-1)[0];
+      // if (latestView) {
+      //   this.$router.push(latestView.fullPath);
+      // } else {
+      //   this.$router.push('/')
+      // }
     },
     searchPath () {
       console.log('searchPath')

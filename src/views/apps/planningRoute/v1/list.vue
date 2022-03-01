@@ -188,7 +188,8 @@ export default {
       this.isShowEditVehicleDialog = false
     },
     editRoute(row) {
-      this.$router.push({path: '/apps/planningroute/v1/map?type=edit&code=' + row.route_code})
+      this.$parent.editPlanRoute(row.route_code)
+      // this.$router.push({path: '/apps/planningroute/v1/map?type=edit&code=' + row.route_code})
     },
     editVehicle (row) {
       this.editVehicleForm.routeCode = row.route_code
@@ -241,7 +242,8 @@ export default {
       this.getList()
     },
     handleAdd () {
-      this.$router.push({path: '/apps/planningroute/v1/map?type=add'})
+      this.$parent.showAddRouteView()
+      // this.$router.push({path: '/apps/planningroute/v1/map?type=add'})
     },
     async getList() {
       let res = await http_request({
