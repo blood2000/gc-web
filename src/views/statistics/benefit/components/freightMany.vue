@@ -189,6 +189,8 @@ export default {
   height: 465px;
   background: #fff;
   padding: 25px 20px;
+  border: 1px solid #f9f9f9;
+  border-radius: 6px;
   &-bar {
     display: flex;
     align-items: center;
