@@ -12,26 +12,35 @@
       <div class="page-table-layout-set">
         <el-row :gutter="10" class="toolsbar">
           <el-col :span="1.5">
-            <el-button type="primary" size="mini" @click="handleAdd">添加路径</el-button>
+            <el-button type="primary" size="mini" @click="handleAdd">新增路线</el-button>
           </el-col>
         </el-row>
       </div>
       <!-- 分割线 -->
-      <RefactorTable
-        is-show-index
-        :loading="loading"
-        :data="listData"
-        row-key="id"
-        :table-columns-config="tableColumnsConfig"
-        :border="false"
-        :stripe="true">
-        <template #edit="{ row }" width="200">
-          <el-button size="mini" type="text" @click="editRoute(row)">编辑路径</el-button>
-          <el-button size="mini" type="text" @click="editVehicle(row)">编辑车辆</el-button>
-<!--          <el-button size="mini" type="text" @click="viewVehicle(row)">查看车辆</el-button>-->
-          <el-button size="mini" type="text" @click="delRoute(row)">删除路径</el-button>
-        </template>
-      </RefactorTable>
+      <el-table :loading="loading" stripe :data="listData">
+        <el-table-column type="index" label="序号" align="center"></el-table-column>
+        <el-table-column label="路径名称" width="300" prop="route_name"></el-table-column>
+        <el-table-column label="起点（含半径）" width="400" prop="start"></el-table-column>
+        <el-table-column label="终点（含半径）" width="400" prop="end"></el-table-column>
+        <el-table-column label="偏离半径上限（米）" width="150" prop="route_deviate_radius"></el-table-column>
+        <el-table-column label="偏离时长上限（分钟）" width="150" prop="route_deviate_time"></el-table-column>
+        <el-table-column label="监控时段" width="150" prop="monitorTime"></el-table-column>
+        <el-table-column label="添加时间" width="150" prop="create_time"></el-table-column>
+        <el-table-column label="编辑时间" width="150" prop="update_time"></el-table-column>
+        <el-table-column label="状态" width="80" fixed="right" align="center">
+          <template slot-scope="scope">
+            <el-switch @change="changeRoutePathStatus(scope.row)" v-model="scope.row.status" :active-value="1" :inactive-value="0"/>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="200" fixed="right" align="center">
+          <template slot-scope="scope">
+            <el-button size="mini" type="text" @click="editRoute(scope.row)">编辑路径</el-button>
+            <el-button size="mini" type="text" @click="editVehicle(scope.row)">编辑车辆</el-button>
+            <!--          <el-button size="mini" type="text" @click="viewVehicle(row)">查看车辆</el-button>-->
+            <el-button size="mini" type="text" @click="delRoute(scope.row)">删除路径</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
       <pagination
         v-show="total > queryParams.pageSize"
         :total="total"
@@ -108,53 +117,24 @@ export default {
         pageSize: 10
       },
       total: 0,
-      listData: [],
-      tableColumnsConfig: [
-        {
-          isShow: true,
-          label: "路径名称",
-          prop: "route_name",
-          sortNum: 1,
-          tooltip: true,
-        },
-        {
-          isShow: true,
-          label: "起点",
-          prop: "start",
-          align: "left",
-          sortNum: 1,
-          tooltip: true,
-        },
-        {
-          isShow: true,
-          label: "终点",
-          prop: "end",
-          align: "left",
-          sortNum: 1,
-          tooltip: true,
-        },
-        {
-          isShow: true,
-          label: "报警时段",
-          prop: "warnTime",
-          width: 50,
-          sortNum: 1,
-          tooltip: true,
-        },
-        {
-          isShow: true,
-          label: "操作",
-          prop: "edit",
-          sortNum: 1,
-          tooltip: true,
-        },
-      ]
+      listData: []
     }
   },
   created() {
     this.getList()
   },
   methods: {
+    changeRoutePathStatus(row) {
+      http_request({
+        moduleName: "http_planRoute",
+        method: "get",
+        url_alias: "planRouteStatus",
+        url_code: [row.status, row.route_code]
+      }).catch(e => {
+        // this.msgError('设置状态失败')
+        row.status = row.status === 1 ? 0 : 1
+      })
+    },
     viewVehicle (row) {
       this.removeRouteVehicles = []
       // this.viewVehicleForm.routeCode = row.route_code
@@ -273,6 +253,12 @@ export default {
       res.data.rows.forEach(item => {
         item.start = item.points[0].point_name
         item.end = item.points[1].point_name
+        if (item.points[0].radius) {
+          item.start += `(${item.points[0].radius}米)`
+        }
+        if (item.points[1].radius) {
+          item.end += `(${item.points[1].radius}米)`
+        }
         item.warnTime = `${item.effective_time} - ${item.expires_time}`
       })
       this.listData = res.data.rows

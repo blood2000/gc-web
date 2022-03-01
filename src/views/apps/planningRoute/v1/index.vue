@@ -1,700 +1,273 @@
 <template>
-  <div class="map-container">
-    <div id="routeplanning-map-container" />
-    <div id="panel"></div>
-    <div class="left-side">
-      <el-row style="position: relative">
-        <div style="top: 50%; position: absolute; left: 0;margin-top: -25px;">
-          <el-button @click="reversePath" type="text" icon="el-icon-sort" style="font-size: 18px;"></el-button>
-        </div>
-        <el-col style="width: 100%; padding: 0 0 0 30px;">
-          <el-form label-position="right">
-            <el-form-item style="margin-bottom: 8px;">
-              <el-input id="fromPositionInput" v-model="startPosition.name" clearable placeholder="起始位置" style="width: calc(100% - 60px)">
-                <template slot="prefix">起</template>
-              </el-input>
-            </el-form-item>
-            <el-form-item style="margin-bottom: 8px;" v-for="item in midPositionList">
-              <el-input :id="item.id" v-model="item.name" placeholder="请输入途径点" clearable style="width: calc(100% - 60px)">
-                <span slot="prefix">经</span>
-              </el-input>
-              <a href="#" @click="removeMidPosition(item)" style="font-size: 20px; margin-left: 5px; padding: 0 10px;"><i class="el-icon-remove-outline"></i></a>
-            </el-form-item>
-            <el-form-item style="margin-bottom: 8px;">
-              <el-input id="toPositionInput" v-model="endPosition.name" clearable placeholder="终点位置" style="width: calc(100% - 60px)">
-                <span slot="prefix">终</span>
-              </el-input>
-              <a href="#" @click="addMidPosition" style="font-size: 20px; margin-left: 5px; padding: 0 10px;"><i class="el-icon-circle-plus-outline"></i></a>
-            </el-form-item>
-          </el-form>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-button size="small" :loading="isSearchDriving" icon="el-icon-search" type="primary" @click="searchPath">搜索</el-button>
-        <el-button size="small" type="primary" @click="clearPath">清除</el-button>
-      </el-row>
-      <div style="padding: 20px 0">
-        <el-form label-width="80px" style="margin-right: 30px;">
-          <el-form-item label="路径名称" :rules="[{required: true, message: '必填'}]">
-            <el-input v-model="routeInfoForm.name" placeholder="请输入路径名称" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="报警时段" required>
-            <el-row>
-              <el-time-picker v-model="routeInfoForm.warningStartTime" value-format="HH:mm:ss" placeholder="请输入报警开始时间" style="width: 190px;"/>
-              <el-tooltip content="仅在报警时段内，路径才会响应路径偏离算法的计算。" placement="top" style="position: absolute; right: -25px; top: 8px; font-size: 18px;">
-                <i class="el-icon-question"></i>
-              </el-tooltip>
-            </el-row>
-            <div style="text-align: center">
-              <a href="#" @click="switchWarningTime" style="font-size: 16px; padding: 0 10px"><i class="el-icon-sort"></i></a>
-            </div>
-            <el-row>
-              <el-time-picker v-model="routeInfoForm.warningEndTime" value-format="HH:mm:ss" placeholder="请输入报警结束时间" style="width: 190px;"/>
-            </el-row>
-          </el-form-item>
-          <el-form-item label-width="140px" label="路径偏离距离上限" :rules="[{required: true, message: '必填'}]">
-            <el-select v-model="routeInfoForm.offPathDistance">
-              <el-option :value="0"></el-option>
-              <el-option :value="50"></el-option>
-              <el-option :value="100"></el-option>
-              <el-option :value="150"></el-option>
-              <el-option :value="200"></el-option>
-              <el-option :value="250"></el-option>
-              <el-option :value="300"></el-option>
-              <el-option :value="350"></el-option>
-              <el-option :value="400"></el-option>
-              <el-option :value="450"></el-option>
-              <el-option :value="500"></el-option>
-              <el-option :value="600"></el-option>
-              <el-option :value="700"></el-option>
-              <el-option :value="800"></el-option>
-              <el-option :value="900"></el-option>
-              <el-option :value="1000"></el-option>
-              <span slot="suffix">米</span>
-            </el-select>
-            <el-tooltip content="该值将决定车辆允许偏离路径的最大值。同时也是报警开关中的范围的取值。" placement="top" style="position: absolute; right: -25px; top: 8px; font-size: 18px;">
-              <i class="el-icon-question"></i>
-            </el-tooltip>
-          </el-form-item>
-          <el-form-item label-width="140px" label="路径偏离时长上限" :rules="[{required: true, message: '必填'}]">
-            <el-select v-model="routeInfoForm.offPathTime">
-<!--              0、1、2、3、4、5、10、20、30、60-->
-              <el-option :value="0"></el-option>
-              <el-option :value="1"></el-option>
-              <el-option :value="2"></el-option>
-              <el-option :value="3"></el-option>
-              <el-option :value="4"></el-option>
-              <el-option :value="5"></el-option>
-              <el-option :value="10"></el-option>
-              <el-option :value="20"></el-option>
-              <el-option :value="30"></el-option>
-              <el-option :value="60"></el-option>
-              <span slot="suffix">分钟</span>
-            </el-select>
-            <el-tooltip content="该值将决定车辆允许偏离路径的最大值。同时也是报警开关中的范围的取值。" placement="top" style="position: absolute; right: -25px; top: 8px; font-size: 18px;">
-              <i class="el-icon-question"></i>
-            </el-tooltip>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary">保存</el-button>
-          </el-form-item>
-        </el-form>
+  <div class="pages-info">
+    <div class="pages-info-right">
+      <div style="padding: 0 20px 10px 20px;">
+        <div style="font-weight: bold; font-size: 14px;">提示</div>
+        <ul style="font-size: 12px;">
+          <li style="margin-bottom: 3px;">1、新建路径时，先输入起点、终点，添加途经点，点击地图路线可以细调路线。点保存后，路径生成成功，算法根据录入值自动生成路径围栏。然后回到列表页，点击编辑车辆按钮，将需要监控的车辆添加到路径中即可。</li>
+          <li>2、未安装定位器的车辆，也可以添加进路径中，等车载智能设备安装好之后，会自动生效。</li>
+        </ul>
       </div>
-      <el-row style="padding-top: 10px;">
-        <el-input type="textarea" v-model="saveData">
-          <span slot="prefix">ttt</span>
-        </el-input>
-      </el-row>
-      <el-row style="padding-top: 10px;">
-        <el-button type="primary" @click="save">保存</el-button>
-        <el-button type="primary" @click="recoverDriving">设置</el-button>
-        <el-button type="primary" @click="showPath">路径</el-button>
-      </el-row>
+      <div class="divier"></div>
+      <div class="page-table-layout-set">
+        <el-row :gutter="10" class="toolsbar">
+          <el-col :span="1.5">
+            <el-button type="primary" size="mini" @click="handleAdd">新增路线</el-button>
+          </el-col>
+        </el-row>
+      </div>
+      <!-- 分割线 -->
+      <el-table :loading="loading" stripe :data="listData">
+        <el-table-column type="index" label="序号" align="center"></el-table-column>
+        <el-table-column label="路径名称" width="300" prop="route_name"></el-table-column>
+        <el-table-column label="起点（含半径）" width="400" prop="start"></el-table-column>
+        <el-table-column label="终点（含半径）" width="400" prop="end"></el-table-column>
+        <el-table-column label="偏离半径上限（米）" width="150" prop="route_deviate_radius"></el-table-column>
+        <el-table-column label="偏离时长上限（分钟）" width="150" prop="route_deviate_time"></el-table-column>
+        <el-table-column label="监控时段" width="150" prop="monitorTime"></el-table-column>
+        <el-table-column label="添加时间" width="150" prop="create_time"></el-table-column>
+        <el-table-column label="编辑时间" width="150" prop="update_time"></el-table-column>
+        <el-table-column label="状态" width="80" fixed="right" align="center">
+          <template slot-scope="scope">
+            <el-switch @change="changeRoutePathStatus(scope.row)" v-model="scope.row.status" :active-value="1" :inactive-value="0"/>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="200" fixed="right" align="center">
+          <template slot-scope="scope">
+            <el-button size="mini" type="text" @click="editRoute(scope.row)">编辑路径</el-button>
+            <el-button size="mini" type="text" @click="editVehicle(scope.row)">编辑车辆</el-button>
+            <!--          <el-button size="mini" type="text" @click="viewVehicle(row)">查看车辆</el-button>-->
+            <el-button size="mini" type="text" @click="delRoute(scope.row)">删除路径</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination
+        v-show="total > queryParams.pageSize"
+        :total="total"
+        layout="prev, pager, next,jumper, total,sizes"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"/>
     </div>
-    <div class="right-side">
-      <el-form label-width="80px">
-        <el-form-item label="车型大小">
-          <el-select v-model="truckDrivingInfoForm.size">
-            <el-option label="微型车" :value="1"/>
-            <el-option label="轻型车" :value="2"/>
-            <el-option label="中型车" :value="3"/>
-            <el-option label="重型车" :value="4"/>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="宽/高(米)">
-          <el-row>
-            <el-col :span="9">
-              <el-input v-model="truckDrivingInfoForm.width"></el-input>
-            </el-col>
-            <el-col :span="1" style="width: 40px; text-align: center">-</el-col>
-            <el-col :span="9">
-              <el-input v-model="truckDrivingInfoForm.height"></el-input>
-            </el-col>
-          </el-row>
-        </el-form-item>
-        <el-form-item label="车重">
-          <el-input v-model="truckDrivingInfoForm.weight">
-            <span slot="append">吨</span>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="载重">
-          <el-input v-model="truckDrivingInfoForm.load">
-            <span slot="append">吨</span>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="车轴(数)">
-          <el-input v-model="truckDrivingInfoForm.axlesNum"></el-input>
-        </el-form-item>
-      </el-form>
-    </div>
+    <el-drawer
+      v-loading="isLoadingRouteVehicles"
+      :visible.sync="isShowViewVehicleDialog"
+      title="查看车辆"
+      direction="rtl"
+      style="z-index: 2000"
+      size="40%">
+      <div style="padding: 20px 15px">
+        <RefactorTable
+          :is-show-index="true"
+          :loading="isLoadingRouteVehicles"
+          :data="routeVehicles"
+          height="700"
+          row-key="vehicle_code"
+          :table-columns-config="[
+            {isShow: true, label: '车牌号码', prop: 'plate_number'},
+            {isShow: true, label: '车辆别名', prop: 'plate_number2'},
+            {isShow: true, label: '上次路线偏离告警时间', prop: 'create_time2'}
+          ]"
+          :border="false">
+        </RefactorTable>
+      </div>
+    </el-drawer>
+    <el-dialog :visible.sync="isShowEditVehicleDialog" title="编辑车辆" width="635px" :close-on-click-modal="false">
+      <el-transfer
+        v-loading="isLoadingBindableVehicles"
+        filterable
+        :filter-method="filterMethod"
+        :titles="['可选车辆', '已绑定车辆']"
+        filter-placeholder="请输入车牌号"
+        :props="{key: 'vehicle_code', label: 'plate_number'}"
+        v-model="routeVehicles"
+        :data="bindableVehicles">
+      </el-transfer>
+      <div slot="footer" style="text-align: center">
+        <el-button type="primary" @click="saveEditVehicle">保存</el-button>
+        <el-button @click="isShowEditVehicleDialog=false">取消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-function objectDiff(obj1, obj2) {
-  for (const obj1Key in obj1) {
-    if (obj1[obj1Key] !== obj2[obj1Key]) {
-      return true
-    }
-  }
-  return false
-}
+import {http_request} from "../../../../api";
+
 export default {
-  name: "index",
+  name: "list",
   data () {
     return {
-      map: null,
-      geocoder: null,
-      saveData: null,
-      midPositionList: [],
-      startPosition: {
-        name: null,
-        position: null,
-        marker: null,
+      isLoadingRouteVehicles: false,
+      routeVehicles: [],
+      apiRouteVehicles: [],
+      removeRouteVehicles: [],
+      isShowViewVehicleDialog: false,
+      isLoadingBindableVehicles: false,
+      bindableVehicles: [],
+      isShowEditVehicleDialog: false,
+      editVehicleForm: {
+        routeCode: null,
       },
-      endPosition: {
-        name: null,
-        position: null,
-        marker: null
+      loading: false,
+      queryParams: {
+        routeNameLike: null,
+        status: null,
+        pageNum: 1,
+        pageSize: 10
       },
-      routeInfoForm: {
-        name: null,
-        warningStartTime: null,
-        warningEndTime: null,
-        offPathDistance: 0,
-        offPathTime: 0,
-      },
-      truckDrivingInfoForm: {
-        size: 4,
-        width: 2.5,
-        height: 1.6,
-        load: 0.9,
-        weight: 10,
-        axlesNum: 2,
-      },
-      currentTruckDrivingSetting: null,
-      driving: null,
-      truckDriving: null,
-      drivingPathResult: null,
-      isSearchDriving: false
+      total: 0,
+      listData: []
     }
   },
-  watch: {
-    'startPosition.name': function (newVal) {
-      if (!newVal) {
-        this.startPosition.position = null
-        if (this.startPosition.marker) this.map.remove(this.startPosition.marker)
-        this.driving.clear()
-        if (this.truckDriving) this.truckDriving.clear()
-      }
-    },
-    'endPosition.name': function (newVal) {
-      if (!newVal) {
-        this.endPosition.position = null
-        if (this.endPosition.marker) this.map.remove(this.endPosition.marker)
-        this.driving.clear()
-        if (this.truckDriving) this.truckDriving.clear()
-      }
-    }
-  },
-  mounted() {
-    this.clearMap()
-    setTimeout(() => {
-      this.initMap()
-    }, 1000)
+  created() {
+    this.getList()
   },
   methods: {
-    switchWarningTime () {
-      let _endTime = this.routeInfoForm.warningStartTime
-      this.routeInfoForm.warningStartTime = this.routeInfoForm.warningEndTime
-      this.routeInfoForm.warningEndTime = _endTime
-    },
-    clearMap () {
-      // 这里是用来解决地图偶尔加载失败的问题
-      localStorage.removeItem("_AMap_vectorlayer");
-      localStorage.removeItem("_AMap_wgl");
-      localStorage.removeItem("_AMap_sync");
-      localStorage.removeItem("_AMap_raster");
-      localStorage.removeItem("_AMap_overlay");
-      localStorage.removeItem("_AMap_mouse");
-      localStorage.removeItem("_AMap_AMap.ToolBar");
-      localStorage.removeItem("_AMap_AMap.Scale");
-      localStorage.removeItem("_AMap_AMap.RangingTool");
-      localStorage.removeItem("_AMap_AMap.PolyEditor");
-      localStorage.removeItem("_AMap_AMap.PlaceSearch");
-      localStorage.removeItem("_AMap_AMap.OverView");
-      localStorage.removeItem("_AMap_AMap.MouseTool");
-      localStorage.removeItem("_AMap_AMap.MarkerClusterer");
-      localStorage.removeItem("_AMap_AMap.MapType");
-      localStorage.removeItem("_AMap_AMap.Geolocation");
-      localStorage.removeItem("_AMap_AMap.CitySearch");
-      localStorage.removeItem("_AMap_AMap.CircleEditor");
-      localStorage.removeItem("_AMap_AMap.Autocomplete");
-      localStorage.removeItem("_AMap_AMap.IndoorMap3D");
-      localStorage.removeItem("_AMap_Map3D");
-      localStorage.removeItem("_AMap_labelcanvas");
-      localStorage.removeItem("_AMap_labelDir");
-      localStorage.removeItem("_AMap_data.tileKeys");
-      localStorage.removeItem("_AMap_AMap.CustomLayer");
-      localStorage.removeItem("_AMap_AMap.Geocoder");
-      localStorage.removeItem("_AMap_AMap.CustomLayer");
-      localStorage.removeItem("_AMap_AMap.IndoorMap");
-      localStorage.removeItem("_AMap_anole");
-      localStorage.removeItem("_AMap_cmng");
-      localStorage.removeItem("_AMap_cvector");
-    },
-    reversePath () {
-      let _end = Object.assign({}, this.startPosition)
-      Object.assign(this.startPosition, this.endPosition)
-      Object.assign(this.endPosition, _end)
-      this.midPositionList.reverse()
-      this.startPosition.marker.setIcon('//webapi.amap.com/theme/v1.3/markers/n/start.png')
-      this.endPosition.marker.setIcon('//webapi.amap.com/theme/v1.3/markers/n/end.png')
-      this.trySearchDriving()
-    },
-    clearPath () {
-      if (this.startPosition.marker) this.map.remove(this.startPosition.marker)
-      if (this.endPosition.marker) this.map.remove(this.endPosition.marker)
-      Object.assign(this.startPosition, {
-        position: null,
-        name: null,
-        marker: null
-      })
-      Object.assign(this.endPosition, {
-        position: null,
-        name: null,
-        marker: null
-      })
-      this.midPositionList.forEach(item => item.marker && this.map.remove(item.marker))
-      this.midPositionList = []
-      this.driving.clear()
-      if (this.truckDriving) this.truckDriving.clear()
-    },
-    addMidPosition () {
-      let id = `addMidPosition${new Date().getTime()}`
-      let midPosInfo = {
-        marker: null,
-        position: null,
-        name: null,
-        id,
-      }
-      let vm = this
-      setTimeout(() => {
-        let autocomplete = new AMap.Autocomplete({
-          input: id
-        })
-        autocomplete.on('select', function (event) {
-          if (!event.poi.location) return
-          midPosInfo.name = event.poi.name
-          vm.createMidMarker(event.poi.location.lng, event.poi.location.lat, midPosInfo)
-          vm.trySearchDriving()
-        })
-      }, 1000)
-      this.midPositionList.push(midPosInfo)
-    },
-    removeMidPosition (midPosition) {
-      let idx = this.midPositionList.findIndex(item => item === midPosition)
-      this.midPositionList.splice(idx, 1)
-      if (midPosition.marker) this.map.remove(midPosition.marker)
-      this.trySearchDriving()
-    },
-    showPath () {
-      let saveJson = JSON.parse(this.saveData)
-      let path = saveJson.path.map(item => [item.lng, item.lat])
-      this.pathSimplifierIns.setData([
-        {
-          name: 'test',
-          path: path
-        }
-      ])
-      this.pathSimplifierIns.clearPath()
-    },
-    recoverDriving () {
-      this.clearPath()
-      let saveJson = JSON.parse(this.saveData)
-      this.startPosition.name = saveJson.start.name
-      this.endPosition.name = saveJson.end.name
-      this.midPositionList = []
-      saveJson.waypoints.forEach(point => {
-        this.createMidMarkerPosition(point.lng, point.lat, point.name)
-      })
-      this.makeFromPosition(saveJson.start.lng, saveJson.start.lat, saveJson.start.name)
-      this.makeEndPosition(saveJson.end.lng, saveJson.end.lat, saveJson.end.name)
-      this.searchPath()
-    },
-    save() {
-      if (!this.drivingPathResult) return
-      let waypoints = this.midPositionList.map(item => {
-        return {'lng':item.position.lng, 'lat':item.position.lat, name: item.name}
-      })
-      let path = []
-      this.drivingPathResult.routes[0].steps.forEach(step => {
-        step.path.forEach(p => {
-          path.push({lat: p.lat, lng: p.lng})
-        })
-      })
-      let result = {
-        start: {
-          lng: this.drivingPathResult.start.location.lng,
-          lat: this.drivingPathResult.start.location.lat,
-          name: this.startPosition.name
-        },
-        end: {
-          lng: this.drivingPathResult.end.location.lng,
-          lat: this.drivingPathResult.end.location.lat,
-          name: this.endPosition.name
-        },
-        waypoints,
-        path,
-        truckInfo: this.truckDrivingInfoForm,
-        ...this.routeInfoForm
-      }
-      this.saveData = JSON.stringify(result)
-      console.log(result)
-    },
-    searchPath () {
-      if (!this.startPosition.position) {
-        this.msgError('请输入起始位置')
-        return
-      }
-      if (!this.endPosition.position) {
-        this.msgError('请输入终点位置')
-        return;
-      }
-      this.driving.clear()
-      if (this.truckDriving) this.truckDriving.clear()
-      this.isSearchDriving = true
-      let vm = this
-      this.truckDrivingSearch().then(result => {
-        vm.drivingPathResult = result
-        vm.isSearchDriving = false
-      }, error => {
-        vm.msgError(`货车路线规划失败`)
-        vm.drivingSearch().then(result => {
-          vm.drivingPathResult = result
-          vm.isSearchDriving = false
-        }, error2 => {
-          vm.isSearchDriving = false
-          vm.msgError(`线路规划失败:${error2}`)
-        })
+    changeRoutePathStatus(row) {
+      http_request({
+        moduleName: "http_planRoute",
+        method: "get",
+        url_alias: "planRouteStatus",
+        url_code: [row.status, row.route_code]
+      }).catch(e => {
+        // this.msgError('设置状态失败')
+        row.status = row.status === 1 ? 0 : 1
       })
     },
-    drivingSearch () {
-      return new Promise((resolve, reject) => {
-        let waypoints = this.midPositionList.map(item => item.position)
-        this.driving.search(this.startPosition.position, this.endPosition.position, { waypoints }, function(status, result) {
-          if (status === 'complete') {
-            resolve(result)
-          } else {
-            reject(status)
-          }
-        })
+    viewVehicle (row) {
+      this.removeRouteVehicles = []
+      // this.viewVehicleForm.routeCode = row.route_code
+      this.isLoadingRouteVehicles = true
+      this.isShowViewVehicleDialog = true
+      http_request({
+        moduleName: "http_planRoute",
+        method: "get",
+        url_alias: "routeBindableVehicles",
+        url_code: [row.route_code]
+      }).then(res => {
+        this.routeVehicles = res.data.rows
+        this.isLoadingRouteVehicles = false
       })
     },
-    truckDrivingSearch () {
-      return new Promise((resolve, reject) => {
-        if (!this.truckDriving || objectDiff(this.currentTruckDrivingSetting, this.truckDrivingInfoForm)) {
-          this.currentTruckDrivingSetting = Object.assign({}, this.truckDrivingInfoForm)
-          this.truckDriving = new AMap.TruckDriving(Object.assign({
-            hideMarkers: true,
-            showTraffic: false,
-            map: this.map
-          }, this.currentTruckDrivingSetting))
-        }
-        let path = []
-        path.push({lnglat: [this.startPosition.position.lng, this.startPosition.position.lat]})
-        this.midPositionList.forEach(item => {
-          path.push({lnglat: [item.position.lng, item.position.lat]})
-        })
-        path.push({lnglat: [this.endPosition.position.lng, this.endPosition.position.lat]})
-        this.truckDriving.search(path, function (status, result) {
-          if (status === 'complete') {
-            resolve(result)
-          } else {
-            console.log('truckDriving fail!', status, result)
-            reject(status)
-          }
-        })
-      })
+    filterMethod (query, item) {
+      return item.plate_number.indexOf(query) > -1
     },
-    getAddressByPosition (lng, lat) {
-      return new Promise(((resolve, reject) => {
-        this.geocoder.getAddress([lng, lat], function(status, result) {
-          console.log(status, result)
-          if (status === 'complete' && result.info === 'OK') {
-            resolve(result)
-          } else {
-            reject(status)
-          }
-        })
-      }))
-    },
-    makeFromPosition (lng, lat, name) {
-      let position = new AMap.LngLat(lng, lat)
-      if (this.startPosition.marker) {
-        this.map.remove(this.startPosition.marker)
-      }
-      let marker = new AMap.Marker({
-        position,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
-        title: name,
-        icon: '//webapi.amap.com/theme/v1.3/markers/n/start.png'
-      })
-      this.map.setCenter(position)
-      this.map.add(marker)
-      this.startPosition.position = position
-      this.startPosition.marker = marker
-    },
-    makeEndPosition (lng, lat, name) {
-      let position = new AMap.LngLat(lng, lat)
-      if (this.endPosition.marker) {
-        this.map.remove(this.endPosition.marker)
-      }
-      let marker = new AMap.Marker({
-        position,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
-        title: name,
-        icon: '//webapi.amap.com/theme/v1.3/markers/n/end.png'
-      })
-      this.map.setCenter(position)
-      this.map.add(marker)
-      this.endPosition.position = position
-      this.endPosition.marker = marker
-    },
-    trySearchDriving() {
-      if (!this.startPosition.position) {
-        return
-      }
-      if (!this.endPosition.position) {
-        return;
-      }
-      this.searchPath()
-    },
-    createMidMarkerPosition(lng, lat, name) {
-      let midPositionInfo = {
-        position: null,
-        marker: null,
-        name: name,
-        id: `midPosition${new Date().getTime()}`
-      }
-      this.midPositionList.push(midPositionInfo)
-      if (!name) {
-        this.getAddressByPosition(lng, lat).then(res => {
-          midPositionInfo.name = res.regeocode.formattedAddress
-        })
-      }
-      let vm = this
-      setTimeout(() => {
-        let autocomplete = new AMap.Autocomplete({
-          input: midPositionInfo.id
-        })
-        autocomplete.on('select', function (event) {
-          if (!event.poi.location) return
-          midPositionInfo.name = event.poi.name
-          vm.createMidMarker(event.poi.location.lng, event.poi.location.lat, midPositionInfo)
-          vm.trySearchDriving()
-        })
-      }, 1000)
-      this.createMidMarker(lng, lat, midPositionInfo)
-    },
-    createMidMarker (lng, lat, positionInfo) {
-      if (positionInfo.marker) this.map.remove(positionInfo.marker)
-      let position = new AMap.LngLat(lng, lat)
-      let vm = this
-      const midHtmlContent = '<div class="amap-icon" style="position: absolute; overflow: hidden; width: 36px; height: 36px; opacity: 1;"><img src="https://webapi.amap.com/theme/v1.3/markers/n/mid.png" style="width: 19px; height: 31px; top: 0px; left: 0px;"></div>'
-      const midDelHtmlContent = '<div title="删除此途经点" style="width: 14px; height: 14px; position: absolute; left: 20px; top: 16px; z-index: 2; background: url(https://webapi.amap.com/images/close.gif) 0px 0px no-repeat;"></div>'
-      let marker = new AMap.Marker({
-        position: position,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
-        // icon: '//webapi.amap.com/theme/v1.3/markers/n/mid.png',
-        draggable: true,
-        content: midHtmlContent
-      })
-      marker.on('click', function (event) {
-        if (event.originEvent.target.title === '删除此途经点') {
-          // console.log('marker', event, event.lnglat.lng, event.lnglat.lat)
-          let idx = vm.midPositionList.findIndex(item => item === positionInfo)
-          vm.midPositionList.splice(idx, 1)
-          vm.map.remove(marker)
-          vm.trySearchDriving()
+    async saveEditVehicle () {
+      let removeVehicles = []
+      let addVehicles = []
+
+      this.apiRouteVehicles.forEach(item => {
+        if (this.routeVehicles.indexOf(item) === -1) {
+          removeVehicles.push(item)
         }
       })
-      marker.on('mouseover', function (event) {
-        marker.setContent(midHtmlContent + midDelHtmlContent)
+      this.routeVehicles.forEach(item => {
+        if (this.apiRouteVehicles.indexOf(item) === -1) {
+          addVehicles.push(item)
+        }
       })
-      marker.on('mouseout', function (event) {
-        marker.setContent(midHtmlContent)
-      })
-      marker.on('dragend', function (event) {
-        positionInfo.position = marker.getPosition()
-        vm.getAddressByPosition(positionInfo.position.lng, positionInfo.position.lat).then(res => {
-          positionInfo.name = res.regeocode.formattedAddress
+      console.log('add', addVehicles, 'remove', removeVehicles)
+      if (addVehicles.length > 0) {
+        await http_request({
+          moduleName: "http_planRoute",
+          method: "post",
+          url_alias: "routeRelVehicle",
+          data: {...this.editVehicleForm, vehicles: addVehicles},
         })
-        vm.trySearchDriving()
-      })
-      positionInfo.position = position
-      positionInfo.marker = marker
-      vm.map.add(marker)
+      }
+      if (removeVehicles.length > 0) {
+        await http_request({
+          moduleName: "http_planRoute",
+          method: "post",
+          url_alias: "removeRouteVehicle",
+          data: {...this.editVehicleForm, vehicles: removeVehicles},
+        })
+      }
+      this.msgSuccess('保存成功')
+      this.isShowEditVehicleDialog = false
     },
-    initMap () {
-      let vm = this
-      this.map = new AMap.Map("routeplanning-map-container", {
-        mapStyle: "amap://styles/2fe468ae95b55caa76404a537353e63a", //设置地图的显示样式
-        resizeEnable: true,
-        autoFitView: true,
-        // center: [116.303843, 39.983412],
-        center: [116.407535, 39.915822],
-        zoom: 11,
+    editRoute(row) {
+      this.$router.push({path: '/apps/planningroute/v1/map?type=edit&code=' + row.route_code})
+    },
+    editVehicle (row) {
+      this.editVehicleForm.routeCode = row.route_code
+      this.isLoadingBindableVehicles = true
+      this.isShowEditVehicleDialog = true
+      Promise.all([
+        http_request({
+          moduleName: "http_planRoute",
+          method: "get",
+          url_alias: "getBindableVehicles",
+          data: {code: row.route_code}
+        }),
+        http_request({
+          moduleName: "http_planRoute",
+          method: "get",
+          url_alias: "routeBindableVehicles",
+          url_code: [row.route_code]
+        })
+      ]).then(res => {
+        let bindableVehicles = res[0].data
+        let routeVehicles = res[1].data.rows.map(item => {
+          return {plate_number: item.plate_number, vehicle_code: item.vehicle_code}
+        })
+        bindableVehicles.push(...routeVehicles)
+        this.bindableVehicles = bindableVehicles
+        this.routeVehicles = res[1].data.rows.map(item => item.vehicle_code)
+        this.apiRouteVehicles = []
+        this.apiRouteVehicles.push(...this.routeVehicles)
+        this.isLoadingBindableVehicles = false
       })
-      console.log("ckc init");
-      this.map.plugin(['AMap.Geolocation', "AMap.Geocoder", "AMap.Autocomplete", 'AMap.Driving', 'AMap.TruckDriving'], function () {
-        let geolocation = new AMap.Geolocation({
-          enableHighAccuracy: true,//是否使用高精度定位，默认:true
-          convert: true,           //自动偏移坐标，偏移后的坐标为高德坐标，默认：true
-          showButton: false,        //显示定位按钮，默认：true
-          buttonPosition: 'LB',    //定位按钮停靠位置，默认：'LB'，左下角
-          buttonOffset: new AMap.Pixel(360, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
-          showMarker: false,        //定位成功后在定位到的位置显示点标记，默认：true
-          showCircle: false,        //定位成功后用圆圈表示定位精度范围，默认：true
-          panToLocation: true,     //定位成功后将定位到的位置作为地图中心点，默认：true
-        })
-        vm.map.addControl(geolocation);
-        geolocation.getCurrentPosition()
-        vm.geocoder = new AMap.Geocoder({
-          radius: 1000,
-          extensions: "all",
-        })
-        vm.driving = new AMap.Driving({
-          map: vm.map,
-          // panel: "panel",
-          showTraffic: false,
-          autoFitView: false,
-          extensions: 'all',
-          hideMarkers: true
-        })
-        vm.mapFromAutocomplete = new AMap.Autocomplete({
-          input: 'fromPositionInput'
-        })
-        vm.mapToAutocomplete = new AMap.Autocomplete({
-          input: 'toPositionInput'
-        })
-        vm.mapFromAutocomplete.on('select', function (event) {
-          if (!event.poi.location) return
-          vm.makeFromPosition(event.poi.location.lng, event.poi.location.lat, event.poi.name)
-          vm.trySearchDriving()
-        })
-        vm.mapToAutocomplete.on('select', function (event) {
-          if (!event.poi.location) return
-          vm.makeEndPosition(event.poi.location.lng, event.poi.location.lat, event.poi.name)
-          vm.trySearchDriving()
-        })
+    },
+    removeBindVehicle (row) {
+      let idx = this.routeVehicles.indexOf(row)
+      this.routeVehicles.splice(idx, 1)
+      this.removeRouteVehicles.push(row)
+    },
+    async delRoute(row) {
+      await this.$confirm(`确认删除 "${row.route_name}" 路径？`,'系统提示',{
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
-      this.map.on('click', function (event) {
-        if (!vm.startPosition.position) {
-          vm.getAddressByPosition(event.lnglat.lng, event.lnglat.lat).then(res => {
-            vm.startPosition.name = res.regeocode.formattedAddress
-            vm.makeFromPosition(event.lnglat.lng, event.lnglat.lat, vm.startPosition.name)
-            vm.trySearchDriving()
-          })
-          return
+      await http_request({
+        moduleName: "http_planRoute",
+        method: "delete",
+        url_alias: "planRouteDelete",
+        url_code: [row.route_code]
+      })
+      this.msgSuccess("删除成功")
+      this.getList()
+    },
+    handleAdd () {
+      this.$router.push({path: '/app/planningroute/v1/map?type=add'})
+    },
+    async getList() {
+      let res = await http_request({
+        moduleName: "http_planRoute",
+        method: "post",
+        url_alias: "planRoutePage",
+        data: this.queryParams,
+      })
+      res.data.rows.forEach(item => {
+        item.start = item.points[0].point_name
+        item.end = item.points[1].point_name
+        if (item.points[0].radius) {
+          item.start += `(${item.points[0].radius}米)`
         }
-        if (!vm.endPosition.position) {
-          vm.getAddressByPosition(event.lnglat.lng, event.lnglat.lat).then(res => {
-            vm.endPosition.name = res.regeocode.formattedAddress
-            vm.makeEndPosition(event.lnglat.lng, event.lnglat.lat, vm.endPosition.name)
-            vm.trySearchDriving()
-          })
-          return;
+        if (item.points[1].radius) {
+          item.end += `(${item.points[1].radius}米)`
         }
-        vm.createMidMarkerPosition(event.lnglat.lng, event.lnglat.lat)
-        vm.searchPath()
+        item.warnTime = `${item.effective_time} - ${item.expires_time}`
       })
-      // https://lbs.amap.com/api/amap-ui/reference-amap-ui/mass-data/pathsimplifier/#render
-      AMapUI.load(['ui/misc/PathSimplifier'], function(PathSimplifier) {
-        vm.pathSimplifierIns = new PathSimplifier({
-          zIndex: 100,
-          map: vm.map, //所属的地图实例
-          getPath: function(pathData, pathIndex) {
-            //返回轨迹数据中的节点坐标信息，[AMap.LngLat, AMap.LngLat...] 或者 [[lng|number,lat|number],...]
-            return pathData.path;
-          },
-          getHoverTitle: function(pathData, pathIndex, pointIndex) {
-            //返回鼠标悬停时显示的信息
-            if (pointIndex >= 0) {
-              //鼠标悬停在某个轨迹节点上
-              return pathData.name + '，点:' + pointIndex + '/' + pathData.path.length;
-            }
-            //鼠标悬停在节点之间的连线上
-            return pathData.name + '，点数量' + pathData.path.length;
-          },
-          renderOptions: {
-            //轨迹线的样式
-            pathLineStyle: {
-              strokeStyle: 'red',
-              lineWidth: 6,
-              dirArrowStyle: true
-            }
-          }
-        })
-      })
+      this.listData = res.data.rows
+      this.total = res.data.total
     }
   }
 }
 </script>
 
-<style scoped lang="scss">
-.left-side {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 320px;
-  height: 100%;
-  padding: 20px 10px;
-  background: white;
-  overflow-y: auto;
-  //opacity: .7;
-}
-.right-side {
-  position: fixed;
-  right: 0;
-  top: 0;
-  width: 320px;
-  height: 100%;
-  padding: 20px 10px;
-  background: white;
-}
-.map-container {
-  margin: 0;
-  height: 100%;
-}
-#routeplanning-map-container {
-  width: 100%;
-  height: 100%;
-}
-#panel {
-  position: fixed;
-  background-color: white;
-  max-height: 90%;
-  overflow-y: auto;
-  top: 10px;
-  right: 10px;
-  width: 280px;
-}
+<style scoped>
+
 </style>
