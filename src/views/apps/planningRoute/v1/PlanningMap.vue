@@ -90,7 +90,7 @@
                 <div class="form-container">
                   <div class="form-item">
                     <span class="item-prefix start"></span>
-                    <place-auto-complete-input class="path-start-input" :place-info="startPosition" :search-place="searchPlace" @select-place="startPositionSelect">
+                    <place-auto-complete-input style="width: 249px;" class="path-start-input" :place-info="startPosition" :search-place="searchPlace" @select-place="startPositionSelect">
                       <span slot="prepend" style="color: #FFBC00; font-weight: bold">起</span>
                     </place-auto-complete-input>
                     <el-input v-model="startPosition.radius" class="pointer-radius-input">
@@ -114,7 +114,7 @@
                   <div class="form-item">
                     <span class="item-prefix line end"></span>
                     <div class="form-item-input-wrap" style="flex: 1; display: flex;">
-                      <place-auto-complete-input class="path-end-input" :place-info="endPosition" :search-place="searchPlace" @select-place="endPositionSelect">
+                      <place-auto-complete-input style="width: 249px;" class="path-end-input" :place-info="endPosition" :search-place="searchPlace" @select-place="endPositionSelect">
                         <span slot="prepend" style="color: #4682FA; font-weight: bold">终</span>
                       </place-auto-complete-input>
                       <el-input v-model="endPosition.radius" class="pointer-radius-input">
