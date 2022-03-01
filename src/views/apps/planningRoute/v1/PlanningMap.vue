@@ -638,7 +638,13 @@ export default {
         this.geocoder.getAddress([lng, lat], function(status, result) {
           console.log(status, result)
           if (status === 'complete' && result.info === 'OK') {
-            resolve(result)
+            let pios = result.regeocode.pois
+            let aois = result.regeocode.aois
+            let positionName = aois && aois.length > 0 && aois[0].name
+            positionName = positionName || pios && pios.length > 0 && pios[0].name
+            positionName = positionName || result.regeocode.formattedAddress
+            // console.log('positionName=', positionName)
+            resolve(positionName)
           } else {
             reject(status)
           }
@@ -676,8 +682,8 @@ export default {
         let position = marker.getPosition()
         vm.startPosition.position = position
         circle.setCenter(position)
-        vm.getAddressByPosition(position.lng, position.lat).then(res => {
-          vm.startPosition.name = res.regeocode.formattedAddress
+        vm.getAddressByPosition(position.lng, position.lat).then(name => {
+          vm.startPosition.name = name
         })
         vm.trySearchDriving()
       })
@@ -717,8 +723,8 @@ export default {
         let position = marker.getPosition()
         circle.setCenter(position)
         vm.endPosition.position = position
-        vm.getAddressByPosition(position.lng, position.lat).then(res => {
-          vm.endPosition.name = res.regeocode.formattedAddress
+        vm.getAddressByPosition(position.lng, position.lat).then(name => {
+          vm.endPosition.name = name
         })
         vm.trySearchDriving()
       })
@@ -749,8 +755,8 @@ export default {
       }
       this.midPositionList.push(midPositionInfo)
       if (!name) {
-        this.getAddressByPosition(lng, lat).then(res => {
-          midPositionInfo.name = res.regeocode.formattedAddress
+        this.getAddressByPosition(lng, lat).then(name => {
+          midPositionInfo.name = name
         })
       }
       this.createMidMarker(lng, lat, midPositionInfo)
@@ -791,8 +797,8 @@ export default {
       })
       marker.on('dragend', function (event) {
         positionInfo.position = marker.getPosition()
-        vm.getAddressByPosition(positionInfo.position.lng, positionInfo.position.lat).then(res => {
-          positionInfo.name = res.regeocode.formattedAddress
+        vm.getAddressByPosition(positionInfo.position.lng, positionInfo.position.lat).then(name => {
+          positionInfo.name = name
         })
         vm.trySearchDriving()
       })
@@ -847,16 +853,16 @@ export default {
       })
       this.map.on('click', function (event) {
         if (!vm.startPosition.position) {
-          vm.getAddressByPosition(event.lnglat.lng, event.lnglat.lat).then(res => {
-            vm.startPosition.name = res.regeocode.formattedAddress
+          vm.getAddressByPosition(event.lnglat.lng, event.lnglat.lat).then(name => {
+            vm.startPosition.name = name
             vm.makeFromPosition(event.lnglat.lng, event.lnglat.lat, vm.startPosition.name)
             vm.trySearchDriving()
           })
           return
         }
         if (!vm.endPosition.position) {
-          vm.getAddressByPosition(event.lnglat.lng, event.lnglat.lat).then(res => {
-            vm.endPosition.name = res.regeocode.formattedAddress
+          vm.getAddressByPosition(event.lnglat.lng, event.lnglat.lat).then(name => {
+            vm.endPosition.name = name
             vm.makeEndPosition(event.lnglat.lng, event.lnglat.lat, vm.endPosition.name)
             vm.trySearchDriving()
           })
@@ -920,8 +926,12 @@ export default {
   .address {
     font-size: 12px;
     color: #b4b4b4;
-    line-height: 20px;
-    min-height: 20px;
+    line-height: 16px;
+    padding: 5px 0;
+    //min-height: 20px;
+    word-break: break-all;
+    word-wrap: break-word;
+    white-space: normal;
   }
 }
 .left-side .form-container .form-item .el-autocomplete .el-input-group__prepend {
