@@ -133,20 +133,24 @@ const user = {
           .then(res => {
             console.log('res userinfo', res.data)
             if (!res) return;
+            const menu = JSON.parse(JSON.stringify(res.data.menus))
             const user = res.data.user;
             user.avatar = user.avatar || '';
             const avatar =
               user.avatar == ""
                 ? require("@/assets/images/profile.png")
                 : process.env.VUE_APP_BASE_API + user.avatar;
-            commit('SET_MENUS', res.data.menus)
-            commit("SET_PERMISSIONS", res.data.permissions);
+            addAppPage(menu).then(() => {
+              commit('SET_MENUS', menu)
+              commit("SET_PERMISSIONS", res.data.permissions);
             commit("SET_NAME", user.userName);
             commit("SET_NICKNAME", user.nickName);
             commit("SET_AVATAR", avatar);
             commit("SET_COMPANY_NAME", res.data.company.name);
             commit("SET_PHONENUMBER", user.phoneNumber);
             resolve(res.data);
+            })
+            
           })
           .catch(error => {
             reject(error);
@@ -222,4 +226,23 @@ const user = {
   }
 };
 
+
+const addAppPage = async (menu) => {
+  // 添加应用动态路由
+  const obj = {
+    moduleName: "http_app",
+    method: "get",
+    url_alias: "listAppRouterConfig",
+  }
+  const res = await http_request(obj)
+  console.log('动态应用路由', res.data)
+  menu.forEach((el) => {
+    if (el.name === '应用' && el.path === '/app') {
+      console.log('就是你了', el)
+      el.children =  el.children.concat(res.data)
+      // el.children.push(res.data[0])
+    }
+  })
+  console.log('结果', menu)
+}
 export default user;

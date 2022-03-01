@@ -6,5 +6,6 @@ export default {
     topRanking:'/fmsweb/appMarket/market/app/v1/topRanking',//热门排行
     userList:'/fmsweb/appMarket/userApp/v1/listAppGroupByCategory',//获取根据分类分组的用户应用列表
     companyList:'/fmsweb/appMarket/companyApp/v1/listAppGroupByCategory',//查询企业分类应用列表
-    subscribe:(code)=>`/fmsweb/appMarket/market/app/v1/subscribe/${code}`//开通
+    subscribe:(code)=>`/fmsweb/appMarket/market/app/v1/subscribe/${code}`,//开通
+    listAppRouterConfig:'/fmsweb/appMarket/userApp/v1/listAppRouterConfig',
 }

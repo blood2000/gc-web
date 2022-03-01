@@ -102,7 +102,7 @@ export default {
   margin-bottom: 17px;
   & > img {
     width: 48.637%;
-    height: 18.6%;
+    height: 196px;
   }
 }
 .hot-content {

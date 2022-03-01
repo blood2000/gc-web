@@ -66,14 +66,12 @@ export default {
     },
     // 非一级默认算最后一个
     pathRoute(item) {
-      console.log('item',item)
       const result = { result: "" };
       if (item.children && item.children.length > 0) {
         this.dealPath(item.children[0], result);
       } else {
         result.result = item.path;
       }
-      console.log('result.result',result.result)
       return result.result;
     },
     dealPath(child, result) {

@@ -47,6 +47,7 @@ const permission = {
       const menus = store.getters.menus;
       const sdata = JSON.parse(JSON.stringify(menus));
       const rdata = JSON.parse(JSON.stringify(menus));
+    
       // 需要更改
       sdata.map(item => {
         if (item.component === null) {
@@ -62,6 +63,7 @@ const permission = {
       const rewriteRoutes = filterAsyncRouter(rdata, false, true);
       // changeSingleTitle(rewriteRoutes) //标签栏 只有一个子组件时显示夫名称
       rewriteRoutes.push({ path: '*', redirect: '/404', hidden: true });
+      console.log('rewriteRoutes',rewriteRoutes)
       commit('SET_ROUTES', rewriteRoutes);
       // test
       commit('SET_SIDEBAR_ROUTERS', sidebarRoutes);

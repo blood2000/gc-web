@@ -1,9 +1,10 @@
 <template>
   <div class="list">
-    <div class="list-item" 
-    v-for="sub in appList" 
-    :key="sub.code"
-    @click="jumpClick(sub)"
+    <div
+      class="list-item"
+      v-for="sub in appList"
+      :key="sub.code"
+      @click="jumpClick(sub)"
     >
       <div class="list-content">
         <div class="list-content-img">
@@ -55,16 +56,20 @@ export default {
         return [];
       },
     },
+    count: {
+      type: Number,
+      default: 4,
+    },
   },
   methods: {
     handleClick(code) {
       console.log("code", code);
       this.$router.push("detail?code=" + code);
     },
-    jumpClick(sub){
-      console.log('sub',sub.code)
+    jumpClick(sub) {
+      console.log("sub", sub.code);
       this.$router.push("detail?code=" + sub.code);
-    }
+    },
   },
 };
 </script>
@@ -76,15 +81,16 @@ export default {
   margin-bottom: 32px;
 }
 .list-item {
-  width: 380px;
+  width: 23%;
   border: 1px solid transparent;
   height: 183px;
   padding: 15px;
-  margin-right: 3%;
+  margin-right: 2%;
   margin-bottom: 15px;
-  &:hover{
-     border: 1px solid rgba(70, 130, 250, 0.2784313725490196);
-  box-shadow: 0px 3px 13px rgba(70, 130, 250, 0.21);
+  border-radius: 5px;
+  &:hover {
+    border: 1px solid rgba(70, 130, 250, 0.2784313725490196);
+    box-shadow: 0px 3px 13px rgba(70, 130, 250, 0.21);
   }
   .list-content {
     height: 55px;
