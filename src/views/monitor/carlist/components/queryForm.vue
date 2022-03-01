@@ -138,7 +138,6 @@ export default {
 .ddc-monitor-queryParams {
   display: flex;
   padding: 0 28px;
-  background: #F0F2F5;
   .ddc-monitor-queryParams-left {
     flex: 1;
     .down{

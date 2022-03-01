@@ -274,7 +274,9 @@ export default {
 <style lang="scss" scoped>
 .monitor-card {
   position: relative;
-  width: 376px;
+  width: 100%;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
+    border-radius: 3px;
   height: 228px;
   background: #ffffff;
   border-radius: 6px;

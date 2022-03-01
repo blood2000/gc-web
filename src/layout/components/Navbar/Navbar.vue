@@ -188,9 +188,8 @@ export default {
     },
     eachMenu(firstMenu, children, path) {
       children.forEach((el) => {
-        // if (path && !el.path.includes("app")) {
         el.path = path + "/" + el.path;
-        // }
+        
         firstMenu.children.push(el);
         if (el.children && el.children.length > 0) {
           const child = JSON.parse(JSON.stringify(el.children));

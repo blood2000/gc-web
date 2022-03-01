@@ -173,7 +173,7 @@ export default {
 
 <style lang="scss" scoped>
 .videoChannel {
-  width: 460px;
+  // width: 460px;
   height: 100%;
   padding: 15px;
   background: #fff;

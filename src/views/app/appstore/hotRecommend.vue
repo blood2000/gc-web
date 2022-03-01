@@ -15,6 +15,7 @@
             class="hot-list-item"
             v-for="(item, index) in hotList"
             :key="index"
+            @click="hotRank(item)"
           >
             <div style="display: flex">
               <div
@@ -52,6 +53,10 @@ export default {
     this.getList();
   },
   methods: {
+    hotRank(item){
+      console.log('item',item)
+        this.$router.push('detail?code='+item.appCode)
+    },
     async getList() {
       this.list = [];
       const queryParams = {

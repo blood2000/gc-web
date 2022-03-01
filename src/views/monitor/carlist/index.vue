@@ -1,6 +1,6 @@
 <template>
-  <div class="monitor-pages-info">
-    <div class="monitor-pages-info-left">
+  <div class="pages-info">
+    <div class="pages-info-left">
       <div class="head-container">
         <el-input
           v-model="orgName"
@@ -35,9 +35,8 @@
       </div>
     </div>
 
-    <div class="monitor-pages-info-right">
+    <div class="pages-info-right">
       <!-- 上：搜索 -->
-
       <QueryForm
         v-model="queryParams"
         :sn-list="snList"
@@ -238,60 +237,36 @@ export default {
 
 
 <style lang="scss" scoped>
-.monitor-pages-info {
-  margin: 0 24px;
-  display: flex;
-  height: calc(100vh - 146px);
-  margin: 0 20px 0 20px;
-  &-left {
-    padding: 20px;
-    background: #fff;
-    box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
-    border-radius: 3px;
-    margin-right: 12px;
-    width: 220px !important;
-    .el-tree > .el-tree-node {
-      width: 100% !important;
-    }
-    .el-tree-node__content > span {
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-    }
-  }
+.el-tree > .el-tree-node {
+  width: 100% !important;
+}
+.el-tree-node__content > span {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
 
-  &-right {
-    flex: 1 !important;
-    overflow: auto;
-    width: 0;
-    background: #f0f2f5;
-    box-sizing: border-box !important;
-    .pages-info-right-top {
-      padding-bottom: 8px;
-    }
-    .divier {
-      height: 1px;
-      border-bottom: 1px solid #dce3e9;
-    }
-    .page-table-layout-set {
-      padding: 16px 8px 0 16px;
-      display: flex;
-      flex-wrap: wrap;
-      &-item {
-        margin-right: 10px;
-        margin-bottom: 20px;
-      }
-      //  &-item:nth-child(4n) {
-      //   margin-right:0px;
-      //   margin-bottom: 20px;
-      // }
-    }
-    .toolsbar {
-      display: flex;
-      flex-direction: row;
-      margin-bottom: 17px;
-    }
+.pages-info-right-top {
+  padding-bottom: 8px;
+}
+.divier {
+  height: 1px;
+  border-bottom: 1px solid #dce3e9;
+}
+.page-table-layout-set {
+  padding: 16px 8px 0 16px;
+  display: flex;
+  flex-wrap: wrap;
+  &-item {
+    width: 25%;
+    margin-right: 1%;
+    margin-bottom: 20px;
   }
+}
+.toolsbar {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 17px;
 }
 ::v-deep .pagination-container {
   background: #f0f2f5;
