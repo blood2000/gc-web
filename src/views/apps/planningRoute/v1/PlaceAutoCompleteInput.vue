@@ -5,6 +5,9 @@
     <template slot="prepend" v-if="$slots.prepend">
       <slot name="prepend"></slot>
     </template>
+    <template slot="suffix" v-if="$slots.suffix">
+      <slot name="suffix"></slot>
+    </template>
     <div slot-scope="{ item }">
       <div class="name">{{ item.value }}</div>
       <div class="address">{{ item.address }}</div>

@@ -1,100 +1,148 @@
 <template>
   <div class="pages-info" v-loading="loading">
-    <div id="routeplanning-map-container" />
-    <div class="left-side">
-      <div class="title">路径查询</div>
-      <div class="form-container routeplanning">
-        <div class="form-item">
-          <span class="item-prefix start"></span>
-          <place-auto-complete-input :place-info="startPosition" :search-place="searchPlace" @select-place="startPositionSelect">
-            <span slot="prepend" style="color: #FFBC00; font-weight: bold">起</span>
-          </place-auto-complete-input>
-          <span class="item-suffix"></span>
+    <div class="pages-info-right">
+      <div style="padding: 0 20px 10px 20px; display: flex;">
+        <div style="font-weight: bold; font-size: 14px; line-height: 32px; flex: 1">{{type === 'add' ? '添加' : '编辑'}}规划路线
+          <span style="font-size: 12px; color: #959AA4; font-weight: 400; margin-left: 10px;"><i class="el-icon-warning-outline"></i> 温馨提示：起终点可拖动更换位置哦！</span>
         </div>
-        <div class="form-item" v-for="item in midPositionList">
-          <span class="item-prefix line"></span>
-          <place-auto-complete-input :place-info="item" :search-place="searchPlace" @select-place="midPositionSelect">
-            <span slot="prepend" style="color: #3D4050; font-weight: bold">经</span>
-          </place-auto-complete-input>
-          <span class="item-suffix">
-            <span @click="removeMidPosition(item)" class="sf-button remove"></span>
-          </span>
-        </div>
-        <div class="form-item">
-          <span class="item-prefix line end"></span>
-          <place-auto-complete-input :place-info="endPosition" :search-place="searchPlace" @select-place="endPositionSelect">
-            <span slot="prepend" style="color: #4682FA; font-weight: bold">终</span>
-          </place-auto-complete-input>
-          <span class="item-suffix">
-            <span @click="addMidPosition" class="sf-button add"></span>
-          </span>
-        </div>
-        <div style="margin-top: 20px; text-align: center">
-          <el-button :loading="isSearchDriving" type="primary" @click="searchPath">查询</el-button>
+        <div style="width: 80px; text-align: right">
+          <el-button size="mini" type="primary" @click="goBack">返回</el-button>
         </div>
       </div>
-    </div>
-    <div class="right-side">
-      <div class="title">路径信息</div>
-      <el-form ref="routeInfoElForm" label-position="top" size="small" :model="routeInfoForm">
-        <el-form-item label="路径名称" :rules="[{required: true, message: '必填'}]" prop="name">
-          <el-input style="width: 240px;" v-model="routeInfoForm.name" placeholder="请输入路径名称" clearable></el-input>
-        </el-form-item>
-        <el-form-item label="报警时段" required>
-          <div style="display: flex; align-items: center">
-            <div>
-              <div style="margin-bottom: 15px"><el-time-picker style="width: 240px;" v-model="routeInfoForm.warningStartTime" :picker-options="{format: 'HH:mm'}" value-format="HH:mm" placeholder="请输入报警开始时间"/></div>
-              <div><el-time-picker style="width: 240px;" v-model="routeInfoForm.warningEndTime" :picker-options="{format: 'HH:mm'}" value-format="HH:mm" placeholder="请输入报警结束时间"/></div>
-            </div>
-            <div style="width: 40px; flex: none; margin-left: 10px;">
-              <span @click="switchWarningTime" class="exchange-time-button"></span>
-            </div>
+      <div class="divier"></div>
+      <div class="main-container" style="height: calc(100% - 44px); padding: 20px 20px 0 20px; background-color: white; display: flex">
+        <div id="routeplanning-map-container" />
+        <div class="operator-layout" style="flex:none;width: 400px; padding: 0 0 0 20px; position: relative">
+          <el-tabs v-model="showTabIndex">
+            <el-tab-pane label="路径信息" name="1"></el-tab-pane>
+            <el-tab-pane label="监控信息" name="2"></el-tab-pane>
+          </el-tabs>
+          <div class="right-side" v-show="showTabIndex === '2'" style="height: calc(100% - 100px); overflow-y: auto">
+            <el-form ref="routeInfoElForm" label-position="top" size="small" :model="routeInfoForm">
+              <el-form-item label="路径偏离距离上限(米)" prop="offPathDistance" :rules="[{required: true, message: '必填'}]">
+                <el-select style="width: 340px;" v-model="routeInfoForm.offPathDistance">
+                  <el-option :value="0"></el-option>
+                  <el-option :value="50"></el-option>
+                  <el-option :value="100"></el-option>
+                  <el-option :value="150"></el-option>
+                  <el-option :value="200"></el-option>
+                  <el-option :value="250"></el-option>
+                  <el-option :value="300"></el-option>
+                  <el-option :value="350"></el-option>
+                  <el-option :value="400"></el-option>
+                  <el-option :value="450"></el-option>
+                  <el-option :value="500"></el-option>
+                  <el-option :value="600"></el-option>
+                  <el-option :value="700"></el-option>
+                  <el-option :value="800"></el-option>
+                  <el-option :value="900"></el-option>
+                  <el-option :value="1000"></el-option>
+                </el-select>
+                <el-tooltip content="该值将决定车辆允许偏离路径的最大值。同时也是报警开关中的范围的取值。" placement="top" style="font-size: 18px; margin-left: 10px">
+                  <img src="../../../../assets/images/stealingcoal/question.png" alt="question"/>
+                </el-tooltip>
+              </el-form-item>
+              <el-form-item label="路径偏离时长上限(分钟)" prop="offPathTime" :rules="[{required: true, message: '必填'}]">
+                <el-select style="width: 340px;" v-model="routeInfoForm.offPathTime">
+                  <el-option :value="0"></el-option>
+                  <el-option :value="1"></el-option>
+                  <el-option :value="2"></el-option>
+                  <el-option :value="3"></el-option>
+                  <el-option :value="4"></el-option>
+                  <el-option :value="5"></el-option>
+                  <el-option :value="10"></el-option>
+                  <el-option :value="20"></el-option>
+                  <el-option :value="30"></el-option>
+                  <el-option :value="60"></el-option>
+                </el-select>
+                <el-tooltip content="该值将决定车辆允许偏离路径的最大值。同时也是报警开关中的范围的取值。" placement="top" style="font-size: 18px;margin-left: 10px">
+                  <img src="../../../../assets/images/stealingcoal/question.png"/>
+                </el-tooltip>
+              </el-form-item>
+              <el-form-item label="监控时段" required>
+                <div v-for="(timeRange,indx) in routeInfoForm.warningTimeList" style="display: flex; margin-bottom: 10px;">
+                  <el-time-picker v-model="routeInfoForm.warningTimeList[indx]" is-range :picker-options="{format: 'HH:mm'}"
+                                  start-placeholder="请选择开始时间"
+                                  end-placeholder="请选择结束时间"
+                                  style="width: 340px;"
+                                  range-separator="至"
+                                  value-format="HH:mm" placeholder="请输入报警时间">
+                  </el-time-picker>
+                  <span class="item-suffix">
+                    <span @click="handleWarninTime(indx)" class="sf-button" :class="{'remove': indx !== routeInfoForm.warningTimeList.length - 1}"></span>
+                  </span>
+                </div>
+              </el-form-item>
+            </el-form>
           </div>
-        </el-form-item>
-        <el-form-item label="路径偏离距离上限(米)" prop="offPathDistance" :rules="[{required: true, message: '必填'}]">
-          <el-select style="width: 240px;" v-model="routeInfoForm.offPathDistance">
-            <el-option :value="0"></el-option>
-            <el-option :value="50"></el-option>
-            <el-option :value="100"></el-option>
-            <el-option :value="150"></el-option>
-            <el-option :value="200"></el-option>
-            <el-option :value="250"></el-option>
-            <el-option :value="300"></el-option>
-            <el-option :value="350"></el-option>
-            <el-option :value="400"></el-option>
-            <el-option :value="450"></el-option>
-            <el-option :value="500"></el-option>
-            <el-option :value="600"></el-option>
-            <el-option :value="700"></el-option>
-            <el-option :value="800"></el-option>
-            <el-option :value="900"></el-option>
-            <el-option :value="1000"></el-option>
-          </el-select>
-          <el-tooltip content="该值将决定车辆允许偏离路径的最大值。同时也是报警开关中的范围的取值。" placement="top" style="font-size: 18px; margin-left: 10px">
-            <img src="../../../../assets/images/stealingcoal/question.png" alt="question"/>
-          </el-tooltip>
-        </el-form-item>
-        <el-form-item label="路径偏离时长上限(分钟)" prop="offPathTime" :rules="[{required: true, message: '必填'}]">
-          <el-select style="width: 240px;" v-model="routeInfoForm.offPathTime">
-            <el-option :value="0"></el-option>
-            <el-option :value="1"></el-option>
-            <el-option :value="2"></el-option>
-            <el-option :value="3"></el-option>
-            <el-option :value="4"></el-option>
-            <el-option :value="5"></el-option>
-            <el-option :value="10"></el-option>
-            <el-option :value="20"></el-option>
-            <el-option :value="30"></el-option>
-            <el-option :value="60"></el-option>
-          </el-select>
-          <el-tooltip content="该值将决定车辆允许偏离路径的最大值。同时也是报警开关中的范围的取值。" placement="top" style="font-size: 18px;margin-left: 10px">
-            <img src="../../../../assets/images/stealingcoal/question.png"/>
-          </el-tooltip>
-        </el-form-item>
-        <el-form-item style="text-align: center">
-          <el-button :loading="isSaving" :disabled="isSaving" type="primary" @click="saveAction">保存</el-button>
-        </el-form-item>
-      </el-form>
+          <div class="left-side" v-show="showTabIndex === '1'" style="height: calc(100% - 100px); overflow-y: auto">
+            <el-form ref="routeInfoElForm" label-position="top" size="small" :model="routeInfoForm">
+              <el-form-item label="路径名称" style="width: 350px" :rules="[{required: true, message: '必填'}]" prop="name">
+                <el-input v-model="routeInfoForm.name" placeholder="请输入路径名称" clearable></el-input>
+              </el-form-item>
+              <el-form-item label="车辆类型" :rules="[{required: true, message: '必填'}]" prop="routeType">
+                <el-radio-group v-model="routeInfoForm.routeType">
+                  <el-radio :label="1">汽车</el-radio>
+                  <el-radio :label="2">货车</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item label="路线规划">
+                <div class="form-container">
+                  <div class="form-item">
+                    <span class="item-prefix start"></span>
+                    <place-auto-complete-input class="path-start-input" :place-info="startPosition" :search-place="searchPlace" @select-place="startPositionSelect">
+                      <span slot="prepend" style="color: #FFBC00; font-weight: bold">起</span>
+                    </place-auto-complete-input>
+                    <el-input v-model="startPosition.radius" class="pointer-radius-input">
+                      <template slot="suffix">
+                        <el-tooltip content="起点范围。单位米" placement="top" style="padding: 8px 3px 0 0;">
+                          <img src="../../../../assets/images/stealingcoal/question.png" alt="question"/>
+                        </el-tooltip>
+                      </template>
+                    </el-input>
+                    <span class="item-suffix"></span>
+                  </div>
+                  <div class="form-item" v-for="item in midPositionList">
+                    <span class="item-prefix line"></span>
+                    <place-auto-complete-input style="width:320px" :place-info="item" :search-place="searchPlace" @select-place="midPositionSelect">
+                      <span slot="prepend" style="color: #3D4050; font-weight: bold">经</span>
+                    </place-auto-complete-input>
+                    <span class="item-suffix">
+                      <span @click="removeMidPosition(item)" class="sf-button remove"></span>
+                    </span>
+                  </div>
+                  <div class="form-item">
+                    <span class="item-prefix line end"></span>
+                    <div class="form-item-input-wrap" style="flex: 1; display: flex;">
+                      <place-auto-complete-input class="path-end-input" :place-info="endPosition" :search-place="searchPlace" @select-place="endPositionSelect">
+                        <span slot="prepend" style="color: #4682FA; font-weight: bold">终</span>
+                      </place-auto-complete-input>
+                      <el-input v-model="endPosition.radius" class="pointer-radius-input">
+                        <template slot="suffix">
+                          <el-tooltip content="终点范围。单位米" placement="top" style="padding: 8px 3px 0 0;">
+                            <img src="../../../../assets/images/stealingcoal/question.png" alt="question"/>
+                          </el-tooltip>
+                        </template>
+                      </el-input>
+                    </div>
+                    <span class="item-suffix">
+                      <span @click="addMidPosition" class="sf-button add"></span>
+                    </span>
+                  </div>
+                  <!--              <div style="margin-top: 20px; text-align: center">-->
+                  <!--                <el-button :loading="isSearchDriving" :disabled="isSearchDriving" type="primary" @click="searchPath">查询</el-button>-->
+                  <!--              </div>-->
+                </div>
+              </el-form-item>
+            </el-form>
+          </div>
+          <div style="position: absolute; bottom: 0; text-align: right; width: 100%; padding: 0 20px;">
+            <el-button type="text" size="mini" @click="goBack">取消</el-button>
+            <span style="width: 20px; height: 2px; display: inline-block"></span>
+            <el-button :loading="isSaving" :disabled="isSaving" type="primary" size="mini" @click="saveAction">确定</el-button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -116,6 +164,7 @@ export default {
   components: {PlaceAutoCompleteInput},
   data () {
     return {
+      showTabIndex: "1",
       isSaving: false,
       loading: false,
       type: null,
@@ -128,18 +177,24 @@ export default {
         name: null,
         position: null,
         marker: null,
+        radius: 100,
+        circleMarker: null,
       },
       endPosition: {
         name: null,
         position: null,
-        marker: null
+        marker: null,
+        radius: 100,
+        circleMarker: null,
       },
       routeInfoForm: {
         name: null,
-        warningStartTime: null,
-        warningEndTime: null,
+        warningTimeList: [['00:00', '23:59']],
+        warningTime: null,
+        // warningEndTime: null,
         offPathDistance: 0,
         offPathTime: 0,
+        routeType: 1,
       },
       truckDrivingInfoForm: {
         size: 4,
@@ -162,6 +217,7 @@ export default {
       if (!newVal) {
         this.startPosition.position = null
         if (this.startPosition.marker) this.map.remove(this.startPosition.marker)
+        this.startPosition.circleMarker && this.map.remove(this.startPosition.circleMarker)
         this.driving && this.driving.clear()
         this.truckDriving && this.truckDriving.clear()
       }
@@ -170,10 +226,24 @@ export default {
       if (!newVal) {
         this.endPosition.position = null
         if (this.endPosition.marker) this.map.remove(this.endPosition.marker)
+        this.endPosition.circleMarker && this.map.remove(this.endPosition.circleMarker)
         this.driving && this.driving.clear()
         this.truckDriving && this.truckDriving.clear()
       } else {
         // this.searchPlace(newVal, this.endPosition)
+      }
+    },
+    'routeInfoForm.routeType': function (newVal) {
+      this.trySearchDriving()
+    },
+    'startPosition.radius': function (newVal) {
+      if (this.startPosition.circleMarker && newVal) {
+        this.startPosition.circleMarker.setRadius(newVal)
+      }
+    },
+    'endPosition.radius': function (newVal) {
+      if (this.endPosition.circleMarker && newVal) {
+        this.endPosition.circleMarker.setRadius(newVal)
       }
     }
   },
@@ -187,6 +257,13 @@ export default {
     }, 1000)
   },
   methods: {
+    handleWarninTime (index) {
+      if (index === this.routeInfoForm.warningTimeList.length - 1) { // 添加
+        this.routeInfoForm.warningTimeList.push(['00:00', '23:59'])
+      } else { // 删除
+        this.routeInfoForm.warningTimeList.splice(index, 1)
+      }
+    },
     midPositionSelect (info, item) {
       if (!item.location) return
       this.createMidMarker(item.location.lng, item.location.lat, info)
@@ -236,18 +313,21 @@ export default {
       let detail = res.data
       // let saveJson = JSON.parse(this.saveData)
       this.routeInfoForm.name = detail.route_name
-      this.routeInfoForm.warningStartTime = detail.effective_time
-      this.routeInfoForm.warningEndTime = detail.expires_time
+      // this.routeInfoForm.warningStartTime = detail.effective_time
+      // this.routeInfoForm.warningEndTime = detail.expires_time
       this.routeInfoForm.offPathDistance = detail.route_deviate_radius
-      this.routeInfoForm.offPathTime = detail.route_deviate_time
+      this.routeInfoForm.offPathTime = detail.route_deviate_time || 0
+      this.routeInfoForm.routeType = detail.route_type || 1
       this.loading = false
 
       let start = detail.points[0]
       this.startPosition.name = start.point_name
+      this.startPosition.radius = start.radius || 100
       this.makeFromPosition(start.lng, start.lat, start.point_name)
 
       let end = detail.points[detail.points.length - 1]
       this.endPosition.name = end.point_name
+      this.endPosition.radius = end.radius || 100
       this.makeEndPosition(end.lng, end.lat, end.point_name)
 
       detail.points.splice(0, 1)
@@ -256,6 +336,13 @@ export default {
       detail.points.forEach(point => {
         this.createMidMarkerPosition(point.lng, point.lat, point.point_name)
       })
+      this.routeInfoForm.warningTimeList = []
+      detail.monitor && detail.monitor.forEach(item => {
+        this.routeInfoForm.warningTimeList.push([item.effectiveTime, item.expiresTime])
+      })
+      if (this.routeInfoForm.warningTimeList.length === 0) {
+        this.routeInfoForm.warningTimeList.push(['', ''])
+      }
       this.searchPath()
     },
     switchWarningTime () {
@@ -370,18 +457,23 @@ export default {
         this.isSaving = false
       })
     },
+    async goBack() {
+      await this.$store.dispatch('tagsView/delVisitedView', {path: '/apps/planningroute/v1/map'})
+      const latestView = this.$store.state.tagsView.visitedViews.slice(-1)[0];
+      if (latestView) {
+        this.$router.push(latestView.fullPath);
+      } else {
+        this.$router.push('/')
+      }
+    },
     async save() {
       if (!this.drivingPathResult) {
         this.msgError('还未生成路径')
         return
       }
       await this.$refs.routeInfoElForm.validate()
-      if (!this.routeInfoForm.warningStartTime) {
-        this.msgError('请输入报警开始时间')
-        return
-      }
-      if (!this.routeInfoForm.warningEndTime) {
-        this.msgError('请输入报警结束时间')
+      if (this.routeInfoForm.warningTimeList.length === 0) {
+        this.msgError('请输入监控时段')
         return
       }
       let waypoints = []
@@ -390,6 +482,7 @@ export default {
         pointName: this.startPosition.name,
         lng: this.drivingPathResult.start.location.lng,
         lat: this.drivingPathResult.start.location.lat,
+        radius: this.startPosition.radius,
         pointSort: pointIndex++,
       })
       let midWayPoints = this.midPositionList.map(item => {
@@ -400,6 +493,7 @@ export default {
         lng: this.drivingPathResult.end.location.lng,
         lat: this.drivingPathResult.end.location.lat,
         pointName: this.endPosition.name,
+        radius: this.endPosition.radius,
         pointSort: pointIndex++,
       })
       let path = []
@@ -410,14 +504,27 @@ export default {
         })
       })
       path.push(`${this.drivingPathResult.end.location.lng},${this.drivingPathResult.end.location.lat}`)
+
+      let monitor = []
+      let monitorIndex = 0
+      this.routeInfoForm.warningTimeList.forEach(item => {
+        monitor.push({
+          effectiveTime: item[0],
+          expiresTime: item[1],
+          sort: monitorIndex++
+        })
+      })
+
       let postData = {
         routeCode: this.code,
         routeName: this.routeInfoForm.name,
         routeCoordinates: path.join(';'),
         routeDeviateRadius: this.routeInfoForm.offPathDistance,
         routeDeviateTime: this.routeInfoForm.offPathTime,
-        effectiveTime: this.routeInfoForm.warningStartTime,
-        expiresTime: this.routeInfoForm.warningEndTime,
+        // effectiveTime: this.routeInfoForm.warningStartTime,
+        // expiresTime: this.routeInfoForm.warningEndTime,
+        routeType: this.routeInfoForm.routeType,
+        monitor: monitor,
         points: waypoints
       }
       let res = await http_request({
@@ -437,6 +544,7 @@ export default {
       }
     },
     searchPath () {
+      console.log('searchPath')
       if (!this.startPosition.position) {
         this.msgError('请输入起始位置')
         return
@@ -453,19 +561,29 @@ export default {
       if (this.truckDriving) this.truckDriving.clear()
       this.isSearchDriving = true
       let vm = this
-      this.truckDrivingSearch().then(result => {
-        vm.drivingPathResult = result
-        vm.isSearchDriving = false
-      }, error => {
-        vm.msgError(`货车路线规划失败`)
+      if (this.routeInfoForm.routeType === 1) {
         vm.drivingSearch().then(result => {
           vm.drivingPathResult = result
           vm.isSearchDriving = false
-        }, error2 => {
+        }, error => {
           vm.isSearchDriving = false
-          vm.msgError(`线路规划失败:${error2}`)
+          vm.msgError(`线路规划失败:${error}`)
         })
-      })
+      } else {
+        this.truckDrivingSearch().then(result => {
+          vm.drivingPathResult = result
+          vm.isSearchDriving = false
+        }, error => {
+          vm.msgError(`货车路线规划失败`)
+          vm.drivingSearch().then(result => {
+            vm.drivingPathResult = result
+            vm.isSearchDriving = false
+          }, error2 => {
+            vm.isSearchDriving = false
+            vm.msgError(`线路规划失败:${error2}`)
+          })
+        })
+      }
     },
     checkMidPosition () {
       for (let i = 0; i < this.midPositionList.length; i++) {
@@ -520,7 +638,13 @@ export default {
         this.geocoder.getAddress([lng, lat], function(status, result) {
           console.log(status, result)
           if (status === 'complete' && result.info === 'OK') {
-            resolve(result)
+            let pios = result.regeocode.pois
+            let aois = result.regeocode.aois
+            let positionName = aois && aois.length > 0 && aois[0].name
+            positionName = positionName || pios && pios.length > 0 && pios[0].name
+            positionName = positionName || result.regeocode.formattedAddress
+            // console.log('positionName=', positionName)
+            resolve(positionName)
           } else {
             reject(status)
           }
@@ -532,12 +656,36 @@ export default {
       if (this.startPosition.marker) {
         this.map.remove(this.startPosition.marker)
       }
+      if (this.startPosition.circleMarker) {
+        this.map.remove(this.startPosition.circleMarker)
+      }
       let pointStartImage = require('../../../../assets/images/stealingcoal/point-start.png')
       let marker = new AMap.Marker({
         position,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
         title: name,
+        draggable: true,
         icon: pointStartImage,
         offset: new AMap.Pixel(-45, -45)
+      })
+      let circle = new AMap.Circle({
+        center: position,
+        radius: this.startPosition.radius,
+        strokeColor: '#FFBB00',
+        fillColor: '#FFB301',
+        fillOpacity: 0.1,
+        strokeWeight: 2, // 描边宽度
+      })
+      this.map.add(circle)
+      this.startPosition.circleMarker = circle
+      let vm = this
+      marker.on('dragend', function (event) {
+        let position = marker.getPosition()
+        vm.startPosition.position = position
+        circle.setCenter(position)
+        vm.getAddressByPosition(position.lng, position.lat).then(name => {
+          vm.startPosition.name = name
+        })
+        vm.trySearchDriving()
       })
       this.map.setCenter(position)
       this.map.add(marker)
@@ -549,12 +697,36 @@ export default {
       if (this.endPosition.marker) {
         this.map.remove(this.endPosition.marker)
       }
+      if (this.endPosition.circleMarker) {
+        this.map.remove(this.endPosition.circleMarker)
+      }
       let pointEndImage = require('../../../../assets/images/stealingcoal/point-end.png')
       let marker = new AMap.Marker({
         position,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
         title: name,
         icon: pointEndImage,
+        draggable: true,
         offset: new AMap.Pixel(-45, -45)
+      })
+      let circle = new AMap.Circle({
+        center: position,
+        radius: this.endPosition.radius,
+        strokeColor: '#4682FA',
+        fillColor: '#4682FA',
+        fillOpacity: 0.1,
+        strokeWeight: 2, // 描边宽度
+      })
+      this.map.add(circle)
+      this.endPosition.circleMarker = circle
+      let vm = this
+      marker.on('dragend', function (event) {
+        let position = marker.getPosition()
+        circle.setCenter(position)
+        vm.endPosition.position = position
+        vm.getAddressByPosition(position.lng, position.lat).then(name => {
+          vm.endPosition.name = name
+        })
+        vm.trySearchDriving()
       })
       this.map.setCenter(position)
       this.map.add(marker)
@@ -562,6 +734,7 @@ export default {
       this.endPosition.marker = marker
     },
     trySearchDriving() {
+      console.log('trySearchDriving')
       if (!this.startPosition.position) {
         return
       }
@@ -582,8 +755,8 @@ export default {
       }
       this.midPositionList.push(midPositionInfo)
       if (!name) {
-        this.getAddressByPosition(lng, lat).then(res => {
-          midPositionInfo.name = res.regeocode.formattedAddress
+        this.getAddressByPosition(lng, lat).then(name => {
+          midPositionInfo.name = name
         })
       }
       this.createMidMarker(lng, lat, midPositionInfo)
@@ -624,8 +797,8 @@ export default {
       })
       marker.on('dragend', function (event) {
         positionInfo.position = marker.getPosition()
-        vm.getAddressByPosition(positionInfo.position.lng, positionInfo.position.lat).then(res => {
-          positionInfo.name = res.regeocode.formattedAddress
+        vm.getAddressByPosition(positionInfo.position.lng, positionInfo.position.lat).then(name => {
+          positionInfo.name = name
         })
         vm.trySearchDriving()
       })
@@ -644,7 +817,7 @@ export default {
         zoom: 11,
       })
       console.log("ckc init");
-      this.map.plugin(['AMap.Geolocation', "AMap.Geocoder", "AMap.Autocomplete", 'AMap.Driving', 'AMap.TruckDriving'], function () {
+      this.map.plugin(['AMap.Geolocation', "AMap.Geocoder", "AMap.Autocomplete", 'AMap.Driving', 'AMap.TruckDriving', 'AMap.Circle'], function () {
         let geolocation = new AMap.Geolocation({
           enableHighAccuracy: true,//是否使用高精度定位，默认:true
           convert: true,           //自动偏移坐标，偏移后的坐标为高德坐标，默认：true
@@ -664,7 +837,7 @@ export default {
           map: vm.map,
           // panel: "panel",
           showTraffic: false,
-          autoFitView: false,
+          autoFitView: true,
           extensions: 'all',
           hideMarkers: true,
           outlineColor: '#4682FA'
@@ -680,16 +853,16 @@ export default {
       })
       this.map.on('click', function (event) {
         if (!vm.startPosition.position) {
-          vm.getAddressByPosition(event.lnglat.lng, event.lnglat.lat).then(res => {
-            vm.startPosition.name = res.regeocode.formattedAddress
+          vm.getAddressByPosition(event.lnglat.lng, event.lnglat.lat).then(name => {
+            vm.startPosition.name = name
             vm.makeFromPosition(event.lnglat.lng, event.lnglat.lat, vm.startPosition.name)
             vm.trySearchDriving()
           })
           return
         }
         if (!vm.endPosition.position) {
-          vm.getAddressByPosition(event.lnglat.lng, event.lnglat.lat).then(res => {
-            vm.endPosition.name = res.regeocode.formattedAddress
+          vm.getAddressByPosition(event.lnglat.lng, event.lnglat.lat).then(name => {
+            vm.endPosition.name = name
             vm.makeEndPosition(event.lnglat.lng, event.lnglat.lat, vm.endPosition.name)
             vm.trySearchDriving()
           })
@@ -753,9 +926,36 @@ export default {
   .address {
     font-size: 12px;
     color: #b4b4b4;
-    line-height: 20px;
-    min-height: 20px;
+    line-height: 16px;
+    padding: 5px 0;
+    //min-height: 20px;
+    word-break: break-all;
+    word-wrap: break-word;
+    white-space: normal;
   }
+}
+.left-side .form-container .form-item .el-autocomplete .el-input-group__prepend {
+  padding: 0 10px;
+}
+.left-side .form-container .form-item .el-autocomplete .el-input__suffix {
+  right: 0;
+}
+.left-side .form-container .form-item .path-start-input input,
+.left-side .form-container .form-item .path-end-input input{
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.left-side .form-container .form-item .pointer-radius-input .el-input__inner {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding: 0 20px 0 10px;
+  border-left: none;
+  //width: 60px;
+  //text-align: center;
+}
+.operator-layout .el-tabs__nav-wrap::after{
+  background: transparent;
+
 }
 </style>
 
@@ -766,31 +966,53 @@ export default {
   height: 30px;
   display: block;
 }
+.item-suffix {
+  flex: none;
+  width: 30px;
+  .sf-button {
+    background: url("../../../../assets/images/stealingcoal/map-add.png") no-repeat;
+    background-size: 100%;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: middle;
+  }
+  .sf-button.remove {
+    background: url("../../../../assets/images/stealingcoal/map-remove.png") no-repeat;
+    background-size: 100%;
+  }
+}
 .left-side {
+  overflow-y: auto;
   //margin: 0 0 15px;
-  padding: 20px;
-  background: #fff;
-  box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
-  border-radius: 3px;
-  position: absolute;
-  left: 50px;
-  top: 40px;
-  width: 320px;
-  opacity: .8;
+  //padding: 20px;
+  //background: #fff;
+  //box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
+  //border-radius: 3px;
+  //position: absolute;
+  //left: 50px;
+  //top: 40px;
+  //width: 320px;
+  //opacity: .8;
   .title {
     font-size: 16px;
     font-weight: bold;
   }
   .form-container {
-    padding-top: 15px;
+    //padding-top: 15px;
     .form-item {
       display: flex;
       align-items: center;
       margin-bottom: 10px;
       position: relative;
+      .pointer-radius-input {
+        flex: none;
+        width: 70px;
+      }
       .item-prefix {
         flex: none;
-        width: 30px;
+        width: 25px;
         vertical-align: middle;
       }
       .item-prefix.line::before {
@@ -799,24 +1021,24 @@ export default {
         height: 20px;
         border-left: dotted #D6D8DB 2px;
         position: absolute;
-        left: 6px;
+        left: 4px;
         top: -14px;
       }
       .item-prefix::after {
         content: '';
         background-color: white;
         display: inline-block;
-        border: solid #D6D8DB 4px;
+        border: solid #D6D8DB 3px;
         border-radius: 50%;
-        width: 15px;
-        height: 15px;
+        width: 10px;
+        height: 10px;
         vertical-align: middle;
       }
       .item-prefix.start::after {
-        border: solid #FFBC00 4px;
+        border: solid #FFBC00 3px;
       }
       .item-prefix.end::after {
-        border: solid #4682FA 4px;
+        border: solid #4682FA 3px;
       }
       .item-input.input-suffix-start {
         vertical-align: middle;
@@ -842,15 +1064,15 @@ export default {
   }
 }
 .right-side {
-  padding: 20px 20px 0 20px;
-  background: #fff;
-  box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
-  border-radius: 3px;
-  position: absolute;
-  right: 50px;
-  top: 40px;
-  width: 320px;
-  opacity: .8;
+  //padding: 20px 20px 0 20px;
+  //background: #fff;
+  //box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
+  //border-radius: 3px;
+  //position: absolute;
+  //right: 50px;
+  //top: 40px;
+  //width: 320px;
+  //opacity: .8;
   .title {
     font-size: 16px;
     font-weight: bold;

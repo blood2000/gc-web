@@ -96,8 +96,12 @@
           <el-table-column label="日期" prop="date" width="130" />
           <el-table-column label="待收款单数" prop="notRevenueCount" />
           <el-table-column label="待收款金额" prop="notRevenue" />
+          <el-table-column label="当日新增待收" prop="todayNotRevenue" />
+          <el-table-column label="往日累计待收" prop="notTodayNotRevenue" />
           <el-table-column label="已收款单数" prop="revenueCount" />
           <el-table-column label="已收款金额" prop="revenue" />
+          <el-table-column label="当日运单收款" prop="todayRevenue" />
+          <el-table-column label="往日运单收款" prop="notTodayRevenue" />
         </el-table>
         <pagination
           v-show="total > 0"

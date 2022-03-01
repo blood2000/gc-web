@@ -30,7 +30,9 @@
             <el-table-column label="目的地" prop="unloadFormattedAddress" />
             <el-table-column label="趟次" prop="tripsTotal" />
             <el-table-column label="净重（吨）" prop="netWeightTotal" />
-            <el-table-column label="应收运费（元）" prop="incomeTotal" />
+            <el-table-column label="总收入（元）" prop="sumIncomeTotal" />
+            <el-table-column label="已收（元）" prop="incomeTotal" />
+            <el-table-column label="未收（元）" prop="stayIncomeTotal" />
             <el-table-column label="应付运费（元）" prop="payTotal" />
             <el-table-column label="净收入（元）" prop="netIncomeTotal" />
             <el-table-column label="操作">
