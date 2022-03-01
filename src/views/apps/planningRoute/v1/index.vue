@@ -241,7 +241,7 @@ export default {
       this.getList()
     },
     handleAdd () {
-      this.$router.push({path: '/apps/planningroute/v1/map?type=add'})
+      this.$router.push({path: '/app/planningroute/v1/map?type=add'})
     },
     async getList() {
       let res = await http_request({

@@ -10,8 +10,8 @@
         </div>
       </div>
       <div class="divier"></div>
-      <div class="main-container" style="height: calc(100% - 44px); padding: 20px 20px 0 20px; background-color: white; display: flex">
-        <div id="routeplanning-map-container" />
+      <div class="" style="height: calc(100% - 44px); padding: 20px 20px 0 20px; background-color: white; display: flex">
+        <div class="map-container-box"><div id="routeplanning-map-container" /></div>
         <div class="operator-layout" style="flex:none;width: 400px; padding: 0 0 0 20px; position: relative">
           <el-tabs v-model="showTabIndex">
             <el-tab-pane label="路径信息" name="1"></el-tab-pane>
@@ -1083,8 +1083,18 @@ export default {
   margin: 0;
   height: 100%;
 }
+
+.map-container-box {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
 #routeplanning-map-container {
-  width: 100%;
+  // width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1388px;
   height: 100%;
 }
 </style>

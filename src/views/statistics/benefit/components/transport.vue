@@ -200,7 +200,8 @@ export default {
   height: 465px;
   background: #fff;
   padding: 25px 20px;
-  box-shadow: 0 0 4px 0 rgba(0,0,0,.2);
+  // box-shadow: 0 0 4px 0 rgba(0,0,0,.2);
+  border: 1px solid #f9f9f9;
   border-radius: 6px;
   &-bar {
     display: flex;
