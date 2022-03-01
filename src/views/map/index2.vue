@@ -1704,36 +1704,24 @@ export default {
             attribute.coordinate.value[0] &&
             attribute.coordinate.value[1]
           ) {
-            this.drawVehicleMarker(data);
-            // this.clearDynamicVehicleMove();
-            // this.dynamicVehicleMove(data, (error) => {
-            //   console.log('11111',error)
-            //   this.updateMarkerData(data);
-            //   if (error) {
-            //     this.drawVehicleMarker(data);
-            //     if (isFresh && this.headerTab !== 3) {
-            //       this.$nextTick(() => {
-            //         console.log(
-            //           " attribute.coordinate.value",
-            //           attribute.coordinate.value
-            //         );
-            //         console.log("ckc 获取设备定位信息");
-            //         this.map.setZoomAndCenter(13, attribute.coordinate.value);
-            //       });
-            //     }
-            //   }
-            // });
-
-            if (isFresh && this.headerTab !== 3) {
-              this.$nextTick(() => {
-                console.log(
-                  " attribute.coordinate.value",
-                  attribute.coordinate.value
-                );
-                console.log("ckc 获取设备定位信息");
-                this.map.setZoomAndCenter(13, attribute.coordinate.value);
-              });
-            }
+            this.clearDynamicVehicleMove();
+            this.dynamicVehicleMove(data, (error) => {
+              console.log('11111',error)
+              this.updateMarkerData(data);
+              if (error) {
+                this.drawVehicleMarker(data);
+                if (isFresh && this.headerTab !== 3) {
+                  this.$nextTick(() => {
+                    console.log(
+                      " attribute.coordinate.value",
+                      attribute.coordinate.value
+                    );
+                    console.log("ckc 获取设备定位信息");
+                    this.map.setZoomAndCenter(13, attribute.coordinate.value);
+                  });
+                }
+              }
+            });
 
             return;
           }
@@ -1741,19 +1729,6 @@ export default {
         this.msgWarning("该车辆暂无定位信息");
       });
     },
-    postCenter(data, positions) {
-      let value = 0;
-      let value1 = 0;
-      data.forEach((el) => {
-        const { coordinate } = el.attribute;
-        value += coordinate.value[0];
-        value1 += coordinate.value[1];
-      });
-      console.log("x轴", value, data.length - 1);
-      positions[0] = value / (data.length - 1);
-      positions[1] = value1 / (data.length - 1) - 2;
-    },
-
     // 绘制车辆定位marker
     drawVehicleMarker(row) {
       const _this = this;
