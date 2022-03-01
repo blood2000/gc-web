@@ -12,7 +12,7 @@
           <template slot="dateCell" slot-scope="{ date, data }">
             <div @click="onSelectDay(data)" :class="onBuildClass(data)">
               <div>
-                {{ parseTime(data.day, '{d}') }}
+                {{ parseTime(data.day, "{d}") }}
               </div>
             </div>
           </template>
@@ -22,8 +22,12 @@
           <span v-show="endDateText">-{{ endDateText }}</span>
         </div>
         <div class="benefit-date__btn">
-          <el-button @click="onSearch" type="primary" size="small"> 搜 索 </el-button>
-          <el-button @click="onReset" class="ml16" size="small" plain> 重 置 </el-button>
+          <el-button @click="onSearch" type="primary" size="small">
+            搜 索
+          </el-button>
+          <el-button @click="onReset" class="ml16" size="small" plain>
+            重 置
+          </el-button>
         </div>
       </div>
       <div class="benefit-info">
@@ -51,27 +55,27 @@
     </div>
     <div class="benefit-right">
       <div class="wrapper">
-        <div class="left">
+        <div class="left" id="chartContainer">
           <Transport
-            v-show="!isMany"
+            v-if="!isMany"
             :transChart="statistic.transChart"
             :startDate="startDate"
             :endDate="endDate || startDate"
           />
           <TransportMany
-            v-show="isMany"
+            v-if="isMany"
             :transChart="statistic.transChart"
             :startDate="startDate"
             :endDate="endDate || startDate"
           />
           <Freight
-            v-show="!isMany"
+            v-if="!isMany"
             :freightChart="statistic.freightChart"
             :startDate="startDate"
             :endDate="endDate || startDate"
           />
           <FreightMany
-            v-show="isMany"
+            v-if="isMany"
             :freightChart="statistic.freightChart"
             :startDate="startDate"
             :endDate="endDate || startDate"
@@ -95,14 +99,15 @@
 </template>
 
 <script>
-import { http_request } from '@/api'
-import { compareBeginEndTime } from '@/utils/index'
-import Transport from './components/transport.vue'
-import TransportMany from './components/transportMany.vue'
-import Freight from './components/freight.vue'
-import FreightMany from './components/freightMany.vue'
-import Vehicle from './components/vehicle.vue'
-import Driver from './components/driver.vue'
+import { mapGetters } from "vuex";
+import { http_request } from "@/api";
+import { compareBeginEndTime } from "@/utils/index";
+import Transport from "./components/transport.vue";
+import TransportMany from "./components/transportMany.vue";
+import Freight from "./components/freight.vue";
+import FreightMany from "./components/freightMany.vue";
+import Vehicle from "./components/vehicle.vue";
+import Driver from "./components/driver.vue";
 
 export default {
   components: {
@@ -116,14 +121,15 @@ export default {
   data() {
     return {
       value: new Date(),
-      startDate: this.parseTime(new Date(), '{y}-{m}') + '-01',
-      endDate: this.parseTime(new Date(), '{y}-{m}-{d}'),
+      startDate: this.parseTime(new Date(), "{y}-{m}") + "-01",
+      endDate: this.parseTime(new Date(), "{y}-{m}-{d}"),
       isMany: false,
+      chartWidth: 900,
       statistic: {
-        appointCarOrderCount: '', // 总调度量
-        revenue: '', // 已收款
-        driverCount: '', // 任务司机
-        vehicleCount: '', // 任务车辆
+        appointCarOrderCount: "", // 总调度量
+        revenue: "", // 已收款
+        driverCount: "", // 任务司机
+        vehicleCount: "", // 任务车辆
         transChart: [], // 运输图表
         freightChart: [], // 运费图表
         vehicleBenefitInfo: {
@@ -138,104 +144,139 @@ export default {
           driverBenefitRanking: [], // 司机排行
         },
       },
-    }
+    };
   },
+  
+
   computed: {
+    ...mapGetters(["sidebar"]),
     currentTM() {
-      return this.parseTime(this.value, '{y}年{m}月')
+      return this.parseTime(this.value, "{y}年{m}月");
     },
     startDateText() {
-      return this.startDate ? this.parseTime(this.startDate, '{y}年{m}月{d}日') : ''
+      return this.startDate
+        ? this.parseTime(this.startDate, "{y}年{m}月{d}日")
+        : "";
     },
     endDateText() {
-      return this.endDate ? this.parseTime(this.endDate, '{y}年{m}月{d}日') : ''
+      return this.endDate
+        ? this.parseTime(this.endDate, "{y}年{m}月{d}日")
+        : "";
     },
+    // isCollapse() {
+     
+    //   console.log(!this.sidebar.opened);
+    //   if (!this.sidebar.opened) {
+    //     this.chartWidth = 946;
+    //   } else {
+    //     this.chartWidth = 786;
+    //   }
+    //   console.log("this.chartwidth", this.chartWidth);
+    //   return !this.sidebar.opened;
+    // },
+
   },
+
   created() {
-    this.onSearch()
+    this.onSearch();
   },
+  // mounted() {
+  //   this.$nextTick(() => {});
+  //   this.chartWidth = document.getElementById("left").offsetWidth - 60;
+  //   console.log("this.chartWidth", this.chartWidth);
+  // },
+
   methods: {
     // 点击搜索
     onSearch() {
       if (!this.startDate) {
-        this.$message.error('请选择需要查询的开始日期')
-        return
+        this.$message.error("请选择需要查询的开始日期");
+        return;
       }
       if (!this.endDate) {
-        this.endDate = this.startDate
+        this.endDate = this.startDate;
       }
       const params = {
-        moduleName: 'http_statistic',
-        method: 'get',
-        url_alias: 'wholeStatistics',
+        moduleName: "http_statistic",
+        method: "get",
+        url_alias: "wholeStatistics",
         data: {
           startDate: this.startDate,
           endDate: this.endDate,
         },
-      }
+      };
       http_request(params).then((res) => {
-        this.isMany = !(this.startDate && this.endDate && this.startDate === this.endDate)
-        this.statistic = res.data
-      })
+        this.isMany = !(
+          this.startDate &&
+          this.endDate &&
+          this.startDate === this.endDate
+        );
+        this.statistic = res.data;
+      });
     },
     // 周切换
     skip(val) {
-      if (val === 'preMon') {
-        this.value = new Date(this.value.setMonth(this.value.getMonth() - 1))
-      } else if (val === 'nextMon') {
-        this.value = new Date(this.value.setMonth(this.value.getMonth() + 1))
-      } else if (val === 'today') {
-        this.value = new Date()
-      } else if (val === 'preYear') {
-        this.value = new Date(this.value.setFullYear(this.value.getFullYear() - 1))
-      } else if (val === 'nextYear') {
-        this.value = new Date(this.value.setFullYear(this.value.getFullYear() + 1))
+      if (val === "preMon") {
+        this.value = new Date(this.value.setMonth(this.value.getMonth() - 1));
+      } else if (val === "nextMon") {
+        this.value = new Date(this.value.setMonth(this.value.getMonth() + 1));
+      } else if (val === "today") {
+        this.value = new Date();
+      } else if (val === "preYear") {
+        this.value = new Date(
+          this.value.setFullYear(this.value.getFullYear() - 1)
+        );
+      } else if (val === "nextYear") {
+        this.value = new Date(
+          this.value.setFullYear(this.value.getFullYear() + 1)
+        );
       }
     },
     // 点击了天数
     onSelectDay(data) {
       if (!this.startDate) {
-        this.startDate = data.day
+        this.startDate = data.day;
       } else if (!this.endDate) {
         if (compareBeginEndTime(this.startDate, data.day)) {
-          this.endDate = data.day
+          this.endDate = data.day;
         } else {
-          this.endDate = this.startDate
-          this.startDate = data.day
+          this.endDate = this.startDate;
+          this.startDate = data.day;
         }
       } else {
-        this.startDate = data.day
-        this.endDate = ''
+        this.startDate = data.day;
+        this.endDate = "";
       }
     },
     // 生成class
     onBuildClass(data) {
       if (data.day === this.startDate || data.day === this.endDate) {
-        return 'is-selected'
+        return "is-selected";
       }
       if (this.startDate && this.endDate) {
         if (
           compareBeginEndTime(this.startDate, data.day) &&
           compareBeginEndTime(data.day, this.endDate)
         ) {
-          return 'is-interval'
+          return "is-interval";
         }
       }
-      return ''
+      return "";
     },
     onReset() {
-      this.startDate = this.parseTime(new Date(), '{y}-{m}') + '-01'
-      this.endDate = this.parseTime(new Date(), '{y}-{m}-{d}')
-      this.onSearch()
+      this.startDate = this.parseTime(new Date(), "{y}-{m}") + "-01";
+      this.endDate = this.parseTime(new Date(), "{y}-{m}-{d}");
+      this.onSearch();
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
 .benefit {
-  padding: 0 0 0 0;
+  padding: 20px;
   display: flex;
+  background: #fff;
   &-left {
     width: 300px;
   }
@@ -290,7 +331,7 @@ export default {
     &__box {
       width: 144px;
       height: 172px;
-      background: #fff;
+      background: #f9f9f9;
       border-radius: 4px;
       margin-bottom: 12px;
       padding: 16px 12px;
@@ -308,16 +349,19 @@ export default {
     }
   }
   &-right {
-    flex: 1 1 auto;
+    // flex: 1 1 auto;
+    flex: 1;
     width: 0;
-    overflow: auto;
+    // overflow: auto;
     .wrapper {
-      width: 1516px;
+      width: 100%;
       display: flex;
+      justify-content: space-between;
     }
     .left {
-      width: 1024px;
+      // width: 1024px;
       margin: 0 16px;
+      flex: 1;
     }
     .right {
       width: 460px;

@@ -462,6 +462,8 @@ export default {
   justify-content: center;
   align-items: center;
   background: #000;
+  border-radius: 6px;
+  overflow: hidden;
   img {
     width: 100%;
     height: 100%;

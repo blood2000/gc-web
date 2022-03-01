@@ -4,79 +4,92 @@
       <div class="transport-title">运输统计（单）</div>
       <TransportMore :startDate="startDate" :endDate="endDate" />
     </div>
-    <div ref="chart" class="chart-wrapper"></div>
+    <div ref="chart" class="chart-wrapper" :style="{width: chartWidth + 'px'}"></div>
   </div>
 </template>
 
 <script>
-import { http_request } from '@/api'
-import * as echarts from 'echarts'
-import TransportMore from './transportMore.vue'
+import { mapGetters } from "vuex";
+import { http_request } from "@/api";
+import * as echarts from "echarts";
+import TransportMore from "./transportMore.vue";
 
 export default {
   props: {
     transChart: {
       type: Array,
-      default: []
+      default: [],
     },
     startDate: {
       type: String,
-      default: ''
+      default: "",
     },
     endDate: {
       type: String,
-      default: ''
-    }
+      default: "",
+    },
+    
   },
   components: {
-    TransportMore
+    TransportMore,
   },
   data() {
-    return {}
+    return {
+      chart: null,
+    };
+  },
+  computed: {
+    ...mapGetters(["sidebar"]),
+    chartWidth() {
+      if (!this.sidebar.opened) {
+        return 946;
+      } else {
+        return 786;
+      }
+    },
   },
   mounted() {
-    this.initChart()
-    if (this.transChart && this.transChart.length > 0) {
-      this.setChart()
-    }
+    this.$nextTick(() => {
+      this.initChart();
+      if (this.transChart && this.transChart.length > 0) {
+        this.setChart();
+      }
+    });
   },
   methods: {
     initChart() {
-      this.chart = echarts.init(this.$refs.chart, 'macarons', {
-        width: 1000,
-        height: 380
-      })
+      this.chart = echarts.init(this.$refs.chart);
     },
     setChart() {
       const styleOptions = {
         label: {
-          formatter: '{c}单',
-          color: '#3D4050',
+          formatter: "{c}单",
+          color: "#3D4050",
           fontSize: 20,
-          fontWeight: 'bold'
+          fontWeight: "bold",
         },
         itemStyle: {
-          type: 'linear',
+          type: "linear",
           x: 0,
           y: 0,
           x2: 1,
-          y2: 0
-        }
-      }
+          y2: 0,
+        },
+      };
 
       this.option = {
         xAxis: {
-          type: 'value',
+          type: "value",
           splitLine: {
             lineStyle: {
-              color: ['#ebebeb'],
-              type: 'dashed'
-            }
-          }
+              color: ["#ebebeb"],
+              type: "dashed",
+            },
+          },
         },
         yAxis: {
-          type: 'category',
-          data: ['已回车', '已出车', '已接单']
+          type: "category",
+          data: ["已回车", "已出车", "已接单"],
         },
         series: [
           {
@@ -90,15 +103,15 @@ export default {
                     colorStops: [
                       {
                         offset: 0,
-                        color: '#EF8C8C'
+                        color: "#EF8C8C",
                       },
                       {
                         offset: 1,
-                        color: '#EF6969'
-                      }
-                    ]
-                  }
-                }
+                        color: "#EF6969",
+                      },
+                    ],
+                  },
+                },
               },
               {
                 value: this.transChart[0].loadCount,
@@ -109,15 +122,15 @@ export default {
                     colorStops: [
                       {
                         offset: 0,
-                        color: '#75DB56'
+                        color: "#75DB56",
                       },
                       {
                         offset: 1,
-                        color: '#43B91E'
-                      }
-                    ]
-                  }
-                }
+                        color: "#43B91E",
+                      },
+                    ],
+                  },
+                },
               },
               {
                 value: this.transChart[0].receiveCount,
@@ -128,50 +141,62 @@ export default {
                     colorStops: [
                       {
                         offset: 0,
-                        color: '#6290ED'
+                        color: "#6290ED",
                       },
                       {
                         offset: 1,
-                        color: '#2069FA'
-                      }
-                    ]
-                  }
-                }
-              }
+                        color: "#2069FA",
+                      },
+                    ],
+                  },
+                },
+              },
             ],
-            type: 'bar',
+            type: "bar",
             showBackground: true,
             barWidth: 24,
             backgroundStyle: {
-              color: '#F7F7F7'
+              color: "#F7F7F7",
             },
             label: {
               show: true,
-              position: 'right'
+              position: "right",
             },
             itemStyle: {
-              borderRadius: [0, 12, 12, 0]
-            }
-          }
-        ]
-      }
+              borderRadius: [0, 12, 12, 0],
+            },
+          },
+        ],
+      };
 
-      this.chart.clear()
-      this.chart.setOption(this.option)
-    }
+      this.chart.clear();
+      this.chart.setOption(this.option);
+    },
   },
   watch: {
     transChart() {
       if (this.transChart && this.transChart.length > 0) {
-        this.setChart()
+        this.setChart();
       }
-    }
-  }
-}
+    },
+    chartWidth(val) {
+      // this.chart.resize({
+      //   width: 0
+      // });
+      setTimeout(() => {
+        this.chart.resize({
+          width: val,
+          height: 380,
+        });
+      }, 100);
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 .transport {
+  // min-width: 826px;
   height: 465px;
   background: #fff;
   padding: 25px 20px;
@@ -186,8 +211,8 @@ export default {
     color: #3d4050;
   }
   .chart-wrapper {
-    width: 900px;
-    height: 250px;
+    width: 100%;
+    height: 380px;
   }
 }
 </style>

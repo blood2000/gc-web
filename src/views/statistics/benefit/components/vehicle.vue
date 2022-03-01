@@ -127,9 +127,9 @@ export default {
     }
   }
   &-wrapper {
-    width: 460px;
+    width: 100%;
     height: 311px;
-    background: #fff;
+    background: #f9f9f9;
     padding: 20px 25px;
     border-radius: 16px 16px 4px 4px;
     margin-top: -27px;
