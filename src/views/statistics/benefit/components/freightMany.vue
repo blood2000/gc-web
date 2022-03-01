@@ -4,11 +4,12 @@
       <div class="freight-title">运费统计（元）</div>
       <FreightMore :startDate="startDate" :endDate="endDate" />
     </div>
-    <div ref="chart" class="chart-wrapper"></div>
+    <div ref="chart1" class="chart-wrapper" :style="{width: chartWidth + 'px'}"></div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import { http_request } from '@/api'
 import * as echarts from 'echarts'
 import FreightMore from './freightMore.vue'
@@ -26,26 +27,38 @@ export default {
     endDate: {
       type: String,
       default: ''
-    }
+    },
+    
   },
   components: {
     FreightMore
   },
   data() {
-    return {}
+    return {
+      chart: null
+    }
+  },
+  computed: {
+    ...mapGetters(["sidebar"]),
+    chartWidth() {
+      if (!this.sidebar.opened) {
+        return 946;
+      } else {
+        return 786;
+      }
+    },
   },
   mounted() {
-    this.initChart()
-    if (this.freightChart && this.freightChart.length > 0) {
-      this.setChart()
-    }
+    this.$nextTick(() => {
+      this.initChart();
+      if (this.transChart && this.transChart.length > 0) {
+        this.setChart();
+      }
+    });
   },
   methods: {
     initChart() {
-      this.chart = echarts.init(this.$refs.chart, 'macarons', {
-        width: 1000,
-        height: 380
-      })
+      this.chart = echarts.init(this.$refs.chart1)
     },
     setChart() {
       let notRevenueAll = 0
@@ -157,13 +170,22 @@ export default {
       if (this.freightChart && this.freightChart.length > 0) {
         this.setChart()
       }
-    }
+    },
+    chartWidth(val) {
+      setTimeout(() => {
+        this.chart.resize({
+          width: val,
+          height: 380,
+        });
+      }, 100);
+    },
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .freight {
+  // min-width: 826px;
   height: 465px;
   background: #fff;
   padding: 25px 20px;
@@ -178,8 +200,8 @@ export default {
     color: #3d4050;
   }
   .chart-wrapper {
-    width: 900px;
-    height: 250px;
+    width: 100%;
+    height: 380px;
   }
 }
 </style>
