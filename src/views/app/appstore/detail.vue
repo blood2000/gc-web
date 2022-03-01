@@ -77,9 +77,9 @@
             </div>
           </div>
           <div class="right-bottom">
-            <div class="right-bottom-guide">
+            <!-- <div class="right-bottom-guide">
                 <img src="../../../assets/images/app/guide.png"/>
-                操作指南</div>
+                操作指南</div> -->
             <el-tabs v-model="activeName" @tab-click="handleClick">
               <el-tab-pane label="详情" name="detail">
                 <div class="right-bottom-detail">

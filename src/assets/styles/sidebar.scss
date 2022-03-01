@@ -130,11 +130,13 @@
       margin-left: 60px ;
     }
     .sidebar-container {
-      padding-bottom:60px;
       width: 60px ;
+      .el-menu{
+        padding-bottom: 20px;
+      }
       .el-menu > div {
         height: 60px;
-        margin-bottom: 21px;
+        margin-bottom: 12px;
       }
     }
 

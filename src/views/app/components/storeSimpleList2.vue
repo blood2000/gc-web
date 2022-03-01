@@ -77,13 +77,15 @@ export default {
   flex-wrap: wrap;
 }
 .list-box1 {
-   width: 25%;
+   width: 24.4%;
   height: 104px;
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+   border: 1px solid transparent;
+    margin-bottom: 20px;
 }
 .list-box:hover {
   background: #ffffff;
@@ -92,7 +94,7 @@ export default {
   opacity: 1;
 }
 .list {
-  width: 80%;
+  width: 90%;
   height: 69px;
   box-sizing: border-box;
   .list-content {

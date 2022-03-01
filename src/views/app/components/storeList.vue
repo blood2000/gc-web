@@ -1,6 +1,10 @@
 <template>
   <div class="list">
-    <div class="list-item" v-for="sub in appList" :key="sub.code">
+    <div class="list-item" 
+    v-for="sub in appList" 
+    :key="sub.code"
+    @click="jumpClick(sub)"
+    >
       <div class="list-content">
         <div class="list-content-img">
           <img :src="sub.iconUrl" alt="" />
@@ -57,6 +61,10 @@ export default {
       console.log("code", code);
       this.$router.push("detail?code=" + code);
     },
+    jumpClick(sub){
+      console.log('sub',sub.code)
+      this.$router.push("detail?code=" + sub.code);
+    }
   },
 };
 </script>
@@ -68,11 +76,16 @@ export default {
   margin-bottom: 32px;
 }
 .list-item {
-  width: 350px;
-  height: 153px;
-  padding-top: 2px;
-  margin-right: 5%;
-  margin-bottom: 25px;
+  width: 380px;
+  border: 1px solid transparent;
+  height: 183px;
+  padding: 15px;
+  margin-right: 3%;
+  margin-bottom: 15px;
+  &:hover{
+     border: 1px solid rgba(70, 130, 250, 0.2784313725490196);
+  box-shadow: 0px 3px 13px rgba(70, 130, 250, 0.21);
+  }
   .list-content {
     height: 55px;
     width: 100%;
