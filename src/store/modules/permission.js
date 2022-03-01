@@ -108,8 +108,10 @@ function filterAsyncRouter(asyncRouterMap, lastRouter = false, type = false) {
       } else if (route.component === 'ParentView') {
         route.component = ParentView;
       } else if (route.component === 'InnerLink') {
+       
         route.component = InnerLink;
       } else {
+        console.log('route',route)
         route.component = loadView(route.component);
       }
     }

@@ -164,6 +164,7 @@ export default {
       let tags = [];
       routes.forEach((route) => {
         if (route.meta && route.meta.affix) {
+          console.log('route 111111',route)
           const tagPath = path.resolve(basePath, route.path);
           tags.push({
             fullPath: tagPath,
@@ -182,6 +183,7 @@ export default {
       return tags;
     },
     initTags() {
+      console.log('this.routes',this.routes)
       const affixTags = (this.affixTags = this.filterAffixTags(this.routes));
       for (const tag of affixTags) {
         // Must have tag name
