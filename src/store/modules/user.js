@@ -238,6 +238,7 @@ const addAppPage = async (menu) => {
   // 处理数据
   const tmpData = JSON.parse(JSON.stringify(res.data)) 
   tmpData.forEach(el => {
+    el.hidden = true
     el.meta = {
       title:el.name,
       noCache:false
