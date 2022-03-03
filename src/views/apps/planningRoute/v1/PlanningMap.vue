@@ -21,7 +21,6 @@
             <el-form ref="routeInfoElForm" label-position="top" size="small" :model="routeInfoForm">
               <el-form-item label="路径偏离距离上限(米)" prop="offPathDistance" :rules="[{required: true, message: '必填'}]">
                 <el-select style="width: 340px;" v-model="routeInfoForm.offPathDistance">
-                  <el-option :value="0"></el-option>
                   <el-option :value="50"></el-option>
                   <el-option :value="100"></el-option>
                   <el-option :value="150"></el-option>
@@ -44,7 +43,6 @@
               </el-form-item>
               <el-form-item label="路径偏离时长上限(分钟)" prop="offPathTime" :rules="[{required: true, message: '必填'}]">
                 <el-select style="width: 340px;" v-model="routeInfoForm.offPathTime">
-                  <el-option :value="0"></el-option>
                   <el-option :value="1"></el-option>
                   <el-option :value="2"></el-option>
                   <el-option :value="3"></el-option>
