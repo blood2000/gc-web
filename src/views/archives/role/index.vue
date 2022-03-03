@@ -11,148 +11,153 @@
         class="ddc-queryParams"
         label-position="top"
       >
-       <div class="ddc-queryParams-left">
-      <div class="up">
-        <el-form-item label="角色名称" prop="roleName">
-          <el-input
-            v-model="queryParams.roleName"
-            placeholder="请输入角色名称"
-            clearable
-            size="small"
-            style="width: 240px"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-         </div>
+        <div class="ddc-queryParams-left">
+          <div class="up">
+            <el-form-item label="角色名称" prop="roleName">
+              <el-input
+                v-model="queryParams.roleName"
+                placeholder="请输入角色名称"
+                clearable
+                size="small"
+                style="width: 240px"
+                @keyup.enter.native="handleQuery"
+              />
+            </el-form-item>
           </div>
-          <div class="ddc-queryParams-right">
-        <el-form-item>
-          <el-button
-            type="primary"
-            icon="el-icon-search"
-            size="mini"
-            @click="handleQuery"
-            >搜索</el-button
-          >
-          <el-button
-            type="primary"
-            plain
-            icon="el-icon-refresh"
-            size="mini"
-            class="ddc-queryParams-right-reset"
-            @click="resetQuery"
-            >重置</el-button
-          >
-        </el-form-item>
+        </div>
+        <div class="ddc-queryParams-right">
+          <el-form-item>
+            <el-button
+              type="primary"
+              icon="el-icon-search"
+              size="mini"
+              @click="handleQuery"
+              >搜索</el-button
+            >
+            <el-button
+              type="primary"
+              plain
+              icon="el-icon-refresh"
+              size="mini"
+              class="ddc-queryParams-right-reset"
+              @click="resetQuery"
+              >重置</el-button
+            >
+          </el-form-item>
         </div>
       </el-form>
 
       <!-- 分割线 -->
       <div class="divier"></div>
-            <div class="page-table-layout-set">
-
-      <el-row :gutter="10" class="toolsbar">
-        <el-col :span="1.5">
-          <el-button
-            v-hasPermi="['role:add']"
-            type="primary"
-            icon="el-icon-plus"
-            size="mini"
-            @click="handleAdd"
-            >新增</el-button
-          >
-        </el-col>
-        <el-col :span="1.5">
-          <el-button
-            v-hasPermi="['employee:delete']"
-            type="danger"
-            icon="el-icon-delete"
-            size="mini"
-            :disabled="multiple"
-            @click="handleDeleteMultiple"
-            >删除</el-button
-          >
-        </el-col>
-      </el-row>
-      <!-- 表格 -->
-      <el-table
-        v-loading="loading"
-        highlight-current-row
-        stripe
-        :data="dataList"
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column
-          type="selection"
-          width="50"
-          align="center"
-          :selectable="checkboxSelectable"
-        />
-        <el-table-column label="序号" type="index" width="50" align="center" />
-        <el-table-column
-          label="角色名称"
-          align="center"
-          prop="roleName"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          label="角色描述"
-          align="center"
-          prop="remark"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          label="创建时间"
-          align="center"
-          prop="createTime"
-          sortable
-        >
-          <template slot-scope="scope">
-            <span>{{ parseTime(scope.row.createTime) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          align="center"
-          width="280"
-          class-name="small-padding fixed-width"
-        >
-          <template slot-scope="scope">
+      <div class="page-table-layout-set">
+        <el-row :gutter="10" class="toolsbar">
+          <el-col :span="1.5">
             <el-button
-              v-hasPermi="['role:edit']"
+              v-hasPermi="['role:add']"
+              type="primary"
+              icon="el-icon-plus"
               size="mini"
-              type="text"
-              @click="handleUpdate(scope.row)"
-              >修改</el-button
+              @click="handleAdd"
+              >新增</el-button
             >
-            <!-- isSystem 1系统角色 0其他 -->
-            <template v-if="scope.row.isSystem !== 1">
-              <el-button
-                v-hasPermi="['role:edit']"
-                size="mini"
-                type="text"
-                @click="handleEmployee(scope.row)"
-                >设置职员</el-button
-              >
-              <el-button
-                v-hasPermi="['role:edit']"
-                size="mini"
-                type="text"
-                @click="handleResource(scope.row)"
-                >功能分配</el-button
-              >
-              <el-button
-                v-hasPermi="['role:delete']"
-                size="mini"
-                type="text"
-                @click="handleDelete(scope.row)"
-                >删除</el-button
-              >
+          </el-col>
+          <el-col :span="1.5">
+            <el-button
+              v-hasPermi="['employee:delete']"
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+              :disabled="multiple"
+              @click="handleDeleteMultiple"
+              >删除</el-button
+            >
+          </el-col>
+        </el-row>
+        <!-- 表格 -->
+        <el-table
+          v-loading="loading"
+          highlight-current-row
+          stripe
+          :data="dataList"
+          :height="getTableHeight"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column
+            type="selection"
+            width="50"
+            align="center"
+            :selectable="checkboxSelectable"
+          />
+          <el-table-column
+            label="序号"
+            type="index"
+            width="50"
+            align="center"
+          />
+          <el-table-column
+            label="角色名称"
+            align="center"
+            prop="roleName"
+            :show-overflow-tooltip="true"
+          />
+          <el-table-column
+            label="角色描述"
+            align="center"
+            prop="remark"
+            :show-overflow-tooltip="true"
+          />
+          <el-table-column
+            label="创建时间"
+            align="center"
+            prop="createTime"
+            sortable
+          >
+            <template slot-scope="scope">
+              <span>{{ parseTime(scope.row.createTime) }}</span>
             </template>
-          </template>
-        </el-table-column>
-      </el-table>
-            </div>
+          </el-table-column>
+          <el-table-column
+            label="操作"
+            align="center"
+            width="280"
+            class-name="small-padding fixed-width"
+          >
+            <template slot-scope="scope">
+              <el-button
+                v-hasPermi="['role:edit']"
+                size="mini"
+                type="text"
+                @click="handleUpdate(scope.row)"
+                >修改</el-button
+              >
+              <!-- isSystem 1系统角色 0其他 -->
+              <template v-if="scope.row.isSystem !== 1">
+                <el-button
+                  v-hasPermi="['role:edit']"
+                  size="mini"
+                  type="text"
+                  @click="handleEmployee(scope.row)"
+                  >设置职员</el-button
+                >
+                <el-button
+                  v-hasPermi="['role:edit']"
+                  size="mini"
+                  type="text"
+                  @click="handleResource(scope.row)"
+                  >功能分配</el-button
+                >
+                <el-button
+                  v-hasPermi="['role:delete']"
+                  size="mini"
+                  type="text"
+                  @click="handleDelete(scope.row)"
+                  >删除</el-button
+                >
+              </template>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
       <pagination
         v-show="total > 0"
         :total="total"
@@ -230,6 +235,14 @@ export default {
       // 是否系统角色
       isSystem: 0,
     };
+  },
+  computed: {
+    getTableHeight() {
+      let windowHeight =
+        document.documentElement.clientHeight || document.body.clientHeight;
+      console.log(windowHeight);
+      return windowHeight - 380;
+    },
   },
   created() {
     this.getList();

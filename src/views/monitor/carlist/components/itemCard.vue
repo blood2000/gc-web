@@ -43,14 +43,14 @@
       <span v-else class="monitor-card-location-text2">暂无数据</span>
     </div>
     <div class="monitor-card-driver">
-      <span>最新告警</span>
-      <img src="@/assets/images/monitor-line.png" />
+      <div class="monitor-card-driver-text">最新告警</div>
+      <div class="monitor-card-driver-line"></div>
     </div>
     <div v-if="data.sn" class="monitor-card-content">
       <div class="monitor-card-content-img">
         <img v-if="dealBigImage" :src="dealBigImage" />
       </div>
-      <div class="monitor-card-content-right">
+      <div class="monitor-card-content-right g-single-row">
         <div class="monitor-card-content-right-title">
           <div
             class="monitor-card-content-right-title-warn"
@@ -65,7 +65,7 @@
           </div>
         </div>
         <el-tooltip effect="dark" :content="data.alarm_address" placement="top">
-          <div class="monitor-card-content-right-address g-single-row">
+          <div class="monitor-card-content-right-address">
             {{ data.alarm_address }}
           </div>
         </el-tooltip>
@@ -122,7 +122,7 @@ import {
   warningLevelObj,
 } from "../config";
 import { parseTime } from "../../../../utils/ddc";
-import { http_request } from '../../../../api';
+import { http_request } from "../../../../api";
 export default {
   name: "itemCard",
   data() {
@@ -275,13 +275,14 @@ export default {
 .monitor-card {
   position: relative;
   width: 100%;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
-    border-radius: 3px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
+  border-radius: 3px;
   height: 228px;
   background: #ffffff;
   border-radius: 6px;
   padding-top: 16px;
   box-sizing: border-box;
+  
   &-menu-ab {
     width: 32px;
     height: 20px;
@@ -311,7 +312,7 @@ export default {
     color: #3d4050;
     padding-left: 16px;
     padding-right: 16px;
-    
+
     // &>span{
     //   display: inline-block;
     //   margin-right: 9px;
@@ -362,13 +363,14 @@ export default {
     padding-right: 16px;
     display: flex;
     align-items: center;
-    & > span {
+    & > text {
       padding-right: 2px;
+      width: 100px;
     }
-    & > img {
-      width: 294px;
+    &-line {
+      flex: 1;
       height: 9px;
-      vertical-align: middle;
+      background: url("~@/assets/images/monitor-line.png") no-repeat;
       // padding-left: 2px;
     }
   }
@@ -431,7 +433,6 @@ export default {
         }
       }
       &-address {
-        width: 235px;
         font-size: 14px;
         font-family: PingFang SC;
         font-weight: 400;
@@ -459,7 +460,7 @@ export default {
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
-      width: 180px;
+     flex: 1;
       padding: 0 10px;
       border-right: 1px solid #f3f4f5;
       display: flex;
@@ -499,8 +500,9 @@ export default {
       }
     }
     &-right {
-      padding-left: 25px;
+      text-align: center;
       line-height: 40px;
+      width:90px;
       & > span {
         font-size: 12px;
         font-family: PingFang SC;

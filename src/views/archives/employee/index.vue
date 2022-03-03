@@ -171,6 +171,7 @@
           :stripe="true"
           :data="dataList"
           @selection-change="handleSelectionChange"
+           :height="getTableHeight"
         >
           <el-table-column
             type="selection"
@@ -249,7 +250,8 @@
             label="创建时间"
             align="center"
             prop="createTime"
-            width="160"
+            :tooltip ='true'
+            width="180"
           >
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -401,6 +403,14 @@ export default {
   created() {
     this.getTree();
     this.getList();
+  },
+    computed: {
+    getTableHeight() {
+      let windowHeight =
+        document.documentElement.clientHeight || document.body.clientHeight;
+      console.log(windowHeight);
+      return windowHeight - 390;
+    },
   },
   methods: {
     dealMemberTypeList(arr){

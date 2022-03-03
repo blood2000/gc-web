@@ -217,6 +217,8 @@ export default {
   display: flex;
   flex-wrap: wrap;
   margin-top: 12px;
+  overflow: auto;
+  height: calc(100vh - 415px);
   &-item {
     margin-right: 1%;
     margin-bottom: 20px;

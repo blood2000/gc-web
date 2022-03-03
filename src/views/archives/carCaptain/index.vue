@@ -95,7 +95,9 @@
       <div class="divier"></div>
       <div class="page-table-layout-set">
         <el-button @click="onAddCaptain" class="mb20" type="primary">添加车队长</el-button>
-        <el-table v-loading="loading" highlight-current-row :stripe="true" :data="captainList">
+        <el-table v-loading="loading"
+         highlight-current-row :stripe="true" :data="captainList"
+        :height="getTableHeight">
           <el-table-column label="车队长姓名（电话）" prop="nickName" :show-overflow-tooltip="true">
             <template slot-scope="scope">
               {{ `${scope.row.nickName}（${scope.row.phonenumber}）` }}
@@ -228,6 +230,14 @@ export default {
   created() {
     this.getCompanyTree()
     this.getPageCarCaptain()
+  },
+    computed: {
+    getTableHeight() {
+      let windowHeight =
+        document.documentElement.clientHeight || document.body.clientHeight;
+      console.log(windowHeight);
+      return windowHeight - 400;
+    },
   },
   methods: {
     // 获取组织树

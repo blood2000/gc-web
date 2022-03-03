@@ -143,14 +143,14 @@ const user = {
             addAppPage(menu).then(() => {
               commit('SET_MENUS', menu)
               commit("SET_PERMISSIONS", res.data.permissions);
-            commit("SET_NAME", user.userName);
-            commit("SET_NICKNAME", user.nickName);
-            commit("SET_AVATAR", avatar);
-            commit("SET_COMPANY_NAME", res.data.company.name);
-            commit("SET_PHONENUMBER", user.phoneNumber);
-            resolve(res.data);
+              commit("SET_NAME", user.userName);
+              commit("SET_NICKNAME", user.nickName);
+              commit("SET_AVATAR", avatar);
+              commit("SET_COMPANY_NAME", res.data.company.name);
+              commit("SET_PHONENUMBER", user.phoneNumber);
+              resolve(res.data);
             })
-            
+
           })
           .catch(error => {
             reject(error);
@@ -236,12 +236,12 @@ const addAppPage = async (menu) => {
   }
   const res = await http_request(obj)
   // 处理数据
-  const tmpData = JSON.parse(JSON.stringify(res.data)) 
+  const tmpData = JSON.parse(JSON.stringify(res.data))
   tmpData.forEach(el => {
     el.hidden = true
     el.meta = {
-      title:el.name,
-      noCache:false
+      title: el.name,
+      noCache: false
     }
   });
   console.log('动态应用路由', tmpData)
@@ -249,7 +249,7 @@ const addAppPage = async (menu) => {
   menu.forEach((el) => {
     if (el.name === '应用' && el.path === '/app') {
       console.log('就是你了', el)
-      el.children =  el.children.concat(tmpData)
+      el.children = el.children.concat(tmpData)
       // el.children.push(res.data[0])
     }
   })

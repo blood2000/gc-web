@@ -5,6 +5,7 @@
     :show-summary="summary"
     :border="border"
     :data="data"
+    :height="tableHeight"
     style="width: 100%"
     :fit="true"
     v-bind="$attrs"
@@ -76,6 +77,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    height:{
+      type:Number,
+      default:0
+    },
     /**
      * list  渲染所需数据
      * 如：[{infoId:1,ipaddr:'abc'},{infoId:2,ipaddr:'def'}]
@@ -139,7 +144,11 @@ export default {
       multipleSelection: [],
       time: null,
       getIndex: "",
+      tableHeight:0
     };
+  },
+  created(){
+    this.getTableHeight()
   },
   watch: {
     cbData: {
@@ -175,6 +184,16 @@ export default {
     clearTimeout(this.time);
   },
   methods: {
+    getTableHeight(){
+      if(this.height){
+      this.tableHeight = this.height
+      return
+    }
+    let windowHeight = document.documentElement.clientHeight || document.body.clientHeight;
+    console.log(windowHeight)
+    this.tableHeight = (windowHeight - 380)+'';
+    console.log('this.tableHeight',this.tableHeight+'')
+    },
     // highlight({ row, rowIndex }) {
     //   if ((this.getIndex) === rowIndex) {
     //     return {
@@ -193,6 +212,7 @@ export default {
     //   console.log('测试');
     //   this.getIndex = row.index;
     // },
+    
     handleSelectionChange(selection) {
       this.$emit("selection-change", selection);
     },

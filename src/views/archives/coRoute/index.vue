@@ -224,6 +224,8 @@ export default {
 <style lang="scss" scoped>
     .coRoute-left__wrapper {
       background: #fff;
+      height: calc(100vh - 200px);
+    overflow: auto;
     }
     .coRoute-left__title {
       height: 55px;
@@ -291,6 +293,8 @@ export default {
       padding-top: 20px;
       display: flex;
       flex-wrap: wrap;
+      overflow: auto;
+      height: calc(100vh - 250px)
     }
     .coRoute-right__box {
       width: 32%;

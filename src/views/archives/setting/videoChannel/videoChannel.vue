@@ -178,6 +178,7 @@ export default {
   padding: 15px;
   background: #fff;
   position: relative;
+  overflow: auto;
   &-title {
     font-size: 14px;
     font-weight: bold;

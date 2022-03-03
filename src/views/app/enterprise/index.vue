@@ -37,5 +37,6 @@ export default {
 <style lang="scss" scoped>
 .pages-info-right {
   padding: 43px 33px !important;
+  overflow: auto;
 }
 </style>

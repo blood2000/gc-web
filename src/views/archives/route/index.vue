@@ -253,6 +253,8 @@ export default {
     padding-top: 20px;
     display: flex;
     flex-wrap: wrap;
+    overflow: auto;
+    height: calc(100vh - 360px);
   }
   .route-box {
     width: 24%;

@@ -17,7 +17,7 @@
         </el-row>
       </div>
       <!-- 分割线 -->
-      <el-table :loading="loading" stripe :data="listData">
+      <el-table :loading="loading" stripe :data="listData" :height="getTableHeight">
         <el-table-column type="index" label="序号" align="center"></el-table-column>
         <el-table-column label="路径名称" width="200" prop="route_name"></el-table-column>
         <el-table-column label="起点（含半径）" width="400" prop="start"></el-table-column>
@@ -61,7 +61,7 @@
           :is-show-index="true"
           :loading="isLoadingRouteVehicles"
           :data="routeVehicles"
-          height="700"
+          :height="getTableHeight"
           row-key="vehicle_code"
           :table-columns-config="[
             {isShow: true, label: '车牌号码', prop: 'plate_number'},
@@ -122,6 +122,14 @@ export default {
   },
   created() {
     this.getList()
+  },
+    computed: {
+    getTableHeight() {
+      let windowHeight =
+        document.documentElement.clientHeight || document.body.clientHeight;
+      console.log(windowHeight);
+      return windowHeight - 360;
+    },
   },
   methods: {
     changeRoutePathStatus(row) {

@@ -68,6 +68,7 @@
           highlight-current-row
           stripe
           default-expand-all
+           :height="getTableHeight"
           :tree-props="{
             children: 'childrenOrgList',
             hasChildren: 'hasChildren',
@@ -148,6 +149,14 @@ export default {
   },
   created() {
     this.getList();
+  },
+   computed: {
+    getTableHeight() {
+      let windowHeight =
+        document.documentElement.clientHeight || document.body.clientHeight;
+      console.log(windowHeight);
+      return windowHeight - 350;
+    },
   },
   methods: {
     /** 查询部门列表 */

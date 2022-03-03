@@ -257,8 +257,11 @@ export default {
   padding: 16px 8px 0 16px;
   display: flex;
   flex-wrap: wrap;
+  overflow: auto;
+  height: calc(100vh - 260px);
+  align-content: flex-start;
   &-item {
-    width: 25%;
+    width: 24%;
     margin-right: 1%;
     margin-bottom: 20px;
   }

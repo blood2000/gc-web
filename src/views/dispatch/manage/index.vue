@@ -22,8 +22,9 @@
           :table-columns-config="tableColumnsConfig"
           :border="false"
           :stripe="true"
+          :height="getTableHeight"
         >
-           <template #vehicleNumber="{ row }">
+          <template #vehicleNumber="{ row }">
             {{
               row.vehicleAlias
                 ? `(${row.vehicleAlias})  ${row.vehicleNumber}`
@@ -109,6 +110,14 @@ export default {
   },
   created() {
     console.log("tableColumnsConfig", this.tableColumnsConfig);
+  },
+  computed: {
+    getTableHeight() {
+      let windowHeight =
+        document.documentElement.clientHeight || document.body.clientHeight;
+      console.log(windowHeight);
+      return windowHeight - 340;
+    },
   },
   mounted() {
     console.log("document.location.search", document.location.search);

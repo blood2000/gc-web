@@ -20,6 +20,7 @@
           :table-columns-config="tableColumnsConfig"
           :border="false"
           :stripe="true"
+            :height="getTableHeight"
         >
           <template #status="{ row }">
             <div :style="{ color: statusObj[row.status].color }">
@@ -141,6 +142,14 @@ export default {
     this.searchQuery();
     this.getModuleName();
     this.getSeriesName();
+  },
+   computed: {
+    getTableHeight() {
+      let windowHeight =
+        document.documentElement.clientHeight || document.body.clientHeight;
+      console.log(windowHeight);
+      return windowHeight - 340;
+    },
   },
   methods: {
     okVehicle() {

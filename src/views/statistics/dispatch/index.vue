@@ -1,5 +1,6 @@
 <template>
-  <div class="dispatch">
+  <div class="pages-info  none-org-tree">
+     <div class="pages-info-right">
     <div class="dispatch__searchBar">
       <el-form
         ref="queryForm"
@@ -58,7 +59,11 @@
       <el-button class="mb20" type="primary" :loading="exportLoading" @click="onExport"
         >导出</el-button
       >
-      <el-table v-loading="loading" highlight-current-row :stripe="true" :data="vehicleList">
+      <el-table v-loading="loading" 
+      highlight-current-row 
+      :stripe="true" 
+      :height="getTableHeight"
+      :data="vehicleList">
         <el-table-column label="序号">
           <template slot-scope="scope">
             <span>{{ scope.$index + 1 }}</span>
@@ -77,6 +82,8 @@
           </template>
         </el-table-column>
       </el-table>
+    
+    </div>
       <pagination
         v-show="total > 0"
         :total="total"
@@ -85,9 +92,8 @@
         :limit.sync="queryParams.pageSize"
         @pagination="onSearch"
       />
-    </div>
-
     <CompanyDetail ref="companyDetail" />
+     </div>
   </div>
 </template>
 
@@ -115,6 +121,14 @@ export default {
   },
   created() {
     this.onSearch()
+  },
+    computed: {
+    getTableHeight() {
+      let windowHeight =
+        document.documentElement.clientHeight || document.body.clientHeight;
+      console.log(windowHeight);
+      return windowHeight - 410;
+    },
   },
   methods: {
     onReset() {
@@ -185,17 +199,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.dispatch {
-  background: #fff;
   .mb20 {
     margin-bottom: 20px;
   }
-  &__searchBar {
+  .dispatch__searchBar {
     padding-top: 20px;
     border-bottom: 1px solid #e4ecf4;
   }
-  &__table {
+  .dispatch__table {
     padding: 20px;
+    padding-bottom: 0;
   }
-}
 </style>
