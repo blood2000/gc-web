@@ -6,10 +6,10 @@
         <div
           class="play-back-search-result"
           :class="isbigger ? 'dialog-video-full' : ''"
-          @click.stop=""
+          @click.stop="handlePause"
         >
           <div class="dialog-video-full-title">
-            <span>{{ isbigger ? getTypes() : '' }}</span>
+            <span>{{ isbigger ? getTypes() : "" }}</span>
             <i class="el-icon-close" @click.stop="hanleScale"></i>
           </div>
           <video
@@ -22,9 +22,9 @@
             @canplay="getDuration"
             muted
           ></video>
-          <!--          <div class="play-back-search-result-count">-->
-          <!--            {{ `${this.currTimes}/${this.totalTime}` }}-->
-          <!--          </div>-->
+          <div v-show="videoPause" class="toPuse" @click.stop="handlePause">
+            <img src="@/assets/images/detail/play-back-play.png" alt="" />
+          </div>
           <div
             class="toBigger"
             @click.stop="isbigger = true"
@@ -86,18 +86,17 @@
                     v-for="(item, index) in channelNumList"
                     :key="item.key"
                     class="channelNum-box"
-                   
                     :style="{ 'margin-right': index % 2 == 0 ? '12px' : '0' }"
                     :class="
                       index + 1 == queryParams.CHANNEL
                         ? 'channelNum-active'
                         : ''
                     "
-                    
                   >
-                   <div   @click="channelNums(item)">
-                     {{ item.key }}</div> </el-col
-                  >
+                    <div @click="channelNums(item)">
+                      {{ item.key }}
+                    </div>
+                  </el-col>
                 </el-row>
               </el-form-item>
             </el-col>
@@ -205,6 +204,7 @@ export default {
       getTimeRange,
       typeList,
       isShow: false,
+      videoPause:false,
       queryParams: {
         dateRange: [],
         CHANNEL: null, //通道号
@@ -253,8 +253,8 @@ export default {
   computed: {},
   methods: {
     channelNums(item) {
-      console.log('fasdfa',item);
-      this.queryParams.CHANNEL = item.value
+      console.log("fasdfa", item);
+      this.queryParams.CHANNEL = item.value;
       // this.$set( this.queryParams, key, value )
     },
     downloadFile(url) {
@@ -457,7 +457,9 @@ export default {
           this.channelNumList = [];
           for (let i = 0; i < Number(fields.channelNum); i++) {
             const obj = {
-              key: fields.channelAlias ? fields.channelAlias[i + 1] || `通道${i + 1}` : `通道${i + 1}`,
+              key: fields.channelAlias
+                ? fields.channelAlias[i + 1] || `通道${i + 1}`
+                : `通道${i + 1}`,
               value: `${i + 1}`,
             };
             this.channelNumList.push(obj);
@@ -509,8 +511,8 @@ export default {
         this.isbigger = false;
       } else {
         this.colse(() => {
-          this.isShowVideo = false
-        })
+          this.isShowVideo = false;
+        });
       }
     },
     //获取视频的总时长
@@ -568,6 +570,17 @@ export default {
         ]);
         this.isShowVideo = true;
       });
+    },
+    handlePause() {
+      const vdom = this.$refs.video;
+      console.log("vdom", vdom);
+       this.videoPause = !this.videoPause
+      if (vdom.paused) {
+       
+        vdom.play();
+      } else if (vdom.play()) {
+        vdom.pause();
+      }
     },
     //退出播放
     colse(callback) {
@@ -829,6 +842,17 @@ export default {
   right: 2px;
   width: 17px;
   height: 17px;
+}
+.toPuse {
+  position: absolute;
+  top: calc(50% - 32.5px);
+  left: calc(50% - 32.5px);
+  width: 65px;
+  height: 65px;
+  & > img {
+    width: 100%;
+    height: 100%;
+  }
 }
 .downloadBtn {
   position: absolute;
