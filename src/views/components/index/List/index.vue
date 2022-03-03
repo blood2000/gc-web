@@ -4,10 +4,20 @@
       <div class="list-left__bar">
         <div class="list-left__title">磅单趋势图</div>
         <el-button-group>
-          <el-button @click="onClickDay(0)" :type="dayRadio === 0 ? '' : 'info'" plain size="small">
+          <el-button
+            @click="onClickDay(0)"
+            :type="dayRadio === 0 ? '' : 'info'"
+            plain
+            size="small"
+          >
             今日
           </el-button>
-          <el-button @click="onClickDay(1)" :type="dayRadio === 1 ? '' : 'info'" plain size="small">
+          <el-button
+            @click="onClickDay(1)"
+            :type="dayRadio === 1 ? '' : 'info'"
+            plain
+            size="small"
+          >
             7天
           </el-button>
         </el-button-group>
@@ -43,13 +53,14 @@
 </template>
 
 <script>
-import { http_request } from '@/api'
-import * as echarts from 'echarts'
-import { getDisDayTime } from '@/utils/ddc'
-import NoneData from '../NoneData'
+import { http_request } from "@/api";
+import * as echarts from "echarts";
+import { getDisDayTime } from "@/utils/ddc";
+import NoneData from "../NoneData";
+import { mapGetters } from "vuex";
 
 export default {
-  name: 'ListTrend',
+  name: "ListTrend",
   components: {
     NoneData,
   },
@@ -58,94 +69,97 @@ export default {
       dayRadio: 0,
       chart: null,
       list: [],
-    }
+    };
   },
   created() {
-    this.queryPagingWeighbridgeTrend()
-    this.queryListWeighbridgeTrend()
+    this.queryPagingWeighbridgeTrend();
+    this.queryListWeighbridgeTrend();
+  },
+  computed: {
+    ...mapGetters(["sidebarRouters"]),
   },
   methods: {
     // 获取磅单信息
     queryPagingWeighbridgeTrend() {
       const objDispatch = {
-        moduleName: 'http_home',
-        method: 'post',
-        url_alias: 'pagingWeighbridgeTrend',
+        moduleName: "http_home",
+        method: "post",
+        url_alias: "pagingWeighbridgeTrend",
         data: {
           pageNum: 1,
           pageSize: 3,
         },
-      }
+      };
       http_request(objDispatch).then((res) => {
-        const data = res.data ? res.data.rows || [] : []
-        this.list = data
-      })
+        const data = res.data ? res.data.rows || [] : [];
+        this.list = data;
+      });
     },
     // 获取磅单趋势图
     queryListWeighbridgeTrend() {
       const objDispatch = {
-        moduleName: 'http_home',
-        method: 'get',
-        url_alias: 'listWeighbridgeTrend',
+        moduleName: "http_home",
+        method: "get",
+        url_alias: "listWeighbridgeTrend",
         data: {
           startDate: getDisDayTime(new Date(), 6),
-          endDate: this.parseTime(new Date(), '{y}-{m}-{d}'),
+          endDate: this.parseTime(new Date(), "{y}-{m}-{d}"),
         },
-      }
+      };
       http_request(objDispatch).then((res) => {
-        const data = res.data
+        const data = res.data;
         if (data) {
-          this.initChart(data)
+          this.initChart(data);
         }
-      })
+      });
     },
     // 初始化echarts
     initChart(data) {
       this.dateList = data.map((item) => {
-        return item.dateStr.substring(5).replace('-', '/')
-      })
+        return item.dateStr.substring(5).replace("-", "/");
+      });
       this.tripList = data.map((item) => {
-        return item.tripTotal
-      })
+        return item.tripTotal;
+      });
       this.freightList = data.map((item) => {
-        return item.freightTotal
-      })
-      this.chart = echarts.init(this.$refs.chart, 'macarons', {
+        return item.freightTotal;
+      });
+      this.chart = echarts.init(this.$refs.chart, "macarons", {
         height: 360,
-      })
+      });
       this.option = {
         grid: {
-          top: '15%',
+          top: "15%",
         },
         tooltip: {
-          trigger: 'axis',
+          trigger: "axis",
           axisPointer: {
-            type: 'none',
+            type: "none",
           },
         },
         legend: {
           left: 0,
           itemHeight: 8,
-          data: ['磅单数', '结算运费'],
+          data: ["磅单数", "结算运费"],
         },
         xAxis: {
-          type: 'category',
+          type: "category",
           data: this.dateList,
         },
         yAxis: [
           {
-            type: 'value',
-            name: '磅单数',
+            type: "value",
+            name: "磅单数",
             splitLine: {
               lineStyle: {
-                color: ['#ebebeb'],
-                type: 'dashed',
+                color: ["#ebebeb"],
+                type: "dashed",
               },
             },
           },
           {
-            type: 'value',
-            name: '结算运费',
+            type: "value",
+            name: "结算运费",
             splitLine: {
               show: false,
             },
@@ -153,78 +167,102 @@ export default {
         ],
         series: [
           {
-            name: '磅单数',
+            name: "磅单数",
             data: this.tripList,
-            type: 'bar',
+            type: "bar",
             showBackground: true,
             barWidth: 16,
             yAxisIndex: 0,
             backgroundStyle: {
-              color: '#F7F7F7',
+              color: "#F7F7F7",
             },
           },
           {
-            name: '结算运费',
+            name: "结算运费",
             data: this.freightList,
-            type: 'line',
+            type: "line",
             smooth: true,
             yAxisIndex: 1,
           },
         ],
-      }
-      this.changeBarColor()
+      };
+      this.changeBarColor();
     },
     // 点击日子
     onClickDay(which) {
       if (this.dayRadio !== which) {
-        this.dayRadio = which
-        this.changeBarColor()
+        this.dayRadio = which;
+        this.changeBarColor();
       }
     },
     // 改变条的颜色
     changeBarColor() {
-      let length = this.option.series[0].data.length
-      let seriesData = []
+      let length = this.option.series[0].data.length;
+      let seriesData = [];
       for (let i = 0; i < length; i++) {
         if (i >= length - 1) {
           seriesData.push({
             value: this.tripList[i],
             itemStyle: {
-              color: '#4682FA',
+              color: "#4682FA",
             },
             emphasis: {
               itemStyle: {
-                color: '#5c90f7',
+                color: "#5c90f7",
               },
             },
-          })
+          });
         } else {
           seriesData.push({
             value: this.tripList[i],
             itemStyle: {
-              color: this.dayRadio === 0 ? '#EBEBEB' : '#4682FA',
+              color: this.dayRadio === 0 ? "#EBEBEB" : "#4682FA",
             },
             emphasis: {
               itemStyle: {
-                color: '#5c90f7',
+                color: "#5c90f7",
               },
             },
-          })
+          });
         }
       }
-      this.option.series[0].data = seriesData
-      this.onDrawChart()
+      this.option.series[0].data = seriesData;
+      this.onDrawChart();
     },
     onDrawChart() {
       if (this.chart) {
-        this.chart.setOption(this.option)
+        this.chart.setOption(this.option);
       }
     },
+    getSecendMenu(type) {
+      const result = [];
+      this.sidebarRouters.forEach((item) => {
+        if (item.path.includes(type)) {
+          // 有效二级菜单
+          if (!item.hidden) {
+            if (item.children && item.children.length > 1) {
+              item.children.forEach((element) => {
+                console.log("element", element);
+                if (!element.hidden) {
+                  result.push(element);
+                }
+              });
+            }
+          }
+        }
+      });
+      return result;
+    },
     onClickMore() {
-      this.$router.push({ path: '/archives/weight' })
+      this.$router.push({ path: "/app/weight" });
+      this.$store.commit("tagsView/DEL_ALL_VISITED_VIEWS");
+      const result = this.getSecendMenu("app");
+      console.log("result", result);
+      this.$store.commit("SET_SIDE_SECOND_ROUTERS", result);
+      this.$store.commit("app/SET_RECORDMODULENAME", "app");
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -235,7 +273,7 @@ export default {
   border-radius: 4px;
   display: flex;
   .list-left {
-     width: 440px;
+    width: 440px;
     padding-right: 32px;
     &__bar {
       display: flex;

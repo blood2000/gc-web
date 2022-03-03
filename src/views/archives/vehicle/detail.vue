@@ -537,6 +537,8 @@ export default {
     // 详情
     toWarningDetail(obj) {
       this.$router.push("../../warning/warningDetail?id=" + obj.id);
+       this.$store.commit("SET_SIDE_SECOND_ROUTERS", []);
+      this.$store.commit("app/SET_RECORDMODULENAME", "warning");
       // this.$router.push({name: "warningDetail", params: {driver: obj.driver}});
     },
     handleClose() {

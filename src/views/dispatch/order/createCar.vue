@@ -676,7 +676,7 @@ export default {
                 confirmButtonText: "确定",
                 type: "success",
               }).then(() => {
-                this.$router.push("/dispatch/order");
+                this.$router.push("/transport/order");
               });
             }
           });
