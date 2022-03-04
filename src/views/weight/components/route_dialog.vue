@@ -244,7 +244,7 @@ export default {
 }
 .routers {
   /deep/ .el-dialog:not(.is-fullscreen) {
-    margin-top: 16vh !important;
+    margin-top: 10vh !important;
     height: 638px;
   }
   /deep/ .el-dialog__body {

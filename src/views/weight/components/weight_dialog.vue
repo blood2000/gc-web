@@ -1,328 +1,332 @@
 <template>
-  <el-dialog
-    :title="options.title"
-    :visible.sync="open"
-    width="688px"
-    append-to-body
-    :close-on-click-modal="false"
-    :before-close="cancel"
-  >
-    <el-form ref="form" :rules="formRules" :model="form" label-width="120px" label-position="top">
-      <el-row :gutter="10">
-        <el-col :span="12">
-          <el-form-item label="磅单日期：" prop="recordDate">
-            <el-date-picker
-              v-model="form.recordDate"
-              clearable
-              type="date"
-              size="small"
-              style="width: 297px"
-              value-format="yyyy-MM-dd"
-              placeholder="请选择"
-              @change="changeDatePicker"
+  <div>
+    <el-dialog
+      class="weight_dialog"
+      :title="options.title"
+      :visible.sync="open"
+      width="688px"
+      append-to-body
+      :close-on-click-modal="false"
+      :before-close="cancel"
+    >
+      <el-form ref="form" :rules="formRules" :model="form" label-width="120px" label-position="top">
+        <el-row :gutter="10">
+          <el-col :span="12">
+            <el-form-item label="磅单日期：" prop="recordDate">
+              <el-date-picker
+                v-model="form.recordDate"
+                clearable
+                type="date"
+                size="small"
+                style="width: 297px"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择"
+                @change="changeDatePicker"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-button-group class="btn-date-group">
+              <el-button type="text" class="btn-date" @click="handleBtn(0)">前日</el-button>
+              <el-button type="text" class="btn-date" @click="handleBtn(2)">昨日</el-button>
+              <el-button type="text" class="btn-date" @click="handleBtn(1)">今日</el-button>
+            </el-button-group>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :span="9">
+            <el-form-item label="车牌号码：" prop="vehicleCode">
+              <el-select
+                v-model="form.vehicleCode"
+                clearable
+                filterable
+                @change="change($event, 'vehicleCode')"
+                style="width: 204px"
+                placeholder="请选择车辆"
+              >
+                <el-option
+                  v-for="(sub, i) in vehicleList"
+                  :key="i"
+                  :label="sub.vehicleNumber"
+                  :value="sub.vehicleCode"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="司机：" prop="driverCode">
+              <el-select
+                v-model="form.driverCode"
+                clearable
+                filterable
+                @change="change($event, 'driverCode')"
+                style="width: 204px"
+                placeholder="请选择司机"
+              >
+                <el-option
+                  v-for="(sub, i) in driverList"
+                  :key="i"
+                  :label="sub.driverName"
+                  :value="sub.driverCode"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <div class="weight" v-for="(item, index) in form.recordForms" :key="index">
+          <div class="weight-header">
+            <div class="weight-number">{{ index + 1 }}</div>
+            <div class="weight-text">磅单信息</div>
+            <img
+              @click="handleFold(index)"
+              class="fold"
+              :class="item.fold ? 'fold-up' : 'fold-down'"
+              src="../../../assets/images/bang/up.png"
+              alt=""
             />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-button-group class="btn-date-group">
-            <el-button type="text" class="btn-date" @click="handleBtn(0)">前日</el-button>
-            <el-button type="text" class="btn-date" @click="handleBtn(1)">今日</el-button>
-            <el-button type="text" class="btn-date" @click="handleBtn(2)">昨日</el-button>
-          </el-button-group>
-        </el-col>
-      </el-row>
-      <el-row :gutter="10">
-        <el-col :span="9">
-          <el-form-item label="车牌号码：" prop="vehicleCode">
-            <el-select
-              v-model="form.vehicleCode"
-              clearable
-              filterable
-              @change="change($event, 'vehicleCode')"
-              style="width: 204px"
-              placeholder="请选择车辆"
+          </div>
+          <div class="weight-info" :class="item.fold ? 'fold-hidden' : ''">
+            <el-form-item
+              class="info-routeLoad"
+              label="用车企业及路线："
+              :prop="'recordForms.' + index + '.routeCode'"
             >
-              <el-option
-                v-for="(sub, i) in vehicleList"
-                :key="i"
-                :label="sub.vehicleNumber"
-                :value="sub.vehicleCode"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="司机：" prop="driverCode">
-            <el-select
-              v-model="form.driverCode"
-              clearable
-              filterable
-              @change="change($event, 'driverCode')"
-              style="width: 204px"
-              placeholder="请选择司机"
-            >
-              <el-option
-                v-for="(sub, i) in driverList"
-                :key="i"
-                :label="sub.driverName"
-                :value="sub.driverCode"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <div class="weight" v-for="(item, index) in form.recordForms" :key="index">
-        <div class="weight-header">
-          <div class="weight-number">{{ index + 1 }}</div>
-          <div class="weight-text">磅单信息</div>
-          <img
-            @click="handleFold(index)"
-            class="fold"
-            :class="item.fold ? 'fold-up' : 'fold-down'"
-            src="../../../assets/images/bang/up.png"
-            alt=""
-          />
-        </div>
-        <div class="weight-info" :class="item.fold ? 'fold-hidden' : ''">
-          <el-form-item
-            class="info-routeLoad"
-            label="用车企业及路线："
-            :prop="'recordForms.' + index + '.routeCode'"
-          >
-            <div class="route" v-if="!item.routeCode" @click="openRoute(index)">
-              <img src="../../../assets/images/bang/routerLoad.png" alt="" />
-              <span class="route-text">点击选择</span>
-            </div>
-            <div v-else class="routeBg">
-              <div>
-                <img class="address-img" src="../../../assets/images/bang/address.png" alt="" />
-                <span class="shipmentName">
-                  {{ routeData && routeData.companyName }}
-                </span>
+              <div class="route" v-if="!item.routeCode" @click="openRoute(index)">
+                <img src="../../../assets/images/bang/routerLoad.png" alt="" />
+                <span class="route-text">点击选择</span>
               </div>
-              <div>
-                <div class="icon-base icon-base-start">起</div>
-                <div class="address-title">
-                  {{ routeData && routeData.startRoute }}
+              <div v-else class="routeBg">
+                <div>
+                  <img class="address-img" src="../../../assets/images/bang/address.png" alt="" />
+                  <span class="shipmentName">
+                    {{ routeData && routeData.companyName }}
+                  </span>
                 </div>
-                <img class="to-img" src="../../../assets/images/bang/to.png" alt="" />
-                <div class="icon-base icon-base-end">终</div>
-                <div class="address-title">
-                  {{ routeData && routeData.endRoute }}
-                </div>
-              </div>
-              <div class="x" @click="delXRouteData(index)">
-                <img src="../../../assets/images/bang/x.png" alt="" />
-              </div>
-            </div>
-            <div
-              class="img-error-red"
-              v-if="!form.recordForms[index].routeCode && hasUpRoute[index]"
-            >
-              请选择路线
-            </div>
-          </el-form-item>
-          <el-row>
-            <el-col :span="12">
-              <el-form-item
-                label="货品类型："
-                :prop="'recordForms.' + index + '.goodsCode'"
-                :rules="{
-                  required: true,
-                  message: '货品类型不能为空',
-                  trigger: 'change',
-                }"
-              >
-                <el-cascader
-                  clearable
-                  filterable
-                  v-model="item.goodsCode"
-                  @change="cascaderChange($event, index)"
-                  :options="goodsList"
-                  style="width: 256px"
-                  :show-all-levels="false"
-                ></el-cascader>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item
-                label="运费单价："
-                :prop="'recordForms.' + index + '.goodsFreightPrice'"
-                :rules="{
-                  required: true,
-                  message: '运费单价不能为空',
-                  trigger: 'blur',
-                }"
-              >
-                <el-input
-                  style="width: 256px"
-                  v-model="item.goodsFreightPrice"
-                  placeholder="请输入"
-                  clearable
-                  @input="onCheckMoney(item, 'goodsFreightPrice')"
-                >
-                  <template slot="append">元</template>
-                </el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="12">
-              <el-form-item
-                label="司机运费："
-                :prop="'recordForms.' + index + '.driverFreightPrice'"
-                :rules="{
-                  required: true,
-                  message: '司机运费不能为空',
-                  trigger: 'blur',
-                }"
-              >
-                <el-input
-                  v-model="item.driverFreightPrice"
-                  style="width: 256px"
-                  placeholder="请输入"
-                  clearable
-                  @input="onCheckMoney(item, 'driverFreightPrice')"
-                >
-                  <template slot="append">元</template>
-                </el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item
-                label="司机附加费："
-                :prop="'recordForms.' + index + '.driverSurchargePrice'"
-              >
-                <el-input
-                  v-model="item.driverSurchargePrice"
-                  style="width: 256px"
-                  placeholder="请输入"
-                  clearable
-                  @input="onCheckMoney(item, 'driverSurchargePrice')"
-                >
-                  <template slot="append">元</template>
-                </el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="11">
-              <el-form-item label="结算总额：">
-                <el-input
-                  :disabled="true"
-                  :value="dealPrice(index)"
-                  style="width: 256px"
-                  placeholder="0.0"
-                  clearable
-                >
-                  <template slot="append">元</template>
-                </el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <div class="price">结算总额 = 司机运费 + 司机附加费</div>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="12">
-              <el-form-item
-                label="装货点净重："
-                :prop="'recordForms.' + index + '.loadingNetWeight'"
-                :rules="{
-                  required: true,
-                  message: '装货点净重不能为空',
-                  trigger: 'blur',
-                }"
-              >
-                <el-input
-                  v-model="item.loadingNetWeight"
-                  style="width: 256px"
-                  placeholder="请输入"
-                  clearable
-                >
-                  <template slot="append">吨</template>
-                </el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item
-                label="卸货点净重："
-                :prop="'recordForms.' + index + '.unloadingNetWeight'"
-                :rules="{
-                  required: true,
-                  message: '卸货点净重不能为空',
-                  trigger: 'blur',
-                }"
-              >
-                <el-input
-                  v-model="item.unloadingNetWeight"
-                  style="width: 256px"
-                  placeholder="请输入"
-                  clearable
-                >
-                  <template slot="append">吨</template>
-                </el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <div class="voucher-box">
-            <el-form-item label="凭证信息：" :prop="'recordForms.' + index + '.voucherImageUrls'">
-              <div class="img-box">
-                <template v-if="form.recordForms[index].voucherImageUrls.length !== 0">
-                  <div
-                    class="img-list"
-                    v-for="item in form.recordForms[index].voucherImageUrls"
-                    :key="item.name"
-                  >
-                    <img :src="item.url" alt="" />
-                    <div class="x" @click="delImage(index)">
-                      <img src="../../../assets/images/bang/x.png" alt="" />
-                    </div>
+                <div>
+                  <div class="icon-base icon-base-start">起</div>
+                  <div class="address-title">
+                    {{ routeData && routeData.startRoute }}
                   </div>
-                </template>
-
-                <VoucherImageUpload
-                  :class="voucherImgList(index)"
-                  v-model="form.recordForms[index].voucherImageUrls"
-                  :limit="9"
-                ></VoucherImageUpload>
+                  <img class="to-img" src="../../../assets/images/bang/to.png" alt="" />
+                  <div class="icon-base icon-base-end">终</div>
+                  <div class="address-title">
+                    {{ routeData && routeData.endRoute }}
+                  </div>
+                </div>
+                <div class="x" @click="delXRouteData(index)">
+                  <img src="../../../assets/images/bang/x.png" alt="" />
+                </div>
               </div>
               <div
                 class="img-error-red"
-                v-if="form.recordForms[index].voucherImageUrls.length === 0 && hasUpImage[index]"
+                v-if="!form.recordForms[index].routeCode && hasUpRoute[index]"
               >
-                请上传图片
+                请选择路线
               </div>
             </el-form-item>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item
+                  label="货品类型："
+                  :prop="'recordForms.' + index + '.goodsCode'"
+                  :rules="{
+                    required: true,
+                    message: '货品类型不能为空',
+                    trigger: 'change',
+                  }"
+                >
+                  <el-cascader
+                    clearable
+                    filterable
+                    v-model="item.goodsCode"
+                    @change="cascaderChange($event, index)"
+                    :options="goodsList"
+                    style="width: 256px"
+                    :show-all-levels="false"
+                  ></el-cascader>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item
+                  label="运费单价："
+                  :prop="'recordForms.' + index + '.goodsFreightPrice'"
+                  :rules="{
+                    required: true,
+                    message: '运费单价不能为空',
+                    trigger: 'blur',
+                  }"
+                >
+                  <el-input
+                    style="width: 256px"
+                    v-model="item.goodsFreightPrice"
+                    placeholder="请输入"
+                    clearable
+                    @input="onCheckMoney(item, 'goodsFreightPrice')"
+                  >
+                    <template slot="append">元</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item
+                  label="司机运费："
+                  :prop="'recordForms.' + index + '.driverFreightPrice'"
+                  :rules="{
+                    required: true,
+                    message: '司机运费不能为空',
+                    trigger: 'blur',
+                  }"
+                >
+                  <el-input
+                    v-model="item.driverFreightPrice"
+                    style="width: 256px"
+                    placeholder="请输入"
+                    clearable
+                    @input="onCheckMoney(item, 'driverFreightPrice')"
+                  >
+                    <template slot="append">元</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item
+                  label="司机附加费："
+                  :prop="'recordForms.' + index + '.driverSurchargePrice'"
+                >
+                  <el-input
+                    v-model="item.driverSurchargePrice"
+                    style="width: 256px"
+                    placeholder="请输入"
+                    clearable
+                    @input="onCheckMoney(item, 'driverSurchargePrice')"
+                  >
+                    <template slot="append">元</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="结算总额：">
+                  <el-input
+                    :disabled="true"
+                    :value="dealPrice(index)"
+                    style="width: 256px"
+                    placeholder="0.0"
+                    clearable
+                  >
+                    <template slot="append">元</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <div class="price">结算总额 = 司机运费 + 司机附加费</div>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item
+                  label="装货点净重："
+                  :prop="'recordForms.' + index + '.loadingNetWeight'"
+                  :rules="{
+                    required: true,
+                    message: '装货点净重不能为空',
+                    trigger: 'blur',
+                  }"
+                >
+                  <el-input
+                    v-model="item.loadingNetWeight"
+                    style="width: 256px"
+                    placeholder="请输入"
+                    clearable
+                  >
+                    <template slot="append">吨</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item
+                  label="卸货点净重："
+                  :prop="'recordForms.' + index + '.unloadingNetWeight'"
+                  :rules="{
+                    required: true,
+                    message: '卸货点净重不能为空',
+                    trigger: 'blur',
+                  }"
+                >
+                  <el-input
+                    v-model="item.unloadingNetWeight"
+                    style="width: 256px"
+                    placeholder="请输入"
+                    clearable
+                  >
+                    <template slot="append">吨</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <div class="voucher-box">
+              <el-form-item label="凭证信息：" :prop="'recordForms.' + index + '.voucherImageUrls'">
+                <div class="img-box">
+                  <template v-if="form.recordForms[index].voucherImageUrls.length !== 0">
+                    <div
+                      class="img-list"
+                      v-for="item in form.recordForms[index].voucherImageUrls"
+                      :key="item.name"
+                    >
+                      <img :src="item.url" alt="" />
+                      <div class="x" @click="delImage(index)">
+                        <img src="../../../assets/images/bang/x.png" alt="" />
+                      </div>
+                    </div>
+                  </template>
+
+                  <VoucherImageUpload
+                    :class="voucherImgList(index)"
+                    v-model="form.recordForms[index].voucherImageUrls"
+                    :limit="9"
+                  ></VoucherImageUpload>
+                </div>
+                <div
+                  class="img-error-red"
+                  v-if="form.recordForms[index].voucherImageUrls.length === 0 && hasUpImage[index]"
+                >
+                  请上传图片
+                </div>
+              </el-form-item>
+            </div>
           </div>
         </div>
-      </div>
-    </el-form>
-    <div slot="footer" style="height: 64px" class="dialog-footer flex-end-layout">
-      <div class="weight-edit" v-if="options && !options.editType">
-        <div @click="addWeight" class="weight-edit-item" style="margin-right: 32px">
-          <!-- cursor: pointer; -->
-          <img src="../../../assets/images/bang/add.png" alt="" />
+      </el-form>
+      <div slot="footer" style="height: 64px" class="dialog-footer flex-end-layout">
+        <div class="weight-edit" v-if="options && !options.editType">
+          <div @click="addWeight" class="weight-edit-item" style="margin-right: 32px">
+            <!-- cursor: pointer; -->
+            <img src="../../../assets/images/bang/add.png" alt="" />
 
-          <span> 新增一单</span>
-        </div>
-        <div @click="againWeight" class="weight-edit-item">
-          <img src="../../../assets/images/bang/copy.png" alt="" />
+            <span> 新增一单</span>
+          </div>
+          <div @click="againWeight" class="weight-edit-item">
+            <img src="../../../assets/images/bang/copy.png" alt="" />
 
-          <span>相同路线再来一单</span>
+            <span>相同路线再来一单</span>
+          </div>
+        </div>
+        <div class="group-btn">
+          <el-button @click="cancel">取 消</el-button>
+          <el-button type="primary" @click="submitForm" :loading="loading"> 确 定 </el-button>
         </div>
       </div>
-      <div class="group-btn">
-        <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="submitForm" :loading="loading"> 确 定 </el-button>
-      </div>
-    </div>
+    </el-dialog>
+
     <RouteDialog
       :routeShow="routeShow"
       @closeRoutersDialog="closeRoutersDialog"
       @getRouteLineData="getRouteLineData"
     />
-  </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -734,7 +738,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-::v-deep .el-dialog__body {
+::v-deep .weight_dialog .el-dialog__body {
   min-height: calc(90vh - 62px - 66px);
   padding-right: 10px;
 }
