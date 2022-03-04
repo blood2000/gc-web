@@ -133,13 +133,23 @@ export default {
   },
   methods: {
     changeRoutePathStatus(row) {
-      http_request({
-        moduleName: "http_planRoute",
-        method: "get",
-        url_alias: "planRouteStatus",
-        url_code: [row.status, row.route_code]
+      this.$confirm(`确认${row.status === 1 ? '启用' : '禁用'}路径<${row.route_name}>?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(res => {
+        http_request({
+          moduleName: "http_planRoute",
+          method: "get",
+          url_alias: "planRouteStatus",
+          url_code: [row.status, row.route_code]
+        }).then(res => {
+          this.getList()
+        }).catch(e => {
+          // this.msgError('设置状态失败')
+          row.status = row.status === 1 ? 0 : 1
+        })
       }).catch(e => {
-        // this.msgError('设置状态失败')
         row.status = row.status === 1 ? 0 : 1
       })
     },
