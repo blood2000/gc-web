@@ -20,7 +20,7 @@
       label-position="top"
     >
       <el-row>
-        <el-col :span="24" v-show="whichDialog !== 'update' && !isWallet">
+        <!-- <el-col :span="24" v-show="whichDialog !== 'update' && !isWallet">
           <div class="addCaptain-moneyBar" v-show="whichDialog !== 'detail'">
             <span>是否开通个人钱包</span>
             <el-switch v-model="form.openPersonalWalletFlag" :disabled="whichDialog === 'detail'" />
@@ -34,7 +34,7 @@
               </span>
             </div>
           </div>
-        </el-col>
+        </el-col> -->
         <div
           class="addCaptain-tips"
           v-show="whichDialog === 'update' && (form.authStatus === 1 || form.authStatus === 3)"
