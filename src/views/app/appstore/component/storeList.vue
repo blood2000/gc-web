@@ -38,7 +38,7 @@
         <div
           class="list-footer-open-btn"
           v-if="!sub.openFlag"
-          @click="handleClick(sub.code)"
+         
         >
           立即开通
         </div>

@@ -117,6 +117,7 @@ export default {
   background: #fff;
   padding: 25px 30px 50px 30px;
   position: relative;
+  border-bottom-right-radius: 5px;
   .w256 {
     width: 256px;
   }

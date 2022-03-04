@@ -1,4 +1,6 @@
 <template>
+  <div class="pages-info none-org-tree">
+    <div class="pages-info-right">
   <div class="benefit">
     <!-- 效益分析 -->
     <div class="benefit-left">
@@ -96,6 +98,8 @@
       </div>
     </div>
   </div>
+    </div>
+      </div>
 </template>
 
 <script>
@@ -277,6 +281,8 @@ export default {
   padding: 20px;
   display: flex;
   background: #fff;
+  overflow: auto;
+  height: 100%;
   &-left {
     width: 300px;
   }

@@ -296,7 +296,7 @@ export default {
   &-img {
     width: 84px;
     height: 84px;
-    background: #93b7ff;
+  
     opacity: 1;
     border-radius: 10px;
     margin-right: 26px;

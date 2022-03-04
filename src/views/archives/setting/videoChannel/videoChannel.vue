@@ -179,6 +179,7 @@ export default {
   background: #fff;
   position: relative;
   overflow: auto;
+  border-bottom-right-radius: 5px;
   &-title {
     font-size: 14px;
     font-weight: bold;

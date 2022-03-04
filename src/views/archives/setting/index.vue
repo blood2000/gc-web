@@ -20,62 +20,62 @@
 </template>
 
 <script>
-import { http_request } from '@/api'
-import AlarmTypes from './alarmTypes/alarmTypes.vue'
-import AlarmThreshold from './alarmThreshold/alarmThreshold.vue'
-import VideoChannel from './videoChannel/videoChannel.vue'
+import { http_request } from "@/api";
+import AlarmTypes from "./alarmTypes/alarmTypes.vue";
+import AlarmThreshold from "./alarmThreshold/alarmThreshold.vue";
+import VideoChannel from "./videoChannel/videoChannel.vue";
 
 export default {
-  name: 'setting',
+  name: "setting",
   components: {
     AlarmTypes,
     AlarmThreshold,
-    VideoChannel
+    VideoChannel,
   },
   data() {
     return {
       tabsList: [
         {
-          name: '告警类型设置',
-          key: '1',
+          name: "告警类型设置",
+          key: "1",
         },
         {
-          name: '告警阈值设置',
-          key: '2',
+          name: "告警阈值设置",
+          key: "2",
         },
         {
-          name: '视频通道别名设置',
-          key: '3',
-        }
+          name: "视频通道别名设置",
+          key: "3",
+        },
       ],
       tabs: {
-        alarmTypes: '1', // 告警类型设置
-        alarmThreshold: '2', // 告警阈值设置
+        alarmTypes: "1", // 告警类型设置
+        alarmThreshold: "2", // 告警阈值设置
       },
-      current: '1', // 1:告警类型设置；2:告警阀值设置
-    }
+      current: "1", // 1:告警类型设置；2:告警阀值设置
+    };
   },
   created() {},
   methods: {
     onClickTabs(tab) {
-      this.current = tab
+      this.current = tab;
     },
     queryShipmentAlllist() {
       const params = {
-        moduleName: 'http_company',
-        method: 'get',
-        url_alias: 'shipment_Alllist',
-      }
+        moduleName: "http_company",
+        method: "get",
+        url_alias: "shipment_Alllist",
+      };
       http_request(params).then((res) => {
-        this.companyList = res.data || []
+        this.companyList = res.data || [];
         if (this.companyList.length > 0) {
-          this.currentCompany = this.companyList[0].code
-          this.querysettingPage()
+          this.currentCompany = this.companyList[0].code;
+          this.querysettingPage();
         }
-      })
+      });
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -87,7 +87,7 @@ export default {
     min-height: 100%;
     background: #fff;
     padding: 10px 0;
-      border-bottom-left-radius: 5px;
+    border-bottom-left-radius: 5px;
 
     &__box {
       margin: 10px 0;
@@ -121,9 +121,8 @@ export default {
     // flex: 1 1 auto;
     // width: 0;
     flex: 1;
-    min-height: 100%;
-      border-bottom-right-radius: 5px;
-
+    height: 100%;
+    border-bottom-right-radius: 5px;
   }
 }
 </style>
