@@ -81,13 +81,14 @@ export default {
 <style lang="scss" scoped>
 .setting {
   height: 100%;
-  margin-top: -20px;
   display: flex;
   .setting-left {
     width: 240px;
     min-height: 100%;
     background: #fff;
     padding: 10px 0;
+      border-bottom-left-radius: 5px;
+
     &__box {
       margin: 10px 0;
       padding: 10px 16px;
@@ -120,8 +121,9 @@ export default {
     // flex: 1 1 auto;
     // width: 0;
     flex: 1;
-    padding: 20px 20px 0 0;
     min-height: 100%;
+      border-bottom-right-radius: 5px;
+
   }
 }
 </style>

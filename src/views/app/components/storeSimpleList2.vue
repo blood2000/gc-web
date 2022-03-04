@@ -104,7 +104,6 @@ export default {
     &-img {
       height: 55px;
       width: 55px;
-      background: #4682fa;
       border-radius: 7px;
       margin-right: 17px;
       & > img {

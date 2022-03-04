@@ -100,7 +100,6 @@ export default {
     &-img {
       height: 100%;
       width: 55px;
-      background: #4682fa;
       border-radius: 7px;
       margin-right: 17px;
       & > img {
