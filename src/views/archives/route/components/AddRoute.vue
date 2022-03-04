@@ -216,7 +216,7 @@
               remote
               reserve-keyword
               placeholder="请输入关键词"
-              :remote-method="remote1Method"
+              :remote-method="remote2Method"
               :loading="unLoadList.loading"
               :style="{ width: '350px' }"
               @change="
@@ -239,10 +239,10 @@
             </el-select>
             <el-amap-search-box
               v-show="false"
-              :ref="`amap1`"
+              :ref="`amap2`"
               class="search-box"
-              :search-option="searchOption"
-              :on-search-result="onSearchResult"
+              :search-option="searchOption1"
+              :on-search-result="onUnSearchResult"
             />
           </el-form-item>
           <el-form-item label="地址别名" prop="unloadingAddressAlias">
@@ -686,12 +686,14 @@ export default {
       if (!this.selected) return
       if (type == '1') {
         this.data.loadingAddressDetail = this.selected.address
+        this.data.loadingAddressAlias = this.selected.dictLabel
         this.data.loadingAddressLng = this.selected.lng
         this.data.loadingAddressLat = this.selected.lat
       }
 
       if (type == '2') {
         this.data.unloadingAddressDetail = this.selected.address
+        this.data.unloadingAddressAlias = this.selected.dictLabel
         this.data.unloadingAddressLng = this.selected.lng
         this.data.unloadingAddressLat = this.selected.lat
       }
@@ -707,10 +709,10 @@ export default {
           const { adcode, province, city, district, township, street, streetNumber } =
             result.regeocode.addressComponent
 
-          if (type == '1' && _this.data.loadingAddressDetail)
-            _this.data.loadingAddressDetail = district + township + street + streetNumber
-          if (type == '2' && _this.data.unloadingAddressDetail)
-            _this.data.unloadingAddressDetail = district + township + street + streetNumber
+          // if (type == '1' && _this.data.loadingAddressDetail)
+          //   _this.data.loadingAddressDetail = district + township + street + streetNumber
+          // if (type == '2' && _this.data.unloadingAddressDetail)
+          //   _this.data.unloadingAddressDetail = district + township + street + streetNumber
           console.log('adcode, province, city, district', adcode, province, city, district)
           _this.getAreaCode(adcode, province, city, district, type)
         }

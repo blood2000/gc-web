@@ -38,7 +38,7 @@
         <div
           class="list-footer-open-btn"
           v-if="!sub.openFlag"
-         
+          @click="handleClick(sub.code)"
         >
           立即开通
         </div>
@@ -81,7 +81,7 @@ export default {
   margin-bottom: 32px;
 }
 .list-item {
-  width: 23%;
+  width: 31%;
   border: 1px solid transparent;
   height: 183px;
   padding: 15px;
@@ -193,7 +193,7 @@ export default {
       font-size: 12px;
       font-family: PingFang BOLD;
       color: #fff;
-      padding-top: 5px;
+      padding-top: 4px;
       cursor: pointer;
     }
     .list-footer-colose-btn {
@@ -205,7 +205,7 @@ export default {
       font-size: 12px;
       font-family: PingFang BOLD;
       color: #4682FA;
-      padding-top: 5px;
+      padding-top: 4px;
     }
   }
 }

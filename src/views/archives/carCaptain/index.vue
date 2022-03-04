@@ -132,15 +132,15 @@
               <el-button size="mini" type="text" @click="onClickDel(scope.row.teamLeaderCode)">
                 删除
               </el-button>
-              <el-button
+              <!-- <el-button
                 size="mini"
                 type="text"
                 @click="onClickOpenWallet(scope.row.teamLeaderCode)"
                 v-show="scope.row.authStatus === 0"
               >
                 申请开通钱包
-              </el-button>
-              <el-button
+              </el-button> -->
+              <!-- <el-button
                 size="mini"
                 type="text"
                 @click="onClickChangeWallet(scope.row.teamLeaderCode)"
@@ -155,7 +155,7 @@
                 v-show="scope.row.authStatus === 1 || scope.row.authStatus === 3"
               >
                 查看申请信息
-              </el-button>
+              </el-button> -->
             </template>
           </el-table-column>
         </el-table>
