@@ -45,6 +45,7 @@ const permission = {
     // 生成路由
     GenerateRoutes({ commit }) {
       const menus = store.getters.menus;
+     
       const sdata = JSON.parse(JSON.stringify(menus));
       const rdata = JSON.parse(JSON.stringify(menus));
     
@@ -111,7 +112,6 @@ function filterAsyncRouter(asyncRouterMap, lastRouter = false, type = false) {
        
         route.component = InnerLink;
       } else {
-        console.log('route',route)
         route.component = loadView(route.component);
       }
     }

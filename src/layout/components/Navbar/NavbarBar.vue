@@ -45,6 +45,7 @@ export default {
   mounted() {},
   methods: {
     handleJump(item) {
+      console.log('item',item)
       // 和记录不同就清空tagview
       if (this.recordModuleName && this.recordModuleName != item.path) {
         this.$store.commit("tagsView/DEL_ALL_VISITED_VIEWS");

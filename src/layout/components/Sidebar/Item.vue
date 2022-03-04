@@ -18,7 +18,7 @@ export default {
     if (icon) {
       const node = (
         <span class="svg-icon-box" >
-          <span class={"svg-icon iconfont icon-nav-system icon-" +'zjcd_home'} />
+          <span class={"svg-icon iconfont icon-nav-system icon-" +icon} />
         </span>
         // <div>
         //   <img src= />

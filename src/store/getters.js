@@ -32,6 +32,7 @@ const getters = {
   isClose:state => state.map.isClose,
   isMany:state => state.map.isMany,
   channelNumList:state =>state.map.channelNumList,
-  warnInfoCode:state =>state.map.warnInfoCode
+  warnInfoCode:state =>state.map.warnInfoCode,
+  addMenusTotal:state =>state.user.addMenusTotal,
 }
 export default getters

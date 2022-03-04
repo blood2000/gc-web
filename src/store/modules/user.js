@@ -26,7 +26,8 @@ const user = {
     nickName: "",
     test: '',
     company_name: '',
-    phoneNumber: ''
+    phoneNumber: '',
+    addMenusTotal:0
   },
 
   mutations: {
@@ -60,6 +61,10 @@ const user = {
     },
     SET_PHONENUMBER: (state, phoneNumber) => {
       state.phoneNumber = phoneNumber;
+    },
+    SET_ADDMENUSTOTAL: (state,total) => {
+      console.log('ckc 我要计数',total)
+      state.addMenusTotal = total
     }
   },
 
@@ -255,4 +260,5 @@ const addAppPage = async (menu) => {
   })
   console.log('结果', menu)
 }
+
 export default user;
