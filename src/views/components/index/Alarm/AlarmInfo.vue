@@ -74,7 +74,11 @@ export default {
       })
     },
     onClickMore() {
+            this.$store.commit("tagsView/DEL_ALL_VISITED_VIEWS");
+
       this.$router.push({ path: '/warning/warning' })
+        this.$store.commit("SET_SIDE_SECOND_ROUTERS", []);
+      this.$store.commit("app/SET_RECORDMODULENAME", "warning");
     },
   },
 }

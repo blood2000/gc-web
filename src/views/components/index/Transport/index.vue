@@ -4,10 +4,20 @@
       <div class="transport-left__bar">
         <div class="transport-left__title">运输趋势图</div>
         <el-button-group>
-          <el-button @click="onClickDay(0)" :type="dayRadio === 0 ? '' : 'info'" plain size="small">
+          <el-button
+            @click="onClickDay(0)"
+            :type="dayRadio === 0 ? '' : 'info'"
+            plain
+            size="small"
+          >
             今日
           </el-button>
-          <el-button @click="onClickDay(1)" :type="dayRadio === 1 ? '' : 'info'" plain size="small">
+          <el-button
+            @click="onClickDay(1)"
+            :type="dayRadio === 1 ? '' : 'info'"
+            plain
+            size="small"
+          >
             7天
           </el-button>
         </el-button-group>
@@ -22,9 +32,15 @@
         <el-button type="text" @click="onClickMore">更多信息</el-button>
       </div>
       <NoneData v-if="transList.length <= 0" />
-      <div class="transport-right__box" v-for="(item, index) in transList" :key="index">
+      <div
+        class="transport-right__box"
+        v-for="(item, index) in transList"
+        :key="index"
+      >
         <div class="user-bar">
-          <div class="user-id" v-show="item.vehicleAlias">{{ item.vehicleAlias }}</div>
+          <div class="user-id" v-show="item.vehicleAlias">
+            {{ item.vehicleAlias }}
+          </div>
           <div class="user-license">{{ item.vehicleNumber }}</div>
           <div class="user-name">
             <img src="@/assets/images/index/driver-userIcon.png" alt="" />
@@ -41,13 +57,14 @@
 </template>
 
 <script>
-import { http_request } from '@/api'
-import * as echarts from 'echarts'
-import { getDisDayTime } from '@/utils/ddc'
-import NoneData from '../NoneData'
+import { http_request } from "@/api";
+import * as echarts from "echarts";
+import { getDisDayTime } from "@/utils/ddc";
+import NoneData from "../NoneData";
+import { mapGetters } from "vuex";
 
 export default {
-  name: 'Transport',
+  name: "Transport",
   components: {
     NoneData,
   },
@@ -56,152 +73,179 @@ export default {
       dayRadio: 0,
       chart: null,
       transList: [],
-    }
+    };
+  },
+    computed: {
+    ...mapGetters(["sidebarRouters"]),
   },
   created() {
-    this.queryPagingTransTrend()
-    this.queryListTransTrend()
+    this.queryPagingTransTrend();
+    this.queryListTransTrend();
   },
   methods: {
     queryPagingTransTrend() {
       const objDispatch = {
-        moduleName: 'http_home',
-        method: 'post',
-        url_alias: 'pagingTransTrend',
+        moduleName: "http_home",
+        method: "post",
+        url_alias: "pagingTransTrend",
         data: {
           pageIndex: 1,
           pageSize: 4,
         },
-      }
+      };
       http_request(objDispatch).then((res) => {
-        const data = res.data ? res.data.rows || [] : []
-        this.transList = data
-      })
+        const data = res.data ? res.data.rows || [] : [];
+        this.transList = data;
+      });
     },
     queryListTransTrend() {
-      const date = new Date()
+      const date = new Date();
       const objDispatch = {
-        moduleName: 'http_home',
-        method: 'get',
-        url_alias: 'listTransTrend',
+        moduleName: "http_home",
+        method: "get",
+        url_alias: "listTransTrend",
         data: {
           startDate: getDisDayTime(date, 6),
-          endDate: this.parseTime(date, '{y}-{m}-{d}'),
+          endDate: this.parseTime(date, "{y}-{m}-{d}"),
         },
-      }
+      };
       http_request(objDispatch).then((res) => {
-        const data = res.data
+        const data = res.data;
         if (data) {
-          this.initChart(data)
+          this.initChart(data);
         }
-      })
+      });
     },
     // 初始化echarts
     initChart(data) {
       this.dateList = data.map((item) => {
-        return item.dateStr.substring(5).replace('-', '/')
-      })
+        return item.dateStr.substring(5).replace("-", "/");
+      });
       this.tripList = data.map((item) => {
-        return item.tripTotal
-      })
-      this.chart = echarts.init(this.$refs.chart, 'macarons', {
+        return item.tripTotal;
+      });
+      this.chart = echarts.init(this.$refs.chart, "macarons", {
         width: 435,
         height: 360,
-      })
+      });
       this.option = {
         grid: {
-          top: '15%',
+          top: "15%",
         },
         tooltip: {
-          trigger: 'axis',
+          trigger: "axis",
           axisPointer: {
-            type: 'none',
+            type: "none",
           },
         },
         legend: {
           left: 0,
           itemHeight: 8,
-          data: ['运输趟次'],
+          data: ["运输趟次"],
         },
         xAxis: {
-          type: 'category',
+          type: "category",
           data: this.dateList,
         },
         yAxis: {
-          type: 'value',
+          type: "value",
           splitLine: {
             lineStyle: {
-              color: ['#ebebeb'],
-              type: 'dashed',
+              color: ["#ebebeb"],
+              type: "dashed",
             },
           },
         },
         series: [
           {
-            name: '运输趟次',
+            name: "运输趟次",
             data: this.tripList,
-            type: 'bar',
+            type: "bar",
             showBackground: true,
             barWidth: 16,
             backgroundStyle: {
-              color: '#F7F7F7',
+              color: "#F7F7F7",
             },
           },
         ],
-      }
-      this.changeBarColor()
+      };
+      this.changeBarColor();
     },
     // 点击日子
     onClickDay(which) {
       if (this.dayRadio !== which) {
-        this.dayRadio = which
-        this.changeBarColor()
+        this.dayRadio = which;
+        this.changeBarColor();
       }
     },
     // 改变条的颜色
     changeBarColor() {
-      let length = this.option.series[0].data.length
-      let seriesData = []
+      let length = this.option.series[0].data.length;
+      let seriesData = [];
       for (let i = 0; i < length; i++) {
         if (i >= length - 1) {
           seriesData.push({
             value: this.tripList[i],
             itemStyle: {
-              color: '#4682FA',
+              color: "#4682FA",
             },
             emphasis: {
               itemStyle: {
-                color: '#5c90f7',
+                color: "#5c90f7",
               },
             },
-          })
+          });
         } else {
           seriesData.push({
             value: this.tripList[i],
             itemStyle: {
-              color: this.dayRadio === 0 ? '#EBEBEB' : '#4682FA',
+              color: this.dayRadio === 0 ? "#EBEBEB" : "#4682FA",
             },
             emphasis: {
               itemStyle: {
-                color: '#5c90f7',
+                color: "#5c90f7",
               },
             },
-          })
+          });
         }
       }
-      this.option.series[0].data = seriesData
-      this.onDrawChart()
+      this.option.series[0].data = seriesData;
+      this.onDrawChart();
     },
     onDrawChart() {
       if (this.chart) {
-        this.chart.setOption(this.option)
+        this.chart.setOption(this.option);
       }
     },
+    getSecendMenu(type) {
+      const result = [];
+      this.sidebarRouters.forEach((item) => {
+        if (item.path.includes(type)) {
+          // 有效二级菜单
+          if (!item.hidden) {
+            if (item.children && item.children.length > 1) {
+              item.children.forEach((element) => {
+                console.log("element", element);
+                if (!element.hidden) {
+                  result.push(element);
+                }
+              });
+            }
+          }
+        }
+      });
+      return result;
+    },
     onClickMore() {
-      this.$router.push({ path: '/dispatch/manage' })
+      this.$router.push({ path: "/transport/manage" });
+      this.$store.commit("tagsView/DEL_ALL_VISITED_VIEWS");
+      const result = this.getSecendMenu("transport");
+      console.log("result", result);
+      this.$store.commit("SET_SIDE_SECOND_ROUTERS", result);
+      this.$store.commit("app/SET_RECORDMODULENAME", "app");
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -211,7 +255,7 @@ export default {
   background: #fff;
   display: flex;
   .transport-left {
-   width: 440px;
+    width: 440px;
     padding-right: 32px;
     &__bar {
       display: flex;

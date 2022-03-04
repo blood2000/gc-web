@@ -197,7 +197,7 @@ export default {
     handleCarlog(data) {
       console.log("data", data);
       const code = data.appointCarRecordCode;
-      this.$router.push("/dispatch/manage?code=" + code);
+      this.$router.push("/transport/manage?code=" + code);
     },
     handleDetail(data) {
       console.log("data.appointCarRecordCode", data.appointCarRecordCode);

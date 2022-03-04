@@ -600,9 +600,14 @@ export default {
       console.log("obj", obj);
       const vehicleCode = obj.code;
       const trackType = 1;
+            this.$store.commit("tagsView/DEL_ALL_VISITED_VIEWS");
+
       this.$router.push(
         `/map/mapInfo?vehicleCode=${vehicleCode}&trackType=${trackType}`
+        
       );
+       this.$store.commit("SET_SIDE_SECOND_ROUTERS", []);
+      this.$store.commit("app/SET_RECORDMODULENAME", "map");
     },
     handleDetail(obj) {
       this.currCode = obj.code;

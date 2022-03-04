@@ -395,7 +395,10 @@ export default {
     },
     /** 查看更多 */
     handleMore() {
+      this.$store.commit("tagsView/DEL_ALL_VISITED_VIEWS");
       this.$router.push("/warning/warning");
+       this.$store.commit("SET_SIDE_SECOND_ROUTERS", []);
+      this.$store.commit("app/SET_RECORDMODULENAME", "warning");
     },
     /** 点击实时告警事件 */
     handleRealWarnCard(row, index, type) {

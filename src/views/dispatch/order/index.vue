@@ -241,7 +241,7 @@ export default {
     handleCarlog(data) {
       const code = data.dispatchOrderCode;
       console.log(this.$router);
-      this.$router.push("/dispatch/recode?code=" + code);
+      this.$router.push("/transport/recode?code=" + code);
     },
     //详情
     handleDetail(data) {

@@ -224,14 +224,14 @@ export default {
     },
 
     toDispatch() {
-      this.$router.push('../../../dispatch/order');
+      this.$router.push('../../../transport/order');
     },
 
     toVehicleRecord() {
-      this.$router.push('../../../dispatch/recode');
+      this.$router.push('../../../transport/recode');
     },
     toVehicleManage() {
-      this.$router.push('../../../dispatch/manage');
+      this.$router.push('../../../transport/manage');
     },
   },
 };
