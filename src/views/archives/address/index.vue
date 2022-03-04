@@ -123,8 +123,9 @@ export default {
           moduleName: "http_common",
           method: "post",
           url_alias: "address_del",
-          data: { ids },
+          data: { ids:ids },
         };
+        console.log('tmp',tmp)
         http_request(tmp).then(() => {
           this.searchQuery();
           this.msgSuccess("删除成功");

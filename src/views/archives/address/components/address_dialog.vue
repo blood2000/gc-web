@@ -533,6 +533,8 @@ export default {
       this.form.addressName = this.selected.address;
       this.form.longitude = this.selected.lng;
       this.form.latitude = this.selected.lat;
+      this.form.detail = this.selected.address
+      this.form.addressAlias = this.selected.dictLabel
       const lnglat = [this.selected.lng, this.selected.lat];
       this.getaddress(lnglat);
     },
@@ -556,7 +558,7 @@ export default {
             result.regeocode.addressComponent
           );
           if (_this.form.addressName)
-            _this.form.detail = district + township + street + streetNumber;
+            // _this.form.detail = district + township + street + streetNumber;
           console.log(
             "adcode, province, city, district",
             adcode,
