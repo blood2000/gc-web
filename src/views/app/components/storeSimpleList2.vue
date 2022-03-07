@@ -17,7 +17,9 @@
               </div>
               <div class="list-content-info">
                 <div class="list-content-info-title">
-                  <div class="list-content-info-title-left">{{ sub.appName }}</div>
+                  <div class="list-content-info-title-left">
+                    {{ sub.appName }}
+                  </div>
                   <div
                     class="list-content-info-title-right"
                     v-show="sub.allowTrialFlag"
@@ -25,7 +27,7 @@
                     试用
                   </div>
                 </div>
-                <div class="list-text g-single-row">
+                <div class="list-text g-double-row">
                   {{ sub.overview }}
                 </div>
               </div>
@@ -49,20 +51,20 @@ export default {
       },
     },
   },
-   methods:{
-    handleClick(item){
-      console.log('item22',item,item.clickType)
-      if(!item.permissionFlag) return this.msgWarning('未开放该应用权限')
-      const me = this
-      const obj  = {
-        'view':()=>{
-          console.log('view')
-           me.$router.push(item.clickTypeData.path)
-        }
-      }
-      obj[item.clickType]()
-    }
-  }
+  methods: {
+    handleClick(item) {
+      console.log("item22", item, item.clickType);
+      if (!item.permissionFlag) return this.msgWarning("未开放该应用权限");
+      const me = this;
+      const obj = {
+        view: () => {
+          console.log("view");
+          me.$router.push(item.clickTypeData.path);
+        },
+      };
+      obj[item.clickType]();
+    },
+  },
 };
 </script>
 
@@ -80,14 +82,13 @@ export default {
 .list-box1 {
   width: 15.1%;
   height: 75px;
-  padding: 0 18px ;
+  padding: 13px 18px 0;
   border-radius: 6px;
   display: flex;
-  align-items: center;
-  justify-content: center;
+
   cursor: pointer;
   background: #f7f8f9;
-  border: 1px solid transparent;
+  // border: 1px solid transparent;
   margin-right: 20px;
   margin-bottom: 20px;
 }
@@ -98,18 +99,15 @@ export default {
 // }
 .list {
   width: 100%;
-  height: 69px;
   box-sizing: border-box;
   .list-content {
-    height: 69px;
     width: 100%;
     display: flex;
-    align-items: center;
+    // align-items: center;
     &-img {
-      height: 55px;
-      width: 55px;
-      border-radius: 7px;
-      margin-right: 17px;
+      width: 50px;
+      height: 50px;
+      margin-right: 16px;
       & > img {
         border-radius: 7px;
         width: 100%;
@@ -123,12 +121,11 @@ export default {
       // justify-content: center;
       &-title {
         display: flex;
-        margin-bottom: 5px;
-        align-items: center;
+        // margin-bottom: 5px;
         &-left {
-          font-size: 16px;
+          font-size: 14px;
           font-family: PingFang SC;
-          font-weight: bold;
+          font-weight: 700;
           color: #3d4050;
           margin-right: 8px;
         }
@@ -149,7 +146,7 @@ export default {
   &-text {
     width: 100%;
     // height: 42px;
-    font-size: 14px;
+    font-size: 12px;
     font-family: PingFang SC;
     font-weight: 400;
     color: #3d4050;
