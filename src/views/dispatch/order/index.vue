@@ -26,6 +26,7 @@
           :table-columns-config="tableColumnsConfig"
           :border="false"
           :stripe="true"
+            :height="getTableHeight"
         >
           <template #shipmentName="{ row }">
             <span>{{ `${row.shipmentName}[${row.shipmentPhone}]` }}</span>
@@ -187,6 +188,14 @@ export default {
   },
   created() {
     this.getGoodsTypeList();
+  },
+    computed: {
+    getTableHeight() {
+      console.log('================>')
+      let windowHeight =
+        document.documentElement.clientHeight || document.body.clientHeight;
+      return windowHeight - 290 -152;
+    },
   },
   mounted() {
     this.searchQuery();

@@ -36,6 +36,7 @@
           @selection-change="handleSelectionChange"
           :border="false"
           :stripe="true"
+           :height="getTableHeight"
         >
         <!-- vehicleAlias vehicleNumber -->
            <template #vehicleNumber="{ row }">
@@ -135,6 +136,12 @@ export default {
     goodsTypeList() {
       console.log('state.dict.goodsTypeList',this.$store.state.dict.goodsTypeList)
       return this.$store.state.dict.goodsTypeList;
+    },
+       getTableHeight() {
+      console.log('================>')
+      let windowHeight =
+        document.documentElement.clientHeight || document.body.clientHeight;
+      return windowHeight - 290 -152;
     },
   },
   created() {

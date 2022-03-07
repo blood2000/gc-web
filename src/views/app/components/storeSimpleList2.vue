@@ -52,6 +52,7 @@ export default {
    methods:{
     handleClick(item){
       console.log('item22',item,item.clickType)
+      if(!item.permissionFlag) return this.msgWarning('未开放该应用权限')
       const me = this
       const obj  = {
         'view':()=>{

@@ -160,7 +160,7 @@
       @pagination="getList"
     />
 
-    <div class="ly-t-right mt20">
+    <div class="ly-t-right mt20 mb20">
       <el-button type="primary" @click="handlerClick">确定</el-button>
     </div>
   </div>
