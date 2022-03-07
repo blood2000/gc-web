@@ -244,6 +244,7 @@ export default {
   mounted() {},
   methods: {
     getShowRoleNames(list) {
+      console.log('list',list)
       let oneWidthLen = 0;
       let twoWidthlen = 0;
       const showList = [];
@@ -251,7 +252,7 @@ export default {
       for (let i = 0; i < list.length; i++) {
         const item = list[i];
         const itemWidth = this.getFontWidth(item.length);
-
+        console.log('itemWidth',itemWidth)
         if (oneWidthLen + itemWidth < 205) {
           // 先算第一行数值
           oneWidthLen += itemWidth;
@@ -436,6 +437,7 @@ export default {
         width: 205px;
         font-size: 14px;
         color: #3d4050;
+        flex-wrap: wrap;
         .mr5 {
           margin-right: 5px;
         }

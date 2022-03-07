@@ -156,6 +156,7 @@ export default {
 }
 .btn-group {
   margin:20px 0;
+      padding-bottom: 20px;
   float: right;
 }
 ::v-deep .el-radio__input {
