@@ -244,6 +244,7 @@ export default {
               item.children.forEach((element) => {
                 console.log("element", element);
                 if (!element.hidden) {
+                   element.path = `/${type}/${element.path}`
                   result.push(element);
                 }
               });

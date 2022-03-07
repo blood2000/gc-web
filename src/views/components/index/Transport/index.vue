@@ -75,7 +75,7 @@ export default {
       transList: [],
     };
   },
-    computed: {
+  computed: {
     ...mapGetters(["sidebarRouters"]),
   },
   created() {
@@ -225,8 +225,8 @@ export default {
           if (!item.hidden) {
             if (item.children && item.children.length > 1) {
               item.children.forEach((element) => {
-                console.log("element", element);
                 if (!element.hidden) {
+                    element.path = `/${type}/${element.path}`
                   result.push(element);
                 }
               });
