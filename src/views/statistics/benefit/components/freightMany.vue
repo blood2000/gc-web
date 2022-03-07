@@ -51,7 +51,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.initChart();
-      if (this.transChart && this.transChart.length > 0) {
+      if (this.freightChart && this.freightChart.length > 0) {
         this.setChart();
       }
     });
