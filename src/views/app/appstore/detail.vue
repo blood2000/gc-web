@@ -338,6 +338,8 @@ export default {
     &-label {
       width: 100%;
       display: flex;
+          font-size: 12px;
+    color: #515a6e;
       & > div {
         margin-right: 39px;
       }
