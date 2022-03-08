@@ -42,7 +42,6 @@
         </el-table-column>
       </el-table>
       <pagination
-        v-show="total > queryParams.pageSize"
         :total="total"
         layout="prev, pager, next,jumper, total,sizes"
         :page.sync="queryParams.pageNum"
