@@ -272,7 +272,7 @@ export default {
   margin-bottom: 17px;
 }
 ::v-deep .pagination-container {
-  background: #f0f2f5;
+   background: #ffffff;
   margin-top: 23px;
 }
 </style>
