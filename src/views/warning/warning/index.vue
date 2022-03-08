@@ -530,7 +530,7 @@ export default {
   height: calc(100vh - 300px);
   overflow: auto;
   display: flex;
-  align-items: center;
+  // align-items: center;
   flex-wrap: wrap;
   padding: 10px 4px 0 0;
   //min-height: 200px;

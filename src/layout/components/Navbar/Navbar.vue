@@ -58,7 +58,8 @@
         >
           <NavbarBar
             v-for="(route, index) in sidebarMenu"
-            :key="route.path + index"
+            :index="menusArr[index]"
+            :key="menusArr[index]"
             :item="route"
             :base-path="route.path"
           />
@@ -78,6 +79,16 @@ export default {
   data() {
     return {
       sidebarMenu: [],
+      menusArr:[
+        'index',
+        'map',
+        'transport',
+        'warning',
+        'monitor',
+        'archives',
+        'statistics',
+        'app'
+      ]
     };
   },
   computed: {
@@ -103,10 +114,11 @@ export default {
     activeMenu() {
       const route = this.$route;
       const { meta, path } = route;
-      if (meta.activeMenu) {
-        return meta.activeMenu;
-      }
-      return path;
+      // if (meta.activeMenu) {
+      //   return meta.activeMenu;
+      // }
+    console.log('ckc',path.split('/')[1])
+      return path.split('/')[1];
     },
   },
   mounted() {

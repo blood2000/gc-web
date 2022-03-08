@@ -74,7 +74,7 @@
                 type="date"
                 size="small"
                 value-format="yyyy-MM-dd"
-                style="width: 140px"
+                style="width: 160px"
                 placeholder="请选择"
               />
               至
@@ -84,7 +84,7 @@
                 type="date"
                 size="small"
                 value-format="yyyy-MM-dd"
-                style="width: 140px"
+                style="width: 160px"
                 placeholder="请选择"
               />
             </el-form-item>

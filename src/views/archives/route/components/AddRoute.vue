@@ -113,6 +113,7 @@
               placeholder="请输入地址别名"
               clearable
               style="width: 350px"
+              @input="inputChange(data.loadingAddressType)"
             />
           </el-form-item>
           <el-row :gutter="15">
@@ -123,6 +124,7 @@
                   clearable
                   placeholder="请输入联系人"
                   style="width: 180px"
+                  @input="inputChange(data.loadingAddressType)"
                 />
               </el-form-item>
             </el-col>
@@ -133,12 +135,13 @@
                   clearable
                   placeholder="请输入联系人电话"
                   style="width: 260px"
+                  @input="inputChange(data.loadingAddressType)"
                 />
               </el-form-item>
             </el-col>
           </el-row>
           <el-form-item>
-            <el-checkbox v-model="data.loadingWhetherToAdd" :true-label="1" :false-label="0">
+            <el-checkbox v-model="data.loadingWhetherToAdd" :true-label="1" :false-label="0" :disabled="loadingLock">
               添加到常用地址
             </el-checkbox>
           </el-form-item>
@@ -251,6 +254,7 @@
               placeholder="请输入地址别名"
               clearable
               style="width: 350px"
+              @input="inputChange(data.unloadingAddressType)"
             />
           </el-form-item>
           <el-row :gutter="15">
@@ -261,6 +265,7 @@
                   clearable
                   placeholder="请输入联系人"
                   style="width: 180px"
+                  @input="inputChange(data.unloadingAddressType)"
                 />
               </el-form-item>
             </el-col>
@@ -271,12 +276,13 @@
                   clearable
                   placeholder="请输入联系人电话"
                   style="width: 260px"
+                  @input="inputChange(data.unloadingAddressType)"
                 />
               </el-form-item>
             </el-col>
           </el-row>
           <el-form-item>
-            <el-checkbox v-model="data.unloadingWhetherToAdd" :true-label="1" :false-label="0">
+            <el-checkbox v-model="data.unloadingWhetherToAdd" :true-label="1" :false-label="0" :disabled="unloadingLock">
               添加到常用地址
             </el-checkbox>
           </el-form-item>
@@ -443,6 +449,8 @@ export default {
       selected: null,
       addressOpen: false,
       currAddressType: 0,
+      loadingLock: false,
+      unloadingLock: false,
     }
   },
   created() {
@@ -518,6 +526,7 @@ export default {
           this.data[`${objName}AddressLat`] = Number(data.latitude) //纬度
           this.data[`${objName}WhetherToAdd`] = 0 // 是否添加到常用地址：0否1是
           this.data[`${objName}Code`] = data.code // 是否添加到常用地址：0否1是
+          this[`${objName}Lock`] = true
           this.currAddressType = null
           this.addressOpen = false
         })
@@ -581,18 +590,19 @@ export default {
     },
     //省更变
     provinceChange(e, type) {
-      console.log('123123', e, type)
       if (!type) return
       if (type == '1') {
         this.data.loadingAddressCityCode = null
         this.data.loadingAddressDistrictCode = null
         this.loadList.cityList = []
         this.loadList.districtList = []
+        this.loadingLock = false
       } else if (type == '2') {
         this.data.unloadingAddressCityCode = null
         this.data.unloadingAddressDistrictCode = null
         this.unLoadList.cityList = []
         this.unLoadList.districtList = []
+        this.unloadingLock = false
       }
       if (e !== null && e !== undefined && e !== '') {
         this.addressSearchLimitByCode(e, type)
@@ -608,9 +618,11 @@ export default {
       if (type == '1') {
         this.data.loadingAddressDistrictCode = null
         this.loadList.districtList = []
+        this.loadingLock = false
       } else if (type == '2') {
         this.data.unloadingAddressDistrictCode = null
         this.unLoadList.districtList = []
+        this.unloadingLock = false
       }
       if (e !== null && e !== undefined && e !== '') {
         this.addressSearchLimitByCode(e, type)
@@ -623,6 +635,11 @@ export default {
     districtChange(e, type) {
       console.log('districtChange e', e)
       console.log('districtChange type', type)
+      if (type == '1') {
+        this.loadingLock = false
+      } else if (type == '2') {
+        this.unloadingLock = false
+      }
       if (e !== null && e !== undefined && e !== '') {
         this.addressSearchLimitByCode(e, type)
       } else {
@@ -670,8 +687,10 @@ export default {
         this.pccCode = null
         if (type == '1') {
           this.searchOption.city = '全国'
+          this.loadingLock = false
         } else {
           this.searchOption1.city = '全国'
+          this.unloadingLock = false
         }
         return
       }
@@ -789,6 +808,13 @@ export default {
           dictLabel: e[dictLabel],
         }
       })
+    },
+    inputChange(type) {
+      if (type == '1') {
+        this.loadingLock = false
+      } else if (type == '2') {
+        this.unloadingLock = false
+      }
     },
     // 保存
     onSave() {

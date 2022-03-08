@@ -116,7 +116,7 @@ export default {
       let windowHeight =
         document.documentElement.clientHeight || document.body.clientHeight;
       console.log(windowHeight);
-      return windowHeight - 340;
+     return windowHeight - 250 -152;
     },
   },
   mounted() {

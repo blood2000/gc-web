@@ -3,7 +3,7 @@
     <!-- 这块没做 记得继续做 -->
     <template>
       <app-link v-if="item.meta" :to="pathRoute(item)">
-        <el-menu-item @click="handleJump(item)" :index="pathRoute(item)">
+        <el-menu-item @click="handleJump(item)" :index="index">
           <item
             v-if="item.meta"
             :icon="item.meta && item.meta.icon"
@@ -35,6 +35,10 @@ export default {
       type: String,
       default: "",
     },
+    index:{
+      type:String,
+      default:''
+    }
   },
   computed: {
     ...mapGetters(["recordModuleName"]),

@@ -36,7 +36,7 @@
         <div class="benefit-info__box">
           <img src="@/assets/images/icon/icon-screen.png" alt="" />
           <p class="num">{{ statistic.appointCarOrderCount }}</p>
-          <p class="label">总调度量</p>
+          <p class="label">总派车单</p>
         </div>
         <div class="benefit-info__box">
           <img src="@/assets/images/icon/icon-money.png" alt="" />
@@ -46,7 +46,7 @@
         <div class="benefit-info__box">
           <img src="@/assets/images/icon/icon-user.png" alt="" />
           <p class="num">{{ statistic.driverCount }}</p>
-          <p class="label">任务司机</p>
+          <p class="label">活跃司机</p>
         </div>
         <div class="benefit-info__box">
           <img src="@/assets/images/icon/icon-lock.png" alt="" />

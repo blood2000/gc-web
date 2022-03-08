@@ -248,10 +248,15 @@ export default {
         this.queryParams.companyName = e[0];
         this.queryParams.routeCode = e[1];
       }
+      this.$emit("handleQuery");
     },
     cascaderChange(e) {
-      if (!e || e.length < 2) return;
-      this.queryParams.goodsCode = e[1];
+      if (!e || e.length < 2) {
+this.queryParams.goodsCode= null;
+      } else{
+  this.queryParams.goodsCode = e[1];
+      }
+    
       this.$emit("handleQuery");
     },
 

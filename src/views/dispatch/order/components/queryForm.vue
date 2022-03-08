@@ -9,7 +9,6 @@
     label-position="top"
   >
     <div class="ddc-queryParams-left">
-      <div class="up">
         <el-form-item label="下单客户" prop="shipmentNameOrCompanyName">
           <el-input
             v-model="queryParams.shipmentNameOrCompanyName"
@@ -46,8 +45,6 @@
             @keyup.enter.native="$emit('handleQuery')"
           />
         </el-form-item>
-      </div>
-      <div class="down" v-show="isShow">
         <el-form-item label="货物类型" prop="goodsType">
           <!-- <el-select
             
@@ -141,13 +138,12 @@
           />
         </el-form-item>
       </div>
-    </div>
 
     <div class="ddc-queryParams-right">
-      <div @click="hanleIsShow">
+      <!-- <div @click="hanleIsShow">
         <i :class="isShow ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i>
         <span>{{ isShow ? "收起" : "展开" }}</span>
-      </div>
+      </div> -->
       <el-form-item>
         <el-button
           type="primary"

@@ -77,7 +77,7 @@ export default {
     isCollapse:{
       type: Boolean,
       default:false
-    },
+    }
   },
   data() {
     this.onlyOneChild = null;
@@ -117,6 +117,7 @@ export default {
       if (isExternal(this.basePath)) {
         return this.basePath;
       }
+      console.log('path.resolve(this.basePath, routePath)',path.resolve(this.basePath, routePath))
       return path.resolve(this.basePath, routePath);
     },
   },

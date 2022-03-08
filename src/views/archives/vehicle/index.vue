@@ -42,6 +42,7 @@
         :groupList="groupList"
         :enabled-list="enabledList"
         @handleQuery="searchQuery"
+        id="QueryForm"
       />
       <!-- 分割线 -->
       <div class="divier"></div>
@@ -99,21 +100,25 @@
           @selection-change="handleSelectionChange"
           :border="false"
           :stripe="true"
+          :height="getTableHeight"
         >
           <template #authStatus="{ row }">
             <div v-if="row.authStatus || row.authStatus === 0">
- <img
-              
-              :src="require(`../../../assets/images/dialog/${getAuthStatusListConfigOption(row.authStatus).img}.png`)"
-              alt=""
-            />
-            <span
-              :style="{
-                color: getAuthStatusListConfigOption(row.authStatus).color,
-              }"
-            >
-              {{ getAuthStatusListConfigOption(row.authStatus).label }}
-            </span>
+              <img
+                :src="
+                  require(`../../../assets/images/dialog/${
+                    getAuthStatusListConfigOption(row.authStatus).img
+                  }.png`)
+                "
+                alt=""
+              />
+              <span
+                :style="{
+                  color: getAuthStatusListConfigOption(row.authStatus).color,
+                }"
+              >
+                {{ getAuthStatusListConfigOption(row.authStatus).label }}
+              </span>
             </div>
           </template>
           <template #vehicleStatus="{ row }">
@@ -278,10 +283,20 @@ export default {
       currAuthStatus: null,
       currCode: null,
       detailDrawer: false,
+      
     };
   },
   created() {},
+  computed: {
+    getTableHeight() {
+      console.log('================>')
+      let windowHeight =
+        document.documentElement.clientHeight || document.body.clientHeight;
+      return windowHeight - 300 -152;
+    },
+  },
   mounted() {
+    console.log("11111");
     this.getConfigData();
     this.getDictData();
     this.getOrgHttp();
@@ -600,13 +615,12 @@ export default {
       console.log("obj", obj);
       const vehicleCode = obj.code;
       const trackType = 1;
-            this.$store.commit("tagsView/DEL_ALL_VISITED_VIEWS");
+      this.$store.commit("tagsView/DEL_ALL_VISITED_VIEWS");
 
       this.$router.push(
         `/map/mapInfo?vehicleCode=${vehicleCode}&trackType=${trackType}`
-        
       );
-       this.$store.commit("SET_SIDE_SECOND_ROUTERS", []);
+      this.$store.commit("SET_SIDE_SECOND_ROUTERS", []);
       this.$store.commit("app/SET_RECORDMODULENAME", "map");
     },
     handleDetail(obj) {

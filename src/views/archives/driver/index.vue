@@ -45,26 +45,25 @@
       />
       <!-- 分割线 -->
       <div class="divier"></div>
-            <div class="page-table-layout-set">
-
-      <!-- 操作栏 -->
-      <el-row :gutter="10" class="toolsbar">
-        <el-col :span="1.5">
-          <el-button type="primary" size="mini" @click="handleAdd"
-            >新增</el-button
-          >
-        </el-col>
-        <el-col :span="1.5">
-          <!-- danger -->
-          <el-button
-            type="primary"
-            size="mini"
-            :disabled="multiple"
-            @click="handleDelete"
-            >删除</el-button
-          >
-        </el-col>
-        <!-- <el-col :span="1.5">
+      <div class="page-table-layout-set">
+        <!-- 操作栏 -->
+        <el-row :gutter="10" class="toolsbar">
+          <el-col :span="1.5">
+            <el-button type="primary" size="mini" @click="handleAdd"
+              >新增</el-button
+            >
+          </el-col>
+          <el-col :span="1.5">
+            <!-- danger -->
+            <el-button
+              type="primary"
+              size="mini"
+              :disabled="multiple"
+              @click="handleDelete"
+              >删除</el-button
+            >
+          </el-col>
+          <!-- <el-col :span="1.5">
           <el-button type="primary" size="mini" @click="handleImport"
             >导入</el-button
           >
@@ -78,74 +77,69 @@
             >导出</el-button
           >
         </el-col> -->
-        <!-- <right-toolbar
+          <!-- <right-toolbar
                 :show-search.sync="showSearch"
                 @queryTable="searchQuery"
               /> -->
-      </el-row>
-      <!-- 表格 -->
-      <RefactorTable
-        is-show-index
-        :loading="loading"
-        :data="driverList"
-        row-key="id"
-        :table-columns-config="tableColumnsConfig"
-        @selection-change="handleSelectionChange"
-        :border="false"
-        :stripe="true"
-      >
-        <template #driverStatus="{ row }">
-          <span
-            :style="{
-              color: driverStatusDeal(row.driverStatus, 'color'),
-            }"
-          >
-            {{ driverStatusDeal(row.driverStatus, "text") }}
-          </span>
-        </template>
-        <template #realStatus="{ row }">
-          <span
-            :style="{
-              color: realStatusDeal(row.realStatus, 'color'),
-            }"
-          >
-            {{ realStatusDeal(row.realStatus, "text") }}
-          </span>
-        </template>
+        </el-row>
+        <!-- 表格 -->
+        <RefactorTable
+          is-show-index
+          :loading="loading"
+          :data="driverList"
+          row-key="id"
+          :table-columns-config="tableColumnsConfig"
+          @selection-change="handleSelectionChange"
+          :border="false"
+          :stripe="true"
+           :height="getTableHeight"
+        >
+          <template #driverStatus="{ row }">
+            <span
+              :style="{
+                color: driverStatusDeal(row.driverStatus, 'color'),
+              }"
+            >
+              {{ driverStatusDeal(row.driverStatus, "text") }}
+            </span>
+          </template>
+          <template #realStatus="{ row }">
+            <span
+              :style="{
+                color: realStatusDeal(row.realStatus, 'color'),
+              }"
+            >
+              {{ realStatusDeal(row.realStatus, "text") }}
+            </span>
+          </template>
 
-        <template #enabled="{ row }">
-          <i-switch
-            size="large"
-            :true-value="1"
-            :false-value="0"
-            v-model="row.enabled"
-            @on-change="handleStatusChange(row)"
-          >
-            <span slot="open">正常</span>
-            <span slot="close">停用</span>
-          </i-switch>
-        </template>
-        <template #edit="{ row }">
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleUpdate(row)"
-            >修改</el-button
-          >
-          <el-button
-            size="mini"
-            type="text"
-            style="color: red"
-            @click="handleDelete(row)"
-            >删除</el-button
-          >
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleReset(row)"
-            >密码重置</el-button
-          >
-          <!-- <el-button
+          <template #enabled="{ row }">
+            <i-switch
+              size="large"
+              :true-value="1"
+              :false-value="0"
+              v-model="row.enabled"
+              @on-change="handleStatusChange(row)"
+            >
+              <span slot="open">正常</span>
+              <span slot="close">停用</span>
+            </i-switch>
+          </template>
+          <template #edit="{ row }">
+            <el-button size="mini" type="text" @click="handleUpdate(row)"
+              >修改</el-button
+            >
+            <el-button
+              size="mini"
+              type="text"
+              style="color: red"
+              @click="handleDelete(row)"
+              >删除</el-button
+            >
+            <el-button size="mini" type="text" @click="handleReset(row)"
+              >密码重置</el-button
+            >
+            <!-- <el-button
                   size="mini"
                   type="text"
                   icon="el-icon-position"
@@ -153,15 +147,12 @@
                 >
                   数据权限</el-button
                 > -->
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleDetail(row)"
-            >详情</el-button
-          >
-        </template>
-      </RefactorTable>
-            </div>
+            <el-button size="mini" type="text" @click="handleDetail(row)"
+              >详情</el-button
+            >
+          </template>
+        </RefactorTable>
+      </div>
       <!-- 分页 -->
       <pagination
         v-show="total > 0"
@@ -170,11 +161,12 @@
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="driverHttpReq"
+       
       />
     </div>
 
     <DriverDialog
-      :options="{ editType: editType, code: dialogCode , userCode:userCode }"
+      :options="{ editType: editType, code: dialogCode, userCode: userCode }"
       :open="open"
       :title="title"
       :orgList="orgList"
@@ -237,12 +229,20 @@ export default {
       driverConfig: {},
       orgNmaetable: "",
       dialogCode: null,
-      userCode:null,
+      userCode: null,
     };
   },
   watch: {
     orgName(val) {
       this.$refs.tree.filter(val);
+    },
+  },
+  computed: {
+    getTableHeight() {
+      console.log("================>");
+      let windowHeight =
+        document.documentElement.clientHeight || document.body.clientHeight;
+      return windowHeight - 280 - 152;
     },
   },
   created() {
@@ -257,7 +257,7 @@ export default {
   methods: {
     //数据处理
     driverStatusDeal(status, type) {
-      if (!status&&status !== 0) return null;
+      if (!status && status !== 0) return null;
       return driverConfig.driverStatusCongfig[status][type];
     },
     //实名状态处理
@@ -286,20 +286,18 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-      })
-        .then(() => {
-          const tmp = {
-            moduleName: "http_driver",
-            method: "post",
-            url_alias: "driver_del",
-            data: { list: ids },
-          };
-          http_request(tmp).then(() => {
+      }).then(() => {
+        const tmp = {
+          moduleName: "http_driver",
+          method: "post",
+          url_alias: "driver_del",
+          data: { list: ids },
+        };
+        http_request(tmp).then(() => {
           this.searchQuery();
           this.msgSuccess("删除成功");
         });
-        })
-       
+      });
     },
     handleReset(data) {
       this.$refs.resetPwdDialog.reset(data.userCode);
@@ -324,7 +322,7 @@ export default {
       this.open = true;
       console.log("修改司机弹窗 ckc obj ", obj.code);
       this.dialogCode = obj.code;
-      this.userCode = obj.userCode
+      this.userCode = obj.userCode;
     },
     handleDetail(obj) {
       this.editType = "detail";
@@ -409,7 +407,7 @@ export default {
         });
     },
     formToPaging() {
-            console.log('this.queryParams.dateRange',this.queryParams.dateRange)
+      console.log("this.queryParams.dateRange", this.queryParams.dateRange);
 
       const tmp = {
         pageNum: this.queryParams.pageNum,
@@ -419,10 +417,16 @@ export default {
         enabled: this.queryParams.enabled, //分组
         driverStatus: this.queryParams.driverStatus || null, //是否启用
         realStatus: this.queryParams.realStatus, //是否启用
-      createBeginTime:
-          (this.queryParams.dateRange&&this.queryParams.dateRange.length>0 && this.queryParams.dateRange[0]) || null,
+        createBeginTime:
+          (this.queryParams.dateRange &&
+            this.queryParams.dateRange.length > 0 &&
+            this.queryParams.dateRange[0]) ||
+          null,
         createEndTime:
-          (this.queryParams.dateRange&&this.queryParams.dateRange.length>0 && this.queryParams.dateRange[1]) || null,
+          (this.queryParams.dateRange &&
+            this.queryParams.dateRange.length > 0 &&
+            this.queryParams.dateRange[1]) ||
+          null,
         orgCode: this.queryParams.orgCode,
       };
       for (const item in tmp) {

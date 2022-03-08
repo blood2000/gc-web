@@ -384,7 +384,7 @@ export default {
     },
     // 点击保存
     onSave() {
-      if (this.checkSave()) {
+      // if (this.checkSave()) {
         // 校验成功
         const obj = {
           moduleName: 'http_coRoute',
@@ -406,7 +406,7 @@ export default {
           }
           this.onClose()
         })
-      }
+      // }
     },
     // 点击修改
     onUpdate() {
