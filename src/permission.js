@@ -1,15 +1,20 @@
-import router from './router'
+import router, { constantRoutes } from './router'
+import Router from 'vue-router'
+
 import store from './store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import { getToken, setToken ,} from '@/utils/auth'
-import {objReduce} from '@/utils/ddc'
+import { getToken, setToken, } from '@/utils/auth'
+import { objReduce } from '@/utils/ddc'
 
 import { http_request } from './api'
 NProgress.configure({ showSpinner: false })
 
 const whiteList = ['/login', '/auth-redirect', '/bind', '/register', '/resetPwd', '/protocol', '/privacy']
+
+
+
 
 router.beforeEach((to, from, next) => {
   NProgress.start()
@@ -25,6 +30,8 @@ router.beforeEach((to, from, next) => {
         store.dispatch('GetInfo').then((res) => {
           store.dispatch('GenerateRoutes').then(accessRoutes => {
             // 根据roles权限生成可访问的路由表
+            console.log('router', router)
+
             router.addRoutes(accessRoutes) // 动态添加可访问路由表
             next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
           })
@@ -42,7 +49,10 @@ router.beforeEach((to, from, next) => {
             if (count != store.getters.addMenusTotal) {
               store.commit('SET_ADDMENUSTOTAL', count)
               store.dispatch('GenerateRoutes').then(accessRoutes => {
+                resetRouter()
+
                 router.addRoutes(accessRoutes) // 动态添加可访问路由表
+                console.log('router m', router)
                 next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
               })
             } else {
@@ -69,6 +79,17 @@ router.beforeEach((to, from, next) => {
   }
 })
 
+
+// 清理路由
+const resetRouter = () => {
+  const newRouter = new Router({
+    mode: 'history', // 去掉url中的#
+    scrollBehavior: () => ({ y: 0 }),
+    routes: constantRoutes
+  })
+  router.matcher = newRouter.matcher // reset router
+}
+
 const addAppPage = async (menu) => {
   // 添加应用动态路由
   const obj = {
@@ -79,7 +100,7 @@ const addAppPage = async (menu) => {
   const res = await http_request(obj)
   // 处理数据
   const tmpData = JSON.parse(JSON.stringify(res.data))
-  if(tmpData.length ===0) return 0
+  if (tmpData.length === 0) return 0
   tmpData.forEach(el => {
     el.hidden = true
     el.meta = {
@@ -92,8 +113,8 @@ const addAppPage = async (menu) => {
   menu.forEach((el) => {
     if (el.name === '应用' && el.path === '/app') {
       el.children = el.children.concat(tmpData)
-      const tmp  = JSON.parse(JSON.stringify(el.children)) 
-      el.children =  objReduce(tmp,'component')
+      const tmp = JSON.parse(JSON.stringify(el.children))
+      el.children = objReduce(tmp, 'component')
     }
   })
 
