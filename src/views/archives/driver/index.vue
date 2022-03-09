@@ -239,7 +239,6 @@ export default {
   },
   computed: {
     getTableHeight() {
-      console.log("================>");
       let windowHeight =
         document.documentElement.clientHeight || document.body.clientHeight;
       return windowHeight - 280 - 152;
@@ -320,7 +319,6 @@ export default {
       this.title = "修改司机弹窗";
       this.editType = "update";
       this.open = true;
-      console.log("修改司机弹窗 ckc obj ", obj.code);
       this.dialogCode = obj.code;
       this.userCode = obj.userCode;
     },
@@ -328,10 +326,8 @@ export default {
       this.editType = "detail";
       const code = obj.code;
       this.open = true;
-      console.log("司机详情弹窗 ckc obj ", obj.code);
       this.dialogCode = obj.code;
       this.title = "司机详情弹窗";
-      console.log("index code", code);
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
@@ -356,7 +352,6 @@ export default {
       this.$nextTick(() => {
         this.$refs.tree.setCurrentKey(this.queryParams.orgCode);
       });
-      console.log("当前code ckc", this.queryParams.orgCode);
       this.searchQuery();
     },
     //组织树节点过滤
@@ -369,7 +364,6 @@ export default {
       return data.orgName.indexOf(value) !== -1;
     },
     handleNodeClick(data) {
-      console.log("data ckc", data);
       this.queryParams.orgCode = data.code;
       this.queryParams.pageNum = 1;
       this.driverHttpReq();

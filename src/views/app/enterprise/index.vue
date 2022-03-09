@@ -27,7 +27,6 @@ export default {
         url_alias: "companyList",
      }
     const res = await http_request(obj)
-    console.log('userList',res)
     this.list = res.data
     }
   }

@@ -821,7 +821,6 @@ export default {
         center: [116.407535, 39.915822],
         zoom: 11,
       })
-      console.log("ckc init");
       this.map.plugin(['AMap.Geolocation', "AMap.Geocoder", "AMap.Autocomplete", 'AMap.Driving', 'AMap.TruckDriving', 'AMap.Circle'], function () {
         let geolocation = new AMap.Geolocation({
           enableHighAccuracy: true,//是否使用高精度定位，默认:true

@@ -126,7 +126,6 @@ export default {
     open: {
       handler() {
         if (this.open) {
-          console.log("ckc open", this.options);
           this.isbang = this.options.isbang;
           this.getBindInfo().then(() => {
             this.getUnbindList();
@@ -173,7 +172,6 @@ export default {
         url_code: [this.options.vehicleCode, "device"],
       };
       const result = await http_request(obj);
-      console.log("ckc result bind", result,this.deviceInfo);
       if (result.code != 200) return;
       result.data.device.deviceCode
         ? (this.isbang = true)
@@ -194,7 +192,6 @@ export default {
         data: { isBind: 0 },
       };
       const result = await http_request(obj);
-      console.log("ckc result unbind", result);
       this.unList = result.data.rows;
       this.targetList = result.data.rows;
       this.total = result.data.total;

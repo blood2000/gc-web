@@ -42,14 +42,14 @@ export default {
     ...mapState(['settings']),
     ...mapGetters(['sideSecondRouters', 'sidebar',]),
     activeMenu() {
-      console.log('sideSecondRouters path',this.sideSecondRouters)
+      // console.log('sideSecondRouters path',this.sideSecondRouters)
       const route = this.$route;
       const { meta, path } = route;
       // if set path, the sidebar will highlight the path you set
       if (meta.activeMenu) {
         return meta.activeMenu;
       }
-      console.log('path',path,path.split('/')[2])
+      // console.log('path',path,path.split('/')[2])
       return path;
     },
     showLogo() {

@@ -691,7 +691,6 @@ export default {
       let licenseNumber = "";
       if (result && result.number) {
         licenseNumber = result.number;
-        console.log("ckc------", result.number, me.form.licenseNumber);
       } else {
         licenseNumber = me.form.licenseNumber;
       }

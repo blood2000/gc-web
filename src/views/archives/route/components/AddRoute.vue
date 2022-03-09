@@ -439,11 +439,11 @@ export default {
         loading: false,
       },
       searchOption: {
-        city: '全国',
+        city: '',
         citylimit: true,
       },
       searchOption1: {
-        city: '全国',
+        city: '',
         citylimit: true,
       },
       selected: null,
@@ -658,10 +658,10 @@ export default {
     addressReset(type) {
       console.log('重置搜索地址', type)
       if (type == '1') {
-        this.searchOption.city = '全国'
+        this.searchOption.city = ''
         this.data.loadingAddressDetail = null
       } else if (type == '2') {
-        this.searchOption1.city = '全国'
+        this.searchOption1.city = ''
         this.data.unloadingAddressDetail = null
       }
     },
@@ -686,10 +686,10 @@ export default {
         this.selected = null
         this.pccCode = null
         if (type == '1') {
-          this.searchOption.city = '全国'
+          this.searchOption.city = ''
           this.loadingLock = false
         } else {
-          this.searchOption1.city = '全国'
+          this.searchOption1.city = ''
           this.unloadingLock = false
         }
         return

@@ -353,7 +353,6 @@ export default {
     open: {
       handler() {
         if (this.open) {
-          console.log('ckc open', this.options)
           if (this.options.editType) {
             this.getDetail()
           }

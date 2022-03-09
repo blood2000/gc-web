@@ -701,7 +701,6 @@ export default {
           }
         }
       });
-      console.log("ckc init");
       this.map.plugin(["AMap.Geocoder"], function () {
         _this.geocoder = new AMap.Geocoder({
           radius: 1000,
@@ -1730,7 +1729,6 @@ export default {
                   " attribute.coordinate.value",
                   attribute.coordinate.value
                 );
-                console.log("ckc 获取设备定位信息");
                 this.map.setZoomAndCenter(13, attribute.coordinate.value);
               });
             }
@@ -1842,7 +1840,7 @@ export default {
       this.setReadTime().then(() => {
         this.refreshMarkerTimer = setInterval(() => {
           this.getDeviceLocationInfoByCode();
-          if (this.headerTab != 4) {
+          if (this.$refs.WarnListRef && this.headerTab != 4) {
             this.$refs.WarnListRef.activeTab = "real";
             // 刷新告警
             this.$refs.WarnListRef.getList(2);
@@ -1877,16 +1875,14 @@ export default {
       )[0];
       console.log("tmp", tmp);
       if (!type) {
-        console.log("ckc 0");
         this.darwRealWarnMarker(row, type, tmp);
         this.timerWarn = setTimeout(() => {
           this.clearRealWarnMarker();
           // 绘制成正常车辆
           // this.drawVehicleMarker(tmp);
           clearTimeout(this.timerWarn);
-        }, 5 * 1000);
+        },5 * 1000);
       } else if (type == 2) {
-        console.log("ckc 2");
         this.darwRealWarnMarker(row, type, tmp);
         this.timerWarn = setTimeout(() => {
           this.clearRealWarnMarker();
@@ -1895,7 +1891,6 @@ export default {
           clearTimeout(this.timerWarn);
         }, 5 * 1000);
       } else {
-        console.log("ckc 1");
         this.clearRealWarnMarker();
         // this.drawVehicleMarker(tmp);
       }
@@ -1907,7 +1902,6 @@ export default {
       const { attribute } = tmp;
       const direction = attribute.direction || {};
       const position = attribute.coordinate.value;
-      console.log("this.markerList", this.markerList);
       this.realWarnMarker = this.markerList[row.vehicleCode];
       const contents = `<div
       style="transform:rotate(${direction.value || -30}deg);
@@ -1926,7 +1920,7 @@ export default {
       };
       // this.realWarnMarker.setContent(contents);
       this.realWarnMarker = this.drawMarker(
-        [position[0], position[1]],
+        position,
         styleObj
       );
       this.map.setCenter([position[0], position[1]]);
@@ -2584,8 +2578,8 @@ export default {
     ::v-deep.own-device-marker-warn {
       position: relative;
       transform-origin: center center;
-      width: 30px;
-      height: 64px;
+         width: 20px;
+      height: 42.6px;
       background-size: 100% 100%;
       z-index: 100;
 

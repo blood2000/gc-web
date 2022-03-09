@@ -101,7 +101,6 @@ export default {
       this.title = "修改企业弹窗";
       this.editType = "update";
       this.open = true;
-      console.log("修改企业弹窗 ckc obj ", obj.id);
       this.dialogCode = obj.id;
     },
     async handleDelete(obj = {}) {

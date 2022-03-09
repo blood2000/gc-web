@@ -12,7 +12,6 @@ NProgress.configure({ showSpinner: false })
 const whiteList = ['/login', '/auth-redirect', '/bind', '/register', '/resetPwd', '/protocol', '/privacy']
 
 router.beforeEach((to, from, next) => {
-  console.log('router', router)
   NProgress.start()
   // setToken('233434234')
   if (getToken()) {
@@ -25,7 +24,6 @@ router.beforeEach((to, from, next) => {
         // 判断当前用户是否已拉取完user_info信息
         store.dispatch('GetInfo').then((res) => {
           store.dispatch('GenerateRoutes').then(accessRoutes => {
-            console.log('accessRoutes',accessRoutes)
             // 根据roles权限生成可访问的路由表
             router.addRoutes(accessRoutes) // 动态添加可访问路由表
             next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
@@ -39,13 +37,9 @@ router.beforeEach((to, from, next) => {
       } else {
 
         if (to.path.includes('app')) {
-          console.log('ckc', store.getters.menus)
           const tmpMenus = JSON.parse(JSON.stringify(store.getters.menus));
           addAppPage(tmpMenus).then((count) => {
-            console.log('ckc1', tmpMenus)
-            console.log('count != store.getters.addMenusTotal', count, store.getters.addMenusTotal)
             if (count != store.getters.addMenusTotal) {
-              console.log('我进了')
               store.commit('SET_ADDMENUSTOTAL', count)
               store.dispatch('GenerateRoutes').then(accessRoutes => {
                 router.addRoutes(accessRoutes) // 动态添加可访问路由表
@@ -93,7 +87,7 @@ const addAppPage = async (menu) => {
       noCache: false
     }
   });
-  console.log('动态应用路由', tmpData)
+  // console.log('动态应用路由', tmpData)
 
   menu.forEach((el) => {
     if (el.name === '应用' && el.path === '/app') {
@@ -103,7 +97,7 @@ const addAppPage = async (menu) => {
     }
   })
 
-  console.log('结果', menu)
+  // console.log('结果', menu)
   store.commit('SET_MENUS', menu)
   return tmpData.length
 }

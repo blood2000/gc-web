@@ -63,7 +63,6 @@ const user = {
       state.phoneNumber = phoneNumber;
     },
     SET_ADDMENUSTOTAL: (state,total) => {
-      console.log('ckc 我要计数',total)
       state.addMenusTotal = total
     }
   },
@@ -249,16 +248,15 @@ const addAppPage = async (menu) => {
       noCache: false
     }
   });
-  console.log('动态应用路由', tmpData)
+  // console.log('动态应用路由', tmpData)
 
   menu.forEach((el) => {
     if (el.name === '应用' && el.path === '/app') {
-      console.log('就是你了', el)
       el.children = el.children.concat(tmpData)
       // el.children.push(res.data[0])
     }
   })
-  console.log('结果', menu)
+  // console.log('结果', menu)
 }
 
 export default user;

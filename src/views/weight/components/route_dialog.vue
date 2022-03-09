@@ -119,7 +119,6 @@ export default {
     routeShow: {
       handler() {
         if (this.routeShow) {
-          console.log("ckc open");
           this.getRouteList();
         }
       },

@@ -37,7 +37,6 @@ const permission = {
     },
     //sideSecondRouters
     SET_SIDE_SECOND_ROUTERS:(state, routes)=> {
-      console.log('设置二级路由',routes)
       state.sideSecondRouters = routes;
     },
   },
@@ -64,7 +63,6 @@ const permission = {
       const rewriteRoutes = filterAsyncRouter(rdata, false, true);
       // changeSingleTitle(rewriteRoutes) //标签栏 只有一个子组件时显示夫名称
       rewriteRoutes.push({ path: '*', redirect: '/404', hidden: true });
-      console.log('rewriteRoutes',rewriteRoutes)
       commit('SET_ROUTES', rewriteRoutes);
       // test
       commit('SET_SIDEBAR_ROUTERS', sidebarRoutes);

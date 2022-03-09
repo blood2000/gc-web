@@ -636,7 +636,7 @@ export default {
     };
   },
   mounted() {
-   this.initMap()
+    this.initMap();
   },
   watch: {
     createDrawer() {
@@ -660,13 +660,13 @@ export default {
     },
   },
   methods: {
-    initMap(){
-       setTimeout(() => {
-      this.geocoder = new AMap.Geocoder({
-        radius: 1000,
-        extensions: "all",
-      });
-    }, 1000);
+    initMap() {
+      setTimeout(() => {
+        this.geocoder = new AMap.Geocoder({
+          radius: 1000,
+          extensions: "all",
+        });
+      }, 1000);
     },
     // 选择常用企业
     hanleCompanyOpen() {
@@ -889,7 +889,6 @@ export default {
       console.log("arr", arr);
       if (!arr) return;
       return arr.map((e) => {
-        console.log("e====>", e);
         return {
           ...e,
           dictValue: e[dictValue],
@@ -940,12 +939,13 @@ export default {
       console.log("this.selected  ", this.selected);
       if (!this.selected) return;
       if (type == "1") {
+        this.loadAddressParams.addressAlias = this.selected.address;
         this.loadAddressParams.detailAddress = this.selected.address;
         this.loadAddressParams.locations[0] = this.selected.lng;
         this.loadAddressParams.locations[1] = this.selected.lat;
       }
-
       if (type == "2") {
+        this.unloadAddressParams.addressAlias = this.selected.address;
         this.unloadAddressParams.detailAddress = this.selected.address;
         this.unloadAddressParams.locations[0] = this.selected.lng;
         this.unloadAddressParams.locations[1] = this.selected.lat;

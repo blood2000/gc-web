@@ -107,25 +107,21 @@ export default {
       this.title = "修改常用地址";
       this.editType = "update";
       this.open = true;
-      console.log("修改常用弹窗 ckc obj ", obj.id);
       this.dialogCode = obj.id;
     },
     async handleDelete(obj = {}) {
-      console.log("obj", obj);
       const ids = obj.id ? [Number(obj.id)] : this.ids;
       this.$confirm("删除操作不可恢复，确认要删除该常用地址吗？", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        console.log("开始删了");
         const tmp = {
           moduleName: "http_common",
           method: "post",
           url_alias: "address_del",
           data: { ids:ids },
         };
-        console.log('tmp',tmp)
         http_request(tmp).then(() => {
           this.searchQuery();
           this.msgSuccess("删除成功");
@@ -140,14 +136,12 @@ export default {
         url_alias: "address_list",
         data: this.pagingToFrom(),
       };
-      console.log("所有参数列表", obj);
       const res = await http_request(obj);
       if (res.code == "200") {
         this.tableData = res.data.rows;
         this.total = res.data.total;
         this.loading = false;
       } else {
-        console.log("error", res);
         this.loading = false;
       }
     },

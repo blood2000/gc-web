@@ -114,10 +114,6 @@ export default {
     activeMenu() {
       const route = this.$route;
       const { meta, path } = route;
-      // if (meta.activeMenu) {
-      //   return meta.activeMenu;
-      // }
-    console.log('ckc',path.split('/')[1])
       return path.split('/')[1];
     },
   },

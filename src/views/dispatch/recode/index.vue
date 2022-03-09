@@ -138,7 +138,6 @@ export default {
       return this.$store.state.dict.goodsTypeList;
     },
        getTableHeight() {
-      console.log('================>')
       let windowHeight =
         document.documentElement.clientHeight || document.body.clientHeight;
       return windowHeight - 290 -152;

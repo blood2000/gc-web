@@ -191,7 +191,6 @@ export default {
   },
     computed: {
     getTableHeight() {
-      console.log('================>')
       let windowHeight =
         document.documentElement.clientHeight || document.body.clientHeight;
       return windowHeight - 290 -152;

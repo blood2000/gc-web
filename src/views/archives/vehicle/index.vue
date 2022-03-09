@@ -289,7 +289,6 @@ export default {
   created() {},
   computed: {
     getTableHeight() {
-      console.log('================>')
       let windowHeight =
         document.documentElement.clientHeight || document.body.clientHeight;
       return windowHeight - 300 -152;
@@ -626,12 +625,9 @@ export default {
     handleDetail(obj) {
       this.currCode = obj.code;
       this.detailDrawer = true;
-      console.log("ckc code", this.currCode);
       // this.$router.push("detail?code=" + code);
     },
     handleDevice(obj) {
-      console.log("ckc obj", obj, obj.deviceCode);
-
       this.deviceOptions = {
         title: obj.deviceCode ? "更换设备" : "绑定设备",
         vehicleCode: obj.code,
