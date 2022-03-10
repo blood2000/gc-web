@@ -53,7 +53,7 @@
         <el-row :gutter="10" class="toolsbar">
           <el-col :span="1.5">
             <el-button
-              v-hasPermi="['role:add']"
+              v-hasPermi="['archives:role:add']"
               type="primary"
               icon="el-icon-plus"
               size="mini"
@@ -63,7 +63,7 @@
           </el-col>
           <el-col :span="1.5">
             <el-button
-              v-hasPermi="['employee:delete']"
+              v-hasPermi="['archives:role:del']"
               type="danger"
               icon="el-icon-delete"
               size="mini"
@@ -124,7 +124,7 @@
           >
             <template slot-scope="scope">
               <el-button
-                v-hasPermi="['role:edit']"
+                v-hasPermi="['archives:role:edit']"
                 size="mini"
                 type="text"
                 @click="handleUpdate(scope.row)"
@@ -133,21 +133,21 @@
               <!-- isSystem 1系统角色 0其他 -->
               <template v-if="scope.row.isSystem !== 1">
                 <el-button
-                  v-hasPermi="['role:edit']"
+                  v-hasPermi="['archives:role:employee']"
                   size="mini"
                   type="text"
                   @click="handleEmployee(scope.row)"
                   >设置职员</el-button
                 >
                 <el-button
-                  v-hasPermi="['role:edit']"
+                  v-hasPermi="['archives:role:allot']"
                   size="mini"
                   type="text"
                   @click="handleResource(scope.row)"
                   >功能分配</el-button
                 >
                 <el-button
-                  v-hasPermi="['role:delete']"
+                  v-hasPermi="['archives:role:del']"
                   size="mini"
                   type="text"
                   @click="handleDelete(scope.row)"

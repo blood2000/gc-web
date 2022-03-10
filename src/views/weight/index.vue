@@ -13,7 +13,9 @@
       </el-tabs>
       <div class="pages-info-right-content">
         <div class="pages-info-right-content-btn">
-          <el-button type="primary" @click="handleAdd">添加磅单</el-button>
+          <el-button type="primary" 
+          
+          @click="handleAdd">添加磅单</el-button>
         </div>
         <div class="page-table-layout-set">
           <div

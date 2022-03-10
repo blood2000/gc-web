@@ -50,11 +50,12 @@
         <el-row :gutter="10" class="toolsbar">
           <el-col :span="1.5">
             <el-button
-              v-hasPermi="['org:add']"
+              v-hasPermi="['archives:org:add']"
               type="primary"
               icon="el-icon-plus"
               size="mini"
               @click="handleAdd"
+
               >新增</el-button
             >
           </el-col>
@@ -84,7 +85,7 @@
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">
               <el-button
-                v-hasPermi="['org:add']"
+                v-hasPermi="['archives:org:add']"
                 size="mini"
                 type="text"
                 @click="handleAdd(scope.row)"
@@ -92,14 +93,14 @@
               >
               <template v-if="scope.row.parentId !== 0">
                 <el-button
-                  v-hasPermi="['org:edit']"
+                  v-hasPermi="['archives:org:edit']"
                   size="mini"
                   type="text"
                   @click="handleUpdate(scope.row)"
                   >修改</el-button
                 >
                 <el-button
-                  v-hasPermi="['org:delete']"
+                  v-hasPermi="['archives:org:del']"
                   size="mini"
                   type="text"
                   @click="handleDelete(scope.row)"

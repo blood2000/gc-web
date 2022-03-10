@@ -32,7 +32,10 @@
             }}
           </template>
           <template #edit="{ row }">
-            <el-button size="mini" type="text" @click="handleDetail(row)"
+            <el-button size="mini"
+             type="text"
+              @click="handleDetail(row)"
+               v-hasPermi="['transport:manage:detail']"
               >详情</el-button
             >
           </template>

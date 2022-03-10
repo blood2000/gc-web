@@ -8,10 +8,14 @@
       </div>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item>
-          <span class="menu-item" @click.stop="edit()">修改</span>
+          <span class="menu-item" 
+          
+          @click.stop="edit()">修改</span>
         </el-dropdown-item>
         <el-dropdown-item>
-          <span class="menu-item" @click.stop="del"  v-if="!data.isDel">删除</span>
+          <span class="menu-item" @click.stop="del"  
+
+          v-if="!data.isDel">删除</span>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>

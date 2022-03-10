@@ -9,16 +9,36 @@
         </div>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>
-            <span class="menu-item" @click="lookCarOrder">查看派车单</span>
+            <span
+              class="menu-item"
+              v-hasPermi="['monitor:carlist:carlog']"
+              @click="lookCarOrder"
+              >查看派车单</span
+            >
           </el-dropdown-item>
           <el-dropdown-item>
-            <span class="menu-item" @click="mapSearch">地图查看</span>
+            <span
+              class="menu-item"
+              v-hasPermi="['monitor:carlist:map']"
+              @click="mapSearch"
+              >地图查看</span
+            >
           </el-dropdown-item>
           <el-dropdown-item>
-            <span class="menu-item" @click="travelSeach">轨迹查看</span>
+            <span
+              class="menu-item"
+              v-hasPermi="['monitor:carlist:track']"
+              @click="travelSeach"
+              >轨迹查看</span
+            >
           </el-dropdown-item>
           <el-dropdown-item>
-            <span class="menu-item" @click="seeVideo">视频回放</span>
+            <span
+              class="menu-item"
+              v-hasPermi="['monitor:carlist:video']"
+              @click="seeVideo"
+              >视频回放</span
+            >
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -282,7 +302,7 @@ export default {
   border-radius: 6px;
   padding-top: 16px;
   box-sizing: border-box;
-  
+
   &-menu-ab {
     width: 32px;
     height: 20px;
@@ -460,7 +480,7 @@ export default {
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
-     flex: 1;
+      flex: 1;
       padding: 0 10px;
       border-right: 1px solid #f3f4f5;
       display: flex;
@@ -502,7 +522,7 @@ export default {
     &-right {
       text-align: center;
       line-height: 40px;
-      width:90px;
+      width: 90px;
       & > span {
         font-size: 12px;
         font-family: PingFang SC;

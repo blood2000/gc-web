@@ -53,14 +53,19 @@
               style="color: red"
               v-if="row.vehicleInfo"
               type="text"
+               v-hasPermi="['archives:device:bind']"
               @click="handleUnbind(row)"
               >解绑车辆</el-button
             >
-            <el-button size="mini" v-else type="text" @click="handleBind(row)"
+            <el-button size="mini" v-else type="text"
+             v-hasPermi="['archives:device:bind']"
+             @click="handleBind(row)"
               >绑定车辆</el-button
             >
 
-            <el-button size="mini" type="text" @click="handleDetail(row)"
+            <el-button size="mini" type="text" 
+             v-hasPermi="['archives:device:detail']"
+            @click="handleDetail(row)"
               >详情</el-button
             >
           </template>

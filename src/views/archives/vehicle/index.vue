@@ -50,7 +50,11 @@
         <!-- 操作栏 -->
         <el-row :gutter="10" class="toolsbar">
           <el-col :span="1.5">
-            <el-button type="primary" size="mini" @click="handleAdd"
+            <el-button
+              type="primary"
+              size="mini"
+              @click="handleAdd"
+              v-hasPermi="['archives:vehicle:add']"
               >新增</el-button
             >
           </el-col>
@@ -59,6 +63,7 @@
               type="danger"
               size="mini"
               :disabled="multiple"
+              v-hasPermi="['archives:vehicle:del']"
               @click="handleDelete"
               >删除</el-button
             >
@@ -78,7 +83,11 @@
                 >
               </el-col> -->
           <el-col :span="1.5">
-            <el-button type="primary" size="mini" @click="handleGroup"
+            <el-button
+              type="primary"
+              size="mini"
+              v-hasPermi="['archives:vehicle:group']"
+              @click="handleGroup"
               >车辆分组管理</el-button
             >
           </el-col>
@@ -160,7 +169,11 @@
           </template>
 
           <template #edit="{ row }" width="200">
-            <el-button size="mini" type="text" @click="handleUpdate(row)"
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleUpdate(row)"
+              v-hasPermi="['archives:vehicle:edit']"
               >修改</el-button
             >
             <el-button
@@ -168,15 +181,28 @@
               type="text"
               style="color: red"
               @click="handleDelete(row)"
+              v-hasPermi="['archives:vehicle:del']"
               >删除</el-button
             >
-            <el-button size="mini" type="text" @click="handlePosition(row)"
+            <el-button
+              size="mini"
+              type="text"
+              @click="handlePosition(row)"
+              v-hasPermi="['archives:vehicle:location']"
               >定位</el-button
             >
-            <el-button size="mini" type="text" @click="handleDetail(row)"
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleDetail(row)"
+              v-hasPermi="['archives:vehicle:detail']"
               >详情</el-button
             >
-            <el-button size="mini" type="text" @click="handleDevice(row)"
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleDevice(row)"
+              v-hasPermi="['archives:vehicle:device']"
               >绑定设备</el-button
             >
           </template>
@@ -283,7 +309,6 @@ export default {
       currAuthStatus: null,
       currCode: null,
       detailDrawer: false,
-      
     };
   },
   created() {},
@@ -291,7 +316,7 @@ export default {
     getTableHeight() {
       let windowHeight =
         document.documentElement.clientHeight || document.body.clientHeight;
-      return windowHeight - 300 -152;
+      return windowHeight - 300 - 152;
     },
   },
   mounted() {

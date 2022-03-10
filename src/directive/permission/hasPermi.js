@@ -10,6 +10,7 @@ export default {
     const { value } = binding
     const all_permission = "*:*:*";
     const permissions = store.getters && store.getters.permissions
+    // console.log('permissions',permissions,value)
     if (value && value instanceof Array && value.length > 0) {
       const permissionFlag = value
       const hasPermissions = permissions.some(permission => {

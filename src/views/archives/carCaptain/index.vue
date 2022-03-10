@@ -94,7 +94,10 @@
       <!-- 分割线 -->
       <div class="divier"></div>
       <div class="page-table-layout-set">
-        <el-button @click="onAddCaptain" class="mb20" type="primary">添加车队长</el-button>
+        <el-button @click="onAddCaptain" 
+        class="mb20" 
+         v-hasPermi="['archives:carcaptain:add']"
+        type="primary">添加车队长</el-button>
         <el-table v-loading="loading"
          highlight-current-row :stripe="true" :data="captainList"
         :height="getTableHeight">
@@ -123,13 +126,20 @@
             class-name="small-padding fixed-width"
           >
             <template slot-scope="scope">
-              <el-button size="mini" type="text" @click="onClickDetail(scope.row.teamLeaderCode)">
+              <el-button size="mini" type="text" 
+                v-hasPermi="['archives:carcaptain:detail']"
+              @click="onClickDetail(scope.row.teamLeaderCode)">
                 详情
               </el-button>
-              <el-button size="mini" type="text" @click="onClickEdit(scope.row.teamLeaderCode)">
+              <el-button size="mini" 
+              type="text" 
+              v-hasPermi="['archives:carcaptain:edit']"
+              @click="onClickEdit(scope.row.teamLeaderCode)">
                 编辑
               </el-button>
-              <el-button size="mini" type="text" @click="onClickDel(scope.row.teamLeaderCode)">
+              <el-button size="mini" type="text"
+              v-hasPermi="['archives:carcaptain:del']"
+               @click="onClickDel(scope.row.teamLeaderCode)">
                 删除
               </el-button>
               <!-- <el-button

@@ -134,7 +134,7 @@
         <el-row :gutter="10" class="toolsbar">
           <el-col :span="1.5">
             <el-button
-              v-hasPermi="['employee:add']"
+              v-hasPermi="['archives:employee:add']"
               type="primary"
               icon="el-icon-plus"
               size="mini"
@@ -144,7 +144,7 @@
           </el-col>
           <el-col :span="1.5">
             <el-button
-              v-hasPermi="['employee:delete']"
+              v-hasPermi="['archives:employee:del']"
               type="danger"
               icon="el-icon-delete"
               size="mini"
@@ -155,7 +155,7 @@
           </el-col>
           <el-col :span="1.5">
             <el-button
-              v-hasPermi="['employee:export']"
+              v-hasPermi="['archives:employee:export']"
               type="warning"
               icon="el-icon-download"
               size="mini"
@@ -267,7 +267,7 @@
             <template slot-scope="scope" v-if="scope.row.adminFlag !== 1">
               <el-button
                 v-if="!scope.row.teamLeaderFlag"
-                v-hasPermi="['employee:edit']"
+                v-hasPermi="['archives:employee:edit']"
                 size="mini"
                 type="text"
                 @click="handleUpdate(scope.row)"
@@ -286,7 +286,7 @@
                   @click="handleOrg(scope.row)"
                 >调整组织</el-button> -->
               <el-button
-                v-hasPermi="['employee:reset']"
+                v-hasPermi="['archives:employee:reset']"
                 size="mini"
                 type="text"
                 @click="handleResetPwd(scope.row)"
@@ -294,7 +294,7 @@
               >
               <el-button
                 v-if="!scope.row.teamLeaderFlag"
-                v-hasPermi="['employee:delete']"
+                v-hasPermi="['archives:employee:del']"
                 size="mini"
                 type="text"
                 @click="handleDelete(scope.row)"

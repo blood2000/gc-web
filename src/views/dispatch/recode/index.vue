@@ -18,6 +18,7 @@
             size="mini"
             :loading="recLoading"
             @click="handleInfo"
+             v-hasPermi="['transport:recode:createinfo']"
             >生成调度信息</el-button
           >
           <!-- <right-toolbar
@@ -50,13 +51,21 @@
             <span>{{ `${row.driverName}[${row.driverPhone}]` }}</span>
           </template>
           <template #edit="{ row }">
-            <el-button size="mini" type="text" @click="handleCarlog(row)">{{
+            <el-button size="mini"
+             type="text"
+             v-hasPermi="['transport:recode:carlog']"
+              @click="handleCarlog(row)">{{
               `查看派车单(${row.appointCarOrderCount})`
             }}</el-button>
-            <el-button size="mini" type="text" @click="handleDetail(row)"
+            <el-button size="mini" type="text"
+              v-hasPermi="['transport:recode:detail']"
+             @click="handleDetail(row)"
               >详情</el-button
             >
-            <el-button size="mini" type="text" @click="handleDel(row)"
+            <el-button size="mini"
+             type="text" 
+              v-hasPermi="['transport:recode:del']"
+             @click="handleDel(row)"
               >删除</el-button
             >
           </template>

@@ -56,7 +56,9 @@
       </el-form>
     </div>
     <div class="dispatch__table">
-      <el-button class="mb20" type="primary" :loading="exportLoading" @click="onExport"
+      <el-button class="mb20" type="primary"
+       v-hasPermi="['statistics:dispatch:export']"
+       :loading="exportLoading" @click="onExport"
         >导出</el-button
       >
       <el-table v-loading="loading" 
@@ -78,7 +80,9 @@
         <el-table-column label="待收（元）" prop="stayIncomeTotal" />
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="onClickDetail(scope.row)"> 详情 </el-button>
+            <el-button type="text"
+            v-hasPermi="['statistics:dispatch:detail']"
+             @click="onClickDetail(scope.row)"> 详情 </el-button>
           </template>
         </el-table-column>
       </el-table>

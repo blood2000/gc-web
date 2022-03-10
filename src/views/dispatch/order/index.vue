@@ -14,7 +14,10 @@
       <div class="page-table-layout-set">
         <!-- 操作栏 -->
         <div class="toolsbar">
-          <el-button type="primary" size="mini" @click="createDispatchOrder"
+          <el-button type="primary"
+           size="mini"
+            @click="createDispatchOrder"
+            v-hasPermi="['transport:order:create']"
             >创建调度单</el-button
           >
         </div>
@@ -26,7 +29,7 @@
           :table-columns-config="tableColumnsConfig"
           :border="false"
           :stripe="true"
-            :height="getTableHeight"
+          :height="getTableHeight"
         >
           <template #shipmentName="{ row }">
             <span>{{ `${row.shipmentName}[${row.shipmentPhone}]` }}</span>
@@ -54,16 +57,21 @@
               style="color: red"
               v-show="row.source == 'zj' && row.dispatchOrderStatus !== 0"
               @click="handleStatusClose(row)"
+               v-hasPermi="['transport:order:close']"
             >
               关闭
             </el-button>
-            <el-button size="mini" type="text" @click="handleDetail(row)">
+            <el-button size="mini" 
+            type="text"
+             v-hasPermi="['transport:order:detail']"
+             @click="handleDetail(row)">
               详情
             </el-button>
             <el-button
               size="mini"
               type="text"
               @click="handleDispatch(row, true)"
+              v-hasPermi="['transport:order:dispatchcars']"
               v-show="row.dispatchOrderStatus !== 0"
             >
               批量派车
@@ -72,11 +80,15 @@
               size="mini"
               type="text"
               @click="handleDispatch(row, false)"
+              v-hasPermi="['transport:order:dispatchcar']"
               v-show="row.dispatchOrderStatus !== 0"
             >
               单次派车
             </el-button>
-            <el-button size="mini" type="text" @click="handleCarlog(row)">
+            <el-button size="mini"
+             type="text"
+              v-hasPermi="['transport:order:recode']"
+              @click="handleCarlog(row)">
               派车记录
             </el-button>
           </template>
@@ -189,11 +201,11 @@ export default {
   created() {
     this.getGoodsTypeList();
   },
-    computed: {
+  computed: {
     getTableHeight() {
       let windowHeight =
         document.documentElement.clientHeight || document.body.clientHeight;
-      return windowHeight - 290 -152;
+      return windowHeight - 290 - 152;
     },
   },
   mounted() {
@@ -288,11 +300,15 @@ export default {
       if (data.dispatchOrderStatus === 0) {
         return this.msgWarning("该调度状态已经关闭，无法进行派车");
       }
-      this.currIsMany = types
+      this.currIsMany = types;
       this.carDrawer = true;
       this.currSource = data.source;
       this.currCode = data.dispatchOrderCode;
-      console.log('this.currIsMany,this.currSource',this.currIsMany,this.currSource)
+      console.log(
+        "this.currIsMany,this.currSource",
+        this.currIsMany,
+        this.currSource
+      );
     },
     // 表单到分页请求参数
     formToPaging() {
@@ -313,8 +329,8 @@ export default {
       }
 
       for (const item in tmp) {
-        if(tmp[item] == 0){
-          console.log('tmp[item]',tmp[item])
+        if (tmp[item] == 0) {
+          console.log("tmp[item]", tmp[item]);
         }
         if (!tmp[item] && tmp[item] !== 0) {
           delete tmp[item];

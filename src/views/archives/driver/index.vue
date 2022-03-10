@@ -49,7 +49,11 @@
         <!-- 操作栏 -->
         <el-row :gutter="10" class="toolsbar">
           <el-col :span="1.5">
-            <el-button type="primary" size="mini" @click="handleAdd"
+            <el-button
+              type="primary"
+              size="mini"
+              @click="handleAdd"
+              v-hasPermi="['archives:driver:add']"
               >新增</el-button
             >
           </el-col>
@@ -60,6 +64,7 @@
               size="mini"
               :disabled="multiple"
               @click="handleDelete"
+              v-hasPermi="['archives:driver:del']"
               >删除</el-button
             >
           </el-col>
@@ -92,7 +97,7 @@
           @selection-change="handleSelectionChange"
           :border="false"
           :stripe="true"
-           :height="getTableHeight"
+          :height="getTableHeight"
         >
           <template #driverStatus="{ row }">
             <span
@@ -127,6 +132,7 @@
           </template>
           <template #edit="{ row }">
             <el-button size="mini" type="text" @click="handleUpdate(row)"
+             v-hasPermi="['archives:driver:edit']"
               >修改</el-button
             >
             <el-button
@@ -134,9 +140,11 @@
               type="text"
               style="color: red"
               @click="handleDelete(row)"
+               v-hasPermi="['archives:driver:del']"
               >删除</el-button
             >
             <el-button size="mini" type="text" @click="handleReset(row)"
+             v-hasPermi="['archives:driver:reset']"
               >密码重置</el-button
             >
             <!-- <el-button
@@ -148,6 +156,7 @@
                   数据权限</el-button
                 > -->
             <el-button size="mini" type="text" @click="handleDetail(row)"
+             v-hasPermi="['archives:driver:detail']"
               >详情</el-button
             >
           </template>
@@ -161,7 +170,6 @@
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="driverHttpReq"
-       
       />
     </div>
 
