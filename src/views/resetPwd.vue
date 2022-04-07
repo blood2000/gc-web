@@ -111,6 +111,10 @@
       class="login-bg"
       src="../assets/images/login/login-bg.mp4"
     ></video>
+        <div class="el-login-footer">
+      <div>福建至简至一信息科技有限公司 版权所有</div>
+      <span>CopyRight@ 2022 All Rights Reserved <a href="https://beian.miit.gov.cn/"> 闽ICP备19023755号-2 </a> </span>
+    </div>
   </div>
 </template>
 
