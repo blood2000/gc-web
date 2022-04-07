@@ -95,6 +95,30 @@ export const tableColumnsConfig = [
         tooltip: true,
         width:260
     },
+    {
+        isShow: true,
+        label: "接单时间",
+        prop: "receiveTime",
+        sortNum: 1,
+        tooltip: true,
+        width:260
+    },
+    {
+        isShow: true,
+        label: "出车时间",
+        prop: "loadTime",
+        sortNum: 1,
+        tooltip: true,
+        width:260
+    },
+    {
+        isShow: true,
+        label: "回车时间",
+        prop: "unloadTime",
+        sortNum: 1,
+        tooltip: true,
+        width:260
+    },
     // {
     //     isShow: true,
     //     label: "运费单价",

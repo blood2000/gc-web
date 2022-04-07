@@ -32,10 +32,11 @@
             }}
           </template>
           <template #edit="{ row }">
-            <el-button size="mini"
-             type="text"
+            <el-button
+              size="mini"
+              type="text"
               @click="handleDetail(row)"
-               v-hasPermi="['transport:manage:detail']"
+              v-hasPermi="['transport:manage:detail']"
               >详情</el-button
             >
           </template>
@@ -98,6 +99,9 @@ export default {
         status: null, //状态
         driverName: null, //司机名称
         driverPhone: null, //司机电话
+        receiveTime: [],
+        loadTime: [],
+        unloadTime: [],
         // orderNo: null, //货源单号
         // waybillNo: null, //运单号
         // source: null, //来源 chy
@@ -119,7 +123,7 @@ export default {
       let windowHeight =
         document.documentElement.clientHeight || document.body.clientHeight;
       console.log(windowHeight);
-     return windowHeight - 250 -152;
+      return windowHeight - 250 - 222;
     },
   },
   mounted() {
@@ -152,7 +156,41 @@ export default {
       // const code = data.appointCarOrderCode;
       // this.$router.push("manage/detail?code=" + code);
     },
+    dealForm() {
+      console.log('this.queryParams',this.queryParams)
+        if (this.queryParams.receiveTime.length > 0) {
+          this.queryParams.startReceiveTime = this.queryParams.receiveTime[0];
+          this.queryParams.endReceiveTime = this.queryParams.receiveTime[1];
+        } else {
+          if (this.queryParams.startReceiveTime)
+            delete this.queryParams.startReceiveTime;
 
+          if (this.queryParams.endReceiveTime)
+            delete this.queryParams.endReceiveTime;
+        }
+        if (this.queryParams.loadTime.length > 0) {
+          this.queryParams.startLoadTime = this.queryParams.loadTime[0];
+          this.queryParams.endLoadTime = this.queryParams.loadTime[1];
+        } else {
+          if (this.queryParams.startLoadTime)
+            delete this.queryParams.startLoadTime;
+
+          if (this.queryParams.endLoadTime) delete this.queryParams.endLoadTime;
+        }
+        if (this.queryParams.unloadTime.length > 0) {
+          this.queryParams.startUnloadTime = this.queryParams.unloadTime[0];
+          this.queryParams.endUnloadTime = this.queryParams.unloadTime[1];
+        } else {
+          if (this.queryParams.startUnloadTime)
+            delete this.queryParams.startUnloadTime;
+
+          if (this.queryParams.endUnloadTime)
+            delete this.queryParams.endUnloadTime;
+        }
+ 
+
+      return this.queryParams
+    },
     async getList() {
       this.loading = true;
       const obj = {
@@ -160,7 +198,7 @@ export default {
         moduleName: "http_dispatch",
         method: "post",
         url_alias: "car_order",
-        data: this.queryParams,
+        data: this.dealForm(),
       };
       const res = await http_request(obj);
       // console.log("geatlist ===>", res);

@@ -366,7 +366,12 @@
                 :key="index"
                 :label="item.name"
                 :value="item.code"
-              />
+              >
+                <div class="option-item">
+                  <div class="option-item_name">{{ item.name }}</div>
+                  <div class="option-item_address">{{ item.licenseNumber }}</div>
+                </div>
+              </el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -833,11 +838,11 @@ export default {
         });
     },
     // 校验规则关闭
-    rulesDis(isChy){
+    rulesDis(isChy) {
       // if(!isChy){
-       vehicleConfig.rulesDisList.forEach((value)=>{
-         this.rules[value][0].required = false
-       })
+      vehicleConfig.rulesDisList.forEach((value) => {
+        this.rules[value][0].required = false;
+      });
       // }
     },
     //提交表单
@@ -955,19 +960,19 @@ export default {
       }
     },
     async ocrHttp(imgPath, type, side) {
-      const params =  {
-          imgPath,
-          type,
-          side,
-        }
-        if(side =="front"){
-          // params.returnIssuingAuthority = true
-        }
+      const params = {
+        imgPath,
+        type,
+        side,
+      };
+      if (side == "front") {
+        // params.returnIssuingAuthority = true
+      }
       const obj = {
         moduleName: "http_common",
         method: "post",
         url_alias: "ocr",
-        data:params
+        data: params,
       };
       console.log("ocr请求 参数", obj);
       const res = await http_request(obj);
@@ -1173,5 +1178,15 @@ export default {
   font-weight: bold;
   color: #3d4050;
   margin-bottom: 10px;
+}
+.option-item {
+  display: flex;
+}
+.option-item .option-item_name {
+  margin-right: 10px;
+}
+.option-item .option-item_address {
+  font-size: 12px;
+  color: #ccc;
 }
 </style>

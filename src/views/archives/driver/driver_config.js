@@ -29,7 +29,7 @@ const tableColumnsConfig = [
   },
   {
     isShow: true,
-    label: "实名状态",
+    label: "超好运实名状态",
     prop: "realStatus",
     sortNum: 5,
     tooltip: true,
