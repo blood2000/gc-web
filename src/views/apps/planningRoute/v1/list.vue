@@ -71,7 +71,7 @@
         </RefactorTable>
       </div>
     </el-drawer>
-    <el-dialog :visible.sync="isShowEditVehicleDialog" title="编辑车辆" width="635px" :close-on-click-modal="false">
+    <el-dialog :visible.sync="isShowEditVehicleDialog" title="编辑车辆" width="835px" :close-on-click-modal="false">
       <el-transfer
         v-loading="isLoadingBindableVehicles"
         filterable
@@ -80,7 +80,13 @@
         filter-placeholder="请输入车牌号"
         :props="{key: 'vehicle_code', label: 'plate_number'}"
         v-model="routeVehicles"
-        :data="bindableVehicles">
+        :data="bindableVehicles"
+      >
+        <span class="carName" slot-scope="{ option }">
+          {{ option.plate_number }}
+          <span v-show="option.routeName"> - </span>
+          <span class="routeName" v-show="option.routeName">{{ option.routeName }}</span>
+        </span>
       </el-transfer>
       <div slot="footer" style="text-align: center">
         <el-button type="primary" @click="saveEditVehicle">保存</el-button>
@@ -230,7 +236,7 @@ export default {
         let routeVehicles = res[1].data.rows.map(item => {
           return {plate_number: item.plate_number, vehicle_code: item.vehicle_code}
         })
-        bindableVehicles.push(...routeVehicles)
+        // bindableVehicles.push(...routeVehicles)
         this.bindableVehicles = bindableVehicles
         this.routeVehicles = res[1].data.rows.map(item => item.vehicle_code)
         this.apiRouteVehicles = []
@@ -287,6 +293,14 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.pages-info {
+  .routeName {
+    font-size: 12px;
+    color: #888;
+  }
+}
+::v-deep .el-transfer-panel {
+  width: 300px;
+}
 </style>
