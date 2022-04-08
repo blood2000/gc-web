@@ -95,6 +95,7 @@
             @change="changeTime"
           >
             <el-option
+            class="nx"
               v-for="dict in timeOptions"
               :key="dict"
               :label="dict + 'X'"
@@ -286,7 +287,7 @@ export default {
       // 播放进度条
       slideValue: 0,
       rateTime: 1,
-      timeOptions: [1, 2, 3],
+      timeOptions: [1, 2, 3,4,5,6,7,8],
       isPlay: 0, // 0播放 1暂停 2继续
       // tab
       currentTab: 1,
@@ -402,6 +403,7 @@ export default {
       this.parkingList = [];
       this.jmTracklist = [];
       this.jmTrackInfolist = [];
+     
       this.$emit("clearPathSimplifierIns");
       this.currentTrackAllTime = 0;
       this.currentTrackAllMileage = 0;
@@ -480,6 +482,8 @@ export default {
       http_request(obj)
         .then((response) => {
           console.log("获取几米轨迹", response);
+          this.$emit('setTracking',true)
+           this.$emit('clearMarkerList')
           this.buttonLoading = false;
           if (response.data) {
             this.jmTracklist = [];
@@ -1004,6 +1008,9 @@ export default {
 </style>
 
 <style lang="scss">
+.nx{
+  font-family: PingFang SC;
+}
 .map-track-list {
   .time-box {
     .el-range-editor.el-input__inner {

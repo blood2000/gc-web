@@ -345,6 +345,8 @@
       @pausePathSimplifier="pausePathSimplifier"
       @clearPathSimplifierIns="clearPathSimplifierIns"
       @handleSlideChange="handleSlideChange"
+      @setTracking="setTracking"
+      @clearMarkerList="clearMarkerList"
     />
     <!-- 视频回放 -->
     <PlayBack
@@ -479,7 +481,7 @@ export default {
       // 巡航器
       navgtr: null,
       // 巡航速度
-      navgtrSpeed: 3000,
+      navgtrSpeed: 4500,
       // 巡航起点
       startMarker: null,
       // 巡航终点
@@ -488,6 +490,7 @@ export default {
       markerList: {},
       clusterMarkerList: [],
       markerData: [],
+      tracking: false, //是否开启轨迹
       // 聚合
       cluster: null,
       // 定时刷新地图点位
@@ -683,8 +686,10 @@ export default {
         //获取当前最新的地图层级
         let Zoom = _this.map.getZoom();
         console.log("Zoom", Zoom, e);
-        console.log("markerList", _this.markerList);
-
+        if (_this.tracking) {
+          console.log("已经开启轨迹");
+          return;
+        }
         if (Zoom < 12) {
           if (_this.showVehicleLabel == true) {
             _this.clearMarkerList();
@@ -1703,6 +1708,10 @@ export default {
             attribute.coordinate.value[0] &&
             attribute.coordinate.value[1]
           ) {
+            if (this.tracking) {
+              console.log("已经开启轨迹");
+              return;
+            }
             this.drawVehicleMarker(data);
             // this.clearDynamicVehicleMove();
             // this.dynamicVehicleMove(data, (error) => {
@@ -1825,6 +1834,9 @@ export default {
     handleHeaderTab(code) {
       console.log("切换地图tab", code);
       if (this.headerTab === code) return;
+      if (code != 3) {
+        this.setTracking(false);
+      }
       this.headerTab = code;
       // 清除巡航轨迹
       this.clearPathSimplifierIns();
@@ -1851,6 +1863,10 @@ export default {
     // 刷新程序
     getDeviceLocationInfoByCode() {
       console.log("刷新程序", this.isShowVehicleInfo);
+      // if(this.tracking){
+      //   console.log('已经开启轨迹暂时不刷新')
+      //   return
+      // }
       if (this.isShowVehicleInfo) {
         // 选中车
         this.getDeviceLocationInfo(this.orgOrVehicleInfo.orgOrlicenseNumber);
@@ -1881,7 +1897,7 @@ export default {
           // 绘制成正常车辆
           // this.drawVehicleMarker(tmp);
           clearTimeout(this.timerWarn);
-        },5 * 1000);
+        }, 5 * 1000);
       } else if (type == 2) {
         this.darwRealWarnMarker(row, type, tmp);
         this.timerWarn = setTimeout(() => {
@@ -1919,10 +1935,7 @@ export default {
         angle: 0,
       };
       // this.realWarnMarker.setContent(contents);
-      this.realWarnMarker = this.drawMarker(
-        position,
-        styleObj
-      );
+      this.realWarnMarker = this.drawMarker(position, styleObj);
       this.map.setCenter([position[0], position[1]]);
     },
     // 清除告警点位
@@ -1995,6 +2008,10 @@ export default {
       return row.carrier_type
         ? row.carrier_type + "_" + row.vehicle_status
         : row.carrierType + "_" + 0;
+    },
+    // 设置轨迹开启的值
+    setTracking(val) {
+      this.tracking = val;
     },
   },
 };
@@ -2578,7 +2595,7 @@ export default {
     ::v-deep.own-device-marker-warn {
       position: relative;
       transform-origin: center center;
-         width: 20px;
+      width: 20px;
       height: 42.6px;
       background-size: 100% 100%;
       z-index: 100;
